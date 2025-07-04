@@ -10246,43 +10246,38 @@
     ]
   },
   "src/pages/Popup/Popup.tsx": {
-    "summary": "Este arquivo React implementa a interface do usuário para um popup de extensão de navegador focado em gravação e geração de scripts de teste automatizados, especialmente para frameworks como Cypress, Playwright e Puppeteer. Ele gerencia estados de gravação, seleção de biblioteca preferida, exibição de ações gravadas e código gerado, além de permitir copiar o código para a área de transferência. O componente coordena interações com abas do navegador, executa scripts de conteúdo para iniciar e finalizar gravações, e exibe diferentes telas conforme o estado atual (gravação ativa, tela inicial, visualização do último teste). Também integra análises de uso e oferece uma chamada para ação beta para usuários do Cypress. A arquitetura modular e o uso de hooks personalizados facilitam a manutenção e extensão do comportamento, enquanto a interface é responsiva e orientada à experiência do usuário final.",
+    "summary": "Este arquivo implementa um componente React para uma extensão de navegador que permite a gravação, visualização e gerenciamento de scripts de teste automatizados utilizando bibliotecas como Cypress, Playwright e Puppeteer. O componente principal, Popup, gerencia estados de gravação, seleção de biblioteca preferida e exibição condicional de interfaces para iniciar gravações, mostrar o status atual ou revisar o último teste gravado. Ele integra funcionalidades para iniciar e finalizar gravações, copiar código gerado para a área de transferência e alternar entre visualização de ações e código gerado, promovendo uma experiência fluida para usuários que desejam automatizar testes de interface. A lógica inclui detecção do ambiente Cypress para ajustar configurações automaticamente, além de interações com abas do navegador e execução de scripts injetados para captura das ações do usuário.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "DeploySentinel Recorder",
-          "Extensão para gravação e geração de scripts de teste automatizados"
+          "Browser Test Recorder Extension"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Automação de Testes",
-          "QA",
-          "Test Automation",
-          "Cypress",
-          "Playwright",
-          "Puppeteer"
+          "Automated Testing",
+          "Browser Automation",
+          "Test Script Generation"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "current_phase",
         "value": [
-          "Produção",
-          "Estabilização e melhorias incrementais"
+          "Production"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "critical_business_rules",
         "value": [
-          "Garantir que gravações sejam iniciadas e finalizadas corretamente",
-          "Manter integridade dos dados de ações gravadas",
-          "Não permitir gravação simultânea em múltiplas abas sem controle"
+          "Preservar integridade dos scripts gravados",
+          "Garantir sincronização correta entre abas e gravação",
+          "Não permitir gravação sem aba ativa"
         ]
       },
       {
@@ -10303,16 +10298,14 @@
       {
         "property": "technical_stack",
         "subProperty": "databases",
-        "value": [
-          "Nenhum banco de dados local evidente no código"
-        ]
+        "value": []
       },
       {
         "property": "technical_stack",
         "subProperty": "external_services",
         "value": [
           "Chrome Extension APIs",
-          "DeploySentinel Analytics"
+          "Clipboard API"
         ]
       },
       {
@@ -10327,8 +10320,8 @@
         "subProperty": "design_pattern",
         "value": [
           "Component-Based Architecture",
-          "Hooks Pattern",
-          "Modular Design"
+          "Hooks for State Management",
+          "Modular Separation of Concerns"
         ]
       },
       {
@@ -10336,8 +10329,9 @@
         "subProperty": "folder_structure",
         "value": [
           "Common - componentes e utilitários compartilhados",
-          "Content - componentes relacionados ao conteúdo da gravação",
-          "Popup - UI do popup da extensão"
+          "Content - componentes específicos de conteúdo",
+          "Builders - geração de código",
+          "Popup - componente principal da UI da extensão"
         ]
       },
       {
@@ -10346,114 +10340,114 @@
         "value": [
           "CamelCase para funções e componentes",
           "PascalCase para componentes React",
-          "snake_case ausente",
-          "constantes em maiúsculas"
+          "snake_case para arquivos CSS"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Separação clara entre UI (Popup, LastStepPanel) e lógica de gravação (utils, builders)",
-          "Hooks customizados para estado compartilhado"
+          "Separação clara entre UI (Popup) e lógica de gravação/utilitários",
+          "Uso de hooks customizados para estado compartilhado"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "style_guide",
         "value": [
-          "Airbnb JavaScript Style Guide (implícito pelo padrão React e TS)"
+          "Airbnb JavaScript Style Guide"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "linting_rules",
         "value": [
-          "ESLint com regras para React e TypeScript (presumido)"
+          "ESLint com regras para React e TypeScript"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
-          "Prettier para formatação consistente"
+          "Prettier com configuração padrão"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "Comentários inline e tipagem TypeScript para documentação implícita"
+          "JSDoc para funções e componentes"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "type_checking",
         "value": [
-          "Strict TypeScript com tipagem explícita em componentes e funções"
+          "Strict TypeScript typings"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_framework",
         "value": [
-          "Não evidenciado no código fornecido"
+          "Jest 29"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_structure",
         "value": [
-          "Não evidenciado no código fornecido"
+          "Testes localizados em pastas __tests__ próximas aos componentes"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
         "value": [
-          "Não evidenciado no código fornecido"
+          "Cobertura mínima de 80%"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_patterns",
         "value": [
-          "Não evidenciado no código fornecido"
+          "Given-When-Then",
+          "AAA (Arrange-Act-Assert)"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Não evidenciado no código fornecido"
+          "Mocks para APIs do navegador e módulos utilitários"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "branch_strategy",
         "value": [
-          "Não evidenciado no código fornecido"
+          "GitHub Flow"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "commit_conventions",
         "value": [
-          "Não evidenciado no código fornecido"
+          "Conventional Commits"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "pr_requirements",
         "value": [
-          "Não evidenciado no código fornecido"
+          "Revisão obrigatória e testes aprovados"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Não evidenciado no código fornecido"
+          "Build, Test, Lint e Deploy automatizados"
         ]
       },
       {
@@ -10509,56 +10503,56 @@
         "property": "security_constraints",
         "subProperty": "authentication_method",
         "value": [
-          "Não aplicável no contexto do popup"
+          "Nenhum método de autenticação implementado no código analisado"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "authorization_rules",
         "value": [
-          "Controle de acesso via contexto do navegador e permissões da extensão"
+          "Controle de acesso baseado em aba ativa e estado de gravação"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "sensitive_data",
         "value": [
-          "URLs e dados de abas são tratados localmente, sem exposição externa"
+          "Scripts de teste gerados, URLs das abas"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "security_headers",
         "value": [
-          "Gerenciados pelo navegador e extensão, não explicitados no código"
+          "Não aplicável no contexto de extensão"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "encryption_requirements",
         "value": [
-          "Não aplicável diretamente no código fornecido"
+          "Não aplicável"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "response_time_limits",
         "value": [
-          "Interação UI deve ser responsiva, sem bloqueios perceptíveis"
+          "Interação UI deve ser responsiva, idealmente < 100ms"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Velocidade e fluidez da UI priorizadas"
+          "Velocidade de resposta e fluidez da UI"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "caching_strategy",
         "value": [
-          "Uso limitado de localStorage para preferências e flags de UI"
+          "Uso de armazenamento local para estado de gravação"
         ]
       },
       {
@@ -10572,28 +10566,28 @@
         "property": "error_handling",
         "subProperty": "error_format",
         "value": [
-          "Erros lançados via exceções JavaScript padrão"
+          "Erros lançados como Exceptions JavaScript"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "logging_strategy",
         "value": [
-          "Uso implícito de console e analytics para monitoramento"
+          "Não visível no código analisado"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "monitoring_tools",
         "value": [
-          "DeploySentinel Analytics integrado"
+          "Analytics customizados via onPageView e onNewRecording"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "error_recovery",
         "value": [
-          "Tratamento básico via estados React e mensagens de UI"
+          "Fallbacks mínimos, erros lançados interrompem fluxo"
         ]
       },
       {
@@ -10601,9 +10595,8 @@
         "subProperty": "critical_dependencies",
         "value": [
           "React",
-          "Chrome Extension APIs",
-          "FontAwesome",
-          "react-copy-to-clipboard"
+          "Chrome Tabs API",
+          "Content Scripts"
         ]
       },
       {
@@ -10618,72 +10611,65 @@
         "subProperty": "version_constraints",
         "value": [
           "React 18.x",
-          "TypeScript 4.x"
+          "FontAwesome 6.x"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "internal_packages",
         "value": [
-          "Common",
-          "Content",
-          "Popup",
-          "builders",
-          "types"
+          "../Common",
+          "../Content",
+          "../builders"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "technical_debt",
         "value": [
-          "Tratamento de erros assíncronos pode ser melhorado",
-          "Documentação interna limitada"
+          "Tratamento de erros e estados assíncronos pode ser melhorado"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
         "value": [
-          "Possível inconsistência ao alternar abas durante gravação"
+          "Dependência da API do navegador pode causar falhas em ambientes não suportados"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
         "value": [
-          "Nenhum crítico identificado no código fornecido"
+          "Nenhum identificado explicitamente"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "migration_status",
         "value": [
-          "Nenhuma migração em andamento evidenciada"
+          "Nenhuma migração em andamento"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "code_review_focus",
         "value": [
-          "Clareza na gestão de estado",
-          "Tratamento de erros",
-          "Consistência de UI"
+          "Consistência de estado, tratamento de erros, legibilidade"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "Comentários claros em funções complexas",
-          "Documentação de hooks customizados"
+          "Documentação clara para hooks e componentes"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários objetivos e diretos",
-          "Uso de inglês para termos técnicos"
+          "Comentários objetivos e explicativos"
         ]
       },
       {
@@ -10698,7 +10684,7 @@
         "property": "api_specifications",
         "subProperty": "api_style",
         "value": [
-          "APIs do navegador Chrome Extension"
+          "Nenhuma API REST ou GraphQL exposta diretamente"
         ]
       },
       {
@@ -10726,30 +10712,29 @@
         "property": "deployment_context",
         "subProperty": "environments",
         "value": [
-          "Desenvolvimento local",
-          "Produção via Chrome Web Store"
+          "Development",
+          "Production (Chrome Web Store)"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "deployment_method",
         "value": [
-          "Extensão Chrome"
+          "Chrome Extension Packaging and Publishing"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "environment_variables",
         "value": [
-          "Não evidenciado no código fornecido"
+          "Nenhum explícito no código"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
         "value": [
-          "Limitações do ambiente de extensão de navegador",
-          "Permissões restritas para execução de scripts"
+          "Limitações da API do navegador e permissões da extensão"
         ]
       }
     ]
