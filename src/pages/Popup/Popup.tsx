@@ -7,6 +7,7 @@ import {
   faCopy,
   faCheck,
   faChevronLeft,
+  faHistory,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Logo from '../Common/Logo';
@@ -24,6 +25,10 @@ import {
 } from '../Common/utils';
 import { usePreferredLibrary, useRecordingState } from '../Common/hooks';
 import ScriptTypeSelect from '../Common/ScriptTypeSelect';
+import { RecordingHistory } from './components/RecordingHistory';
+import { RecordingDetail } from './components/RecordingDetail';
+import { RecordingEntry } from '../types/recording';
+import { recordingStore } from '../storage/recording-store';
 
 import type { Action } from '../types';
 import { ActionsMode, ScriptType } from '../types';
@@ -132,12 +137,20 @@ const Popup = () => {
   const [currentTabId, setCurrentTabId] = useState<number | null>(null);
 
   const [isShowingLastTest, setIsShowingLastTest] = useState<boolean>(false);
+  const [isShowingHistory, setIsShowingHistory] = useState<boolean>(false);
+  const [selectedRecording, setSelectedRecording] = useState<RecordingEntry | null>(null);
 
   useEffect(() => {
     getCurrentTab().then((tab) => {
       const { id } = tab;
       setCurrentTabId(id ?? null);
     });
+  }, []);
+
+  // Inicializa o store e migra dados antigos
+  useEffect(() => {
+    recordingStore.initialize();
+    recordingStore.migrateLastRecording();
   }, []);
 
   // Sets Cypress as default library if we're in the Cypress test browser
@@ -190,11 +203,30 @@ const Popup = () => {
   const activePage =
     recordingTabId != null
       ? 'recording'
+      : isShowingHistory
+      ? 'history'
+      : selectedRecording
+      ? 'detail'
       : isShowingLastTest
       ? 'lastTest'
       : 'home';
 
   const isRecordingCurrentTab = currentTabId === recordingTabId;
+
+  const handleSelectRecording = (recording: RecordingEntry) => {
+    setSelectedRecording(recording);
+    setIsShowingHistory(false);
+  };
+
+  const handleBackFromDetail = () => {
+    setSelectedRecording(null);
+    setIsShowingHistory(true);
+  };
+
+  const handleBackFromHistory = () => {
+    setIsShowingHistory(false);
+    setSelectedRecording(null);
+  };
 
   return (
     <>
@@ -276,11 +308,11 @@ const Popup = () => {
                 <span
                   className="link-button"
                   onClick={() => {
-                    setIsShowingLastTest(true);
+                    setIsShowingHistory(true);
                   }}
-                  data-testid="view-last-test"
+                  data-testid="view-recordings"
                 >
-                  Ver Última Gravação
+                  <FontAwesomeIcon icon={faHistory} /> Ver Gravações
                 </span>
               </div>
             </div>
@@ -292,6 +324,20 @@ const Popup = () => {
             onBack={() => {
               setIsShowingLastTest(false);
             }}
+          />
+        )}
+        {activePage === 'history' && (
+          <RecordingHistory
+            onSelectRecording={handleSelectRecording}
+            onBack={handleBackFromHistory}
+          />
+        )}
+        {activePage === 'detail' && selectedRecording && (
+          <RecordingDetail
+            recording={selectedRecording}
+            onBack={handleBackFromDetail}
+            library={preferredLibrary ?? ScriptType.Cypress}
+            onLibraryChange={setPreferredLibrary}
           />
         )}
       </div>

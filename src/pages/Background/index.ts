@@ -8,9 +8,13 @@ import {
   getCypressAutFrame,
   executeCleanUp,
 } from '../Common/utils';
+import { recordingStore } from '../storage/recording-store';
 
 const HOVER_CTX_MENU_ID = 'deploysentinel-menu-id';
 const AWAIT_TEXT_CTX_MENU_ID = 'deploysentinel-menu-await-text-id';
+
+// Inicializa o store de gravações
+recordingStore.initialize();
 
 async function recordNavigationEvent(
   url: string,
@@ -103,6 +107,12 @@ chrome.runtime.onMessage.addListener(async function (
     setStartRecordingStorage(tabId, frameId, url);
     await executeCleanUp(tabId, frameId);
     await executeScript(tabId, frameId, 'contentScript.bundle.js');
+  } else if (request.type === 'open-history') {
+    // Abre o histórico de gravações em uma nova aba
+    // Por enquanto, vamos apenas retornar true indicando que a funcionalidade está em desenvolvimento
+    // No futuro, podemos criar uma página dedicada para o histórico
+    sendResponse({ success: true });
+    return true;
   }
 });
 

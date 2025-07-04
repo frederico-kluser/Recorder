@@ -25,6 +25,7 @@ export function setStartRecordingStorage(
     recordingState: 'active',
     recordingTabId: tabId,
     recordingFrameId: frameId,
+    recordingStartTime: Date.now(),
     recording: [
       {
         type: 'load',
