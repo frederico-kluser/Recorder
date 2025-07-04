@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSquare,
   faCircle,
-  faInfoCircle,
   faCopy,
   faCheck,
   faChevronLeft,
@@ -54,15 +53,15 @@ function LastStepPanel({
     <div>
       <div>
         <span className="text-button text-sm" onClick={onBack}>
-          <FontAwesomeIcon icon={faChevronLeft} /> Back
+          <FontAwesomeIcon icon={faChevronLeft} /> Voltar
         </span>
       </div>
       <div className="d-flex justify-between mt-4 items-end text-sm">
         <div className="font-bold text-xl">
-          Last Test{' '}
+          Último Teste{' '}
           {showActionsMode === ActionsMode.Actions
-            ? 'Actions'
-            : 'Generated Code'}
+            ? 'Ações'
+            : 'Código Gerado'}
         </div>
         <div>
           <span
@@ -75,10 +74,10 @@ function LastStepPanel({
               );
             }}
           >
-            Show{' '}
+            Mostrar{' '}
             {showActionsMode === ActionsMode.Actions
-              ? 'Generated Code'
-              : 'Actions'}
+              ? 'Código Gerado'
+              : 'Ações'}
           </span>
         </div>
       </div>
@@ -107,7 +106,7 @@ function LastStepPanel({
                   icon={copyCodeConfirm ? faCheck : faCopy}
                   size="sm"
                 />{' '}
-                Copy Code
+                Copiar Código
               </span>
             </CopyToClipboard>
           </div>
@@ -136,9 +135,6 @@ const Popup = () => {
 
   const [isShowingLastTest, setIsShowingLastTest] = useState<boolean>(false);
 
-  const [showBetaCTA, setShowBetaCTA] = useState<boolean>(
-    localStorage.getItem('showBetaCta') !== 'false'
-  );
 
   useEffect(() => {
     getCurrentTab().then((tab) => {
@@ -212,8 +208,8 @@ const Popup = () => {
             <Logo />
             <div className="text-center" style={{ marginTop: '2em' }}>
               <div className="text-xl text-red">
-                Currently Recording
-                {isRecordingCurrentTab ? ' Test...' : ' on Another Tab'}
+                Gravando
+                {isRecordingCurrentTab ? ' Teste...' : ' em Outra Aba'}
               </div>
               {!isRecordingCurrentTab && recordingTabId != null && (
                 <div className="mt-4">
@@ -224,7 +220,7 @@ const Popup = () => {
                       window.close();
                     }}
                   >
-                    Go To Active Recording Tab
+                    Ir para Aba de Gravação Ativa
                   </span>
                 </div>
               )}
@@ -235,7 +231,7 @@ const Popup = () => {
                 data-testid="end-test-recording"
               >
                 <FontAwesomeIcon className="mr-1" icon={faSquare} />
-                &nbsp; End Test Recording
+                &nbsp; Finalizar Gravação do Teste
               </button>
             </div>
           </>
@@ -244,15 +240,6 @@ const Popup = () => {
           <>
             <div className="d-flex justify-between items-center">
               <Logo />
-              <div>
-                <a
-                  href="https://www.deploysentinel.com/docs/recorder"
-                  target="_blank"
-                  className="text-button text-decoration-none text-sm text-grey"
-                >
-                  <FontAwesomeIcon icon={faInfoCircle} className="mr-1" /> Docs
-                </a>
-              </div>
             </div>
             <div className="text-center mt-12">
               <div
@@ -262,8 +249,8 @@ const Popup = () => {
                 }}
                 className="text-grey mt-6"
               >
-                Generate Cypress, Playwright & Puppeteer scripts from your
-                browser actions (ex. click, type, scroll).
+                Gere scripts Cypress, Playwright e Puppeteer a partir de suas
+                ações no navegador (ex. clicar, digitar, rolar).
               </div>
               <button
                 className="btn-primary mt-8"
@@ -275,11 +262,11 @@ const Popup = () => {
                   style={{ color: '#EA4240' }}
                   icon={faCircle}
                 />
-                &nbsp; Start Recording from Current Tab
+                &nbsp; Iniciar Gravação da Aba Atual
               </button>
               <div className="d-flex text-sm justify-content-center text-grey mt-6">
                 <div className="d-flex">
-                  <div>Preferred Library: &nbsp;</div>
+                  <div>Biblioteca Preferida: &nbsp;</div>
                   <ScriptTypeSelect
                     color="#c4c4c4"
                     value={preferredLibrary ?? ScriptType.Cypress}
@@ -296,45 +283,9 @@ const Popup = () => {
                   }}
                   data-testid="view-last-test"
                 >
-                  View Last Recording
+                  Ver Última Gravação
                 </span>
               </div>
-              {showBetaCTA &&
-                (preferredLibrary === ScriptType.Cypress ||
-                  preferredLibrary == null) && (
-                  <div
-                    style={{ background: '#21272e' }}
-                    className="rounded p-3 text-left mt-12"
-                  >
-                    <div className="fw-bold">
-                      <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
-                      Fix Flaky Cypress Tests w/ DeploySentinel
-                    </div>
-                    <div className="mt-4" style={{ lineHeight: '1.5rem' }}>
-                      Save time debugging test failures & flakes using DOM,
-                      network, and console events captured while running in CI.
-                    </div>
-                    <div className="mt-4">
-                      <a
-                        href="https://deploysentinel.com?utm_source=rcd&utm_medium=bnr"
-                        target="_blank"
-                        className="link-button text-decoration-none fw-bold mr-5"
-                      >
-                        Learn More
-                      </a>
-                      <span
-                        className="text-button text-grey"
-                        onClick={() => {
-                          localStorage?.setItem('showBetaCta', 'false');
-                          setShowBetaCTA(false);
-                        }}
-                        data-testid="view-last-test"
-                      >
-                        No Thanks
-                      </span>
-                    </div>
-                  </div>
-                )}
             </div>
           </>
         )}
