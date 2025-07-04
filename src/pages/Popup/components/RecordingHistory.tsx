@@ -14,13 +14,28 @@ import {
   faChevronLeft,
   faClock,
   faGlobe,
+  faPlay,
+  faCalendarAlt,
+  faTasks,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getSortedRowModel,
+  SortingState,
+  getFilteredRowModel,
+} from '@tanstack/react-table';
 import './styles.css';
 
 interface RecordingHistoryProps {
   onSelectRecording: (recording: RecordingEntry) => void;
   onBack: () => void;
 }
+
+// Column helper for TanStack Table
+const columnHelper = createColumnHelper<RecordingEntry>();
 
 /**
  * Componente de histórico de gravações
@@ -33,6 +48,7 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   // Carrega as gravações ao montar o componente
   useEffect(() => {
@@ -157,118 +173,259 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     });
   };
 
+  // Definição das colunas da tabela
+  const columns = useMemo(
+    () => [
+      columnHelper.display({
+        id: 'select',
+        header: () => (
+          <input
+            className="custom-checkbox"
+            type="checkbox"
+            checked={
+              selectedIds.size === filteredRecordings.length &&
+              filteredRecordings.length > 0
+            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              if (e.target.checked) {
+                setSelectedIds(new Set(filteredRecordings.map((r) => r.id)));
+              } else {
+                setSelectedIds(new Set());
+              }
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <input
+            className="custom-checkbox"
+            type="checkbox"
+            checked={selectedIds.has(row.original.id)}
+            onChange={() => toggleSelection(row.original.id)}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          />
+        ),
+        enableSorting: false,
+        size: 50,
+      }),
+      columnHelper.accessor('title', {
+        header: 'Gravação',
+        cell: ({ row }) => (
+          <div>
+            <div className="recording-title">
+              <FontAwesomeIcon icon={faGlobe} />
+              {row.original.title}
+            </div>
+            <div className="recording-url">{row.original.url}</div>
+          </div>
+        ),
+        enableSorting: true,
+      }),
+      columnHelper.accessor('startedAt', {
+        header: 'Data',
+        cell: ({ row }) => (
+          <span className="date-badge">
+            <FontAwesomeIcon
+              icon={faCalendarAlt}
+              style={{ marginRight: '6px' }}
+            />
+            {formatDate(row.original.startedAt)}
+          </span>
+        ),
+        enableSorting: true,
+      }),
+      columnHelper.display({
+        id: 'duration',
+        header: 'Duração',
+        cell: ({ row }) => (
+          <span className="duration-badge">
+            <FontAwesomeIcon icon={faClock} style={{ marginRight: '6px' }} />
+            {formatDuration(row.original.startedAt, row.original.endedAt)}
+          </span>
+        ),
+        enableSorting: false,
+      }),
+      columnHelper.accessor('actions', {
+        header: 'Ações',
+        cell: ({ row }) => (
+          <span className="actions-badge">
+            <FontAwesomeIcon icon={faTasks} style={{ marginRight: '6px' }} />
+            {row.original.actions.length}
+          </span>
+        ),
+        enableSorting: true,
+      }),
+      columnHelper.display({
+        id: 'delete',
+        header: '',
+        cell: ({ row }) => (
+          <button
+            className="delete-button"
+            onClick={(e: React.MouseEvent) => handleDelete(row.original.id, e)}
+            title="Excluir gravação"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        ),
+        enableSorting: false,
+        size: 80,
+      }),
+    ],
+    [
+      filteredRecordings,
+      selectedIds,
+      formatDate,
+      formatDuration,
+      handleDelete,
+      toggleSelection,
+    ]
+  );
+
+  // Configuração da tabela
+  const table = useReactTable({
+    data: filteredRecordings,
+    columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
+
   return (
-    <div className="recording-history">
+    <div className="modern-recording-history">
       {/* Header */}
-      <div className="history-header">
-        <button className="back-button" onClick={onBack}>
+      <div className="modern-header">
+        <button className="modern-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faChevronLeft} />
         </button>
-        <h2>
-          <FontAwesomeIcon icon={faHistory} /> Histórico de Gravações
+        <h2 className="modern-title">
+          <FontAwesomeIcon icon={faHistory} />
+          Histórico de Gravações
         </h2>
       </div>
 
       {/* Toolbar */}
-      <div className="history-toolbar">
-        <div className="search-box">
+      <div
+        className="modern-toolbar"
+        style={{
+          display: 'flex',
+          gap: '8px',
+          marginBottom: '16px',
+        }}
+      >
+        <div className="modern-search-box">
           <FontAwesomeIcon icon={faSearch} className="search-icon" />
           <input
             type="text"
             placeholder="Buscar por site ou URL..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchTerm(e.target.value)
+            }
           />
         </div>
 
-        <div className="toolbar-actions">
+        <div className="modern-toolbar-actions">
           {selectedIds.size > 0 && (
-            <span className="selection-count">
+            <span className="modern-selection-count">
               {selectedIds.size} selecionado(s)
             </span>
           )}
           <button
-            className="export-button"
+            className="modern-export-button"
             onClick={handleExport}
             title="Exportar gravações"
           >
-            <FontAwesomeIcon icon={faDownload} />
+            <FontAwesomeIcon icon={faDownload} style={{ marginRight: '8px' }} />
+            Exportar
           </button>
         </div>
       </div>
 
-      {/* Lista de gravações */}
-      <div className="recordings-list">
+      {/* Tabela */}
+      <div className="modern-table-container">
         {loading ? (
-          <div className="loading">
-            <span>📊 Carregando gravações...</span>
+          <div className="modern-loading-state">
+            <FontAwesomeIcon icon={faPlay} style={{ marginRight: '8px' }} />
+            Carregando gravações...
           </div>
         ) : filteredRecordings.length === 0 ? (
-          <div className="empty-state">
-            {searchTerm ? (
-              <>
-                <span style={{ fontSize: '24px', marginBottom: '8px' }}>
-                  🔍
-                </span>
-                <div>Nenhuma gravação encontrada para esta busca.</div>
-              </>
-            ) : (
-              <>
-                <span style={{ fontSize: '24px', marginBottom: '8px' }}>
-                  📝
-                </span>
-                <div>Nenhuma gravação salva ainda.</div>
-              </>
-            )}
+          <div className="modern-empty-state">
+            <div className="emoji">{searchTerm ? '🔍' : '📝'}</div>
+            <div>
+              {searchTerm
+                ? 'Nenhuma gravação encontrada para esta busca.'
+                : 'Nenhuma gravação salva ainda.'}
+            </div>
           </div>
         ) : (
-          filteredRecordings.map((recording) => (
-            <div
-              key={recording.id}
-              className={`recording-item ${
-                selectedIds.has(recording.id) ? 'selected' : ''
-              }`}
-              onClick={() => onSelectRecording(recording)}
-            >
-              <div className="recording-item-header">
-                <div className="recording-select">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.has(recording.id)}
-                    onChange={() => toggleSelection(recording.id)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                </div>
-
-                <div className="recording-info">
-                  <div className="recording-title">
-                    <FontAwesomeIcon icon={faGlobe} className="icon" />
-                    {recording.title}
-                  </div>
-                  <div className="recording-meta">
-                    <span className="date">
-                      <FontAwesomeIcon icon={faClock} className="icon" />
-                      {formatDate(recording.startedAt)}
-                    </span>
-                    <span className="duration">
-                      {formatDuration(recording.startedAt, recording.endedAt)}
-                    </span>
-                    <span className="actions-count">
-                      {recording.actions.length} ações
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  className="delete-button"
-                  onClick={(e) => handleDelete(recording.id, e)}
-                  title="Excluir gravação"
+          <table className="modern-table">
+            <thead className="modern-table-header">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id} className="modern-table-header-row">
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="modern-table-header-cell"
+                      onClick={
+                        header.column.getCanSort()
+                          ? header.column.getToggleSortingHandler()
+                          : undefined
+                      }
+                      style={{
+                        cursor: header.column.getCanSort()
+                          ? 'pointer'
+                          : 'default',
+                      }}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      {header.column.getIsSorted() === 'asc'
+                        ? ' ↑'
+                        : header.column.getIsSorted() === 'desc'
+                        ? ' ↓'
+                        : ''}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody className="modern-table-body">
+              {table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className={`modern-table-row ${
+                    selectedIds.has(row.original.id) ? 'selected' : ''
+                  }`}
+                  onClick={() => onSelectRecording(row.original)}
                 >
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-              </div>
-            </div>
-          ))
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className="modern-table-cell"
+                      style={{
+                        width:
+                          cell.column.getSize() !== 150
+                            ? cell.column.getSize()
+                            : undefined,
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>

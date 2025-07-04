@@ -12,6 +12,10 @@ import {
   faList,
   faCopy,
   faCheck,
+  faPlay,
+  faCalendarAlt,
+  faTasks,
+  faGlobe,
 } from '@fortawesome/free-solid-svg-icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ActionList from '../../Content/ActionList';
@@ -81,50 +85,67 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
   };
 
   return (
-    <div className="recording-detail">
+    <div className="modern-recording-detail">
       {/* Header */}
-      <div className="detail-header">
-        <button className="back-button" onClick={onBack}>
+      <div className="modern-detail-header">
+        <button className="modern-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faChevronLeft} />
-        </button>{' '}
-        <div className="header-info">
-          <h2>📹 {recording.title}</h2>
-          <div className="recording-meta">
-            <span>📅 {formatDate(recording.startedAt)}</span>
-            <span>🎯 {recording.actions.length} ações gravadas</span>
+        </button>
+        <div className="modern-header-info">
+          <h2 className="modern-detail-title">
+            <FontAwesomeIcon icon={faPlay} />
+            {recording.title}
+          </h2>
+          <div className="modern-recording-meta">
+            <span className="modern-meta-item">
+              <FontAwesomeIcon icon={faCalendarAlt} />
+              {formatDate(recording.startedAt)}
+            </span>
+            <span className="modern-meta-item">
+              <FontAwesomeIcon icon={faTasks} />
+              {recording.actions.length} ações gravadas
+            </span>
+            <span className="modern-meta-item">
+              <FontAwesomeIcon icon={faGlobe} />
+              {recording.hostname}
+            </span>
           </div>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="detail-toolbar">
-        <div className="view-toggle">
+      <div className="modern-detail-toolbar">
+        <div className="modern-view-toggle">
           <button
-            className={`toggle-button ${
+            className={`modern-toggle-button ${
               viewMode === 'actions' ? 'active' : ''
             }`}
             onClick={() => setViewMode('actions')}
           >
-            <FontAwesomeIcon icon={faList} /> Ações
+            <FontAwesomeIcon icon={faList} />
+            Ações
           </button>
           <button
-            className={`toggle-button ${viewMode === 'code' ? 'active' : ''}`}
+            className={`modern-toggle-button ${
+              viewMode === 'code' ? 'active' : ''
+            }`}
             onClick={() => setViewMode('code')}
           >
-            <FontAwesomeIcon icon={faCode} /> Código
+            <FontAwesomeIcon icon={faCode} />
+            Código
           </button>
         </div>
 
         {viewMode === 'code' && (
-          <div className="code-actions">
+          <div className="modern-code-actions">
             <select
+              className="modern-library-select"
               value={library}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 onLibraryChange(
                   parseInt(e.target.value, 10) as unknown as ScriptType
                 )
               }
-              className="library-select"
             >
               <option value={ScriptType.Cypress}>Cypress</option>
               <option value={ScriptType.Playwright}>Playwright</option>
@@ -132,9 +153,11 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
             </select>
 
             <CopyToClipboard text={getCodeForLibrary()} onCopy={handleCopy}>
-              <button className="copy-button">
+              <button
+                className={`modern-copy-button ${copied ? 'copied' : ''}`}
+              >
                 <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
-                {copied ? '✅ Copiado!' : '📋 Copiar'}
+                {copied ? 'Copiado!' : 'Copiar'}
               </button>
             </CopyToClipboard>
           </div>
@@ -142,13 +165,13 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
       </div>
 
       {/* Content */}
-      <div className="detail-content">
+      <div className="modern-detail-content">
         {viewMode === 'actions' ? (
-          <div className="actions-view">
+          <div className="modern-actions-view">
             <ActionList actions={recording.actions} />
           </div>
         ) : (
-          <div className="code-view">
+          <div className="modern-code-view">
             <CodeGen actions={recording.actions} library={library} />
           </div>
         )}
