@@ -6,14 +6,14 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { RecordingEntry } from '../../types/recording';
 import { RecordingService } from '../../storage/recording-service';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faHistory, 
-  faSearch, 
-  faTrash, 
+import {
+  faHistory,
+  faSearch,
+  faTrash,
   faDownload,
   faChevronLeft,
   faClock,
-  faGlobe
+  faGlobe,
 } from '@fortawesome/free-solid-svg-icons';
 import './styles.css';
 
@@ -25,9 +25,9 @@ interface RecordingHistoryProps {
 /**
  * Componente de histórico de gravações
  */
-export const RecordingHistory: React.FC<RecordingHistoryProps> = ({ 
-  onSelectRecording, 
-  onBack 
+export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
+  onSelectRecording,
+  onBack,
 }) => {
   const [recordings, setRecordings] = useState<RecordingEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -41,11 +41,15 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
 
   const loadRecordings = async () => {
     try {
+      console.log('🚀 [RecordingHistory] Carregando gravações...');
       setLoading(true);
       const data = await RecordingService.listRecordings();
+      console.log(
+        `✅ [RecordingHistory] ${data.length} gravações carregadas com sucesso`
+      );
       setRecordings(data);
     } catch (error) {
-      console.error('Erro ao carregar gravações:', error);
+      console.error('❌ [RecordingHistory] Erro ao carregar gravações:', error);
     } finally {
       setLoading(false);
     }
@@ -58,34 +62,37 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     }
 
     const term = searchTerm.toLowerCase();
-    return recordings.filter(recording => 
-      recording.title.toLowerCase().includes(term) ||
-      recording.hostname.toLowerCase().includes(term) ||
-      recording.url.toLowerCase().includes(term)
+    return recordings.filter(
+      (recording) =>
+        recording.title.toLowerCase().includes(term) ||
+        recording.hostname.toLowerCase().includes(term) ||
+        recording.url.toLowerCase().includes(term)
     );
   }, [recordings, searchTerm]);
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Evita abrir a gravação ao clicar em deletar
-    
-    if (confirm('Tem certeza que deseja excluir esta gravação?')) {
+
+    if (confirm('🗑️ Tem certeza que deseja excluir esta gravação?')) {
       try {
+        console.log(`🗑️ [RecordingHistory] Excluindo gravação: ${id}`);
         await RecordingService.removeRecording(id);
+        console.log('✅ [RecordingHistory] Gravação excluída com sucesso');
         await loadRecordings();
       } catch (error) {
-        console.error('Erro ao excluir gravação:', error);
+        console.error('❌ [RecordingHistory] Erro ao excluir gravação:', error);
       }
     }
   };
 
   const handleExport = async () => {
     try {
-      const idsToExport = selectedIds.size > 0 
-        ? Array.from(selectedIds) 
-        : undefined;
-      
+      console.log('📦 [RecordingHistory] Iniciando exportação...');
+      const idsToExport =
+        selectedIds.size > 0 ? Array.from(selectedIds) : undefined;
+
       const json = await RecordingService.exportRecordings(idsToExport);
-      
+
       // Cria blob e faz download
       const blob = new Blob([json], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -94,8 +101,10 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
       a.download = `recordings_${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
+
+      console.log('✅ [RecordingHistory] Exportação concluída com sucesso');
     } catch (error) {
-      console.error('Erro ao exportar gravações:', error);
+      console.error('❌ [RecordingHistory] Erro ao exportar gravações:', error);
     }
   };
 
@@ -114,7 +123,7 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     const seconds = Math.floor(duration / 1000);
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    
+
     if (minutes > 0) {
       return `${minutes}m ${remainingSeconds}s`;
     }
@@ -126,19 +135,25 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     if (date.toDateString() === today.toDateString()) {
-      return `Hoje ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+      return `Hoje ${date.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })}`;
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return `Ontem ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+      return `Ontem ${date.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })}`;
     }
-    
-    return date.toLocaleDateString('pt-BR', { 
-      day: '2-digit', 
-      month: '2-digit', 
+
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -165,14 +180,14 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
+
         <div className="toolbar-actions">
           {selectedIds.size > 0 && (
             <span className="selection-count">
               {selectedIds.size} selecionado(s)
             </span>
           )}
-          <button 
+          <button
             className="export-button"
             onClick={handleExport}
             title="Exportar gravações"
@@ -185,19 +200,34 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
       {/* Lista de gravações */}
       <div className="recordings-list">
         {loading ? (
-          <div className="loading">Carregando gravações...</div>
+          <div className="loading">
+            <span>📊 Carregando gravações...</span>
+          </div>
         ) : filteredRecordings.length === 0 ? (
           <div className="empty-state">
-            {searchTerm ? 
-              'Nenhuma gravação encontrada para esta busca.' : 
-              'Nenhuma gravação salva ainda.'
-            }
+            {searchTerm ? (
+              <>
+                <span style={{ fontSize: '24px', marginBottom: '8px' }}>
+                  🔍
+                </span>
+                <div>Nenhuma gravação encontrada para esta busca.</div>
+              </>
+            ) : (
+              <>
+                <span style={{ fontSize: '24px', marginBottom: '8px' }}>
+                  📝
+                </span>
+                <div>Nenhuma gravação salva ainda.</div>
+              </>
+            )}
           </div>
         ) : (
-          filteredRecordings.map(recording => (
+          filteredRecordings.map((recording) => (
             <div
               key={recording.id}
-              className={`recording-item ${selectedIds.has(recording.id) ? 'selected' : ''}`}
+              className={`recording-item ${
+                selectedIds.has(recording.id) ? 'selected' : ''
+              }`}
               onClick={() => onSelectRecording(recording)}
             >
               <div className="recording-item-header">
@@ -209,7 +239,7 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
                     onClick={(e) => e.stopPropagation()}
                   />
                 </div>
-                
+
                 <div className="recording-info">
                   <div className="recording-title">
                     <FontAwesomeIcon icon={faGlobe} className="icon" />
@@ -228,7 +258,7 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
                     </span>
                   </div>
                 </div>
-                
+
                 <button
                   className="delete-button"
                   onClick={(e) => handleDelete(recording.id, e)}
@@ -241,7 +271,6 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
           ))
         )}
       </div>
-
     </div>
   );
 };
