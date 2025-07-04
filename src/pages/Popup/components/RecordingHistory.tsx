@@ -200,41 +200,43 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
               className={`recording-item ${selectedIds.has(recording.id) ? 'selected' : ''}`}
               onClick={() => onSelectRecording(recording)}
             >
-              <div className="recording-select">
-                <input
-                  type="checkbox"
-                  checked={selectedIds.has(recording.id)}
-                  onChange={() => toggleSelection(recording.id)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
-              
-              <div className="recording-info">
-                <div className="recording-title">
-                  <FontAwesomeIcon icon={faGlobe} className="icon" />
-                  {recording.title}
+              <div className="recording-item-header">
+                <div className="recording-select">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(recording.id)}
+                    onChange={() => toggleSelection(recording.id)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
                 </div>
-                <div className="recording-meta">
-                  <span className="date">
-                    <FontAwesomeIcon icon={faClock} className="icon" />
-                    {formatDate(recording.startedAt)}
-                  </span>
-                  <span className="duration">
-                    {formatDuration(recording.startedAt, recording.endedAt)}
-                  </span>
-                  <span className="actions-count">
-                    {recording.actions.length} ações
-                  </span>
+                
+                <div className="recording-info">
+                  <div className="recording-title">
+                    <FontAwesomeIcon icon={faGlobe} className="icon" />
+                    {recording.title}
+                  </div>
+                  <div className="recording-meta">
+                    <span className="date">
+                      <FontAwesomeIcon icon={faClock} className="icon" />
+                      {formatDate(recording.startedAt)}
+                    </span>
+                    <span className="duration">
+                      {formatDuration(recording.startedAt, recording.endedAt)}
+                    </span>
+                    <span className="actions-count">
+                      {recording.actions.length} ações
+                    </span>
+                  </div>
                 </div>
+                
+                <button
+                  className="delete-button"
+                  onClick={(e) => handleDelete(recording.id, e)}
+                  title="Excluir gravação"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
               </div>
-              
-              <button
-                className="delete-button"
-                onClick={(e) => handleDelete(recording.id, e)}
-                title="Excluir gravação"
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </button>
             </div>
           ))
         )}
