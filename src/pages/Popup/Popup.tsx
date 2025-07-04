@@ -213,6 +213,21 @@ const Popup = () => {
 
   const isRecordingCurrentTab = currentTabId === recordingTabId;
 
+  // Aplica classes ao body baseado na página ativa
+  useEffect(() => {
+    document.body.classList.remove('history-view', 'detail-view');
+    
+    if (activePage === 'history') {
+      document.body.classList.add('history-view');
+    } else if (activePage === 'detail') {
+      document.body.classList.add('detail-view');
+    }
+
+    return () => {
+      document.body.classList.remove('history-view', 'detail-view');
+    };
+  }, [activePage]);
+
   const handleSelectRecording = (recording: RecordingEntry) => {
     setSelectedRecording(recording);
     setIsShowingHistory(false);

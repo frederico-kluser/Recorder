@@ -12,3 +12,11 @@ body {
 
   background: #080a0b;
 }
+
+/* Estilos específicos para páginas de histórico e detalhe */
+body.history-view,
+body.detail-view {
+  width: 800px;
+  height: 600px;
+  overflow-y: auto;
+}

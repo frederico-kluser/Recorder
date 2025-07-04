@@ -6,16 +6,15 @@
   height: 100%;
   background: #f5f5f5;
   width: 100%;
-  max-width: 372px;
-  margin: 0 auto;
 }
 
 .history-header {
   display: flex;
   align-items: center;
-  padding: 12px 15px;
+  padding: 16px 24px;
   background: white;
   border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .back-button {
@@ -34,25 +33,28 @@
 
 .history-header h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: 600;
   color: #333;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .history-toolbar {
-  padding: 10px 15px;
+  padding: 16px 24px;
   background: white;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
 }
 
 .search-box {
   position: relative;
-  width: 100%;
+  flex: 1;
+  max-width: 400px;
 }
 
 .search-icon {
@@ -66,10 +68,11 @@
 
 .search-box input {
   width: 100%;
-  padding: 8px 10px 8px 32px;
+  padding: 10px 12px 10px 36px;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 13px;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
 }
 
 .search-box input:focus {
@@ -80,24 +83,24 @@
 .toolbar-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  width: 100%;
+  gap: 16px;
 }
 
 .selection-count {
-  font-size: 12px;
+  font-size: 14px;
   color: #666;
+  font-weight: 500;
 }
 
 .export-button {
-  background: none;
+  background: white;
   border: 1px solid #ddd;
-  padding: 5px 10px;
-  border-radius: 4px;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
   color: #666;
-  font-size: 13px;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
 .export-button:hover {
@@ -108,7 +111,11 @@
 .recordings-list {
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 16px;
+  align-content: start;
 }
 
 .loading, .empty-state {
@@ -120,19 +127,21 @@
 .recording-item {
   background: white;
   border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 8px;
+  border-radius: 8px;
+  padding: 16px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  height: fit-content;
 }
 
 .recording-item:hover {
   border-color: #0084ff;
-  box-shadow: 0 2px 8px rgba(0, 132, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 132, 255, 0.15);
+  transform: translateY(-2px);
 }
 
 .recording-item.selected {
@@ -156,13 +165,13 @@
 }
 
 .recording-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: #333;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -171,14 +180,15 @@
 .recording-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  font-size: 12px;
+  gap: 16px;
+  font-size: 13px;
   color: #666;
 }
 
 .recording-meta .icon {
-  margin-right: 4px;
-  font-size: 11px;
+  margin-right: 6px;
+  font-size: 12px;
+  color: #999;
 }
 
 .delete-button {
@@ -312,4 +322,37 @@
   background: white;
   border-radius: 6px;
   overflow: hidden;
+}
+
+/* Estilos responsivos para visualização expandida */
+@media (max-width: 500px) {
+  .recordings-list {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  
+  .history-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-box {
+    max-width: 100%;
+  }
+}
+
+/* Melhorias para visualização em 800x600 */
+body.history-view .recording-history,
+body.detail-view .recording-detail {
+  height: 600px;
+}
+
+body.history-view .recordings-list {
+  background: #f8f9fa;
+}
+
+body.detail-view .detail-content {
+  max-width: 750px;
+  margin: 0 auto;
+  width: 100%;
 }
