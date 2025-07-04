@@ -146,10 +146,13 @@ export abstract class ScriptBuilder {
   protected readonly actionContexts: ActionContext[];
 
   protected readonly showComments: boolean;
-  
+
   protected readonly timingConfig: TimingConfig;
 
-  constructor(showComments: boolean, timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG) {
+  constructor(
+    showComments: boolean,
+    timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG
+  ) {
     this.codes = [];
     this.actionContexts = [];
     this.showComments = showComments;
@@ -205,7 +208,7 @@ export abstract class ScriptBuilder {
   abstract fullScreenshot: () => this;
 
   abstract awaitText: (test: string) => this;
-  
+
   abstract wait: (ms: number) => this;
 
   abstract buildScript: () => string;
@@ -310,12 +313,19 @@ export abstract class ScriptBuilder {
     for (const actionContext of this.actionContexts) {
       const currentAction = actionContext.getAction();
       const currentTimestamp = currentAction.timestamp;
-      
+
       // Adiciona wait entre ações se configurado e houver diferença significativa de tempo
-      if (this.timingConfig.enableWaits && prevTimestamp !== undefined && currentTimestamp !== undefined) {
+      if (
+        this.timingConfig.enableWaits &&
+        prevTimestamp !== undefined &&
+        currentTimestamp !== undefined
+      ) {
         const timeDiff = currentTimestamp - prevTimestamp;
         // Apenas adiciona wait se o tempo for maior que minWaitMs
-        if (timeDiff > this.timingConfig.minWaitMs && timeDiff <= this.timingConfig.maxWaitMs) {
+        if (
+          timeDiff > this.timingConfig.minWaitMs &&
+          timeDiff <= this.timingConfig.maxWaitMs
+        ) {
           if (this.showComments) {
             this.pushComments(`// Wait ${timeDiff}ms`);
           }
@@ -323,12 +333,14 @@ export abstract class ScriptBuilder {
         } else if (timeDiff > this.timingConfig.maxWaitMs) {
           // Se o tempo for maior que maxWaitMs, limita ao máximo configurado
           if (this.showComments) {
-            this.pushComments(`// Wait ${timeDiff}ms (truncated to ${this.timingConfig.maxWaitMs}ms)`);
+            this.pushComments(
+              `// Wait ${timeDiff}ms (truncated to ${this.timingConfig.maxWaitMs}ms)`
+            );
           }
           this.wait(this.timingConfig.maxWaitMs);
         }
       }
-      
+
       if (!actionContext.getActionState().isStateful) {
         if (
           prevActionContext !== undefined &&
@@ -338,7 +350,7 @@ export abstract class ScriptBuilder {
         }
         this.transformActionIntoCodes(actionContext);
       }
-      
+
       prevActionContext = actionContext;
       prevTimestamp = currentTimestamp;
     }
@@ -467,7 +479,7 @@ export class PlaywrightScriptBuilder extends ScriptBuilder {
     );
     return this;
   };
-  
+
   wait = (ms: number) => {
     this.pushCodes(`await page.waitForTimeout(${ms});`);
     return this;
@@ -476,7 +488,7 @@ export class PlaywrightScriptBuilder extends ScriptBuilder {
   buildScript = () => {
     return `import { test, expect } from '@playwright/test';
 
-test('Written with DeploySentinel Recorder', async ({ page }) => {${this.codes.join(
+test('Written with Fleury Cypress Recorder', async ({ page }) => {${this.codes.join(
       ''
     )}});`;
   };
@@ -628,7 +640,7 @@ export class PuppeteerScriptBuilder extends ScriptBuilder {
     );
     return this;
   };
-  
+
   wait = (ms: number) => {
     this.pushCodes(`await page.waitForTimeout(${ms});`);
     return this;
@@ -723,14 +735,14 @@ export class CypressScriptBuilder extends ScriptBuilder {
     this.pushCodes('');
     return this;
   };
-  
+
   wait = (ms: number) => {
     this.pushCodes(`cy.wait(${ms});`);
     return this;
   };
 
   buildScript = () => {
-    return `it('Written with DeploySentinel Recorder', () => {${this.codes.join(
+    return `it('Written with Fleury Cypress Recorder', () => {${this.codes.join(
       ''
     )}});`;
   };

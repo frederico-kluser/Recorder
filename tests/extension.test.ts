@@ -132,7 +132,7 @@ test('can click through recording steps and it generates the right code', async 
   );
   expect(content).toEqual(
     expect.stringContaining(
-      "test('Written with DeploySentinel Recorder', async ({ page }) =>"
+      "test('Written with Fleury Cypress Recorder', async ({ page }) =>"
     )
   );
   expect(content).toEqual(

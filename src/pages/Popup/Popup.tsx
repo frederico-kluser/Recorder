@@ -59,9 +59,7 @@ function LastStepPanel({
       <div className="d-flex justify-between mt-4 items-end text-sm">
         <div className="font-bold text-xl">
           Último Teste{' '}
-          {showActionsMode === ActionsMode.Actions
-            ? 'Ações'
-            : 'Código Gerado'}
+          {showActionsMode === ActionsMode.Actions ? 'Ações' : 'Código Gerado'}
         </div>
         <div>
           <span
@@ -134,7 +132,6 @@ const Popup = () => {
   const [currentTabId, setCurrentTabId] = useState<number | null>(null);
 
   const [isShowingLastTest, setIsShowingLastTest] = useState<boolean>(false);
-
 
   useEffect(() => {
     getCurrentTab().then((tab) => {

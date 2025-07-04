@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "DeploySentinel Recorder",
-  "description": "Record browser interactions to auto generate Cypress, Playwright and Puppeteer test scripts.",
+  "name": "Fleury Cypress Recorder",
+  "description": "Grave interações do navegador para gerar automaticamente scripts de teste Cypress, Playwright e Puppeteer.",
   "background": { "service_worker": "background.bundle.js" },
   "action": {
     "default_popup": "popup.html",

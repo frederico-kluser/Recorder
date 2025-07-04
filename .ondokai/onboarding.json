@@ -1,6 +1,6 @@
 {
   "project_metadata": {
-    "name": "DeploySentinel Recorder - extensão para gravação de interações e geração automática de scripts de teste",
+    "name": "Fleury Cypress Recorder - extensão para gravação de interações e geração automática de scripts de teste",
     "domain": [
       "Web/Mobile/Desktop",
       "Frontend Development",
@@ -158,10 +158,7 @@
       "FontAwesome SVG Core",
       "WebpackDevServer"
     ],
-    "databases": [
-      "chrome.storage.local",
-      "localStorage"
-    ],
+    "databases": ["chrome.storage.local", "localStorage"],
     "external_services": [
       "Chrome Web Store",
       "Firefox Add-ons Marketplace",
@@ -181,10 +178,7 @@
       "Browsers headless control APIs",
       "Node.js environment"
     ],
-    "package_manager": [
-      "npm",
-      "yarn"
-    ]
+    "package_manager": ["npm", "yarn"]
   },
   "architecture_patterns": {
     "design_pattern": [
@@ -295,10 +289,7 @@
     ]
   },
   "code_standards": {
-    "style_guide": [
-      "Airbnb JavaScript/TypeScript Style Guide",
-      "Prettier"
-    ],
+    "style_guide": ["Airbnb JavaScript/TypeScript Style Guide", "Prettier"],
     "linting_rules": [
       "ESLint with React and TypeScript plugins",
       "TypeScript strict mode enabled",
@@ -357,13 +348,8 @@
     ]
   },
   "development_workflow": {
-    "branch_strategy": [
-      "GitHub Flow",
-      "git Flow"
-    ],
-    "commit_conventions": [
-      "Conventional Commits"
-    ],
+    "branch_strategy": ["GitHub Flow", "git Flow"],
+    "commit_conventions": ["Conventional Commits"],
     "pr_requirements": [
       "Code review mandatory",
       "CI checks",
@@ -381,14 +367,8 @@
     ]
   },
   "commands": {
-    "setup": [
-      "npm install",
-      "yarn install"
-    ],
-    "install": [
-      "npm install",
-      "yarn install"
-    ],
+    "setup": ["npm install", "yarn install"],
+    "install": ["npm install", "yarn install"],
     "dev": [
       "npm start",
       "npm run dev",
@@ -399,11 +379,7 @@
       "node scripts/start.js",
       "webpack --mode development --watch"
     ],
-    "test": [
-      "npm test",
-      "yarn test",
-      "npm run test"
-    ],
+    "test": ["npm test", "yarn test", "npm run test"],
     "build": [
       "npm run build",
       "yarn build",
@@ -640,9 +616,7 @@
       "ActionType enum",
       "TimingConfig interface"
     ],
-    "deprecated_packages": [
-      "None identified"
-    ],
+    "deprecated_packages": ["None identified"],
     "version_constraints": [
       "Compatibility with recent Chrome and Firefox versions",
       "Jest 29.x and ts-jest compatibility",
@@ -900,9 +874,7 @@
       "Promises and standard Chrome API callbacks",
       "String containing valid CSS selector"
     ],
-    "rate_limiting": [
-      "No explicit rate limiting implemented"
-    ]
+    "rate_limiting": ["No explicit rate limiting implemented"]
   },
   "deployment_context": {
     "environments": [
