@@ -21,3 +21,8 @@ secrets.*.js
 **/*.zip
 **/*.log
 **/.vscode
+
+# ondokai
+.prompts/
+.logs/
+.audios/
