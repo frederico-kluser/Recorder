@@ -8,6 +8,7 @@ import {
   TagName,
   isSupportedActionType,
 } from '../types';
+import { TimingConfig, DEFAULT_TIMING_CONFIG } from '../types/config';
 
 const FILLABLE_INPUT_TYPES = [
   '',
@@ -145,11 +146,14 @@ export abstract class ScriptBuilder {
   protected readonly actionContexts: ActionContext[];
 
   protected readonly showComments: boolean;
+  
+  protected readonly timingConfig: TimingConfig;
 
-  constructor(showComments: boolean) {
+  constructor(showComments: boolean, timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG) {
     this.codes = [];
     this.actionContexts = [];
     this.showComments = showComments;
+    this.timingConfig = timingConfig;
   }
 
   abstract click: (selector: string, causesNavigation: boolean) => this;
@@ -201,6 +205,8 @@ export abstract class ScriptBuilder {
   abstract fullScreenshot: () => this;
 
   abstract awaitText: (test: string) => this;
+  
+  abstract wait: (ms: number) => this;
 
   abstract buildScript: () => string;
 
@@ -299,8 +305,30 @@ export abstract class ScriptBuilder {
 
   buildCodes = () => {
     let prevActionContext: ActionContext | undefined;
+    let prevTimestamp: number | undefined;
 
     for (const actionContext of this.actionContexts) {
+      const currentAction = actionContext.getAction();
+      const currentTimestamp = currentAction.timestamp;
+      
+      // Adiciona wait entre ações se configurado e houver diferença significativa de tempo
+      if (this.timingConfig.enableWaits && prevTimestamp !== undefined && currentTimestamp !== undefined) {
+        const timeDiff = currentTimestamp - prevTimestamp;
+        // Apenas adiciona wait se o tempo for maior que minWaitMs
+        if (timeDiff > this.timingConfig.minWaitMs && timeDiff <= this.timingConfig.maxWaitMs) {
+          if (this.showComments) {
+            this.pushComments(`// Wait ${timeDiff}ms`);
+          }
+          this.wait(timeDiff);
+        } else if (timeDiff > this.timingConfig.maxWaitMs) {
+          // Se o tempo for maior que maxWaitMs, limita ao máximo configurado
+          if (this.showComments) {
+            this.pushComments(`// Wait ${timeDiff}ms (truncated to ${this.timingConfig.maxWaitMs}ms)`);
+          }
+          this.wait(this.timingConfig.maxWaitMs);
+        }
+      }
+      
       if (!actionContext.getActionState().isStateful) {
         if (
           prevActionContext !== undefined &&
@@ -310,7 +338,9 @@ export abstract class ScriptBuilder {
         }
         this.transformActionIntoCodes(actionContext);
       }
+      
       prevActionContext = actionContext;
+      prevTimestamp = currentTimestamp;
     }
 
     // edge case
@@ -435,6 +465,11 @@ export class PlaywrightScriptBuilder extends ScriptBuilder {
         '  await page.mouse.up();',
       ].join('\n')
     );
+    return this;
+  };
+  
+  wait = (ms: number) => {
+    this.pushCodes(`await page.waitForTimeout(${ms});`);
     return this;
   };
 
@@ -593,6 +628,11 @@ export class PuppeteerScriptBuilder extends ScriptBuilder {
     );
     return this;
   };
+  
+  wait = (ms: number) => {
+    this.pushCodes(`await page.waitForTimeout(${ms});`);
+    return this;
+  };
 
   buildScript = () => {
     return `const puppeteer = require('puppeteer');
@@ -683,6 +723,11 @@ export class CypressScriptBuilder extends ScriptBuilder {
     this.pushCodes('');
     return this;
   };
+  
+  wait = (ms: number) => {
+    this.pushCodes(`cy.wait(${ms});`);
+    return this;
+  };
 
   buildScript = () => {
     return `it('Written with DeploySentinel Recorder', () => {${this.codes.join(
@@ -694,19 +739,20 @@ export class CypressScriptBuilder extends ScriptBuilder {
 export const genCode = (
   actions: Action[],
   showComments: boolean,
-  scriptType: ScriptType
+  scriptType: ScriptType,
+  timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG
 ): string => {
   let scriptBuilder: ScriptBuilder;
 
   switch (scriptType) {
     case ScriptType.Playwright:
-      scriptBuilder = new PlaywrightScriptBuilder(showComments);
+      scriptBuilder = new PlaywrightScriptBuilder(showComments, timingConfig);
       break;
     case ScriptType.Puppeteer:
-      scriptBuilder = new PuppeteerScriptBuilder(showComments);
+      scriptBuilder = new PuppeteerScriptBuilder(showComments, timingConfig);
       break;
     case ScriptType.Cypress:
-      scriptBuilder = new CypressScriptBuilder(showComments);
+      scriptBuilder = new CypressScriptBuilder(showComments, timingConfig);
       break;
     default:
       throw new Error('Unsupported script type');

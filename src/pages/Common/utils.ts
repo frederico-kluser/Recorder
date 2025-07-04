@@ -59,6 +59,18 @@ export function localStorageGet(keys: string[]) {
   });
 }
 
+export function localStorageSet(items: { [key: string]: any }) {
+  return new Promise<void>((resolve, reject) => {
+    chrome.storage.local.set(items, () => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 export async function getRandomInstallId() {
   return localStorageGet(['randomId']).then(({ randomId }) => {
     let id = randomId;

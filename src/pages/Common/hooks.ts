@@ -4,8 +4,10 @@ import {
   setPreferredLibraryStorage,
   setPreferredBarPositionStorage,
   localStorageGet,
+  localStorageSet,
 } from './utils';
 import { ScriptType, BarPosition } from '../types';
+import { TimingConfig, DEFAULT_TIMING_CONFIG } from '../types/config';
 
 import type { Action } from '../types';
 
@@ -79,4 +81,30 @@ export function useRecordingState() {
   }, []);
 
   return [recordingTabId, actions] as const;
+}
+
+/**
+ * Hook para gerenciar configurações de timing
+ */
+export function useTimingConfig() {
+  const [timingConfig, setTimingConfig] = useState<TimingConfig>(DEFAULT_TIMING_CONFIG);
+
+  useEffect(() => {
+    localStorageGet(['timingConfig']).then(({ timingConfig: storedConfig }) => {
+      if (storedConfig) {
+        setTimingConfig({
+          ...DEFAULT_TIMING_CONFIG,
+          ...storedConfig
+        });
+      }
+    });
+  }, []);
+
+  const setTimingConfigWithStorage = (config: Partial<TimingConfig>) => {
+    const newConfig = { ...timingConfig, ...config };
+    setTimingConfig(newConfig);
+    localStorageSet({ timingConfig: newConfig });
+  };
+
+  return [timingConfig, setTimingConfigWithStorage] as const;
 }

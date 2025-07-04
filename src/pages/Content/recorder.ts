@@ -50,7 +50,7 @@ function buildBaseAction(
     tagName: target.tagName as TagName,
     inputType: target instanceof HTMLInputElement ? target.type : undefined,
     selectors: genSelectors(target) ?? {},
-    timestamp: event.timeStamp,
+    timestamp: Date.now(),
     hasOnlyText: target.children.length === 0 && target.innerText.length > 0,
     value: undefined,
   };
@@ -189,6 +189,7 @@ class Recorder {
         deltaY: Math.floor(event.deltaY),
         pageXOffset,
         pageYOffset,
+        timestamp: Date.now(),
       };
       this.appendToRecording(action);
     }
@@ -327,7 +328,7 @@ class Recorder {
     ) {
       this.updateLastRecordedAction({
         value: target?.value,
-        timestamp: event.timeStamp,
+        timestamp: Date.now(),
       });
     } else {
       const action = {
@@ -351,6 +352,7 @@ class Recorder {
         type: ActionType.Resize,
         width,
         height,
+        timestamp: Date.now(),
       };
 
       this.appendToRecording(action);
@@ -373,6 +375,7 @@ class Recorder {
   public onFullScreenshot = (): void => {
     const action = {
       type: ActionType.FullScreenshot,
+      timestamp: Date.now(),
     };
 
     this.appendToRecording(action);
