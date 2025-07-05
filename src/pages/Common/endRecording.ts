@@ -1,7 +1,7 @@
 import { setEndRecordingStorage, localStorageGet } from './utils';
-import { genCode } from '../builders';
+import { genCypressCode } from '../builders';
 import { RecordingService } from '../storage/recording-service';
-import { Action, ScriptType } from '../types';
+import { Action } from '../types';
 
 export async function endRecording() {
   const { recording, returnTabId, recordingStartTime } = await localStorageGet([
@@ -34,7 +34,7 @@ export async function endRecording() {
 
   // We need to send the generated recording back to the webapp
   if (returnTabId != null) {
-    const code = genCode(recording, true, ScriptType.Playwright);
+    const code = genCypressCode(recording, true);
 
     chrome.runtime.sendMessage({
       type: 'forward-recording',

@@ -113,14 +113,8 @@ export function getBestSelectorForAction(action: Action, library: ScriptType) {
     case ActionType.Hover:
     case ActionType.DragAndDrop: {
       const selectors = action.selectors;
-      // Only supported for playwright, less than 25 characters, and element only has text inside
-      const textSelector =
-        library === ScriptType.Playwright &&
-        selectors?.text?.length != null &&
-        selectors?.text?.length < 25 &&
-        action.hasOnlyText
-          ? `text=${selectors.text}`
-          : null;
+      // Text selector is not supported in Cypress, so always return null
+      const textSelector = null;
 
       if (action.tagName === TagName.Input) {
         return (

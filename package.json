@@ -1,7 +1,7 @@
 {
   "name": "deploysentinel-recorder",
   "version": "0.7.1",
-  "description": "A browser extension that generates Cypress, Playwright and Puppeteer scripts automatically from your browser interactions.",
+  "description": "A browser extension that generates Cypress scripts automatically from your browser interactions.",
   "license": "Apache-2.0",
   "scripts": {
     "build-chrome": "NODE_OPTIONS=--openssl-legacy-provider MANIFEST_VERSION=3 node utils/build.js && rm -f build/.DS_Store && zip -r build_chrome.zip build",
@@ -62,7 +62,6 @@
     "jest": "^27.3.1",
     "lint-staged": "^12.3.7",
     "loader": "^2.1.1",
-    "playwright": "^1.16.3",
     "prettier": "^2.2.1",
     "source-map-loader": "^2.0.1",
     "style-loader": "^2.0.0",

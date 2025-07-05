@@ -29,11 +29,9 @@ export interface RecordingEntry {
   /** Lista de ações gravadas */
   actions: Action[];
   
-  /** Código gerado para cada framework */
+  /** Código gerado para Cypress */
   code: {
     cypress: string;
-    playwright: string;
-    puppeteer: string;
   };
 }
 

@@ -3,7 +3,7 @@
 ![Chrome Web Store](https://img.shields.io/chrome-web-store/rating/geggbdbnidkhbnbjoganapfhkpgkndfo?color=8F57F3&label=Chrome%20Rating)
 ![Tests](https://github.com/DeploySentinel/Recorder/actions/workflows/main.yml/badge.svg)
 
-Uma extensão de navegador open source desenvolvida pela **Fleury** que gera automaticamente scripts de teste para Cypress, Playwright e Puppeteer a partir das suas interações no navegador.
+Uma extensão de navegador open source desenvolvida pela **Fleury** que gera automaticamente scripts de teste para Cypress a partir das suas interações no navegador.
 
 Simplesmente navegue pelo seu site enquanto grava com o Fleury Cypress Recorder e a extensão converterá o fluxo capturado em scripts de teste automatizados.
 
@@ -17,7 +17,7 @@ Simplesmente navegue pelo seu site enquanto grava com o Fleury Cypress Recorder 
 # Recursos
 
 - 💻 Captura automática de cliques, entradas de teclado, redimensionamento de janelas e eventos de rolagem
-- 🤖 Gera scripts limpos e comentados para Cypress, Playwright e Puppeteer
+- 🤖 Gera scripts limpos e comentados para Cypress
 - 📋 Visualize o progresso da gravação e copie scripts gerados durante o teste
 - 📛 Gera seletores de elementos usando `id` e `class`, além de outras propriedades HTML (ex: `aria-label`, `alt`, `name`, `data-testid`)
 - 🖱 Captura eventos de hover através do menu de contexto (clique direito)
@@ -105,6 +105,15 @@ Executar testes E2E: `yarn test`
 # Contribuindo
 
 Este é um projeto open source desenvolvido e mantido pela equipe de tecnologia da Fleury. Contribuições são bem-vindas! Por favor, abra uma issue ou pull request no repositório.
+
+## Funcionalidades Cypress
+
+O Fleury Cypress Recorder foi otimizado especificamente para gerar código Cypress de alta qualidade:
+
+- **Seletores inteligentes**: Prioriza seletores estáveis como data-testid e id
+- **Comandos idiomáticos**: Gera código usando as melhores práticas do Cypress
+- **Asserções automáticas**: Adiciona verificações de visibilidade e texto
+- **Comandos customizados**: Suporte para comandos específicos do seu projeto
 
 ## Processo de Contribuição
 

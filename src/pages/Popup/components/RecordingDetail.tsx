@@ -25,8 +25,6 @@ import './styles.css';
 interface RecordingDetailProps {
   recording: RecordingEntry;
   onBack: () => void;
-  library: ScriptType;
-  onLibraryChange: (library: ScriptType) => void;
 }
 
 /**
@@ -35,8 +33,6 @@ interface RecordingDetailProps {
 export const RecordingDetail: React.FC<RecordingDetailProps> = ({
   recording,
   onBack,
-  library,
-  onLibraryChange,
 }) => {
   const [viewMode, setViewMode] = useState<'actions' | 'code'>('code');
   const [copied, setCopied] = useState(false);
@@ -60,28 +56,9 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
     });
   };
 
-  const getCodeForLibrary = (): string => {
-    const libraryName =
-      library === ScriptType.Cypress
-        ? 'Cypress'
-        : library === ScriptType.Playwright
-        ? 'Playwright'
-        : library === ScriptType.Puppeteer
-        ? 'Puppeteer'
-        : 'Cypress';
-    console.log(
-      `🔄 [RecordingDetail] Gerando código para biblioteca: ${libraryName}`
-    );
-    switch (library) {
-      case ScriptType.Cypress:
-        return recording.code.cypress;
-      case ScriptType.Playwright:
-        return recording.code.playwright;
-      case ScriptType.Puppeteer:
-        return recording.code.puppeteer;
-      default:
-        return recording.code.cypress;
-    }
+  const getCypressCode = (): string => {
+    console.log('🔄 [RecordingDetail] Gerando código para Cypress');
+    return recording.code.cypress;
   };
 
   return (
@@ -138,21 +115,11 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
 
         {viewMode === 'code' && (
           <div className="modern-code-actions">
-            <select
-              className="modern-library-select"
-              value={library}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                onLibraryChange(
-                  parseInt(e.target.value, 10) as unknown as ScriptType
-                )
-              }
-            >
-              <option value={ScriptType.Cypress}>Cypress</option>
-              <option value={ScriptType.Playwright}>Playwright</option>
-              <option value={ScriptType.Puppeteer}>Puppeteer</option>
-            </select>
+            <div className="modern-library-label">
+              <span>Cypress</span>
+            </div>
 
-            <CopyToClipboard text={getCodeForLibrary()} onCopy={handleCopy}>
+            <CopyToClipboard text={getCypressCode()} onCopy={handleCopy}>
               <button
                 className={`modern-copy-button ${copied ? 'copied' : ''}`}
               >
@@ -172,7 +139,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
           </div>
         ) : (
           <div className="modern-code-view">
-            <CodeGen actions={recording.actions} library={library} />
+            <CodeGen actions={recording.actions} library={ScriptType.Cypress} />
           </div>
         )}
       </div>

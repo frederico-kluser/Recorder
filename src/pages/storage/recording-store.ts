@@ -223,9 +223,7 @@ export class RecordingStore implements IHistoryBackend {
         endedAt: lastAction.timestamp || timestamp,
         actions: oldActions,
         code: {
-          cypress: '',
-          playwright: '',
-          puppeteer: ''
+          cypress: ''
         }
       };
       

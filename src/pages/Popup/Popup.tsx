@@ -14,7 +14,7 @@ import Logo from '../Common/Logo';
 import CodeGen from '../Content/CodeGen';
 import ActionList from '../Content/ActionList';
 import { endRecording } from '../Common/endRecording';
-import { genCode } from '../builders';
+import { genCypressCode } from '../builders';
 import {
   setStartRecordingStorage,
   getCurrentTab,
@@ -92,7 +92,7 @@ function LastStepPanel({
               value={displayedScriptType}
             />
             <CopyToClipboard
-              text={genCode(actions, true, displayedScriptType)}
+              text={genCypressCode(actions, true)}
               onCopy={() => {
                 setCopyCodeConfirm(true);
                 setTimeout(() => {
@@ -293,7 +293,7 @@ const Popup = () => {
                 }}
                 className="text-grey mt-6"
               >
-                Gere scripts Cypress, Playwright e Puppeteer a partir de suas
+                Gere scripts Cypress a partir de suas
                 ações no navegador (ex. clicar, digitar, rolar).
               </div>
               <button
@@ -351,8 +351,6 @@ const Popup = () => {
           <RecordingDetail
             recording={selectedRecording}
             onBack={handleBackFromDetail}
-            library={preferredLibrary ?? ScriptType.Cypress}
-            onLibraryChange={setPreferredLibrary}
           />
         )}
       </div>

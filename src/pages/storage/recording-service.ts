@@ -6,8 +6,7 @@
 import { RecordingEntry } from '../types/recording';
 import { Action } from '../types';
 import { recordingStore } from './recording-store';
-import { genCode } from '../builders';
-import { ScriptType } from '../types';
+import { genCypressCode } from '../builders';
 
 /**
  * Service para operações de gravação
@@ -59,11 +58,9 @@ export class RecordingService {
       suffix++;
     }
 
-    // Gera código para cada framework
+    // Gera código apenas para Cypress
     const code = {
-      cypress: genCode(actions, true, ScriptType.Cypress),
-      playwright: genCode(actions, true, ScriptType.Playwright),
-      puppeteer: genCode(actions, true, ScriptType.Puppeteer)
+      cypress: genCypressCode(actions, true)
     };
 
     // Cria entrada da gravação
