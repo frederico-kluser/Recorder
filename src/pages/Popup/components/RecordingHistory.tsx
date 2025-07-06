@@ -1,8 +1,8 @@
 /**
- * Componente para exibir o histórico de gravações
+ * Componente para exibir o histórico de gravações com tabela moderna e busca
  */
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { RecordingEntry } from '../../types/recording';
 import { RecordingService } from '../../storage/recording-service';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,32 +10,30 @@ import {
   faHistory,
   faSearch,
   faTrash,
-  faDownload,
   faChevronLeft,
   faClock,
   faGlobe,
   faPlay,
   faCalendarAlt,
   faTasks,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getSortedRowModel,
-  SortingState,
-  getFilteredRowModel,
-} from '@tanstack/react-table';
-import './history-dark.css';
+import { truncateText, truncateUrl } from '../../Common/utils/text';
+import '../themes/dark-core.css';
+import './recording-history.css';
 
 interface RecordingHistoryProps {
   onSelectRecording: (recording: RecordingEntry) => void;
   onBack: () => void;
 }
 
-// Column helper for TanStack Table
-const columnHelper = createColumnHelper<RecordingEntry>();
+type SortField = 'title' | 'startedAt' | 'actions';
+type SortDirection = 'asc' | 'desc';
+
+interface SortConfig {
+  field: SortField;
+  direction: SortDirection;
+}
 
 /**
  * Componente de histórico de gravações
@@ -48,7 +46,10 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    field: 'startedAt',
+    direction: 'desc',
+  });
 
   // Carrega as gravações ao montar o componente
   useEffect(() => {
@@ -71,29 +72,61 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     }
   };
 
-  // Filtra gravações baseado no termo de busca
-  const filteredRecordings = useMemo(() => {
-    if (!searchTerm.trim()) {
-      return recordings;
+  // Filtra e ordena gravações
+  const processedRecordings = useMemo(() => {
+    let filtered = recordings;
+
+    // Aplicar filtro de busca
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      filtered = recordings.filter(
+        (recording) =>
+          recording.title.toLowerCase().includes(term) ||
+          recording.hostname.toLowerCase().includes(term) ||
+          recording.url.toLowerCase().includes(term)
+      );
     }
 
-    const term = searchTerm.toLowerCase();
-    return recordings.filter(
-      (recording) =>
-        recording.title.toLowerCase().includes(term) ||
-        recording.hostname.toLowerCase().includes(term) ||
-        recording.url.toLowerCase().includes(term)
-    );
-  }, [recordings, searchTerm]);
+    // Aplicar ordenação
+    const sorted = [...filtered].sort((a, b) => {
+      const { field, direction } = sortConfig;
+      let aValue: any = a[field];
+      let bValue: any = b[field];
+
+      if (field === 'actions') {
+        aValue = a.actions.length;
+        bValue = b.actions.length;
+      }
+
+      if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  }, [recordings, searchTerm, sortConfig]);
+
+  const handleSort = useCallback((field: SortField) => {
+    setSortConfig((current) => ({
+      field,
+      direction:
+        current.field === field && current.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  }, []);
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Evita abrir a gravação ao clicar em deletar
+    e.stopPropagation();
 
-    if (confirm('🗑️ Tem certeza que deseja excluir esta gravação?')) {
+    if (confirm('Tem certeza que deseja excluir esta gravação?')) {
       try {
         console.log(`🗑️ [RecordingHistory] Excluindo gravação: ${id}`);
         await RecordingService.removeRecording(id);
         console.log('✅ [RecordingHistory] Gravação excluída com sucesso');
+        setSelectedIds((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
         await loadRecordings();
       } catch (error) {
         console.error('❌ [RecordingHistory] Erro ao excluir gravação:', error);
@@ -101,38 +134,29 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     }
   };
 
-  const handleExport = async () => {
-    try {
-      console.log('📦 [RecordingHistory] Iniciando exportação...');
-      const idsToExport =
-        selectedIds.size > 0 ? Array.from(selectedIds) : undefined;
+  const toggleSelection = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  }, []);
 
-      const json = await RecordingService.exportRecordings(idsToExport);
-
-      // Cria blob e faz download
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `recordings_${new Date().toISOString().split('T')[0]}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-
-      console.log('✅ [RecordingHistory] Exportação concluída com sucesso');
-    } catch (error) {
-      console.error('❌ [RecordingHistory] Erro ao exportar gravações:', error);
-    }
-  };
-
-  const toggleSelection = (id: string) => {
-    const newSelected = new Set(selectedIds);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
+  const toggleSelectAll = useCallback(() => {
+    if (
+      selectedIds.size === processedRecordings.length &&
+      processedRecordings.length > 0
+    ) {
+      setSelectedIds(new Set());
     } else {
-      newSelected.add(id);
+      setSelectedIds(new Set(processedRecordings.map((r) => r.id)));
     }
-    setSelectedIds(newSelected);
-  };
+  }, [selectedIds, processedRecordings]);
+
 
   const formatDuration = (start: number, end: number): string => {
     const duration = end - start;
@@ -173,271 +197,196 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     });
   };
 
-  // Definição das colunas da tabela
-  const columns = useMemo(
-    () => [
-      columnHelper.display({
-        id: 'select',
-        header: () => (
-          <input
-            className="custom-checkbox"
-            type="checkbox"
-            checked={
-              selectedIds.size === filteredRecordings.length &&
-              filteredRecordings.length > 0
-            }
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              if (e.target.checked) {
-                setSelectedIds(new Set(filteredRecordings.map((r) => r.id)));
-              } else {
-                setSelectedIds(new Set());
-              }
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <input
-            className="custom-checkbox"
-            type="checkbox"
-            checked={selectedIds.has(row.original.id)}
-            onChange={() => toggleSelection(row.original.id)}
-            onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          />
-        ),
-        enableSorting: false,
-        size: 50,
-      }),
-      columnHelper.accessor('title', {
-        header: () => (
-          <span>
-            <FontAwesomeIcon icon={faGlobe} style={{ marginRight: '6px' }} />
-            Gravação
-          </span>
-        ),
-        cell: ({ row }) => (
-          <div>
-            <div className="recording-title">{row.original.title}</div>
-            <div className="recording-url">{row.original.url}</div>
-          </div>
-        ),
-        enableSorting: true,
-      }),
-      columnHelper.accessor('startedAt', {
-        header: () => (
-          <span>
-            <FontAwesomeIcon
-              icon={faCalendarAlt}
-              style={{ marginRight: '6px' }}
-            />
-            Data
-          </span>
-        ),
-        cell: ({ row }) => (
-          <span className="date-badge">
-            {formatDate(row.original.startedAt)}
-          </span>
-        ),
-        enableSorting: true,
-      }),
-      columnHelper.display({
-        id: 'duration',
-        header: () => (
-          <span>
-            <FontAwesomeIcon icon={faClock} style={{ marginRight: '6px' }} />
-            Duração
-          </span>
-        ),
-        cell: ({ row }) => (
-          <span className="duration-badge">
-            {formatDuration(row.original.startedAt, row.original.endedAt)}
-          </span>
-        ),
-        enableSorting: false,
-      }),
-      columnHelper.accessor('actions', {
-        header: () => (
-          <span>
-            <FontAwesomeIcon icon={faTasks} style={{ marginRight: '6px' }} />
-            Ações
-          </span>
-        ),
-        cell: ({ row }) => (
-          <span className="actions-badge">{row.original.actions.length}</span>
-        ),
-        enableSorting: true,
-      }),
-      columnHelper.display({
-        id: 'delete',
-        header: '',
-        cell: ({ row }) => (
-          <button
-            className="delete-button"
-            onClick={(e: React.MouseEvent) => handleDelete(row.original.id, e)}
-            title="Excluir gravação"
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </button>
-        ),
-        enableSorting: false,
-        size: 80,
-      }),
-    ],
-    [
-      filteredRecordings,
-      selectedIds,
-      formatDate,
-      formatDuration,
-      handleDelete,
-      toggleSelection,
-    ]
+  const handleRowClick = useCallback(
+    (recording: RecordingEntry) => {
+      onSelectRecording(recording);
+    },
+    [onSelectRecording]
   );
 
-  // Configuração da tabela
-  const table = useReactTable({
-    data: filteredRecordings,
-    columns,
-    state: {
-      sorting,
-    },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-  });
-
   return (
-    <div className="modern-recording-history">
+    <div className="ds-dark recording-history">
       {/* Header */}
-      <div className="modern-header">
-        <button className="modern-back-button" onClick={onBack}>
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        <h2 className="modern-title">
+      <div className="recording-history-header">
+        <h2 className="recording-history-title">
           <FontAwesomeIcon icon={faHistory} />
           Histórico de Gravações
         </h2>
+        <button className="recording-btn recording-btn-back" onClick={onBack}>
+          <FontAwesomeIcon icon={faChevronLeft} />
+          Voltar
+        </button>
       </div>
 
-      {/* Toolbar */}
-      <div
-        className="modern-toolbar"
-        style={{
-          display: 'flex',
-          gap: '8px',
-        }}
-      >
-        <div className="modern-search-box">
-          <FontAwesomeIcon icon={faSearch} className="search-icon" />
-          <input
-            type="text"
-            placeholder="Buscar por site ou URL..."
-            value={searchTerm}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSearchTerm(e.target.value)
-            }
-          />
-        </div>
+      {/* Content */}
+      <div className="recording-history-content">
+        {/* Toolbar */}
+        <div className="recording-history-toolbar">
+          <div className="recording-history-search">
+            <FontAwesomeIcon
+              icon={faSearch}
+              className="recording-history-search-icon"
+            />
+            <input
+              type="text"
+              className="recording-history-search-input"
+              placeholder="Buscar por site ou URL..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
 
-        <div className="modern-toolbar-actions">
           {selectedIds.size > 0 && (
-            <span className="modern-selection-count">
-              {selectedIds.size} selecionado(s)
-            </span>
-          )}
-          <button
-            className="modern-export-button"
-            onClick={handleExport}
-            title="Exportar gravações"
-          >
-            <FontAwesomeIcon icon={faDownload} style={{ marginRight: '8px' }} />
-            Exportar
-          </button>
-        </div>
-      </div>
-
-      {/* Tabela */}
-      <div className="modern-table-container">
-        {loading ? (
-          <div className="modern-loading-state">
-            <FontAwesomeIcon icon={faPlay} style={{ marginRight: '8px' }} />
-            Carregando gravações...
-          </div>
-        ) : filteredRecordings.length === 0 ? (
-          <div className="modern-empty-state">
-            <div className="emoji">{searchTerm ? '🔍' : '📝'}</div>
-            <div>
-              {searchTerm
-                ? 'Nenhuma gravação encontrada para esta busca.'
-                : 'Nenhuma gravação salva ainda.'}
+            <div className="recording-history-selection-info">
+              <span>{selectedIds.size} selecionado(s)</span>
             </div>
-          </div>
-        ) : (
-          <table className="modern-table">
-            <thead className="modern-table-header">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id} className="modern-table-header-row">
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className="modern-table-header-cell"
-                      onClick={
-                        header.column.getCanSort()
-                          ? header.column.getToggleSortingHandler()
-                          : undefined
+          )}
+        </div>
+
+        {/* Table Container */}
+        <div className="recording-history-table-container">
+          {loading ? (
+            <div className="recording-history-loading">
+              <FontAwesomeIcon
+                icon={faSpinner}
+                className="recording-history-loading-icon"
+              />
+              <span>Carregando gravações...</span>
+            </div>
+          ) : processedRecordings.length === 0 ? (
+            <div className="recording-history-empty">
+              <div className="recording-history-empty-icon">
+                {searchTerm ? '🔍' : '📝'}
+              </div>
+              <div className="recording-history-empty-text">
+                {searchTerm
+                  ? 'Nenhuma gravação encontrada para esta busca.'
+                  : 'Nenhuma gravação salva ainda.'}
+              </div>
+              {searchTerm && (
+                <div className="recording-history-empty-hint">
+                  Tente buscar com outros termos
+                </div>
+              )}
+            </div>
+          ) : (
+            <table className="recording-history-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '40px' }}>
+                    <input
+                      type="checkbox"
+                      className="recording-checkbox"
+                      checked={
+                        selectedIds.size === processedRecordings.length &&
+                        processedRecordings.length > 0
                       }
-                      style={{
-                        cursor: header.column.getCanSort()
-                          ? 'pointer'
-                          : 'default',
-                      }}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                      {header.column.getIsSorted() === 'asc'
-                        ? ' ↑'
-                        : header.column.getIsSorted() === 'desc'
-                        ? ' ↓'
-                        : ''}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody className="modern-table-body">
-              {table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className={`modern-table-row ${
-                    selectedIds.has(row.original.id) ? 'selected' : ''
-                  }`}
-                  onClick={() => onSelectRecording(row.original)}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      className="modern-table-cell"
-                      style={{
-                        width:
-                          cell.column.getSize() !== 150
-                            ? cell.column.getSize()
-                            : undefined,
-                      }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
+                  <th className="sortable" onClick={() => handleSort('title')}>
+                    <div className="header-content">
+                      <FontAwesomeIcon icon={faGlobe} />
+                      <span>Gravação</span>
+                      {sortConfig.field === 'title' && (
+                        <span className="sort-indicator">
+                          {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                        </span>
                       )}
-                    </td>
-                  ))}
+                    </div>
+                  </th>
+                  <th
+                    className="sortable"
+                    onClick={() => handleSort('startedAt')}
+                  >
+                    <div className="header-content">
+                      <FontAwesomeIcon icon={faCalendarAlt} />
+                      <span>Data</span>
+                      {sortConfig.field === 'startedAt' && (
+                        <span className="sort-indicator">
+                          {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                  <th>
+                    <div className="header-content">
+                      <FontAwesomeIcon icon={faClock} />
+                      <span>Duração</span>
+                    </div>
+                  </th>
+                  <th
+                    className="sortable"
+                    onClick={() => handleSort('actions')}
+                  >
+                    <div className="header-content">
+                      <FontAwesomeIcon icon={faTasks} />
+                      <span>Ações</span>
+                      {sortConfig.field === 'actions' && (
+                        <span className="sort-indicator">
+                          {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                  <th style={{ width: '60px' }}></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {processedRecordings.map((recording) => (
+                  <tr
+                    key={recording.id}
+                    className={selectedIds.has(recording.id) ? 'selected' : ''}
+                    onClick={() => handleRowClick(recording)}
+                  >
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        className="recording-checkbox"
+                        checked={selectedIds.has(recording.id)}
+                        onChange={() => toggleSelection(recording.id)}
+                      />
+                    </td>
+                    <td>
+                      <div className="recording-info">
+                        <div className="recording-title">
+                          {truncateText(recording.title, 35)}
+                        </div>
+                        <div className="recording-url">
+                          {truncateUrl(recording.url, 40)}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="recording-date">
+                        {formatDate(recording.startedAt)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="recording-duration">
+                        {formatDuration(recording.startedAt, recording.endedAt)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="recording-actions-badge">
+                        {recording.actions.length}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        className="recording-delete-btn"
+                        onClick={(e) => handleDelete(recording.id, e)}
+                        title="Excluir gravação"
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
   );
