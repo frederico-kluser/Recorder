@@ -22,101 +22,101 @@ Processo de implementação estruturado:
 <context>
 <system_architecture>
   <project_metadata>
-    <name>React Application Setup, build, processo de construção do projeto, Fleury Cypress Recorder, Extensão para geração automática de scripts de teste, Projeto TypeScript com Jest para testes automatizados, deploysentinel-recorder, Extensão para gravação de interações e geração de scripts de teste, DeploySentinel, Browser extension para gravação e reprodução de testes automatizados, DeploySentinel Test Recorder, Automação de testes Playwright, React Icon Component, Componente de ícone SVG para interface web, Interface para monitoramento e deploy de aplicações, Automated Script Selector, Interface para seleção de tipos de script de automação, Browser Automation Recorder, React User Preferences and Recording State Management, Browser Recording Extension, Extensão para gravação e controle de sessões em navegador, UI Automation Script Renderer, Code Generation UI, Visualização e geração dinâmica de código, UI Test Recorder, Automated Test Script Generator, Highlighter Component, Visualização e destaque de seletores CSS em UI React, Interface de controle para monitoramento e testes, User Interaction Recorder, Gravação de ações para automação e análise, DeploySentinel Cypress Test Recorder, Ferramenta para gravação de testes automatizados com Cypress, Browser Test Recorder, Ferramenta para gravação e geração de scripts de teste automatizados, Analytics Event Tracker, Monitoramento de eventos para análise de uso, React Popup Renderer, @medv/finder, CSS Selector Generator, Gerador de scripts automatizados para testes UI, Selector Generator for UI Automation, Projeto Front-end com suporte a importação de assets estáticos, Browser Extension Compatibility Layer, Web Automation Actions Modeling, Projeto React com TypeScript para front-end moderno, Webpack Production Build Script, Configuração de ambiente para aplicação Node.js, Chrome Extension Boilerplate, Development Environment Setup, Projeto Node.js com controle de versionamento otimizado, Timestamp Migration and Validation Utility, Gerador de scripts de automação de testes UI, Extensão para gravação e geração de scripts Playwright, UI Design System, Biblioteca de estilos para componentes e utilitários CSS, Recording Automation UI, Interface para visualização e manipulação de gravações de ações automatizadas, Recording History Management System, Interface Web para visualização de histórico e detalhes, RecordingService, Serviço de gerenciamento de gravações de ações para automação de testes, Recording History Manager, Gerenciamento de histórico de gravações de ações, Recording History System, Sistema de histórico de gravações para automação de testes</name>
-    <domain>Web Development, Frontend, React, desenvolvimento de software, automação de build, Automação de testes, QA, Test Automation, Browser Testing, Desenvolvimento de software, Testes automatizados, TypeScript, Testes end-to-end, Browsers, Cypress, Playwright, Puppeteer, Browser Interaction Recording, End-to-End Testing, Browser extension, Web navigation recording, Frontend Development, UI Components, DevOps, Branding, Automação de Testes, Browser Extension, Automation, Testing, Web Application, User Preferences, State Synchronization, Browser Extensions, Automated Testing, Cypress Integration, Automação de geração de código, Developer Tools, Web Automation, Quality Assurance, UI Debugging, CSS Selector Highlighting, Web UI Testing, Shadow DOM, Web UI, User Behavior Analytics, Web Analytics, Digital Product Monitoring, Google Analytics, Frontend Web Development, UI Component Rendering, DOM Manipulation, CSS Selectors, UI Testing, Desenvolvimento front-end, Assets estáticos, CSS Modules, SVG inline, browser extensions, cross-browser compatibility, UI Interaction, Web Testing, Web applications, Desenvolvimento Frontend, Build Automation, JavaScript, Configuração de software, Node.js environment management, Chrome Extensions, Frontend Tooling, Node.js, Controle de versão, Software Development, Event Processing, Action Logging, Test Script Generation, Front-end Development, Web Interfaces, Design System, QA Automation, User Session Recording, Playback and Analysis, User Interface, Dark Theme, Recording Actions, User Interaction Recording, Web Recording</domain>
-    <current_phase>Development, produção, deploy, Produção, Manutenção ativa, Manutenção, Versão 0.7.1 estável, Estável, Estabilização, Production, Stable Release, Estável com suporte a SPA, Estável com funcionalidades completas de gravação e histórico, MVP, Desenvolvimento, Desenvolvimento ativo, Desenvolvimento inicial, Local Testing, Production Ready, Testes unitários e validação de funcionalidades, Testes automatizados integrados, Estabilização de UI</current_phase>
-    <critical_business_rules>Preserve fast refresh functionality, Ensure JSX transpilation compatibility, build deve gerar artefatos consistentes, não quebrar pipeline de deploy, Captura precisa e completa dos eventos do usuário, Geração correta e legível dos scripts, Compatibilidade com múltiplos frameworks de teste, Execução consistente dos testes, Suporte a TypeScript via ts-jest, Ambiente Node.js para testes, Compatibilidade com manifest versions 2 e 3, Geração precisa e confiável de scripts de teste, Manutenção da integridade dos dados capturados, Gravação precisa das interações do usuário, Geração correta de scripts compatíveis com Cypress, Playwright e Puppeteer, Segurança no acesso às permissões do navegador, Segurança e privacidade dos dados capturados, Gravação deve ser iniciada e finalizada corretamente, Eventos de navegação devem ser capturados apenas na aba e frame corretos, Scripts injetados devem ser executados somente quando a gravação estiver ativa, Validação rigorosa da origem das mensagens, Comunicação segura entre webapp e extensão, Consistência visual do ícone, Compatibilidade com React 18+, Renderização correta do SVG, Consistência visual da marca, Performance mínima no carregamento do logo, Seleção válida de ScriptType deve ser garantida, Callback onChange deve ser chamada com valor correto, Persistência correta das gravações, Integridade dos dados de ações, Comunicação confiável entre abas, Persistência correta das preferências do usuário, Sincronização consistente do estado de gravação entre abas, Integridade dos dados armazenados, Estado de gravação deve ser consistente, Scripts devem ser executados apenas em frames autorizados, Identificador de instalação deve ser único e persistente, Ações devem ser exibidas na ordem correta, Somente ações suportadas devem ser renderizadas, Seletores devem ser precisos para garantir identificação correta dos elementos, Geração correta e precisa do código, Manter integridade do código gerado, Renderização fiel do código para análise, Accurate capture of user actions, Secure handling of sensitive inputs, Reliable code generation for multiple test frameworks, Precisão no posicionamento do destaque, Renderização consistente do rótulo, Não interferir na interação do usuário, Garantir única instância ativa do script, Permitir limpeza completa do componente para evitar vazamentos, Não registrar eventos de campos password, Evitar duplicação de eventos, Persistência consistente no armazenamento local, Garantir que apenas uma gravação esteja ativa por vez, Não montar múltiplos botões no DOM, Comunicação correta com a extensão Chrome, Garantir integridade dos dados de gravação, Não permitir gravação sem aba ativa, Manter sincronização entre estado da aba e gravação, Garantir anonimato do usuário, Enviar dados de eventos sem impactar UX, Manter integridade dos dados enviados, Renderizar Popup corretamente no container designado, Aplicar estilos globais sem conflito, Gerar seletores únicos e válidos, Manter performance aceitável, Evitar seletores ambíguos, Gerar scripts válidos para múltiplos frameworks, Manter sincronização temporal correta entre ações, Não usar IDs inválidos para seletores, Priorizar seletores estáveis para evitar falhas em testes, Importação correta e tipada de arquivos estáticos para evitar erros de build, Garantir que chamadas à API do navegador sejam compatíveis entre Chrome e Firefox, Ações devem ser tipadas e validadas para evitar execuções inválidas, Manter integridade dos dados de interação para rastreabilidade, Garantir tipagem estrita para evitar erros em runtime, Manter compatibilidade com ES5 para browsers legados, Build deve ser executado em modo produção, Erros de build devem ser reportados e impedir deploy, NODE_ENV deve sempre estar definido, PORT deve ser um número válido, Hot Module Replacement must be enabled for dev mode, Dev server must serve assets with CORS headers, Manifest version consistency, Environment variable integrity, Asset path correctness, Não versionar arquivos de dependências, Não expor arquivos de configuração sensíveis, Manter repositório limpo e organizado, All actions must have valid, non-negative, and sequential timestamps, Geração correta e sintaticamente válida dos scripts para cada framework, Manter compatibilidade com APIs dos frameworks Cypress, Playwright e Puppeteer, Gravação precisa das ações do usuário, Geração correta do código Playwright, Validação da instalação da extensão, Consistência visual, Acessibilidade, Responsividade, Integridade dos dados da gravação, Precisão na geração de código para múltiplas bibliotecas, Feedback claro para ações do usuário, Não permitir exclusão sem confirmação explícita, Integridade dos dados durante exportação, Atualização consistente do estado após operações CRUD, Manter legibilidade e usabilidade em diferentes views, Garantir scroll vertical para conteúdos extensos, Não salvar gravações vazias, IDs únicos para gravações, Geração correta de código para múltiplos frameworks, Limite máximo de gravações respeitado, Integridade dos dados de gravação, Migração correta de dados antigos, Manter integridade dos dados de gravação, Não exceder limite máximo de entradas, Garantir unicidade do ID da gravação</critical_business_rules>
+    <name>DeploySentinel Recorder – Browser extension for automated UI test recording and script generation (Cypress, Playwright, Puppeteer)</name>
+    <domain>Web/Mobile/Desktop, Frontend Development, Automated UI Testing, Browser Extensions, End-to-End Testing, Test Automation, Developer Tools, UI Components, Web Analytics, Enterprise Data Management, Order Management, Inventory Control</domain>
+    <current_phase>Development, Production, Active Maintenance, Stable (v0.7.1+), MVP, Initial Development, Local Testing, Production Ready, Integrated Automated Testing, UI Stabilization</current_phase>
+    <critical_business_rules>Preserve fast refresh functionality, Ensure JSX transpilation compatibility, Build must generate consistent artifacts, Do not break deploy pipeline, Accurate and complete user event capture, Correct and readable script generation, Compatibility with multiple test frameworks, Consistent test execution, TypeScript support via ts-jest, Node.js environment for testing, Compatibility with Chrome Manifest V2 and V3, Accurate and reliable Cypress script generation, Maintain integrity of captured data, Accurate recording of user interactions, Generate scripts compatible with Cypress, Playwright, and Puppeteer, Browser permission security, Data privacy and security, Recording must start and end correctly, Navigation events must be captured only in the correct tab and frame, Injected scripts must run only when recording is active, Strict message origin validation, Secure communication between webapp and extension, Visual icon consistency, React 18+ compatibility, Correct SVG rendering, Brand visual consistency, Minimum logo load performance, Script type must always be Cypress, UI must maintain visual compatibility, Correct recording persistence, Reliable upload of recordings to webapp, Safe local state cleanup, Mandatory use of Cypress library for scripts, Consistent user preference persistence, Real-time recording state sync, Recording state must be consistent, Scripts must execute only in authorized frames, Unique and persistent install identifier, Only supported action types should be rendered, Sensitive input values must be masked, Accurate and precise code generation, Maintain integrity of generated code, Faithful code rendering for analysis, Integrity of recorded actions, Recording state synchronization, Precision in selector and code generation, Accurate highlighter positioning, Consistent label rendering, Do not interfere with user interaction, Ensure only one active script instance, Allow complete component cleanup to avoid leaks, Do not log password field events, Avoid event duplication, Consistent local storage persistence, Only one recording active at a time, Do not mount multiple buttons in DOM, Correct communication with Chrome extension, Ensure recording integrity, Correct history persistence, Safe execution of injected scripts, Ensure user anonymity, Send event data without impacting UX, Maintain integrity of sent data, Render Popup correctly in designated container, Maintain consistent and isolated styles, Support hot reload without failures, Generate unique and valid selectors, Maintain acceptable performance, Avoid ambiguous selectors, Generate valid scripts for Cypress, Preserve action order and state, Include configurable waits for synchronization, Selectors must be unique and stable, Do not use invalid IDs, Prioritize accessibility and test attributes, Correct and typed import of static files to avoid build errors, Ensure browser API calls are compatible between Chrome and Firefox, Integrity of action data, Validation of supported action types, Accurate capture of temporal events, Strict typing to avoid runtime errors, Maintain ES5 compatibility for legacy browsers, Build must run in production mode, Build errors must block deploy, NODE_ENV must always be set, PORT must be a valid number, Hot Module Replacement must be enabled for dev mode, Dev server must serve assets with CORS headers, Manifest version consistency, Environment variable integrity, Asset path correctness, Do not version dependency files, Do not expose sensitive config files, Keep repository clean and organized, All actions must have valid, non-negative, and sequential timestamps, Generated scripts must accurately reflect user actions, Cypress commands must be valid and executable, Accurate recording of user actions, Correct Cypress code generation, Browser context isolation, Visual consistency, Accessibility, Responsiveness, Recording data integrity, Accurate Cypress code generation, Correct visual feedback for user actions, No deletion without explicit confirmation, Data integrity during export, Consistent state update after CRUD operations, Maintain readability and usability across views, Ensure vertical scroll for long content, Empty recordings cannot be saved, Recording IDs must be unique, Hostname must be correctly extracted from URL, History entry limit must not be exceeded without pruning, Recording data integrity must be maintained, Old data migration must preserve actions, Maximum history entry limit, Unique ID integrity, Reliable recording persistence, Mandatory stock validation before order confirmation, Transactional integrity in status updates, Strict data validation, Transactional consistency, Role-based access control, Consistent dark mode color scheme, Scrollbar usability and visibility</critical_business_rules>
   </project_metadata>
   <technical_stack>
-    <primary_language>JavaScript ES6+, JSX, JavaScript, Node.js, TypeScript 5.0, TypeScript 5.x, TypeScript 4.1.5, Manifest Version 2, JavaScript ES2021, Manifest V3 JSON, TypeScript 4.x, React 18, JavaScript ES2020, JavaScript (Node.js 16+), JavaScript (Node.js 18+), CSS3</primary_language>
-    <frameworks>React (via react-app preset), Webpack, Babel, Webpack 5, Yarn, Cypress, Playwright, Puppeteer, Jest 29.x, ts-jest, React 17.0.1, Jest 27.3.1, Webpack 5.23.0, Playwright 1.16.3, Chrome Extensions API, Nenhum framework frontend explícito, React 18.2, React 18, React 18.x, WebExtensions API, ReactDOM, Nenhum framework front-end explícito (vanilla JS/TS), FontAwesome SVG Core, FontAwesome React, React CopyToClipboard, Nenhum framework específico detectado, Nenhum (biblioteca standalone), Nenhum framework frontend específico (módulo utilitário), React 18.2 (implícito), Webpack 5.x, WebpackDevServer 4, Jest 29, Playwright 1.x, Nenhum framework CSS explícito, TanStack Table 8.x, FontAwesome React 0.2.x, Node.js, Possível uso de frameworks de teste como Jest (não explícito), Nenhum framework front-end explícito</frameworks>
-    <databases>chrome.storage.local, chrome.storage.local (armazenamento local do navegador), Não aplicável, localStorage (browser), chrome.storage (browser extension API), LocalStorage (via recordingStore), recordingStore (abstração de storage, tipo não especificado)</databases>
-    <external_services>Chrome Web Store, Firefox Add-ons Marketplace, GitHub Actions, Browser APIs (chrome.*), Test Automation Frameworks (Cypress, Playwright, Puppeteer), https://*.deploysentinel.com, Chrome WebExtensions API, Cypress Test Runner, Playwright Test Runner, Chrome Extension API, DeploySentinel Webapp, Chrome Extensions API, Chrome Extension APIs, Chrome Browser API, Mozilla Browser API (compatibilidade), Playwright (via ScriptType integration), Chrome Storage API, Chrome Extension Messaging API, Chrome Extension APIs (tabs, storage), Analytics (onPageView, onNewRecording), Google Analytics Measurement Protocol API, FontAwesome CDN (via package), Nenhum serviço externo diretamente integrado, Firefox WebExtension API, Browsers headless control APIs via Puppeteer/Playwright/Cypress, Node.js environment, Chrome APIs, Playwright Browser Automation, FontAwesome Icons, Clipboard API via react-copy-to-clipboard, RecordingService (local storage or backend API), Google Fonts (Roboto)</external_services>
-    <package_manager>npm, yarn, Yarn, yarn 1.22.22</package_manager>
+    <primary_language>TypeScript, JavaScript ES2020+, JSX, Node.js, CSS3</primary_language>
+    <frameworks>React 18, Webpack 5, Babel 7, Cypress, Playwright, Puppeteer, Jest 29, ts-jest, WebExtensions API, FontAwesome, Lodash 4.x, TanStack Table 8.x, Express 4.18, Mongoose 6.7, NestJS 10.0, TypeORM 0.3</frameworks>
+    <databases>chrome.storage.local, LocalStorage, MongoDB 6.0, Redis 7.0, PostgreSQL 15</databases>
+    <external_services>Chrome Web Store, Firefox Add-ons Marketplace, GitHub Actions, Browser APIs (chrome.*), Cypress, Playwright, Puppeteer, https://*.deploysentinel.com, DeploySentinel Webapp, Google Analytics Measurement Protocol API, FontAwesome CDN, Google Fonts (Roboto), Stripe API, SendGrid, AWS S3, Internal REST APIs, OAuth2 Authentication Server</external_services>
+    <package_manager>npm, yarn</package_manager>
   </technical_stack>
   <architecture_patterns>
-    <design_pattern>Modular Build Configuration, Pipeline, Modular Build Scripts, Observer Pattern, Event-driven Architecture, Modular Architecture, Configuration Object Pattern, Modular, Component-based UI, Build scripts orchestration, Extension Architecture (Background Script, Content Script, Browser Action), Modular Extension Design, Service Worker Background Processing, Event-driven, Pub-Sub, Message Passing, Component-Based Architecture, Controlled Component Pattern, Service Layer, Custom React Hooks, Adapter Pattern, Modular Functional Design, Declarative UI, Separation of Concerns, Hook-based State Management, Functional Components, Singleton, Shadow DOM encapsulation, Observer, Debounce, Hook Pattern, Hooks for state management, Modular separation of concerns, Modularização funcional, Hot Module Replacement, Modular Functional, Generator Pattern, Bottom-up Search, Factory Method, Template Method, Strategy, Factory Pattern, Strategy Pattern, Modularização via declaração de módulos TypeScript, Alias Pattern, Object-Oriented Programming, Enum-based State Modeling, Component-based, Build Pipeline Script, Configuration Module Pattern, Modular Configuration, Middleware Pattern, Plugin Pattern, .gitignore pattern segmentation, Functional Programming, Modular Design, Builder Pattern, Test-Driven Development (TDD), Test Automation Pattern, Page Object Pattern (implicit), Atomic CSS, Component-Based CSS, Functional Components with Hooks, Service Layer Pattern, Modular CSS com classes condicionais, Facade, Static Service Class, Strategy (para geração de código), Debounce para otimização de escrita, Repository Pattern, Interface Segregation</design_pattern>
-    <folder_structure>Config files in root or config folder, Source code in src/, src/, build/, dist/, src/ - código fonte, assets/ - imagens e ícones, tests/ - testes E2E, dist/ - builds para Chrome e Firefox, Configurações centralizadas em pasta de configuração (ex: /config ou raiz), utils/ para scripts de build e servidor, build/ para artefatos gerados, node_modules/ para dependências, src/ presumido para código fonte React, background/ - scripts de background, content_scripts/ - scripts injetados nas páginas, popup/ - interface do usuário da extensão, assets/ - ícones e recursos estáticos, background/ - service worker scripts, popup/ - UI da extensão, assets/ - ícones e imagens, Common/utils - funções utilitárias, storage/recording-store - gerenciamento de estado da gravação, background script - lógica central de controle e eventos, src/: código fonte, background/: scripts da extensão, content-scripts/: scripts injetados, src/components/Icon - componente isolado para reutilização visual, pages: componentes de tela, Popup: componentes modais ou popups, assets: arquivos estáticos como imagens e SVGs, src/components - componentes UI reutilizáveis, src/types - definições de tipos e enums, utils - funções utilitárias, builders - geração de código, storage - serviços de persistência, types - definições de tipos, src/hooks - custom hooks, src/utils - utilitários para armazenamento, src/types - definições de tipos TypeScript, src/utils - funções utilitárias para armazenamento e execução de scripts, src/background - controle do estado da extensão e comunicação com abas, types/ - definições de tipos e enums, builders/ - funções auxiliares para construção de seletores, components/ - componentes React reutilizáveis, styles/ - arquivos CSS, src/components - UI components, src/builders - lógica de geração de código, src/types - definições de tipos, /components - UI components, /builders - selector and code generation logic, /Common - shared hooks and utilities, /types - TypeScript type definitions, src/components/Highlighter - componente visual e estilização associada, ./ControlBar - componente React principal, ../Common - estilos compartilhados, root - script de bootstrap e injeção, builders/selector: geração de seletores, Common/utils: utilitários gerais, types: definições de tipos e enums, Common: componentes e hooks reutilizáveis, types: definições de tipos TypeScript, styles: CSS modularizados, Common (shared utilities and hooks), Content (core content components), Storage (state persistence), Components (UI parts), Types (TypeScript types), Common/utils para funções utilitárias, Módulo de analytics separado para eventos, ./Popup (component), ./index.css (local styles), ../Common/styles.css (shared styles), src/ - código fonte principal, test/ - testes unitários, dist/ - build final, src/actions - definição de ações e tipos, src/builders - implementações específicas de geração de scripts, src/utils - funções utilitárias, src/types (tipos e enums), src/utils ou src/selectors (funções utilitárias para geração de seletores), src/assets para arquivos estáticos, src/types para declarações de tipos, src/: código fonte principal, types/: definições de tipos, dist/: build final, src/actions - definição das ações e tipos, src/utils - funções utilitárias (TODO), src (código fonte), build (artefatos compilados), node_modules (dependências externas), config/ - configurações do Webpack, scripts/ - scripts de build e automação, config/ - arquivos de configuração centralizados, config/ - configurações do Webpack e ambiente, build/ - saída dos arquivos compilados, src/ - código fonte da aplicação, src/pages - Contém scripts específicos da extensão (Popup, Background, Content, Bridge, CypressTrigger), src/assets - Recursos estáticos como imagens, build - Diretório de saída para arquivos compilados, /node_modules para dependências, /coverage para relatórios de teste, /build para artefatos de produção, .prompts, .logs, .audios para dados auxiliares, src/types - definição de tipos, src/utils - funções utilitárias para manipulação de dados, src/pages/builders - Contém classes builder para geração de scripts, tests - Contém testes unitários para validação dos builders, /tests - testes automatizados, /build - extensão compilada, /tmp - dados temporários para browser context, styles/components - componentes reutilizáveis, styles/utilities - classes utilitárias para layout e espaçamento, src/types - Tipos TypeScript, src/Content - Componentes reutilizáveis (ActionList, CodeGen), src/components - Componentes de UI específicos, src/styles - Arquivos CSS, components/: UI components, storage/: data persistence services, types/: TypeScript type definitions, styles/: CSS files, Estilos base em arquivos CSS globais, Estilos específicos aplicados via classes no body, src/types (tipos), src/services (serviços), src/builders (geradores de código), src/store (persistência), src/store - gerenciamento de estado e persistência, src/interfaces - definições de tipos e contratos, src/backends - implementações de persistência, src/models - modelos de dados</folder_structure>
-    <naming_conventions>camelCase for variables and functions, PascalCase for React components, camelCase para funções, kebab-case para arquivos, CamelCase para classes e funções, prefixos claros para eventos e handlers, camelCase para variáveis e propriedades, PascalCase para tipos e interfaces, camelCase para variáveis e funções, PascalCase para componentes React, kebab-case para scripts npm, PascalCase para classes, nomes descritivos para scripts e arquivos, PascalCase para componentes UI, snake_case para arquivos de configuração, camelCase para funções e variáveis, UPPER_SNAKE_CASE para constantes, PascalCase para classes e stores, camelCase para props e variáveis, snake-case para arquivos estáticos, PascalCase para componentes e tipos, PascalCase para classes e tipos, snake_case evitado, PascalCase para tipos e componentes, prefixo use para hooks, prefixo set para funções que alteram estado, UPPER_SNAKE_CASE para enums e constantes, Arquivos com extensão .tsx para componentes, PascalCase for components, camelCase for functions and variables, UPPER_SNAKE_CASE for enums, PascalCase para componentes, kebab-case para IDs CSS, CamelCase para componentes e funções, snake_case para variáveis globais no window, snake_case para arquivos não TSX, Enums em PascalCase, CamelCase para funções e componentes, kebab-case para classes CSS, Uppercase enums, Descriptive file names matching component or utility, Constantes em maiúsculas com underscore, kebab-case para arquivos CSS, PascalCase para tipos e enums, CamelCase para classes, camelCase para métodos e variáveis, Constantes em MAIÚSCULAS_SNAKE_CASE, CamelCase para funções e variáveis, Extensões de arquivos mantidas (.css, .svg), Declarações em arquivos .d.ts, PascalCase para classes e interfaces, PascalCase para classes e enums, camelCase para propriedades e funções, PascalCase para componentes React e classes, Variáveis em UPPER_SNAKE_CASE para env vars, Módulos em camelCase ou kebab-case, PascalCase para classes e plugins, kebab-case para arquivos e pastas, CamelCase para arquivos e pastas, Extensões indicam linguagem (.jsx, .tsx, .ts), Arquivos .env para configurações locais, secrets.*.js para arquivos sensíveis, Prefixo &apos;test&apos; para funções de teste, PascalCase para tipos e classes, testes nomeados com descrições claras, BEM-like para componentes (.btn-primary), abreviações para utilitários (.p-1, .m-4), PascalCase para interfaces e tipos, kebab-case for CSS classes, Classes CSS descritivas (ex: history-view, detail-view), CamelCase para classes e métodos, snake_case para IDs de gravação, prefixos claros para tipos e funções, Constantes em UPPER_SNAKE_CASE, CamelCase para interfaces e tipos, camelCase para propriedades e métodos</naming_conventions>
-    <module_boundaries>Separation between config and source code, Plugins isolated from presets, separação clara entre código fonte e artefatos gerados, Separação clara entre captura de eventos, geração de scripts e UI da extensão, Módulos independentes para Chrome e Firefox, Configuração isolada e exportada para uso pelo Jest, Separação clara entre build scripts, servidor web e UI React, Dependências gerenciadas via package.json, Separação clara entre background scripts, content scripts e UI (popup), Comunicação via mensagens entre scripts, Separação clara entre background, content scripts e UI popup, Comunicação via mensagens e eventos, Utils para funções genéricas, Storage para estado persistente, Background script para controle de fluxo e eventos, Separação clara entre código da extensão e código do webapp, Comunicação via mensagens, Componentes isolados sem dependências externas além do React, Separação clara entre componentes visuais e assets estáticos, Importação relativa para recursos locais, Componentes isolados com props para comunicação, Tipos importados para garantir consistência, utils não dependem de storage, builders isolados para geração de código, storage encapsula persistência, Separação clara entre hooks, utils e tipos, Dependência unidirecional dos hooks para utils e types, Separação clara entre manipulação de armazenamento, execução de scripts e controle de abas, Separação clara entre tipos, builders e componentes, Componentes React isolados da lógica de seleção, Separação clara entre UI (components) e lógica de negócio (builders), Tipos compartilhados via pasta types, UI components separated from business logic, Builders isolated for selector and code generation, Common utilities shared across modules, Isolamento do componente Highlighter com importação explícita de estilos, Separação clara entre UI (ControlBar) e bootstrap script, Isolamento via shadow DOM para evitar poluição global, Separação clara entre captura de eventos, geração de seletores e armazenamento, Separação clara entre UI (TriggerButton) e lógica de gravação (hooks, endRecording), Hooks encapsulate stateful logic, Storage isolated in dedicated modules, Utilities abstract browser API interactions, Módulo analytics isolado, dependente apenas de utils externos, Separação clara entre componentes e estilos, Dependência unidirecional do componente Popup para estilos, Separação clara entre funções utilitárias, lógica de busca e otimização, Separação clara entre tipos, builders e utilitários, Dependência unidirecional dos builders para ActionContext e tipos, Separação clara entre tipos, funções utilitárias e integração com finder externo, Separação clara entre código TypeScript e assets estáticos via módulos declarados, Separação clara entre módulos de compatibilidade e lógica de negócio, Separação clara entre tipos de ações e utilitários, Classes específicas para cada ActionType, Separação clara entre código fonte e build, Resolução de módulos via Node.js, Separação clara entre configuração (webpack.config.js) e execução (build script), Módulo isolado para configuração, sem dependências externas, Separação clara entre configuração (config) e execução (server), Dependência unidirecional do servidor para configuração, Separação clara entre scripts de extensão e assets, Uso de aliases para módulos secretos, Separação clara entre código fonte e artefatos gerados, Separação clara entre tipos e funções utilitárias, Dependência unidirecional de tipos para funções, Builders isolados em módulo próprio, Testes separados e independentes, Mocks para isolar dependências, Separação clara entre testes e código da extensão, Uso de imports explícitos para Playwright e Jest, Separação clara entre componentes visuais e utilitários CSS, Separação clara entre tipos, componentes de UI e lógica de apresentação, Dependência unidirecional de tipos para componentes, UI components depend on types and services, Services encapsulate data access, No circular dependencies, Separação clara entre estilos base e estilos para views específicas, Separação clara entre tipos, serviços, armazenamento e geração de código, Separação clara entre tipos, store e ações, Dependência unidirecional do store para tipos, Separação clara entre tipos, configuração e backend, Dependência unidirecional do backend para tipos</module_boundaries>
+    <design_pattern>Modular Build Configuration, Event-driven Architecture, Component-based UI with React, Cross-browser Extension Pattern, Extension Architecture (Background Script, Content Script, Browser Action), Service Worker Background Processing, Pub-Sub, Message Passing, Presentational and Container Components, Separation of Concerns, State Management via React Hooks, Singleton, Shadow DOM Encapsulation, Debounce, Modular CSS, Hot Module Replacement, Builder Pattern, Factory Method, Defensive Programming, Alias Pattern, Discriminated Union Types, Build Pipeline Script, Configuration Module Pattern, Middleware Pattern, Plugin Pattern, Functional Programming, Fluent Interface, Test Automation Pattern, Page Object Pattern, Atomic CSS, Service Facade, Repository Pattern, Interface Segregation, MVC, Clean Architecture, Dependency Injection, CSS Theming, Component-based Styling</design_pattern>
+    <folder_structure>config/, src/, build/, dist/, assets/, tests/, node_modules/, background/, content_scripts/, popup/, utils/, storage/, components/, styles/, types/, builders/, services/, store/, controllers/, models/, repositories/, entities/, pages/, Common/, Content/, Scripts/, Coverage/, Tmp/</folder_structure>
+    <naming_conventions>camelCase for variables and functions, PascalCase for React components, types, and classes, kebab-case for files and folders, UPPER_SNAKE_CASE for constants and enums, snake_case for static files and IDs, Descriptive names for scripts and files, Prefix use for hooks, Prefix set for state setters, BEM-like for CSS classes, Abbreviations for utility classes, File extensions indicate language (.tsx, .ts, .jsx, .js, .css, .svg), Interfaces prefixed with I, Test files named with .test.ts or in __tests__ folders</naming_conventions>
+    <module_boundaries>Separation between config and source code, Plugins isolated from presets, Clear separation between event capture, script generation, and extension UI, Independent modules for Chrome and Firefox, Isolated configuration for Jest, Separation between build code, extension code, and test code, Dependencies managed via package.json, Separation between background scripts, content scripts, and UI (popup), Message-based communication between scripts, Utils for generic functions, Storage for persistent state, Background script for flow and event control, Separation between extension code and webapp code, Isolated UI components (React) with no external dependencies, Separation between visual components and static assets, Relative import for local resources, Separation between types and components, No global state in isolated components, Separation between storage handling, code generation, and Chrome API communication, Separation between hooks, utilities, and types, Unidirectional dependency from hooks to utils and types, Separation between storage handling, script execution, and tab control, Separation between types, builders, and components, Unidirectional dependency from types to components, Separation between UI (components) and business logic (builders), Shared types via types folder, UI components isolated from code generation logic, Hooks and utilities in Common, Builders for selection and code logic, Highlighter component isolated with explicit style import, Separation between UI (ControlBar) and bootstrap script, Shadow DOM isolation to avoid global pollution, Separation between event capture, selector generation, and storage, Separation between UI (TriggerButton) and recording logic (hooks, endRecording), Separation between UI, recording logic, and storage, Hooks encapsulate state and logic, Analytics module isolated, depends only on external utils, Separation between components and styles, Unidirectional dependency for Popup and styles, Separation between utility functions, search logic, and optimization, Separation between types, generation logic, and utilities, Unidirectional dependency to avoid circular coupling, Separation between types, utilities, and selection logic, Unidirectional dependency to avoid coupling, Separation between TypeScript code and static assets via declared modules, Separation between compatibility modules and business logic, Separation between types (enums, classes) and utility logic, Separation between source code and build, Node.js module resolution, Separation between configuration (webpack.config.js) and execution (build script), Isolated configuration module, no external dependencies, Separation between configuration (config) and execution (server), Unidirectional server dependency on config, Separation between extension scripts and assets, Use of aliases for secret modules, Separation between source code and generated artifacts, Separation between types and utility functions, Unidirectional dependency from types to functions, Separation between script building logic and tests, Mocks used to isolate dependencies, Separation between tests and extension code, Explicit imports for Playwright and Jest, Separation between visual components and CSS utilities, Clear separation between UI components and types, Feature modules encapsulate related components and logic, UI components depend on types and services, Services encapsulate data access, No circular dependencies, Separation between base styles and view-specific styles, Separation between types, storage, and service logic, Unidirectional service dependency on store and builders, Separation between types, store, and actions, Unidirectional store dependency on types and chrome API, Separation between types, config, and backend, Separation between controllers, services, and repositories, Unidirectional dependencies, Separation between domain, application, and infrastructure, Separation between global styles (:root) and component-specific styles (.Popup)</module_boundaries>
   </architecture_patterns>
   <code_standards>
-    <style_guide>Airbnb JavaScript Style Guide, Airbnb JavaScript Style Guide adaptado para TypeScript, Airbnb TypeScript Style Guide, Airbnb JavaScript Style Guide (implícito via eslint-config-react-app), Airbnb JavaScript Style Guide adapted for TypeScript, Airbnb JavaScript/TypeScript Style Guide, Airbnb JavaScript Style Guide (implícito pelo uso de Babel e Webpack), Airbnb JavaScript Style Guide (implícito), CSS padrão com comentários explicativos, CSS padrão, sem framework específico, Possível uso de Airbnb ou padrão TypeScript, TypeScript Standard Style, JSDoc para documentação</style_guide>
-    <linting_rules>ESLint with React plugin, extends react-app, globals chrome readonly, .eslintrc.json, ESLint com regras para TypeScript, Regras para evitar any e garantir tipagem forte, ESLint com plugins para React, JSX accessibility, import, flowtype, .eslintrc.json com regras para ES6, browser, node, .eslintrc.json com regras para ES2021 e ambiente browser, ESLint com regras para TypeScript, sem uso explícito no código fornecido, .eslintrc.json com regras para TypeScript e JS, ESLint com regras padrão React, .eslintrc.js com regras para React e JSX, ESLint com regras padrão Airbnb, .eslintrc.json com regras para async/await, no-console warnings, ESLint com regras para React e TypeScript, .eslintrc.json com regras para TypeScript e JavaScript, .eslintrc.json com regras para React e TypeScript, TypeScript strict mode enabled, ESLint com regras para evitar any, prefer const, e evitar side effects, ESLint with TypeScript plugin, Rules enforcing no unused vars, consistent returns, and strict typing, ESLint com regras padrão para TypeScript, Proibição de any explícito, Proibição de any implícito, Regras para async/await, ESLint com regras para importação de módulos estáticos, .eslintrc.json com regras para TypeScript e compatibilidade ES6, skipLibCheck:true para ignorar checagem de libs externas, strict:true para checagem rigorosa, .eslintrc.json com regras para ES6+, .eslintrc.json com regras para ES6+, node environment, Não explicitado no código fornecido, Proibição de any sem justificativa, eslint com regras padrão para TypeScript e JavaScript, Não especificado, ESLint with TypeScript plugin, rules for no unused vars, consistent return, strict typing, Não especificado no código</linting_rules>
-    <formatting>Prettier, singleQuote: true, trailingComma: es5, printWidth: 80, proseWrap: always, arrowParens: always, Prettier com configuração padrão para TypeScript, Prettier com configuração padrão, Prettier configurado via lint-staged para formatação automática, Prettier com configuração padrão para JavaScript, Prettier com configuração padrão para React, Prettier com configuração padrão para espaçamento e aspas simples, Prettier com configuração padrão para React/TypeScript, Prettier with default settings, Prettier com configuração padrão para projetos React, 2 spaces indentation, Quebra de linha em 80-100 caracteres, Prettier com configuração padrão para TypeScript e React, Não explicitado no código fornecido, Indentação consistente, uso de comentários para seções, Prettier with 2 spaces indentation, single quotes, trailing commas, Não especificado, provável uso de Prettier</formatting>
-    <documentation_style>JSDoc, JSDoc para funções e classes principais, JSDoc para funções e tipos, JSDoc (implícito pelo uso de TypeScript e Babel), JSDoc para funções e módulos, Comentários inline em português, Sem uso explícito de JSDoc, Comentários inline simples, sem JSDoc explícito, JSDoc para funções e componentes, JSDoc para funções públicas, JSDoc para funções e hooks, JSDoc for functions and components, JSDoc para funções e interfaces, JSDoc para funções públicas e métodos, Comentários inline e JSDoc para funções principais, JSDoc style comments for functions and components, JSDoc para funções públicas e classes, Comentários JSDoc mínimos, JSDoc para declarações de tipos, JSDoc para classes e métodos, JSDoc para documentação inline, Comentários inline mínimos, sem padrão explícito, JSDoc para documentação de métodos e classes, Comentários inline e JSDoc básicos, Comentários inline para propriedades específicas, JSDoc para documentação de funções e componentes, JSDoc style comments for components and functions, Comentários em português explicativos, JSDoc para interfaces e propriedades</documentation_style>
-    <type_checking>TypeScript optional, not explicit here, TypeScript strict mode, Strict TypeScript, TypeScript com tipagens estritas para React e APIs de navegador, Nenhum type checking explícito (JavaScript puro), JavaScript sem tipagem estática, Possível uso futuro de TypeScript, TypeScript com tipagem parcial, uso de any em gravação, PropTypes ou TypeScript (não aplicável neste arquivo), Strict TypeScript com checagem de tipos explícita, Strict TypeScript typing, Strict TypeScript com tipagem explícita para eventos e ações, Strict TypeScript com checagem completa, Strict TypeScript settings enabled, Strict TypeScript enabled, PropTypes para validação básica (não presente no código atual), Strict TypeScript (noImplicitAny, strictNullChecks), strict TypeScript com exceção para strictPropertyInitialization:false, Nenhum (JavaScript puro), TypeScript strict mode presumido, Strict TypeScript com tipagem explícita sempre que possível, Strict TypeScript mode enabled</type_checking>
+    <style_guide>Airbnb JavaScript/TypeScript Style Guide, TypeScript Standard Style, TypeScript ESLint Recommended, CSS standard conventions</style_guide>
+    <linting_rules>ESLint with React and TypeScript plugins, extends react-app, globals chrome readonly, .eslintrc.json with rules for ES2021, browser, node, Rules to avoid any and enforce strong typing, Prohibition of dead code, Rules for indentation and spacing, Prohibition of empty catch blocks, skipLibCheck:true for external libs, strict:true for strict checking</linting_rules>
+    <formatting>Prettier with default settings, singleQuote: true, trailingComma: es5, printWidth: 80, arrowParens: always, Lint-staged for auto-formatting on commit</formatting>
+    <documentation_style>JSDoc for functions, classes, and components, Inline comments in Portuguese for context, JSDoc for public APIs and methods</documentation_style>
+    <type_checking>Strict TypeScript mode enabled, TypeScript with explicit typings for React and browser APIs, Strict TypeScript with noImplicitAny and strictNullChecks</type_checking>
   </code_standards>
   <testing_strategy>
-    <test_framework>Jest, Playwright Test Runner, Jest 29.x, Jest 27.3.1, Jest para testes unitários do background e scripts, Não explícito no código, mas integração com Cypress e Playwright indica uso destes frameworks, Jest 29, React Testing Library, Não detectado no código fornecido, Jest 29 (implícito para front-end), Não especificado</test_framework>
-    <test_structure>__tests__ folders or *.test.js files, tests/ unitários e integração, tests/e2e/ para testes end-to-end, tests/unit/ para testes unitários, Testes localizados em pasta __tests__ ou arquivos *.test.ts, Testes localizados em pastas padrão (não explicitado) com cobertura ativada, tests/ para testes unitários e integração, Não presente no código analisado, tests/unit/, tests/integration/, Testes localizados em __tests__ ou pasta components/__tests__, Testes localizados em __tests__ ou pasta __specs__ ao lado do componente, __tests__ folders próximos aos componentes, tests/unit para testes unitários, tests/integration para testes de integração, tests/hooks para testes unitários dos hooks, tests/unit para testes unitários das funções utilitárias, Testes localizados em __tests__ próximos aos componentes, Testes unitários para builders e componentes, __tests__ folders colocated com componentes, Test files com extensão .test.tsx, __tests__ folder ao lado do componente, Testes unitários localizados em __tests__ próximos aos módulos, Testes localizados em pasta __tests__ ao lado dos componentes, Tests colocados em pastas __tests__ próximas aos componentes, Testes unitários e de integração para hooks e componentes, Testes localizados em __tests__ ou pasta __specs__, test/unit para testes unitários, test/integration para testes de integração, Testes unitários para builders e utilitários em /tests/unit, Testes de integração para geração de scripts, Testes localizados em __tests__ ou pasta tests correlata, Testes localizados em __tests__ ou pasta tests, tests/unit para testes de classes e enums, tests/ localizados paralelamente ao código fonte, Não especificado, /coverage para relatórios de teste, tests/utils - testes unitários para funções utilitárias, Testes organizados por describe blocks por builder, Testes unitários focados em métodos individuais, Testes organizados em blocos beforeAll, afterAll e test, Testes end-to-end focados em fluxo da extensão, __tests__ folders adjacent to components, unit and integration tests, Testes localizados em __tests__ próximos ao código, tests/unit para testes de tipos e lógica, tests/integration para backend</test_structure>
-    <coverage_requirements>Minimum 80% coverage, &gt;= 80%, Cobertura mínima de 80%, Cobertura de código monitorada via Jest --coverage, Não especificado, &gt;= 80% cobertura, Cobertura mínima de 80% para componentes visuais, &gt;= 80% cobertura de código, Cobertura mínima de 80% para módulos críticos, Cobertura mínima de 80% para componentes UI e hooks, Cobertura mínima de 80% para componentes críticos, Cobertura mínima de 90%, &gt;= 90% cobertura para funções críticas, Cobertura completa dos métodos públicos dos builders, Cobertura focada em funcionalidades críticas da extensão</coverage_requirements>
-    <test_patterns>AAA (Arrange-Act-Assert), AAA, Given-When-Then, AAA (Arrange, Act, Assert), Given-When-Then para testes comportamentais, Não especificado, Arrange-Act-Assert (AAA), Snapshot testing para componentes visuais, Snapshot Testing, Renderização e acessibilidade, Mocking de hooks e APIs do Chrome, Mocking de APIs do navegador, Uso de mocks para isolar dependências, Behavior Driven Development (BDD) style</test_patterns>
-    <mocking_approach>jest.mock for modules, jest.mock, fixtures, Mocks para APIs de navegador, Fixtures para dados de entrada, Mocks com Jest e ts-jest, Mocks para APIs do Chrome e comunicação externa, Não especificado, Mocks para chrome.runtime e window.postMessage, Mocks para dependências externas se houver, Mock de assets estáticos para testes, Mocks para callbacks e tipos, Mocks para APIs do Chrome, Fixtures para dados de gravação, Mock de localStorage e chrome.storage APIs, Mock de APIs chrome e browser usando jest-mock, Mocks para funções auxiliares e tipos, Mock de funções genCode para isolar testes UI, Mocks para APIs externas e módulos de gravação, Mocks para props e estilos, Mocks para APIs do navegador e funções globais, Mocks para eventos DOM e APIs do Chrome, Mocks para chrome.runtime.sendMessage e document.querySelector, Mocks para Chrome Extension APIs, Fixtures para gravações simuladas, Mocks para componentes filhos e estilos, Mocks para DOM APIs e querySelectorAll, Mocks para dependências externas e funções utilitárias, Mock de módulos externos e fixtures para elementos HTML, Mocking de módulos estáticos via Jest mocks, Mocks para APIs do navegador, Mocks para simular eventos e seletores, Mocks para Webpack e WebpackDevServer APIs, Mocks para Date.now() para controle de tempo em testes, Jest spyOn para interceptar chamadas internas, Mock implementations para métodos assíncronos, Uso mínimo de mocks, testes end-to-end reais com browser context, Mocks para dependências externas e componentes filhos, Mock RecordingService methods with Jest mocks, Mock de chrome.storage.local, Fixtures para gravações, Mocks para backend de persistência</mocking_approach>
+    <test_framework>Jest 29, Cypress, Playwright, React Testing Library</test_framework>
+    <test_structure>__tests__ folders or *.test.ts files, tests/unit/ for unit tests, tests/e2e/ for end-to-end tests, tests/integration/ for integration tests, Mocks for APIs and DOM events</test_structure>
+    <coverage_requirements>Minimum 80% coverage, Coverage monitored via Jest --coverage, Coverage focused on critical UI flows</coverage_requirements>
+    <test_patterns>AAA (Arrange-Act-Assert), Given-When-Then for behavioral tests, Snapshot testing for visual components, Mocking of browser APIs, Configurable waits for synchronization</test_patterns>
+    <mocking_approach>jest.mock for modules and dependencies, Mocks for browser APIs and user interactions, Fixtures for test data, Mocks for Chrome Extension APIs and async functions, Jest spies for method calls</mocking_approach>
   </testing_strategy>
   <development_workflow>
-    <branch_strategy>GitHub Flow, Não especificado, Git Flow</branch_strategy>
-    <commit_conventions>Conventional Commits, Não especificado</commit_conventions>
-    <pr_requirements>Code review mandatory, CI checks, code review obrigatório, checks automáticos, Revisão obrigatória, Checks de CI passando, Code review obrigatório, Checks de CI, Revisão obrigatória e testes aprovados, Não especificado, Checks de lint e testes, Checks automáticos de lint e testes, Checks automáticos, Revisão obrigatória e testes automatizados aprovados, Revisão obrigatória e testes automatizados, Checks automáticos via CI, Testes passando, Revisão obrigatória por pelo menos um revisor, Build deve passar sem erros, Checks de lint e build, Testes automatizados passando, Passing CI checks</pr_requirements>
-    <ci_cd_pipeline>Linting, Testing, Build, build, test, deploy, Testes unitários e E2E, Lint, Deploy para Chrome e Firefox, Execução de testes automatizados, Husky para hooks git, Lint-staged para formatação pré-commit, Build, lint, test e deploy automatizados, Não especificado, Build, Test, Lint, Deploy, Test, Deploy automático, Build, lint, test e deploy automatizados via GitHub Actions, Build, lint, test stages automatizados via GitHub Actions, Build, Test, Lint, Deploy stages, Testes, Build automatizado via CI, Deploy condicionado a build sem erros, Build, Test, Lint, Deploy Staging, Execução de testes unitários, Build e deploy automatizados, Build da extensão, Deploy automatizado, Unit tests, Deploy, Testes automatizados</ci_cd_pipeline>
+    <branch_strategy>GitHub Flow, git Flow</branch_strategy>
+    <commit_conventions>Conventional Commits, Conventional Commits suggested by Husky and lint-staged</commit_conventions>
+    <pr_requirements>Code review mandatory, CI checks, Automated lint and test checks, At least 2 reviewers required for critical changes</pr_requirements>
+    <ci_cd_pipeline>Lint, Test, Build, Deploy, Automated build, lint, test, and deploy via GitHub Actions, Deploy to Chrome and Firefox</ci_cd_pipeline>
   </development_workflow>
   <commands>
-    <setup>npm install, yarn, yarn install &amp;&amp; husky install, npm install ou yarn install</setup>
+    <setup>npm install, yarn install, yarn install &amp;&amp; husky install, npm install &amp;&amp; cp .env.example .env &amp;&amp; npm run build</setup>
     <install>npm install, yarn install</install>
-    <dev>npm start, npm run dev, yarn run start-chrome, yarn run start-ff, MANIFEST_VERSION=3 node utils/webserver.js (Chrome), MANIFEST_VERSION=2 node utils/webserver.js (Firefox), yarn start, npm run start, node scripts/start.js, webpack --mode development --watch</dev>
-    <test>npm test, yarn test, jest --coverage, npm run test, Não especificado, jest</test>
-    <build>npm run build, yarn run build-chrome, yarn run build-ff, yarn build, node scripts/build.js, webpack --mode production</build>
-    <lint>npm run lint, eslint src/ --ext .ts,.tsx, eslint ., yarn lint, Não especificado</lint>
-    <format>npm run format, prettier --write src/, prettier --write ., yarn format, Não especificado</format>
+    <dev>npm start, npm run dev, yarn start, yarn run start-chrome, yarn run start-ff, webpack --mode development --watch</dev>
+    <test>npm test, yarn test, npm run test, npx cypress open</test>
+    <build>npm run build, yarn build, yarn run build-chrome, yarn run build-ff, node scripts/build.js, webpack --mode production</build>
+    <lint>npm run lint, yarn lint, eslint src/ --ext .ts,.tsx, eslint .</lint>
+    <format>npm run format, yarn format, prettier --write src/, prettier --write .</format>
   </commands>
   <security_constraints>
-    <authentication_method>OAuth2 para comunicação externa (deploysentinel.com), Não aplicável diretamente no código analisado, OAuth2 via DeploySentinel Webapp, OAuth2 via Chrome Identity API, Não aplicável (gerenciamento local de estado), Nenhum método explícito, depende do contexto da extensão, Não aplicável (foco em gravação local), Não aplicável diretamente (foco em captura de eventos), OAuth2 via Chrome Extension permissions, Nenhum método explícito no código (depende do contexto do navegador), Nenhum método de autenticação implementado, Não aplicável (biblioteca client-side), Não aplicável diretamente, Nenhum método de autenticação implementado neste arquivo, Não aplicável (extensão Chrome), Não aplicável (extensão local), Não especificado no componente, Não aplicável no código analisado, Não aplicável (armazenamento local)</authentication_method>
-    <authorization_rules>Permissões restritas via manifest para domínios e APIs específicas, Gravação restrita à aba e frame corretos, Verificação de tabId e frameId para ações, Validação de origem das mensagens, Permissões restritas na extensão, Permissões restritas para acesso a abas e storage, Não aplicável, Execução de scripts restrita a abas e frames autorizados, Não aplicável diretamente, Permissões restritas para comunicação entre extensão e UI, Controle implícito via permissões da extensão e contexto da aba, Nenhuma regra de autorização aplicada, Não aplicável diretamente no build, Controle de acesso via permissões da extensão Chrome, Confirmação explícita para exclusão de gravações, Não aplicável no código analisado</authorization_rules>
-    <sensitive_data>Dados de interação do usuário tratados localmente, sem envio externo não autorizado, URLs e dados de navegação armazenados localmente, sem criptografia explícita, URLs de teste, Códigos de gravação, URLs das abas, dados de gravação de usuário, Nenhum dado sensível armazenado, Identificadores únicos armazenados localmente, sem dados pessoais, Password inputs são mascarados na exibição, Inputs de senha são mascarados na exibição, Campos password não devem ser registrados, Nenhum dado sensível manipulado diretamente, Dados de gravação de testes armazenados localmente, sem exposição externa, Client ID anonimamente gerado, sem dados pessoais, Não manipula dados sensíveis, isPassword flag para tratamento de dados sensíveis, Arquivo secrets.{env}.js para dados sensíveis, Arquivos .env locais, secrets.*.js, Dados do usuário armazenados localmente no userDataDir, Dados das gravações (URLs, títulos) tratados localmente, Não há manipulação explícita de dados sensíveis, Dados de gravação de ações do usuário, armazenados localmente, IDs únicos das gravações, URLs gravadas</sensitive_data>
-    <security_headers>Content Security Policy configurada via manifest, Não aplicável no contexto de extensão, Content-Security-Policy para mensagens, Content-Security-Policy configurado na extensão, Não aplicável, Gerenciados pelo navegador, não aplicável diretamente, Não aplicável diretamente, Cabeçalhos padrão do Chrome Extension, Não aplicável diretamente (extensão de navegador), Access-Control-Allow-Origin: *, Não aplicável no contexto do build, Cabeçalhos padrão da extensão Chrome, Não aplicável no componente UI</security_headers>
-    <encryption_requirements>Criptografia padrão do Chrome para armazenamento local, Não implementado, TLS para comunicação web, Criptografia em trânsito via HTTPS, armazenamento local não criptografado, Não aplicável, Nenhuma criptografia explícita no código, Dados armazenados localmente, recomendação de criptografia externa, Comunicação segura via mensagens internas do Chrome, Nenhuma criptografia aplicada, Não aplicável no contexto do build, Não aplicável no componente UI, Não implementado, armazenamento local não criptografado</encryption_requirements>
+    <authentication_method>OAuth2 via DeploySentinel Webapp, OAuth2 for external communication, JWT with refresh tokens</authentication_method>
+    <authorization_rules>Restricted permissions via manifest for specific domains and APIs, TabId and frameId validation for actions, Strict message origin validation, Role-based access control (RBAC) with granular permissions, Explicit confirmation for deletion of recordings</authorization_rules>
+    <sensitive_data>User interaction data must be handled confidentially, User interaction data processed locally, no unauthorized external transmission, URLs and navigation data stored locally, no explicit encryption, Password inputs are masked with asterisks, No password fields should be recorded, Client ID generated anonymously, no personal data, Sensitive data in secrets.*.js and .env files, User data temporarily stored in /tmp, Generated code and recording data must be protected from exposure</sensitive_data>
+    <security_headers>Content Security Policy configured via manifest, Default Chrome Extension headers, X-Frame-Options, Strict-Transport-Security</security_headers>
+    <encryption_requirements>Default Chrome encryption for local storage, TLS for web communication, AES-256 for sensitive data, No explicit encryption for local storage</encryption_requirements>
   </security_constraints>
   <performance_requirements>
-    <response_time_limits>Gravação em tempo real sem impacto perceptível na navegação, Não especificado, Mensagens processadas em &lt; 100ms, Renderização instantânea do componente, Renderização instantânea do logo, Persistência e envio de mensagens em menos de 500ms, Operações assíncronas rápidas para leitura e escrita em localStorage, Operações assíncronas rápidas para não bloquear UI, Atualização da UI com throttling para eventos de mouse (100ms), Eventos processados em tempo real com debounce para resize, Interação do botão deve ser instantânea (&lt;100ms), Interação UI responsiva, sem atrasos perceptíveis, Resposta em milissegundos para seletores simples, Limite configurável para tentativas, Baixa latência para geração de seletores, Baixa latência para hot reload e rebuild incremental, Não aplicável diretamente, Timeouts de 15 segundos para testes, Timeouts de 5 segundos para service workers, Carregamento rápido das gravações para boa UX, Não especificado, mas operações assíncronas indicam foco em I/O não bloqueante, Operações assíncronas com debounce para evitar latência perceptível</response_time_limits>
-    <optimization_priorities>Developer experience, Fast refresh, build speed, bundle size, Baixa latência na captura de eventos, Uso eficiente de memória durante gravação, Performance do build e runtime leve para extensão de navegador, Baixo impacto em CPU e memória do navegador, Baixa latência na captura de eventos de navegação, Baixa latência na comunicação, Baixa complexidade, foco em renderização rápida, Minimizar bundle size, Carregamento rápido, Baixa latência na renderização UI, Velocidade de resposta priorizada sobre uso de memória, Baixa latência na atualização de estado, Minimizar leituras e escritas desnecessárias, Baixa latência na execução de scripts e armazenamento, Clareza e legibilidade da UI priorizadas sobre performance extrema, Renderização rápida, Baixa latência na geração de código, Responsividade da interface, Minimizar impacto de listeners, Baixa complexidade computacional, Minimizar impacto no DOM principal, Isolamento via shadow DOM para performance UI, Minimizar impacto na UI, evitar duplicação de eventos, Baixa latência e mínimo impacto na UI, Velocidade e fluidez da interface priorizadas, Baixa latência na coleta de eventos, mínimo impacto no UX, Minimizar re-renders, Evitar injeção excessiva de estilos inline, Balancear velocidade e seletor curto/legível, Equilíbrio entre legibilidade do código gerado e performance de execução, Velocidade e robustez na geração de seletores, Build time efficiency, Minimal runtime overhead, Baixa latência na captura e execução de ações, Build rápido e eficiente, Compatibilidade com browsers legados, Build otimizado para produção com minificação e tree shaking, Velocidade de feedback em desenvolvimento, Minificação com TerserPlugin, desabilitação de mangling para debugging, Minimizar latência na validação e migração de timestamps, Performance na geração de scripts para evitar latência em gravação, Confiabilidade e precisão sobre velocidade, Performance otimizada via CSS puro e transições leves, Responsividade da UI, Minimização de re-renderizações, Velocidade de renderização da tabela e filtragem, Legibilidade e fluidez na rolagem, Consistência e integridade dos dados priorizadas sobre otimização extrema, Minimizar operações de I/O no storage, Manter histórico limitado para performance, Eficiência na leitura e escrita do histórico</optimization_priorities>
-    <caching_strategy>cache intermediário de build, Uso de chrome.storage.local para persistência eficiente, Uso de chrome.storage.local para persistência de estado, Não aplicável, Cache do navegador para assets estáticos, Uso de localStorage para cache temporário, Uso de estado React como cache local para dados persistidos, Uso de chrome.storage.local para persistência local, Uso de chrome.storage.local para persistência e sincronização, Nenhuma estratégia de cache implementada, Uso de armazenamento local para persistência de gravações, Nenhum cache persistente implementado, Não implementado, Uso de cache via Webpack para builds incrementais, Webpack caching padrão para builds incrementais, Cache desabilitado para popup.html para garantir atualização, Cache do browser controlado pelo Chromium, Cache local via RecordingService (não detalhado), Não especificado, Cache em memória temporário para pendências de salvamento</caching_strategy>
-    <scalability_considerations>paralelização de tarefas, Suporte a gravações longas sem degradação perceptível, Suporte a múltiplas abas e sessões simultâneas, Escalabilidade limitada ao contexto de extensão de navegador, Escalabilidade limitada ao ambiente do navegador, Componente leve e reutilizável para múltiplas instâncias, Escalabilidade limitada ao contexto do browser extension, Gerenciamento eficiente de listas de ações para evitar crescimento excessivo, Escalabilidade limitada ao contexto da extensão e navegador, Componentização para facilitar extensão e manutenção, Evitar múltiplas instâncias para reduzir uso de memória, Suporte a aplicações SPA e múltiplos contextos, Escalabilidade limitada ao contexto da extensão e UI do Cypress, Escalabilidade limitada ao contexto do navegador e volume de gravações locais, Pode degradar em documentos muito grandes devido à combinatória, Escalabilidade limitada ao uso em testes UI, Extensibilidade para novos tipos de ações, Escalabilidade limitada ao ambiente local de desenvolvimento, Configuração modular para suportar múltiplos scripts e assets, Operações em arrays grandes devem ser eficientes e imutáveis, Escalabilidade limitada ao ambiente local de testes, Facilidade de extensão com novas classes utilitárias e componentes, Suporte a grandes listas via virtualização não implementada, Possível limitação ao filtrar gravações em memória para grandes volumes, Limitação de entradas para evitar crescimento descontrolado, Gerenciamento de limite máximo de entradas com estratégia de poda</scalability_considerations>
+    <response_time_limits>Real-time recording with no perceptible navigation impact, Messages processed in &lt;100ms, Instant component rendering, Recording operations must complete in under 1 second, Async operations must not block UI, UI updates in real time with throttling for mousemove (100ms), Batch operations &lt;2s, API responses &lt;200ms on average</response_time_limits>
+    <optimization_priorities>Developer experience, Fast refresh, Build speed, Bundle size, Low latency in event capture, Efficient memory usage during recording, Optimized build for size and compatibility, Debounce and throttle for event capture performance, Low CPU and memory impact in browser, Minimize bundle size, Real-time sync and consistency prioritized, Rendering performance for large action lists, Minimize DOM impact, Shadow DOM isolation for UI performance, Efficient style loading, Balance between code readability and test execution performance, Selector precision and stability, Build time efficiency, Minimal runtime overhead, Compatibility with legacy browsers</optimization_priorities>
+    <caching_strategy>Intermediate build cache, chrome.storage.local for efficient persistence, LocalStorage for temporary cache, Browser cache for static assets, No persistent cache implemented, Webpack caching for incremental builds, Cache disabled for popup.html to ensure updates, Redis cache for frequently accessed data with 5 min TTL</caching_strategy>
+    <scalability_considerations>Task parallelization, Support for long recordings without perceptible degradation, Support for multiple tabs and concurrent sessions, Component designed for dynamic and large action arrays, Efficient management of large action lists, Support for SPA applications and multiple contexts, Hot reload for scalable development, Efficient operations on large arrays (immutability), Test isolation for parallel execution, Efficient management of large lists, Entry limit to prevent uncontrolled growth, Horizontal scalability via containers</scalability_considerations>
   </performance_requirements>
   <error_handling>
-    <error_format>logs padronizados, Logs estruturados para erros no background e content scripts, Erros lançados via throw, sem tratamento centralizado, Não especificado no código atual, Console.error para logging de erros, Não implementado explicitamente no código fornecido, Erros lançados como Exceptions padrão em promises, Não explícito no código analisado, Não explícito, erros tratados via controle de fluxo interno, Erros lançados via throw new Error com mensagens claras, Erros lançados como Exceptions JavaScript padrão, Tratamento silencioso, sem propagação de erros, Erros lançados via throw com mensagens claras, Lançamento de erros padrão JavaScript para tipos não suportados, Try-catch silencioso para evitar falhas, Logs detalhados no console com stack trace e detalhes, Nenhum formato de erro customizado implementado, Não especificado, Erros lançados via Exceptions padrão do JavaScript, Logs no console para erros de carregamento, exclusão e exportação, Uso de exceções padrão para erros críticos (ex: gravação vazia), Erros lançados com mensagens claras, Logs no console para diagnóstico</error_format>
-    <logging_strategy>console logs, arquivos de log, Logs locais para debug durante desenvolvimento, Relatórios de erros via CI, Console logs e armazenamento local para diagnóstico, Ausente no código fornecido, Não implementado explicitamente, Logs básicos no console, sem sistema centralizado, Não implementado explicitamente no código fornecido, Não explícito no código analisado, Não implementado, possível extensão futura, Logs mínimos, foco em erros críticos, Uso mínimo de logs, foco em erros críticos, Não implementa logging interno, Não há logging explícito, Console.error para erros, console.warn para avisos, Logs padrão do Webpack e WebpackDevServer, Verbose logging na limpeza do build, Uso de console.warn para alertas de timestamps inválidos, Logs implícitos via Jest e Playwright, Console logs para eventos importantes (ex: cópia de código), Console logs com emojis para status e erros, Não especificado, Console.warn para alertas, Console.error para erros críticos</logging_strategy>
-    <monitoring_tools>GitHub Actions para monitoramento de build e testes, Integração com ferramentas externas via deploysentinel.com, Não especificado, Possível integração com ferramentas externas, Nenhum monitoramento automatizado detectado, Não explícito no código analisado, Monitoramento via ferramentas da extensão Chrome, Analytics customizados para eventos de gravação, Não aplicável, Nenhuma ferramenta de monitoramento integrada, Não aplicável em ambiente de teste local, Não especificado no código</monitoring_tools>
-    <error_recovery>retry automático em falhas de build, Recuperação de falhas na gravação com possibilidade de reinício, Reinício automático do service worker e re-injeção de scripts, Não implementado explicitamente, Nenhuma estratégia explícita, Tentativa de captura de erros na persistência, sem fallback explícito, Fallback para valores padrão em caso de ausência de dados, Rejeição de promises para tratamento externo, Listeners removidos corretamente para evitar leaks, Função cleanUp para desmontar e liberar recursos, Reinicialização do estado local e sincronização via storage events, Retry para seleção de elementos DOM com limite de tentativas, Fallbacks simples, como reset de estado e mensagens ao usuário, Try/catch para evitar falhas visíveis ao usuário, Fallbacks em busca de seletores alternativos, Fallback para null em caso de erro, Abortar build em caso de erro crítico, Hot Module Replacement para recuperação rápida de erros em desenvolvimento, Não especificado, Correção automática de timestamps inválidos e negativos, Rejeição de promises em timeout, encerramento limpo do browser context, Recarregamento da lista após exclusão, Fallback para estado vazio, Tratamento básico de erros (ex: URL inválida) com fallback, Tratamento de erros com fallback para evitar falhas críticas, Pruning strategy para evitar overflow do histórico</error_recovery>
+    <error_format>Standardized logs, Structured logs for background and content script errors, Errors thrown via throw new Error with clear messages, Console logs with clear messages, JSON format with code, message, and optional details</error_format>
+    <logging_strategy>Console logs, Local logs for development debugging, Console.error for critical errors, Structured logs with info, warn, error levels using Winston</logging_strategy>
+    <monitoring_tools>GitHub Actions for build and test monitoring, Integration with external tools via deploysentinel.com, Chrome Extension monitoring tools, New Relic, Sentry for production errors</monitoring_tools>
+    <error_recovery>Automatic retry on build failures, Recording failure recovery with restart option, Automatic service worker restart and script re-injection, Promise rejection for external handling, UI-based recording restart, CleanUp function to unmount and release resources, Retry for DOM element selection with attempt limit, Fallbacks for missing tabs or frames, Try/catch to avoid visible user failures, Hot Module Replacement for fast error recovery in development, Automatic correction of invalid/negative timestamps, Promise rejection on timeout for controlled failure, State reset after timeout for visual feedback, Fallback to empty state, Controlled fallbacks for critical async operations</error_recovery>
   </error_handling>
   <dependencies_context>
-    <critical_dependencies>react-app preset, react-hot-loader, Webpack, Babel, Node.js, APIs de extensão do Chrome e Firefox, Frameworks de teste suportados, @jest/types, ts-jest, React, Jest, Playwright, Husky, Prettier, chrome.* APIs, background.bundle.js, bridge.bundle.js, APIs do Chrome, utils internos, recordingStore, chrome.runtime API, window.postMessage, React 18, react, logo.svg, ScriptType enum, Chrome Extensions API, RecordingService, genCode, localStorageGet/Set, chrome.storage API, chrome API, browser API para compatibilidade, Playwright selectors, Type definitions, react-syntax-highlighter, genCode function, Recorder, Selector builders, Chrome Storage API, Highlighter.css, ReactDOM, FontAwesome, Shadow DOM API, lodash.debounce, chrome.storage.local, chrome.runtime, Chrome Extension Messaging API, Chrome Extension APIs, react-copy-to-clipboard, getRandomInstallId, Google Analytics API, react-dom, @fortawesome/fontawesome-svg-core, DOM API do navegador, @playwright/test, puppeteer, cypress, finder module, types definitions, TypeScript compiler, Module bundler (Webpack, Vite), TypeScript, Puppeteer, Cypress, webpack, webpack.config.js, process.env (Node.js), webpack-dev-server, path, env, clean-webpack-plugin, copy-webpack-plugin, html-webpack-plugin, terser-webpack-plugin, node_modules, secrets.*.js, Type definitions from &apos;../types&apos;, playwright, jest, TanStack Table, Roboto font, Classes CSS aplicadas no body, types (RecordingEntry, Action, ScriptType), Types definidos em ../types/recording, ./index (Action type)</critical_dependencies>
-    <deprecated_packages>Nenhum identificado, Manifest v2 APIs em processo de migração</deprecated_packages>
-    <version_constraints>Compatibilidade com versões recentes do Chrome e Firefox, Compatibilidade entre Jest 29.x e ts-jest, React 17.x, TypeScript 4.1.x, Webpack 5.x, Jest 27.x, Manifest Version 2 (deprecado em breve), Manifest V3 obrigatório para compatibilidade, Não especificado, Compatibilidade com Chrome 90+, React &gt;=18.0.0, React 18.x, TypeScript 5.x, TypeScript &gt;=5.0, Chrome API compatível com Manifest V3, Compatibilidade com manifest v2 e v3, TypeScript &gt;=4.0, TypeScript &gt;=4.9, TypeScript 4.x, lodash.debounce versão compatível com ES modules, Compatível com navegadores modernos suportando querySelectorAll, TypeScript versão compatível com ES6+, target ES5, module ESNext, webpack &gt;=5.0.0, Compatibilidade com Webpack 5 e Node.js 16+, TypeScript &gt;= 4.9, playwright &gt;=1.20.0, jest &gt;=29.0.0, TanStack Table 8.x, TypeScript 4.x compatível</version_constraints>
-    <internal_packages>Módulos internos para gravação e geração de scripts, ../Common/utils, ../storage/recording-store, Módulos internos da extensão DeploySentinel, ../../pages/Popup/logo.svg, ../types (ScriptType), ./utils, ../builders, ../storage, ../types, ../types/config, Módulos utilitários internos para armazenamento e execução, ../builders/selector, ./recorder, ./Highlighter, ./ActionList, ./CodeGen, Highlighter.css (estilos locais), ./ControlBar, ../Common/styles.css, ../Common/Icon, ../Common/hooks, ../Common/endRecording, Common, Content, Storage, Types, ./Popup, ./selector, ./finder, config/webpack.config.js, ./env, ../webpack.config, ./utils/env, secrets.{env}.js, ../src/pages/builders, ../../types, ../../Content, ../../types/recording, ../../storage/recording-service, ./recording-store, ../types/recording, index.ts para definição de Action</internal_packages>
+    <critical_dependencies>React 18, Webpack 5, Babel 7, Node.js, Chrome and Firefox extension APIs, Cypress, Playwright, Puppeteer, Jest, ts-jest, Husky, lint-staged, chrome.* APIs, chrome.runtime API, chrome.storage API, localStorage utilities, RecordingService, genCypressCode, react-syntax-highlighter, TanStack Table, FontAwesome, Shadow DOM API, lodash.debounce, Express, Mongoose, NestJS, TypeORM, PostgreSQL driver</critical_dependencies>
+    <deprecated_packages>Manifest v2 APIs (migration in progress)</deprecated_packages>
+    <version_constraints>Chrome and Firefox latest versions compatibility, Jest 29.x and ts-jest compatibility, Dependencies locked to specific versions for stability, Manifest V3 required for compatibility, React &gt;=18.0.0, TypeScript &gt;=5.0, Cypress &gt;=12, TanStack Table 8.x, Webpack &gt;=5.0.0, NestJS 10.x</version_constraints>
+    <internal_packages>Internal modules for recording and script generation, Common/utils, storage/recording-store, types, builders, components, Content, services, store, controllers, models, repositories, entities</internal_packages>
   </dependencies_context>
   <current_challenges>
-    <technical_debt>scripts de build pouco modularizados, Suporte limitado para captura de upload de arquivos, Atualização para Manifest V3 necessária para compatibilidade futura, Aprimorar suporte a múltiplos frameworks simultaneamente, Uso de any em tipagem, Ausência de tratamento robusto de erros, Falta de tratamento de erros robusto, Tratamento de erros e logging insuficientes, Ausência de tratamento de erros nas operações assíncronas, Migração completa para manifest v3, Tratamento de erros mais robusto, Gerenciamento complexo de estado pode crescer com novas features, Ausência de memoização para evitar re-renderizações desnecessárias, Melhorar tratamento de erros e fallback para browsers sem exportFunction, Melhorar tipagem any, otimizar armazenamento local, Correção de bug de múltipla montagem no Firefox, Gerenciamento complexo de estado entre múltiplas abas e gravações, Ausência de logging e feedback de erro, Ausência de tratamento de erros na renderização, Otimização limitada para seletores muito complexos, Implementação incompleta do dragAndDrop no Cypress, Tratamento silencioso de erros pode dificultar debugging, TODO para mover função utilitária para utils, Configuração hardcoded para localhost e porta fixa, Configuração extensa pode dificultar manutenção, Uso incorreto de &apos;number.isFinite&apos; ao invés de &apos;Number.isFinite&apos;, Melhorar tratamento de erros em waitForServiceWorkers, Ausência de virtualização para tabelas grandes, Tratamento básico de erros, Ausência de responsividade para dispositivos móveis, Ausência de controle concorrente na geração de IDs, Falta de tratamento detalhado de erros, Uso de &apos;object.entries&apos; e &apos;object.fromEntries&apos; com &apos;object&apos; minúsculo pode causar erros</technical_debt>
-    <known_issues>Potential incompatibility of react-hot-loader with React 18+, Limitações na captura de eventos hover em alguns contextos, Limitações na captura de eventos em iframes, Possível condição de corrida na atualização do estado, Menus contextuais podem ficar desincronizados, Dependência exclusiva do Chrome, Dependência da API do Chrome pode causar falhas em permissões, Possível inconsistência em sincronização multi-aba sem lock, Possível falha silenciosa em execução de scripts sem catch, Dependência de APIs específicas do navegador pode limitar portabilidade, Dependência de estilos externos pode causar falhas visuais, Possível incompatibilidade com browsers não suportados, Tipagem TypeScript ignorada em shadowRoot, Possível perda de eventos em alta frequência, Sincronização assíncrona pode causar inconsistências momentâneas, Possível falha na localização de elementos DOM em ambientes customizados, Dependência de APIs do navegador que podem variar entre versões, Modo no-cors limita detecção de falhas na requisição, Possível impacto de performance por estilos inline, Performance pode cair em documentos com muitos elementos similares, Exposição do objeto action diretamente em ActionContext (comentário FIXME), Seletores podem não ser únicos em apps com ids não confiáveis, Diferenças entre APIs Chrome e Firefox podem causar incompatibilidades, Desabilitação de host check pode causar riscos de segurança, Possível vazamento de secrets se não gerenciado corretamente, Dependência do relógio do sistema pode causar inconsistências, Timeouts eventuais na ativação dos service workers, Possível lentidão com grandes volumes de dados, Possível lentidão em buscas com grande volume de gravações, Possível erro de digitação em chamadas a Object.entries e Object.fromEntries</known_issues>
-    <performance_bottlenecks>build lento em grandes projetos, Uso intensivo de CPU em gravações longas, Nenhum crítico identificado, Nenhum identificado, Nenhum gargalo crítico identificado, Crescimento potencial da lista de ações armazenadas, Latência na comunicação com APIs do navegador, Eventos de mouse frequentes mitigados por throttling, Eventos de input e wheel podem gerar alta carga, Polling para retrySelector pode impactar performance se maxRetries alto, Renderização de listas grandes de ações pode impactar UI, Injeção de múltiplos estilos inline pode afetar renderização, Geração combinatória de seletores e múltiplas validações querySelectorAll, Geração de seletores em DOMs muito grandes pode ser lenta, Nenhum gargalo crítico identificado em ambiente local, Minificação desabilita mangling para facilitar debugging, impactando tamanho final, Espera ativa com setInterval pode ser otimizada, Filtragem e renderização client-side sem otimizações, Listagem e filtragem em memória sem paginação, Operações síncronas no storage podem impactar performance sem debounce</performance_bottlenecks>
-    <migration_status>Completo para Manifest V3, sem migrações pendentes, Não aplicável, Nenhuma migração em andamento, Compatível com Manifest V3, sem migrações pendentes, Suporte híbrido entre manifest v2 e v3 implementado, Nenhuma migração em andamento detectada, Migração de dados antigos para novo formato de gravação implementada, Estável, sem migrações em andamento, Não especificado, Função migrateActionsTimestamp implementada e em uso, Migração da última gravação implementada e acionável</migration_status>
+    <technical_debt>Build scripts lack modularization, Limited support for file upload capture, Manifest V3 migration required for future compatibility, Improve support for multiple frameworks simultaneously, Use of any in typing, Lack of robust error handling, Complex state management could be refactored to use context API or external state management, No memoization to avoid unnecessary re-renders, Improve error handling and fallback for browsers without exportFunction, Optimize local storage usage, Fix multiple mounting bug in Firefox, Maintain compatibility with multiple browser versions, Inline injected styles may impact performance, Limited optimization for very complex selectors, Incomplete drag-and-drop implementation, Hardcoded config for localhost and fixed port, Extensive config may hinder maintainability, Use of setInterval for polling could be replaced by more efficient events, No virtualization for large tables, Basic error handling, No mobile responsiveness, Optimize search for large recording volumes, Refactor legacy modules to full TypeScript, Refactor legacy modules to Clean Architecture</technical_debt>
+    <known_issues>Potential incompatibility of react-hot-loader with React 18+, Limitations in hover event capture in some contexts, Limitations in event capture within iframes, Possible race condition in state updates, Context menus may become desynchronized, Exclusive Chrome dependency, Possible update loop if onChange is unstable, Possible silent failure in tab communication, No explicit error handling in async calls, Possible silent failure in script execution without catch, Mouse events may be affected by external overlays, Dependency on external styles may cause visual failures, Possible incompatibility with unsupported browsers, TypeScript typing ignored in shadowRoot, Possible event loss at high frequency, Async sync may cause momentary inconsistencies, Possible failure locating DOM elements in custom environments, Possible failure detecting AUT frame in some tabs, No-cors mode limits failure detection in requests, Environment dependency for hot module replacement, Performance may drop in documents with many similar elements, Limitation in code generation for complex actions like drag and drop, API differences between Chrome and Firefox may cause incompatibilities, Host check disablement may cause security risks, Possible secrets leak if not managed correctly, System clock dependency may cause inconsistencies, Timeouts may cause intermittent failures in slow environments, Timeout for state reset may cause issues if component unmounts, Possible slowness with large data volumes, Possible ID collision under high concurrency, URL validation may be insufficient, Possible data loss if error during flushPendingSaves, Intermittent timeout issues in external calls, Intermittency in external calls under high load, Scrollbar customization limited to WebKit</known_issues>
+    <performance_bottlenecks>Slow build in large projects, High CPU usage in long recordings, Latency in browser API communication, Throttling applied to avoid excessive re-renders, Input and wheel events may generate high load, Polling for retrySelector may impact performance if maxRetries is high, Rendering large action lists may impact UI, Inline injection of multiple styles may increase render time, Combinatorial selector generation and multiple querySelectorAll validations, Use of innerText may impact performance on large elements, Active wait for service workers may impact total test time, Rendering long lists without pagination, Client-side filtering and rendering without optimizations, In-memory listing and filtering without pagination, Blocking synchronous operations avoided, but potential slowness if history grows large, Complex SQL queries without adequate indexes</performance_bottlenecks>
+    <migration_status>Simultaneous support for Manifest V2 and V3 indicates migration in progress, Complete for Manifest V3, no pending migrations, Hybrid support for manifest v2 and v3 implemented, Old data migration to new store implemented, migrateActionsTimestamp function implemented and in use, Last recording migration implemented and on-demand, Migration to TypeScript 5.0 completed</migration_status>
   </current_challenges>
   <team_preferences>
-    <code_review_focus>Preserve hot reload functionality, Code style consistency, performance, manutenibilidade, Clareza e legibilidade do código, Cobertura de testes, Manutenção da tipagem forte, Conformidade com padrões de código, Segurança no uso de permissões, Clareza na separação de responsabilidades entre scripts, Segurança das permissões, Qualidade dos scripts gerados, Consistência de estado, Validação de IDs de abas e frames, Manutenção da sincronização entre UI e estado, Segurança na validação de origem, Clareza na comunicação entre módulos, Consistência visual, Performance de renderização, Simplicidade do componente, Performance, Acessibilidade, Consistência de tipagem, Clareza na comunicação via props, Estilo e formatação, Manutenção da integridade dos dados e tratamento de erros, Consistência de estado, uso correto de hooks, tipagem segura, Tratamento de erros, Compatibilidade entre APIs, Clareza na renderização condicional, Uso correto de tipos, Manutenção da ordem das ações, Consistência com padrões, Clareza na separação de responsabilidades, Uso correto de hooks, Performance e acessibilidade, Clareza na tipagem, Ausência de efeitos colaterais, Verificação de uso correto do cleanUp, Garantia de não múltiplas instâncias, Evitar side effects, Consistência de hooks, tratamento de estado e mensagens Chrome, Consistência de estado, tratamento de erros, performance UI, Tratamento de erros silencioso, Uso correto de async/await, Manutenção da anonimidade, Consistência de estilos, Uso correto de HMR, Clareza na renderização do componente, Clareza na lógica de busca, Consistência de estilo, Clareza das abstrações, Robustez na geração de seletores, Importação correta de assets, Compatibilidade cross-browser, Clareza e simplicidade do código, Consistência de tipos, Clareza na modelagem de ações, Conformidade com padrões TS e React, Verificação de erros de build e warnings, Conformidade com padrão de código, Verificação de configuração correta do HMR e variáveis de ambiente, Configuração correta de aliases e loaders, Segurança no uso de secrets, Validação de tipos e imutabilidade, Cobertura de testes para casos de timestamp, Uso correto de mocks, Clareza nos testes, Cobertura de fluxo crítico, Manutenção da legibilidade, Feedback visual para interações, Clareza na manipulação de estado, Aderência a padrões React, Uso correto de classes condicionais, Validação de entradas, Consistência na geração de IDs, Consistência do singleton, Performance de debounce, Clareza na documentação</code_review_focus>
-    <documentation_requirements>Document config changes, documentar scripts de build, Documentação clara para APIs internas e uso da extensão, Documentação clara para configurações e testes, Documentação clara para APIs internas da extensão e uso dos scripts, Comentários explicativos em português, Documentação futura para APIs internas, Documentação clara para APIs de mensagem, Documentação mínima para componentes simples, Documentação clara de props e comportamento, JSDoc para componentes e funções, Documentação clara para funções públicas e serviços, Documentação clara de hooks e efeitos colaterais, Documentação clara em JSDoc para funções públicas, Documentar novos tipos de ações e componentes, Documentação clara para funções públicas e componentes, Documentação clara para componentes e funções complexas, Documentar funções globais e integração com Firefox, Documentar funções públicas e fluxos complexos, Documentação clara para hooks e componentes React, Documentação clara para hooks e componentes principais, Comentários simples e claros, Documentar componentes React com JSDoc, Documentação clara para funções públicas e opções de configuração, Documentação clara para métodos públicos e classes, Documentar critérios de seleção de atributos, Documentação clara para tipos e módulos, Documentar alias e limitações de compatibilidade, Documentar classes e enums com JSDoc, Documentação inline com JSDoc, Documentação mínima para scripts de build, Documentação clara para configuração do ambiente de desenvolvimento, Documentação mínima inline, foco em configuração clara, Uso consistente de JSDoc para funções públicas, Documentação clara para métodos públicos dos builders, Documentação mínima inline, foco em testes, Documentação JSDoc para componentes e funções, Comentários JSDoc para componentes e funções, Comentários claros em português, Uso consistente de JSDoc para métodos públicos, JSDoc para métodos públicos, JSDoc para interfaces e métodos públicos</documentation_requirements>
-    <communication_style>Clear and concise comments, comentários claros e objetivos, Comentários objetivos e explicativos, Uso de PRs para discussão, Comentários objetivos e informativos, Comentários objetivos e técnicos, uso de inglês para termos técnicos, Comentários objetivos e técnicos, Comentários claros e objetivos, uso de português para contexto, Comentários objetivos e claros, Comentários objetivos e em português, Comentários objetivos e técnicos, uso de português para contexto, PRs com descrição detalhada, Comentários objetivos e explicativos em português, Comentários objetivos e uso de inglês técnico para termos específicos, Comentários objetivos e explicativos, uso de português para contexto, Comentários explicativos em inglês e português, Uso de FIXME para pontos a melhorar, Comentários claros e objetivos, Comentários sucintos e objetivos, Comentários claros e objetivos em português, Uso de inglês para termos técnicos, Uso de emojis para logs de debug, Uso de emojis em logs para facilitar leitura</communication_style>
-    <decision_log>Opted for react-app preset for simplicity, Enabled react-hot-loader for dev experience, Escolha por TypeScript para segurança de tipos, Suporte multiplataforma (Chrome e Firefox), Adoção do ts-jest para testes TypeScript, Manter Manifest Version 2 até migração completa para V3, Adoção do Manifest V3 para maior segurança e performance, Uso de armazenamento local para estado compartilhado, Separação clara entre utilitários e lógica de gravação, Uso de mensagens para integração entre webapp e extensão, Uso de SVG para ícones para garantir escalabilidade, Uso de componentes funcionais para UI, Importação estática de assets, Uso de enum para tipos de script, Componente controlado para melhor integração, Uso de Playwright para geração de scripts automatizados, Uso de hooks para encapsular lógica de estado e persistência, Uso do Adapter Pattern para compatibilidade entre APIs, Uso de seletores Playwright para maior precisão, Filtragem de ações suportadas para evitar erros, Separação clara entre geração e apresentação de código, Uso de react-syntax-highlighter para UI, Uso de enums para tipos de ação e modos, Throttling para otimização de eventos, Uso de componente funcional para simplicidade e performance, Uso de shadow DOM para isolamento, Exposição global para controle externo, Uso de debounce para resize, Filtragem de eventos irrelevantes para performance, Uso de Shadow DOM para encapsulamento do botão na UI, Uso de React hooks para estado, separação clara entre UI e lógica, Uso do Google Analytics para coleta de eventos, Identificador anônimo para client ID, Adoção de HMR para acelerar desenvolvimento, Uso de penalidades para ordenar seletores, Fallbacks para garantir unicidade, Uso de classes abstratas para definir contratos de geração de scripts, Separação por framework via subclasses, Evitar uso de id quando inválido, Priorizar testIdSelector para testes, Uso de declarações de módulos para assets estáticos, Uso de alias para compatibilidade entre Chrome e Firefox, Uso de enums para garantir valores válidos, Separação clara entre tipos de ações, Uso de strict mode para evitar erros em produção, Remoção de chromeExtensionBoilerplate para evitar conflito em builds de produção, Uso de HotModuleReplacementPlugin para acelerar desenvolvimento, Uso de TerserPlugin sem mangling para facilitar debugging em produção, Separação entre migração e validação de timestamps para clareza e manutenção, Adoção do Builder Pattern para geração de scripts, Separação clara entre frameworks de automação, Uso de Playwright para testes end-to-end da extensão, Uso de React Functional Components com hooks, Suporte a múltiplas bibliotecas de automação via enum, Uso de TanStack Table para flexibilidade e performance, Uso de largura fixa para controle de layout em views específicas, Uso de facade para simplificar acesso ao storage, Geração de código para múltiplos frameworks, Uso do padrão Singleton para gerenciamento centralizado, Uso de interface para backend para permitir múltiplas implementações</decision_log>
+    <code_review_focus>Preserve hot reload functionality, Code style consistency, Performance, Maintainability, Clarity and readability, Test coverage, Strong typing, Conformance to code standards, Security in permission usage, Clear separation of responsibilities, Quality of generated scripts, State consistency, Tab and frame ID validation, UI and state sync, Origin validation security, Clear module communication, Visual consistency, Rendering performance, Component simplicity, Accessibility, Consistent props, Avoid unnecessary side effects, Clear async flow, Error handling, Responsibility separation, Correct persistence, API compatibility, Type checking, test coverage, clear conditional rendering, Correct use of hooks, Correct use of cleanUp, No multiple instances, Consistent hooks, state handling, and Chrome messages, Silent error handling, Correct use of async/await, Anonymity maintenance, Consistent styles, Correct HMR usage, Component modularity, Clear search logic, Clarity and readability of generated code, Type coverage, Correct use of waits, Selector prioritization clarity, Correct type usage, Consistent typing, Correct asset import, Cross-browser compatibility, Clarity and code simplicity, Consistent IDs, Correct async error handling, Proper Singleton pattern usage, Security, readability, and test coverage, Legibility</code_review_focus>
+    <documentation_requirements>Document config changes, Document build scripts, Clear documentation for internal APIs and extension usage, Clear documentation for configs and tests, Clear JSDoc for components and utilities, Inline comments in Portuguese, Clear documentation for message APIs, Clear documentation for props and behavior, JSDoc for components and functions, Clear documentation for hooks and side effects, Document global functions and Firefox integration, Clear documentation for public APIs and critical modules, Document alias and compatibility limitations, Clear documentation for each action type and its properties, Consistent JSDoc for public functions, Clear documentation for environment setup, Clear documentation for types and modules</documentation_requirements>
+    <communication_style>Clear and concise comments, Objective and explanatory comments, Use of PRs for discussion, Objective and technical comments, English for technical terms, Clear and objective comments, Portuguese for context, Detailed PR descriptions, Small, focused PRs, Use of PR templates, Emojis in logs for readability</communication_style>
+    <decision_log>Opted for react-app preset for simplicity, Enabled react-hot-loader for dev experience, Chose TypeScript for type safety, Multi-platform support (Chrome and Firefox), Adopted ts-jest for TypeScript tests, Support multiple manifest versions for cross-browser compatibility, Maintain Manifest V2 until full migration to V3, Adopted Manifest V3 for security and performance, Use local storage for shared state, Clear separation between utilities and recording logic, Use messages for webapp-extension integration, SVG for scalable icons, Functional components for UI, Static asset import, Fix ScriptType as Cypress for compatibility, Centralized persistence via RecordingService, Cypress as default library, Adapter Pattern for API compatibility, React functional components for performance and simplicity, Separation between code generation and presentation, react-syntax-highlighter for UI, Throttle for mousemove event optimization, Separation between action view and code, Functional component for simplicity and performance, Shadow DOM for isolation, Global exposure for external control, Debounce for resize, Event filtering for performance, Shadow DOM for ControlBar UI encapsulation, React hooks for state, Separation between UI and recording logic, Google Analytics for event collection, Anonymous client ID, HMR for faster development, Separation between global and specific styles, Selector penalties for ordering, Fallbacks to ensure uniqueness, Cypress as default framework, Builder Pattern for script generation, Avoid invalid IDs for selectors, Prioritize test and accessibility attributes, Module declarations for static assets, Alias for Chrome/Firefox compatibility, Enums for constant values, Strict mode to avoid production errors, Remove chromeExtensionBoilerplate to avoid build conflicts, HotModuleReplacementPlugin for faster development, TerserPlugin without mangling for easier production debugging, Separate migration and timestamp validation for clarity, Builder Pattern for Cypress script generation, Playwright for Chrome extension E2E tests, React Functional Components with hooks for local state, TanStack Table for flexibility and performance, Fixed width for layout control in specific views, Service Facade for storage abstraction, Integrated Cypress code generation, Singleton pattern for store, Debounce for save optimization, Repository pattern for data decoupling, NestJS for standardization, OAuth2 for authentication, Adopt dark mode as default visual</decision_log>
   </team_preferences>
   <api_specifications>
-    <api_style>REST para comunicação externa, Event-driven via Chrome extension messaging, Message Passing API via postMessage e chrome.runtime, Chrome Extensions Messaging API, Não aplicável (uso de APIs de armazenamento do navegador), Chrome Extensions API, WebExtensions API, Não aplicável (UI local), Não aplicável (módulo interno de captura), Chrome Extension Messaging API, Nenhuma API REST ou similar exposta diretamente, HTTP POST via fetch para Google Analytics Measurement Protocol, Função exportada como default, API funcional simples, Não aplicável (módulo utilitário), WebExtension API, Nenhuma API exposta diretamente, Não aplicável, Chrome Extension API, Playwright API, Não aplicável - componente UI, API interna baseada em métodos estáticos, não exposta via HTTP, Não aplicável (API local chrome.storage)</api_style>
-    <versioning_strategy>Versionamento semântico para APIs externas, Não aplicável, Sem versionamento explícito, Sem versionamento explícito para mensagens, Compatibilidade com manifest v2 e v3, Sem versionamento interno, gerenciado via npm, Manifest version via variável de ambiente MANIFEST_VERSION, Sem versionamento explícito no código de teste, Não especificado</versioning_strategy>
-    <response_formats>JSON, Objetos JSON simples para mensagens e armazenamento, Objetos JSON simples com propriedades source, type, code, actions, Objetos JSON simples, Não aplicável, Promises e callbacks padrão do Chrome API, Mensagens simples sem payload complexo, String contendo seletor CSS válido, Objetos JSON com seletores e texto, Promises JavaScript, JSON para exportação de gravações, Promises com tipos definidos</response_formats>
-    <rate_limiting>Limites impostos pelo serviço externo deploysentinel.com, Não implementado, Não aplicável, Não especificado, Nenhuma limitação explícita implementada, Debounce para limitar frequência de escrita</rate_limiting>
+    <api_style>REST for external communication, Event-driven via Chrome extension messaging, Message Passing API via postMessage and chrome.runtime, WebExtensions API</api_style>
+    <versioning_strategy>Semantic versioning for external APIs, Manifest version via MANIFEST_VERSION environment variable, URL-based versioning (/v1/, /v2/), Compatibility with manifest v2 and v3</versioning_strategy>
+    <response_formats>JSON, Simple JSON objects for messages and storage, Promises and standard Chrome API callbacks, application/json</response_formats>
+    <rate_limiting>Limits imposed by deploysentinel.com external service, Internal debounce to limit recording frequency, 1000 requests per minute per user</rate_limiting>
   </api_specifications>
   <deployment_context>
-    <environments>development, production, dev, staging, prod, Development, Production, Localhost (http://localhost/*), DeploySentinel (https://*.deploysentinel.com/*), Development (localhost), Production (Chrome Web Store), Desenvolvimento local, Produção via Chrome Web Store, localhost, deploysentinel.com, *.deploysentinel.com, Produção em navegador Chrome, Dev, Staging, Production via Chrome Extension, Ambiente browser, qualquer DOM compatível, development (localhost:PORT), Local development, Test environment, Staging, Não especificado, Produção em extensão Chrome</environments>
-    <deployment_method>Static hosting, CI/CD pipelines, Docker, Kubernetes, Chrome Web Store, Firefox Add-ons Marketplace, Chrome Web Store Extension, Publicação via Chrome Web Store, Chrome Extension package, CI/CD pipeline, Manual sideload, Distribuição via Chrome Web Store, Docker (provável), CI/CD pipelines, Browser extension injection, Chrome Web Store, manual sideload, Chrome Extension via Web Store, Chrome Extension packaging and publishing, Webpack Dev Server com HMR, Distribuído via npm como biblioteca JavaScript, Docker, CI/CD pipelines, WebExtension packaging, CI/CD pipeline com deploy automatizado, Local Node.js server, Build via Webpack para extensão Chrome, Extensão Chrome carregada localmente, Playwright executando Chromium headful, Containerized React app (Docker) or static hosting, Não especificado</deployment_method>
-    <environment_variables>MANIFEST_VERSION, URLs autorizadas para comunicação externa, Não aplicável, Nenhuma explícita, CHROME_EXTENSION_ID, API_KEYS (externos), Não aplicável para este módulo específico, Não aplicável diretamente, Não explícito no código analisado, Nenhuma variável sensível exposta no código, Nenhum variável sensível exposta no código, Nenhuma variável sensível diretamente usada, BABEL_ENV, NODE_ENV, ASSET_PATH, PORT, BABEL_ENV=development, NODE_ENV=development, ASSET_PATH=/, PORT (definido em ./env), npm_package_version, .env.local, .env.development.local, .env.test.local, .env.production.local, Não especificados no componente, Não especificado</environment_variables>
-    <infrastructure_constraints>Limitações das APIs de extensão dos navegadores, Necessidade de builds separados para Chrome e Firefox, Limitação a Manifest Version 2, Permissões restritas pelo navegador, Limitações do Manifest V3 e APIs do Chrome, Limitação ao ambiente de navegador Chrome, Dependência da API Chrome Extensions, Execução limitada ao ambiente do navegador Chrome, Limitações do ambiente de extensão Chrome, sem backend dedicado, Dependência do ambiente de navegador com suporte a chrome.storage, Limitações do ambiente de extensão do navegador, Dependência de APIs do navegador para armazenamento e eventos, Dependência de APIs específicas do navegador, Limitação a ambientes que suportem shadow DOM, Limitações do ambiente Chrome Extension, armazenamento local limitado, Limitações do ambiente de extensão Chrome e compatibilidade com browsers, Limitações do ambiente de extensão do navegador, APIs restritas, Dependência de ambiente DOM e suporte a querySelectorAll, Execução em ambiente Node.js compatível, Limitações das APIs suportadas por cada navegador, Necessita Node.js ambiente local, porta disponível para servidor, Compatibilidade com Chrome Extension Manifest v3, Necessidade de ambiente com Chromium instalado, Permissões para carregar extensões locais, Requer conexão para acesso ao RecordingService, Não especificado, Limitação de armazenamento local do navegador</infrastructure_constraints>
+    <environments>development, staging, production, test environment, Localhost (http://localhost/*), DeploySentinel (https://*.deploysentinel.com/*), Production (Chrome Web Store), Dev, Staging, Production via Chrome Extension</environments>
+    <deployment_method>CI/CD pipelines, Chrome Web Store, Firefox Add-ons Marketplace, Static hosting, Docker, Kubernetes, WebExtension packaging, Manual sideload for local development</deployment_method>
+    <environment_variables>MANIFEST_VERSION, NODE_ENV, PUBLIC_URL, ASSET_PATH, PORT, CHROME_EXTENSION_ID, API_KEYS, DATABASE_URL, REDIS_URL, JWT_SECRET, STRIPE_API_KEY, AWS_S3_BUCKET</environment_variables>
+    <infrastructure_constraints>Browser extension API limitations, Separate builds required for Chrome and Firefox, Manifest V3 and Chrome API limitations, Chrome Extension environment limitations, Shadow DOM support required, chrome.storage.local storage limit (~5MB), TLS required, Memory limit per container: 512MB, Max 100 simultaneous DB connections</infrastructure_constraints>
   </deployment_context>
 </system_architecture>
 
@@ -124,19 +124,19 @@ Processo de implementação estruturado:
   <relevant_files>
     <directory path=".">
       <file>
-        <path>src/pages/Common/ScriptTypeSelect.tsx</path>
-        <name>ScriptTypeSelect.tsx</name>
-        <summary>Este componente React funcional, ScriptTypeSelect, oferece uma interface de seleção para diferentes tipos de scripts automatizados, especificamente Playwright, Puppeteer e Cypress, que são bibliotecas populares para automação de testes end-to-end. Seu comportamento central consiste em renderizar um elemento &lt;select&gt; estilizado que reflete o valor atual selecionado e dispara uma callback onChange ao alterar a seleção, permitindo a comunicação do estado selecionado para componentes pais. O componente é configurável via props para personalização visual (cor, tamanho da fonte) e exibição de descrições curtas, facilitando sua integração em interfaces de usuário que demandam seleção clara e controlada de tipos de script. Não mantém estado interno, funcionando como um componente controlado, e depende do tipo ScriptType importado para garantir a tipagem correta dos valores selecionados. Essa abordagem modular e declarativa habilita reutilização e consistência na escolha de tipos de script em aplicações que envolvem automação de testes, promovendo clareza e controle no fluxo de dados entre componentes.</summary>
+        <path>src/pages/Common/Icon.tsx</path>
+        <name>Icon.tsx</name>
+        <summary>Este componente React funcional renderiza um ícone SVG que representa um círculo com um gradiente linear e um path branco interno, fornecendo um elemento visual reutilizável para interfaces web. Ele não mantém estado nem produz efeitos colaterais, focando exclusivamente na renderização visual escalável e estilizada. O componente é exportado como padrão para fácil integração em projetos React, garantindo consistência visual e simplicidade de uso.</summary>
         <properties>
           <property>
             <name>project_metadata</name>
             <subProperty>name</subProperty>
-            <values>Automated Script Selector, Interface para seleção de tipos de script de automação</values>
+            <values>React Icon Component, Componente de ícone SVG para interface web</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>domain</subProperty>
-            <values>Automação de Testes, Test Automation, End-to-End Testing</values>
+            <values>Frontend Development, UI Components, React</values>
           </property>
           <property>
             <name>project_metadata</name>
@@ -146,12 +146,12 @@ Processo de implementação estruturado:
           <property>
             <name>project_metadata</name>
             <subProperty>critical_business_rules</subProperty>
-            <values>Seleção válida de ScriptType deve ser garantida, Callback onChange deve ser chamada com valor correto</values>
+            <values>Consistência visual do ícone, Compatibilidade com React 18+, Renderização correta do SVG</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.x, JavaScript ES6+</values>
+            <values>JavaScript ES6+, React 18</values>
           </property>
           <property>
             <name>technical_stack</name>
@@ -166,22 +166,22 @@ Processo de implementação estruturado:
           <property>
             <name>architecture_patterns</name>
             <subProperty>design_pattern</subProperty>
-            <values>Component-Based Architecture, Controlled Component Pattern</values>
+            <values>Component-Based Architecture</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>folder_structure</subProperty>
-            <values>src/components - componentes UI reutilizáveis, src/types - definições de tipos e enums</values>
+            <values>src/components/Icon - componente isolado para reutilização visual</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>naming_conventions</subProperty>
-            <values>PascalCase para componentes e tipos, camelCase para props e variáveis</values>
+            <values>PascalCase para componentes React, camelCase para props e variáveis</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>module_boundaries</subProperty>
-            <values>Componentes isolados com props para comunicação, Tipos importados para garantir consistência</values>
+            <values>Componentes isolados sem dependências externas além do React</values>
           </property>
           <property>
             <name>code_standards</name>
@@ -191,7 +191,7 @@ Processo de implementação estruturado:
           <property>
             <name>code_standards</name>
             <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras padrão Airbnb</values>
+            <values>ESLint com regras padrão React</values>
           </property>
           <property>
             <name>code_standards</name>
@@ -201,37 +201,37 @@ Processo de implementação estruturado:
           <property>
             <name>code_standards</name>
             <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções e componentes</values>
+            <values>Comentários inline simples, sem JSDoc explícito</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
+            <values>JavaScript sem tipagem estática, Possível uso futuro de TypeScript</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
+            <values>Jest 29, React Testing Library</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>test_structure</subProperty>
-            <values>__tests__ folders próximos aos componentes</values>
+            <values>Testes localizados em __tests__ ou pasta components/__tests__</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
+            <values>Cobertura mínima de 80% para componentes visuais</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>test_patterns</subProperty>
-            <values>AAA (Arrange-Act-Assert)</values>
+            <values>Snapshot testing para componentes visuais</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>mocking_approach</subProperty>
-            <values>Mocks para callbacks e tipos</values>
+            <values>Mocks para dependências externas se houver</values>
           </property>
           <property>
             <name>development_workflow</name>
@@ -246,87 +246,92 @@ Processo de implementação estruturado:
           <property>
             <name>development_workflow</name>
             <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Checks automáticos</values>
+            <values>Code review obrigatório, Checks automáticos de lint e testes</values>
           </property>
           <property>
             <name>development_workflow</name>
             <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Test, Lint, Deploy</values>
+            <values>Build, lint, test e deploy automatizados</values>
           </property>
           <property>
             <name>commands</name>
             <subProperty>setup</subProperty>
-            <values>npm install</values>
+            <values>npm install ou yarn install</values>
           </property>
           <property>
             <name>commands</name>
             <subProperty>install</subProperty>
-            <values>npm install</values>
+            <values>npm install, yarn install</values>
           </property>
           <property>
             <name>commands</name>
             <subProperty>dev</subProperty>
-            <values>npm run dev</values>
+            <values>npm start, yarn start</values>
           </property>
           <property>
             <name>commands</name>
             <subProperty>test</subProperty>
-            <values>npm test</values>
+            <values>npm test, yarn test</values>
           </property>
           <property>
             <name>commands</name>
             <subProperty>build</subProperty>
-            <values>npm run build</values>
+            <values>npm run build, yarn build</values>
           </property>
           <property>
             <name>commands</name>
             <subProperty>lint</subProperty>
-            <values>npm run lint</values>
+            <values>npm run lint, yarn lint</values>
           </property>
           <property>
             <name>commands</name>
             <subProperty>format</subProperty>
-            <values>npm run format</values>
+            <values>npm run format, yarn format</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>response_time_limits</subProperty>
+            <values>Renderização instantânea do componente</values>
           </property>
           <property>
             <name>performance_requirements</name>
             <subProperty>optimization_priorities</subProperty>
-            <values>Baixa latência na renderização UI</values>
+            <values>Baixa complexidade, foco em renderização rápida</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>scalability_considerations</subProperty>
+            <values>Componente leve e reutilizável para múltiplas instâncias</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>critical_dependencies</subProperty>
-            <values>react, ScriptType enum</values>
+            <values>React 18</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>version_constraints</subProperty>
-            <values>React 18.x, TypeScript 5.x</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>../types (ScriptType)</values>
+            <values>React &gt;=18.0.0</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>code_review_focus</subProperty>
-            <values>Consistência de tipagem, Clareza na comunicação via props, Estilo e formatação</values>
+            <values>Consistência visual, Performance de renderização, Simplicidade do componente</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>documentation_requirements</subProperty>
-            <values>JSDoc para componentes e funções</values>
+            <values>Documentação mínima para componentes simples</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e técnicos</values>
+            <values>Comentários objetivos e claros</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>decision_log</subProperty>
-            <values>Uso de enum para tipos de script, Componente controlado para melhor integração</values>
+            <values>Uso de SVG para ícones para garantir escalabilidade</values>
           </property>
           <property>
             <name>deployment_context</name>
@@ -341,1030 +346,19 @@ Processo de implementação estruturado:
         </properties>
       </file>
       <file>
-        <path>src/pages/Common/endRecording.ts</path>
-        <name>endRecording.ts</name>
-        <summary>Este arquivo implementa a função assíncrona endRecording, responsável por finalizar uma sessão de gravação de ações do usuário em um ambiente de browser extension. O código recupera dados armazenados localmente relacionados à gravação atual, verifica se há ações registradas e, em caso afirmativo, persiste essa gravação no histórico utilizando um serviço dedicado. Além disso, obtém a URL da aba ativa para contextualizar a gravação, limpa o armazenamento local para preparar futuras gravações e gera um script Playwright a partir das ações capturadas, enviando-o para uma aba específica da aplicação web. O comportamento central foca na orquestração do fluxo de dados entre armazenamento local, serviços de persistência e comunicação interprocessos, garantindo a integridade e continuidade do processo de gravação e reprodução de ações automatizadas.</summary>
+        <path>src/pages/Common/Logo.tsx</path>
+        <name>Logo.tsx</name>
+        <summary>Este arquivo define um componente React funcional chamado Logo, responsável por renderizar uma imagem SVG que representa a marca DeploySentinel. O componente importa o arquivo SVG do logo e o exibe com dimensões fixas de altura e largura automática, garantindo que o usuário não possa selecionar a imagem (userSelect: &apos;none&apos;). O comportamento é simples e focado em apresentar a identidade visual da aplicação de forma consistente, sem manipulação de estado ou efeitos colaterais. A integração ocorre via importação do recurso estático e exportação padrão do componente, facilitando seu uso em outras partes da aplicação, contribuindo para a uniformidade visual e reforço da marca no frontend.</summary>
         <properties>
           <property>
             <name>project_metadata</name>
             <subProperty>name</subProperty>
-            <values>Browser Automation Recorder</values>
+            <values>DeploySentinel, Interface para monitoramento e deploy de aplicações</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>domain</subProperty>
-            <values>Browser Extension, Automation, Testing, Playwright</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Production</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Persistência correta das gravações, Integridade dos dados de ações, Comunicação confiável entre abas</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.0</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Chrome Extensions API</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Service Layer, Modular Architecture</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>utils - funções utilitárias, builders - geração de código, storage - serviços de persistência, types - definições de tipos</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>camelCase para funções e variáveis, PascalCase para classes e tipos, snake_case evitado</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>utils não dependem de storage, builders isolados para geração de código, storage encapsula persistência</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide adaptado para TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>.eslintrc.json com regras para async/await, no-console warnings</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções públicas</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>tests/unit para testes unitários, tests/integration para testes de integração</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>&gt;= 80% cobertura</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Arrange-Act-Assert (AAA)</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para APIs do Chrome, Fixtures para dados de gravação</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Checks de lint e testes</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Test, Lint, Deploy</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>OAuth2 via Chrome Identity API</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Permissões restritas para acesso a abas e storage</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>URLs das abas, dados de gravação de usuário</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Content-Security-Policy configurado na extensão</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Criptografia em trânsito via HTTPS, armazenamento local não criptografado</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Persistência e envio de mensagens em menos de 500ms</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Velocidade de resposta priorizada sobre uso de memória</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Uso de localStorage para cache temporário</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Escalabilidade limitada ao contexto do browser extension</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Console.error para logging de erros</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Logs básicos no console, sem sistema centralizado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Nenhum monitoramento automatizado detectado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Tentativa de captura de erros na persistência, sem fallback explícito</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>Chrome Extensions API, RecordingService, genCode</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>TypeScript &gt;=5.0, Chrome API compatível com Manifest V3</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>./utils, ../builders, ../storage, ../types</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Tratamento de erros e logging insuficientes</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Dependência da API do Chrome pode causar falhas em permissões</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Nenhum gargalo crítico identificado</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Compatível com Manifest V3, sem migrações pendentes</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Manutenção da integridade dos dados e tratamento de erros</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentação clara para funções públicas e serviços</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e em português</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de Playwright para geração de scripts automatizados</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>Chrome Extensions Messaging API</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Sem versionamento explícito para mensagens</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>Objetos JSON simples</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>Development, Production</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Chrome Web Store, Manual sideload</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environment_variables</subProperty>
-            <values>CHROME_EXTENSION_ID, API_KEYS (externos)</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Limitações do ambiente de extensão Chrome, sem backend dedicado</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/Common/hooks.ts</path>
-        <name>hooks.ts</name>
-        <summary>Este arquivo contém hooks React customizados que gerenciam preferências do usuário e estado de gravação, utilizando localStorage e chrome.storage para persistência e sincronização. As funções principais são hooks que mantêm estados reativos para a biblioteca preferida, posição da barra, estado de gravação e configurações de timing, garantindo que as preferências sejam carregadas ao iniciar e atualizadas tanto localmente quanto em armazenamento persistente. O código integra-se com APIs de armazenamento do navegador e utiliza padrões de hooks para encapsular lógica de estado e efeitos colaterais, habilitando uma experiência de usuário consistente e sincronizada em múltiplas sessões e abas. A abordagem modular e o uso de tipos TypeScript promovem segurança e clareza na manipulação dos dados e configurações.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>React User Preferences and Recording State Management</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Web Application, User Preferences, State Synchronization, Browser Extensions</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Production</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Persistência correta das preferências do usuário, Sincronização consistente do estado de gravação entre abas, Integridade dos dados armazenados</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.x</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>React 18.x</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>databases</subProperty>
-            <values>localStorage (browser), chrome.storage (browser extension API)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Chrome Extension APIs</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Custom React Hooks, Observer Pattern</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>src/hooks - custom hooks, src/utils - utilitários para armazenamento, src/types - definições de tipos TypeScript</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>camelCase para funções e variáveis, PascalCase para tipos e componentes, prefixo use para hooks</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre hooks, utils e tipos, Dependência unidirecional dos hooks para utils e types</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide adaptado para TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para React e TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções e hooks</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>tests/hooks para testes unitários dos hooks</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Arrange-Act-Assert (AAA)</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mock de localStorage e chrome.storage APIs</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Checks de lint e testes</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, lint, test e deploy automatizados</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>Não aplicável (gerenciamento local de estado)</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Nenhum dado sensível armazenado</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Operações assíncronas rápidas para leitura e escrita em localStorage</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Baixa latência na atualização de estado, Minimizar leituras e escritas desnecessárias</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Uso de estado React como cache local para dados persistidos</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Gerenciamento eficiente de listas de ações para evitar crescimento excessivo</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Não implementado explicitamente no código fornecido</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Não implementado explicitamente</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Fallback para valores padrão em caso de ausência de dados</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>localStorageGet/Set, chrome.storage API, React</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>deprecated_packages</subProperty>
-            <values>Nenhum identificado</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>React 18.x, TypeScript 5.x</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>./utils, ../types, ../types/config</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Ausência de tratamento de erros nas operações assíncronas</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Possível inconsistência em sincronização multi-aba sem lock</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Crescimento potencial da lista de ações armazenadas</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Consistência de estado, uso correto de hooks, tipagem segura</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentação clara de hooks e efeitos colaterais</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e técnicos, uso de português para contexto</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de hooks para encapsular lógica de estado e persistência</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>Não aplicável (uso de APIs de armazenamento do navegador)</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>development, staging, production</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Docker, CI/CD pipelines</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environment_variables</subProperty>
-            <values>Não aplicável para este módulo específico</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Dependência do ambiente de navegador com suporte a chrome.storage</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/Common/utils.ts</path>
-        <name>utils.ts</name>
-        <summary>Este arquivo de código é um módulo utilitário para gerenciamento de estado e operações relacionadas à gravação de sessões em extensões de navegador, utilizando APIs do Chrome e compatibilidade com o namespace browser para manifest v2 e v3. Ele oferece funções para iniciar e finalizar gravações, armazenar preferências do usuário, criar abas, executar scripts em contextos específicos de abas e frames, além de identificar e interagir com ambientes de teste Cypress. O código manipula armazenamento local para persistência de dados, controla o estado da gravação e facilita a execução de scripts de limpeza, garantindo integração fluida com o ciclo de vida da extensão e a interface do navegador. A abordagem híbrida para execução de scripts e acesso à API demonstra preocupação com compatibilidade e robustez em diferentes versões do manifest, enquanto o uso de promises e async/await assegura operações assíncronas controladas e confiáveis.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>Browser Recording Extension, Extensão para gravação e controle de sessões em navegador</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Browser Extensions, Automated Testing, Cypress Integration</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Manutenção</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Estado de gravação deve ser consistente, Scripts devem ser executados apenas em frames autorizados, Identificador de instalação deve ser único e persistente</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x, JavaScript ES2020</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>Chrome Extensions API, WebExtensions API</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>databases</subProperty>
-            <values>chrome.storage.local (armazenamento local do navegador)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Chrome Browser API, Mozilla Browser API (compatibilidade)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Adapter Pattern, Modular Functional Design</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>src/utils - funções utilitárias para armazenamento e execução de scripts, src/background - controle do estado da extensão e comunicação com abas</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>camelCase para funções e variáveis, PascalCase para tipos e interfaces, prefixo set para funções que alteram estado</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre manipulação de armazenamento, execução de scripts e controle de abas</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>.eslintrc.json com regras para TypeScript e JavaScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão para espaçamento e aspas simples</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções públicas</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript com checagem de tipos explícita</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>tests/unit para testes unitários das funções utilitárias</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>AAA (Arrange, Act, Assert)</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mock de APIs chrome e browser usando jest-mock</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Revisão obrigatória e testes automatizados aprovados</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, lint, test e deploy automatizados</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>Nenhum método explícito, depende do contexto da extensão</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Execução de scripts restrita a abas e frames autorizados</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Identificadores únicos armazenados localmente, sem dados pessoais</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Gerenciados pelo navegador, não aplicável diretamente</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Nenhuma criptografia explícita no código</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Operações assíncronas rápidas para não bloquear UI</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Baixa latência na execução de scripts e armazenamento</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Uso de chrome.storage.local para persistência local</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Escalabilidade limitada ao contexto da extensão e navegador</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Erros lançados como Exceptions padrão em promises</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Não implementado explicitamente no código fornecido</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Rejeição de promises para tratamento externo</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>chrome API, browser API para compatibilidade</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>deprecated_packages</subProperty>
-            <values>Manifest v2 APIs em processo de migração</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>Compatibilidade com manifest v2 e v3</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>Módulos utilitários internos para armazenamento e execução</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Migração completa para manifest v3, Tratamento de erros mais robusto</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Possível falha silenciosa em execução de scripts sem catch</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Latência na comunicação com APIs do navegador</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Suporte híbrido entre manifest v2 e v3 implementado</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Consistência de estado, Tratamento de erros, Compatibilidade entre APIs</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentação clara em JSDoc para funções públicas</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e técnicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso do Adapter Pattern para compatibilidade entre APIs</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>Chrome Extensions API, WebExtensions API</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Compatibilidade com manifest v2 e v3</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>Promises e callbacks padrão do Chrome API</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>Desenvolvimento local, Produção em navegador Chrome</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Distribuição via Chrome Web Store</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environment_variables</subProperty>
-            <values>Não aplicável diretamente</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Limitações do ambiente de extensão do navegador</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/Content/ActionList.tsx</path>
-        <name>ActionList.tsx</name>
-        <summary>Este arquivo React implementa um componente funcional que exibe uma lista de ações automatizadas de interação com a interface de usuário, como cliques, hovers, inputs, redimensionamentos e outras operações típicas de testes end-to-end. O componente ActionList filtra e renderiza sequencialmente ações suportadas, enquanto o ActionListItem traduz cada ação em uma descrição textual detalhada, utilizando seletores otimizados para Playwright quando necessário. O código foca em apresentar de forma clara e legível o passo a passo das ações, facilitando a compreensão e revisão de scripts automatizados, integrando-se a um sistema maior de geração e execução de scripts de teste ou automação de UI. A abordagem modular e o uso de tipos garantem robustez e extensibilidade para suportar múltiplos tipos de ações e cenários de interação.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>UI Automation Script Renderer</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Automação de testes, Test Automation, End-to-End Testing, Playwright</values>
+            <values>DevOps, Frontend, React, Branding</values>
           </property>
           <property>
             <name>project_metadata</name>
@@ -1374,229 +368,17 @@ Processo de implementação estruturado:
           <property>
             <name>project_metadata</name>
             <subProperty>critical_business_rules</subProperty>
-            <values>Ações devem ser exibidas na ordem correta, Somente ações suportadas devem ser renderizadas, Seletores devem ser precisos para garantir identificação correta dos elementos</values>
+            <values>Consistência visual da marca, Performance mínima no carregamento do logo</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x, JavaScript ES6+</values>
+            <values>JavaScript ES6+, React 18</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>frameworks</subProperty>
-            <values>React 18.x</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Playwright (via ScriptType integration)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Component-Based Architecture, Declarative UI</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>types/ - definições de tipos e enums, builders/ - funções auxiliares para construção de seletores, components/ - componentes React reutilizáveis, styles/ - arquivos CSS</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>PascalCase para componentes React, camelCase para funções e variáveis, UPPER_SNAKE_CASE para enums e constantes</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre tipos, builders e componentes, Componentes React isolados da lógica de seleção</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para React e TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções e componentes</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>Testes localizados em __tests__ próximos aos componentes</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Given-When-Then</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para funções auxiliares e tipos</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Revisão obrigatória e testes aprovados</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Test, Lint, Deploy</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Password inputs são mascarados na exibição</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Clareza e legibilidade da UI priorizadas sobre performance extrema</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>React, Playwright selectors, Type definitions</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>../types, ../builders/selector</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Clareza na renderização condicional, Uso correto de tipos, Manutenção da ordem das ações</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentar novos tipos de ações e componentes</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e técnicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de seletores Playwright para maior precisão, Filtragem de ações suportadas para evitar erros</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/Content/CodeGen.tsx</path>
-        <name>CodeGen.tsx</name>
-        <summary>Este componente React denominado CodeGen tem como propósito principal renderizar um bloco de código JavaScript formatado e estilizado, gerado dinamicamente a partir de um conjunto de ações (actions) e um tipo de biblioteca (library). Utilizando a biblioteca react-syntax-highlighter com o tema vscDarkPlus, ele transforma dados de entrada (actions) em código fonte legível e destacado, facilitando a visualização e análise do código gerado. O componente é altamente configurável, permitindo a customização de estilos CSS inline, e integra-se a um sistema maior onde a geração de código é abstraída pela função genCode, promovendo reutilização e modularidade. Seu comportamento é puramente funcional e declarativo, sem efeitos colaterais ou estado interno, focado em apresentar o resultado da transformação de dados para o usuário final ou para etapas subsequentes do fluxo de desenvolvimento.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>Code Generation UI, Visualização e geração dinâmica de código</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Desenvolvimento de software, Automação de geração de código, Developer Tools</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Estabilização</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Geração correta e precisa do código, Manter integridade do código gerado, Renderização fiel do código para análise</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x, JavaScript ES6+</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>React 18.x</values>
+            <values>React 18</values>
           </property>
           <property>
             <name>technical_stack</name>
@@ -1606,22 +388,22 @@ Processo de implementação estruturado:
           <property>
             <name>architecture_patterns</name>
             <subProperty>design_pattern</subProperty>
-            <values>Component-Based Architecture, Separation of Concerns</values>
+            <values>Component-Based Architecture</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>folder_structure</subProperty>
-            <values>src/components - UI components, src/builders - lógica de geração de código, src/types - definições de tipos</values>
+            <values>pages: componentes de tela, Popup: componentes modais ou popups, assets: arquivos estáticos como imagens e SVGs</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>naming_conventions</subProperty>
-            <values>PascalCase para componentes React, camelCase para funções e variáveis, Arquivos com extensão .tsx para componentes</values>
+            <values>PascalCase para componentes React, camelCase para variáveis e funções, snake-case para arquivos estáticos</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre UI (components) e lógica de negócio (builders), Tipos compartilhados via pasta types</values>
+            <values>Separação clara entre componentes visuais e assets estáticos, Importação relativa para recursos locais</values>
           </property>
           <property>
             <name>code_standards</name>
@@ -1631,12 +413,12 @@ Processo de implementação estruturado:
           <property>
             <name>code_standards</name>
             <subProperty>linting_rules</subProperty>
-            <values>.eslintrc.json com regras para React e TypeScript</values>
+            <values>.eslintrc.js com regras para React e JSX</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão para React/TypeScript</values>
+            <values>Prettier com configuração padrão para React</values>
           </property>
           <property>
             <name>code_standards</name>
@@ -1646,32 +428,32 @@ Processo de implementação estruturado:
           <property>
             <name>code_standards</name>
             <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
+            <values>PropTypes ou TypeScript (não aplicável neste arquivo)</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
+            <values>Jest 29, React Testing Library</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>test_structure</subProperty>
-            <values>__tests__ folders próximos aos componentes, Testes unitários para builders e componentes</values>
+            <values>Testes localizados em __tests__ ou pasta __specs__ ao lado do componente</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
+            <values>Cobertura mínima de 80% para componentes visuais</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>test_patterns</subProperty>
-            <values>AAA (Arrange-Act-Assert)</values>
+            <values>Snapshot Testing, Renderização e acessibilidade</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>mocking_approach</subProperty>
-            <values>Mock de funções genCode para isolar testes UI</values>
+            <values>Mock de assets estáticos para testes</values>
           </property>
           <property>
             <name>development_workflow</name>
@@ -1730,43 +512,53 @@ Processo de implementação estruturado:
           </property>
           <property>
             <name>performance_requirements</name>
+            <subProperty>response_time_limits</subProperty>
+            <values>Renderização instantânea do logo</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
             <subProperty>optimization_priorities</subProperty>
-            <values>Renderização rápida, Baixa latência na geração de código</values>
+            <values>Minimizar bundle size, Carregamento rápido</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>caching_strategy</subProperty>
+            <values>Cache do navegador para assets estáticos</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>critical_dependencies</subProperty>
-            <values>react-syntax-highlighter, genCode function</values>
+            <values>react, logo.svg</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>version_constraints</subProperty>
-            <values>React &gt;=18.0.0, TypeScript &gt;=4.0</values>
+            <values>React 18.x</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>internal_packages</subProperty>
-            <values>../builders, ../types</values>
+            <values>../../pages/Popup/logo.svg</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>code_review_focus</subProperty>
-            <values>Clareza e legibilidade do código, Cobertura de testes, Consistência com padrões</values>
+            <values>Consistência visual, Performance, Acessibilidade</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>documentation_requirements</subProperty>
-            <values>Documentação clara para funções públicas e componentes</values>
+            <values>Documentação clara de props e comportamento</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e informativos, PRs com descrição detalhada</values>
+            <values>Comentários objetivos e claros</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>decision_log</subProperty>
-            <values>Separação clara entre geração e apresentação de código, Uso de react-syntax-highlighter para UI</values>
+            <values>Uso de componentes funcionais para UI, Importação estática de assets</values>
           </property>
           <property>
             <name>deployment_context</name>
@@ -1776,356 +568,24 @@ Processo de implementação estruturado:
           <property>
             <name>deployment_context</name>
             <subProperty>deployment_method</subProperty>
-            <values>Docker, CI/CD pipelines</values>
+            <values>Docker, CI/CD pipeline</values>
           </property>
         </properties>
       </file>
       <file>
-        <path>src/pages/Content/ControlBar.tsx</path>
-        <name>ControlBar.tsx</name>
-        <summary>Este arquivo React implementa um componente ControlBar que atua como uma interface de gravação e visualização de ações do usuário em uma aplicação web, focado em automação de testes. Ele captura eventos de interação do usuário, como cliques, inputs, navegação e screenshots, armazenando-os como ações estruturadas que podem ser exibidas em formato de código ou lista de ações. O componente gerencia estados complexos para controlar o fluxo da gravação, exibição de ações, seleção de bibliotecas de teste (ex: Playwright, Cypress) e posicionamento da barra de controle, além de integrar-se com módulos auxiliares para geração de seletores e código automatizado. A interface também oferece feedback visual, como destaque de elementos DOM e confirmações de cópia e captura de tela, garantindo uma experiência interativa e responsiva para o usuário final. A arquitetura modular e o uso de hooks customizados facilitam a manutenção e extensão do componente dentro de um sistema maior de gravação e geração de scripts de teste automatizados.</summary>
+        <path>src/pages/Popup/Popup.tsx</path>
+        <name>Popup.tsx</name>
+        <summary>Este arquivo implementa um componente React chamado Popup que serve como interface principal para um sistema de gravação e geração de scripts de teste automatizados, focado em Cypress. Ele gerencia o estado da aplicação para alternar entre diferentes modos, como gravação ativa, visualização do histórico de gravações, detalhes de gravações específicas e exibição do último teste gerado. O componente integra funcionalidades para iniciar e finalizar gravações, selecionar bibliotecas preferidas para geração de código, copiar scripts gerados para a área de transferência e navegar entre diferentes visualizações. Além disso, o código interage com APIs do navegador para manipular abas, executa scripts injetados para captura de ações do usuário e mantém um armazenamento local para persistência e migração de dados. A arquitetura modularizada e o uso de hooks customizados facilitam a manutenção do estado e a integração com outras partes do sistema, garantindo uma experiência fluida para o usuário na criação e gerenciamento de testes automatizados baseados em ações reais no navegador.</summary>
         <properties>
           <property>
             <name>project_metadata</name>
             <subProperty>name</subProperty>
-            <values>UI Test Recorder, Automated Test Script Generator</values>
+            <values>Cypress Test Recorder, Ferramenta para gravação e geração de scripts de teste automatizados</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>domain</subProperty>
-            <values>Automated Testing, Web Automation, Quality Assurance</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Production, Stable Release</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Accurate capture of user actions, Secure handling of sensitive inputs, Reliable code generation for multiple test frameworks</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.0, JavaScript ES6+</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>React 18.2</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Chrome Storage API</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Component-Based Architecture, Observer Pattern, Hook-based State Management</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>/components - UI components, /builders - selector and code generation logic, /Common - shared hooks and utilities, /types - TypeScript type definitions</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>PascalCase for components, camelCase for functions and variables, UPPER_SNAKE_CASE for enums</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>UI components separated from business logic, Builders isolated for selector and code generation, Common utilities shared across modules</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint with React plugin, TypeScript strict mode enabled</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier with default settings</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc for functions and components</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript typing</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>__tests__ folders colocated com componentes, Test files com extensão .test.tsx</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>&gt;= 80% cobertura de código</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Arrange-Act-Assert (AAA)</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para APIs externas e módulos de gravação</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Checks de lint e testes</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Lint, Test, Deploy automático</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run start</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm run test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>Não aplicável (foco em gravação local)</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Inputs de senha são mascarados na exibição</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Atualização da UI com throttling para eventos de mouse (100ms)</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Responsividade da interface, Minimizar impacto de listeners</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Componentização para facilitar extensão e manutenção</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Não explícito no código analisado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Não explícito no código analisado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Não explícito no código analisado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Listeners removidos corretamente para evitar leaks</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>Recorder, Selector builders, React, Chrome Storage API</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>React 18.x, TypeScript 5.x</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>./recorder, ./Highlighter, ./ActionList, ./CodeGen, ../builders</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Gerenciamento complexo de estado pode crescer com novas features</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Dependência de APIs específicas do navegador pode limitar portabilidade</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Eventos de mouse frequentes mitigados por throttling</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Nenhuma migração em andamento detectada</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Clareza na separação de responsabilidades, Uso correto de hooks, Performance e acessibilidade</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentação clara para componentes e funções complexas</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e explicativos em português</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de enums para tipos de ação e modos, Throttling para otimização de eventos</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>Não aplicável (UI local)</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>Development, Production</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Docker (provável), CI/CD pipelines</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environment_variables</subProperty>
-            <values>Não explícito no código analisado</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Dependência de APIs do navegador para armazenamento e eventos</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/Content/Highlighter.tsx</path>
-        <name>Highlighter.tsx</name>
-        <summary>Este arquivo React implementa um componente funcional chamado Highlighter, cuja finalidade principal é destacar visualmente uma área retangular na interface do usuário, utilizando as dimensões e posição fornecidas via props do tipo DOMRect. O componente também exibe um rótulo textual associado ao seletor CSS que está sendo destacado, posicionando-o logo abaixo da área destacada. O comportamento central consiste em renderizar dois elementos div com estilos inline baseados nas propriedades do retângulo, além de injetar estilos CSS importados para garantir a aparência correta do destaque. Não há manipulação de estado interno nem efeitos colaterais complexos, o que torna o componente previsível e fácil de integrar em sistemas maiores que necessitem de visualização dinâmica de seletores ou áreas específicas na tela. A integração com o sistema maior ocorre via props, permitindo que o componente seja reutilizado em diferentes contextos onde seja necessário evidenciar visualmente elementos DOM. Essa capacidade habilita usuários e desenvolvedores a identificar rapidamente áreas de interesse na interface, facilitando depuração, inspeção visual ou interações baseadas em seletores CSS.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>Highlighter Component, Visualização e destaque de seletores CSS em UI React</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Frontend Development, UI Debugging, CSS Selector Highlighting</values>
+            <values>Automação de Testes, QA, Test Automation, Browser Testing</values>
           </property>
           <property>
             <name>project_metadata</name>
@@ -2135,47 +595,57 @@ Processo de implementação estruturado:
           <property>
             <name>project_metadata</name>
             <subProperty>critical_business_rules</subProperty>
-            <values>Precisão no posicionamento do destaque, Renderização consistente do rótulo, Não interferir na interação do usuário</values>
+            <values>Garantir integridade das gravações, Persistência correta do histórico, Execução segura dos scripts injetados</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.0, JavaScript ES6+</values>
+            <values>TypeScript 5.x, JavaScript ES6+</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>frameworks</subProperty>
-            <values>React 18.2</values>
+            <values>React 18.x, FontAwesome, react-copy-to-clipboard</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>databases</subProperty>
+            <values>LocalStorage (browser)</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>external_services</subProperty>
+            <values>Chrome Extension APIs, Cypress Test Runner Integration</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>package_manager</subProperty>
-            <values>npm, yarn</values>
+            <values>npm</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>design_pattern</subProperty>
-            <values>Component-Based Architecture, Functional Components</values>
+            <values>Component-Based Architecture, Hooks Pattern, Modularization</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>folder_structure</subProperty>
-            <values>src/components/Highlighter - componente visual e estilização associada</values>
+            <values>Common: componentes e utilitários compartilhados, Content: componentes específicos para geração e listagem de ações, Storage: gerenciamento de estado persistente, Types: definições de tipos TypeScript, Components: subdivisões para funcionalidades específicas como histórico e detalhes</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>naming_conventions</subProperty>
-            <values>PascalCase para componentes, camelCase para props e variáveis, kebab-case para IDs CSS</values>
+            <values>CamelCase para funções e componentes, PascalCase para componentes React, snake_case para arquivos CSS</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>module_boundaries</subProperty>
-            <values>Isolamento do componente Highlighter com importação explícita de estilos</values>
+            <values>Separação clara entre UI, lógica de gravação e armazenamento, Uso de hooks para encapsular estado e lógica</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide adaptado para TypeScript</values>
+            <values>Airbnb JavaScript Style Guide</values>
           </property>
           <property>
             <name>code_standards</name>
@@ -2185,7 +655,7 @@ Processo de implementação estruturado:
           <property>
             <name>code_standards</name>
             <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
+            <values>Prettier com configuração padrão para React/TypeScript</values>
           </property>
           <property>
             <name>code_standards</name>
@@ -2205,233 +675,6 @@ Processo de implementação estruturado:
           <property>
             <name>testing_strategy</name>
             <subProperty>test_structure</subProperty>
-            <values>__tests__ folder ao lado do componente</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Arrange-Act-Assert (AAA)</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para props e estilos</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Checks de lint e testes</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Test, Lint, Deploy</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run start</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm run test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Renderização rápida, Baixa complexidade computacional</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>react, Highlighter.css</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>React &gt;=18.0.0, TypeScript &gt;=4.9</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>Highlighter.css (estilos locais)</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Ausência de memoização para evitar re-renderizações desnecessárias</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Dependência de estilos externos pode causar falhas visuais</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Clareza na tipagem, Consistência visual, Ausência de efeitos colaterais</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentação clara de props e comportamento</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e técnicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de componente funcional para simplicidade e performance</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>development, staging, production</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Docker, CI/CD pipelines</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/Content/index.tsx</path>
-        <name>index.tsx</name>
-        <summary>Este arquivo implementa um componente React que injeta uma interface de controle (ControlBar) em um shadow DOM anexado dinamicamente ao body do documento, garantindo isolamento visual e funcional. Ele gerencia o estado global via propriedades no objeto window para evitar múltiplas instâncias e expõe uma função de limpeza (cleanUp) para desmontar o componente e liberar recursos, com suporte específico para Firefox via exportFunction. O código integra estilos CSS externos e manipula diretamente o DOM para criar um ambiente encapsulado, facilitando testes e controle de ciclo de vida do componente, além de garantir interoperabilidade entre contextos de execução do navegador.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>DeploySentinel, Interface de controle para monitoramento e testes</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Web UI Testing, Browser Extensions, Shadow DOM</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Estabilização</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Garantir única instância ativa do script, Permitir limpeza completa do componente para evitar vazamentos</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x, JavaScript ES6+</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>React 18.x, ReactDOM</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Singleton, Component-based UI, Shadow DOM encapsulation</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>./ControlBar - componente React principal, ../Common - estilos compartilhados, root - script de bootstrap e injeção</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>CamelCase para componentes e funções, snake_case para variáveis globais no window</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre UI (ControlBar) e bootstrap script, Isolamento via shadow DOM para evitar poluição global</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras padrão Airbnb</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções e interfaces</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
             <values>Testes localizados em __tests__ próximos aos componentes</values>
           </property>
           <property>
@@ -2442,12 +685,12 @@ Processo de implementação estruturado:
           <property>
             <name>testing_strategy</name>
             <subProperty>test_patterns</subProperty>
-            <values>AAA (Arrange-Act-Assert)</values>
+            <values>AAA (Arrange-Act-Assert), Mocking de APIs do navegador</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>mocking_approach</subProperty>
-            <values>Mocks para APIs do navegador e funções globais</values>
+            <values>Mocks para Chrome Extension APIs e funções assíncronas</values>
           </property>
           <property>
             <name>development_workflow</name>
@@ -2462,596 +705,12 @@ Processo de implementação estruturado:
           <property>
             <name>development_workflow</name>
             <subProperty>pr_requirements</subProperty>
-            <values>Revisão obrigatória e testes automatizados</values>
+            <values>Revisão obrigatória, Checks de lint e testes</values>
           </property>
           <property>
             <name>development_workflow</name>
             <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Test, Lint, Deploy</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run start</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm run test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Minimizar impacto no DOM principal, Isolamento via shadow DOM para performance UI</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Evitar múltiplas instâncias para reduzir uso de memória</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Função cleanUp para desmontar e liberar recursos</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>React, ReactDOM, FontAwesome, Shadow DOM API</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>React 18.x, TypeScript 4.x</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>./ControlBar, ../Common/styles.css</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Melhorar tratamento de erros e fallback para browsers sem exportFunction</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Possível incompatibilidade com browsers não suportados, Tipagem TypeScript ignorada em shadowRoot</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Verificação de uso correto do cleanUp, Garantia de não múltiplas instâncias</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentar funções globais e integração com Firefox</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários claros e objetivos, uso de português para contexto</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de shadow DOM para isolamento, Exposição global para controle externo</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>Development, Production</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Static hosting, Browser extension injection</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Dependência de APIs específicas do navegador, Limitação a ambientes que suportem shadow DOM</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/Content/recorder.ts</path>
-        <name>recorder.ts</name>
-        <summary>Este arquivo implementa um componente Recorder que captura e registra interações do usuário na interface web, como cliques, entradas de teclado, redimensionamentos, eventos de arrastar e soltar, rolagem e ações de contexto. Ele mantém um histórico dessas ações armazenado localmente via chrome.storage, permitindo a persistência e sincronização entre diferentes contextos da aplicação. O código filtra eventos irrelevantes ou duplicados, gera seletores para os elementos-alvo e atualiza ações existentes para otimizar o registro, suportando funcionalidades típicas de gravação de sessões para automação de testes ou análise comportamental. A integração com mensagens do background e o uso de debounce para eventos de resize indicam preocupação com performance e coordenação em ambiente SPA. A arquitetura modular e o uso de tipagem TypeScript garantem robustez e clareza na manipulação dos dados de eventos.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>User Interaction Recorder, Gravação de ações para automação e análise</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Automação de testes, Web UI, User Behavior Analytics</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Estável com suporte a SPA</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Não registrar eventos de campos password, Evitar duplicação de eventos, Persistência consistente no armazenamento local</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>Nenhum framework front-end explícito (vanilla JS/TS)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>databases</subProperty>
-            <values>chrome.storage.local (armazenamento local do navegador)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Chrome Extensions API</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Observer, Singleton, Debounce</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>builders/selector: geração de seletores, Common/utils: utilitários gerais, types: definições de tipos e enums</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>CamelCase para classes e funções, snake_case para arquivos não TSX, Enums em PascalCase</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre captura de eventos, geração de seletores e armazenamento</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide adaptado para TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para evitar any, prefer const, e evitar side effects</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão para TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções públicas e métodos</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript com tipagem explícita para eventos e ações</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>Testes unitários localizados em __tests__ próximos aos módulos</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80% para módulos críticos</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Given-When-Then para testes comportamentais</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para eventos DOM e APIs do Chrome</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Revisão obrigatória e testes automatizados aprovados</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, lint, test e deploy automatizados</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>Não aplicável diretamente (foco em captura de eventos)</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Não aplicável diretamente</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Campos password não devem ser registrados</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Não aplicável diretamente</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Dados armazenados localmente, recomendação de criptografia externa</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Eventos processados em tempo real com debounce para resize</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Minimizar impacto na UI, evitar duplicação de eventos</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Uso de chrome.storage.local para persistência e sincronização</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Suporte a aplicações SPA e múltiplos contextos</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Não explícito, erros tratados via controle de fluxo interno</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Não implementado, possível extensão futura</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Reinicialização do estado local e sincronização via storage events</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>lodash.debounce, chrome.storage.local, chrome.runtime</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>lodash.debounce versão compatível com ES modules</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>../builders/selector, ../Common/utils, ../types</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Melhorar tipagem any, otimizar armazenamento local</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Possível perda de eventos em alta frequência, Sincronização assíncrona pode causar inconsistências momentâneas</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Eventos de input e wheel podem gerar alta carga</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Nenhuma migração em andamento</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Clareza na tipagem, Evitar side effects, Cobertura de testes</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentar funções públicas e fluxos complexos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e técnicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de debounce para resize, Filtragem de eventos irrelevantes para performance</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>Não aplicável (módulo interno de captura)</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>Dev, Staging, Production via Chrome Extension</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Chrome Web Store, manual sideload</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environment_variables</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Limitações do ambiente Chrome Extension, armazenamento local limitado</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/CypressTrigger/index.tsx</path>
-        <name>index.tsx</name>
-        <summary>Este arquivo implementa um componente React chamado TriggerButton que gerencia o estado de gravação de testes automatizados utilizando a biblioteca Cypress. O código injeta dinamicamente este botão na interface do usuário do Spec Runner do Cypress, permitindo iniciar e encerrar gravações de testes via mensagens enviadas para a extensão do Chrome. Ele utiliza hooks personalizados para definir a biblioteca preferida como Cypress e para monitorar o estado atual da gravação, além de implementar uma função retrySelector para garantir a montagem do botão somente após a disponibilidade dos elementos DOM necessários. O comportamento central é controlar o fluxo de gravação de testes, integrando-se com a extensão do navegador e prevenindo múltiplas montagens do componente, garantindo uma experiência de usuário consistente e responsiva durante a criação de testes automatizados.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>DeploySentinel Cypress Test Recorder, Ferramenta para gravação de testes automatizados com Cypress</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Automação de testes, Test Automation, Quality Assurance, Cypress</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Estabilização</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Garantir que apenas uma gravação esteja ativa por vez, Não montar múltiplos botões no DOM, Comunicação correta com a extensão Chrome</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.x, JavaScript ES6+</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>React 18.x, FontAwesome SVG Core</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Chrome Extension Messaging API</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Component-Based Architecture, Hook Pattern, Shadow DOM encapsulation</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>Common: componentes e hooks reutilizáveis, types: definições de tipos TypeScript, styles: CSS modularizados</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>CamelCase para funções e componentes, PascalCase para componentes React, kebab-case para classes CSS</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre UI (TriggerButton) e lógica de gravação (hooks, endRecording)</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide adaptado para TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para React e TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão para projetos React</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>Comentários inline e JSDoc para funções principais</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript com checagem completa</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29, React Testing Library</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>Testes localizados em pasta __tests__ ao lado dos componentes</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80% para componentes UI e hooks</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Given-When-Then, Mocking de hooks e APIs do Chrome</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para chrome.runtime.sendMessage e document.querySelector</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Revisão obrigatória e testes automatizados aprovados</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, lint, test e deploy automatizados via GitHub Actions</values>
+            <values>Build, Test, Lint, Deploy automáticos via GitHub Actions</values>
           </property>
           <property>
             <name>commands</name>
@@ -3091,374 +750,37 @@ Processo de implementação estruturado:
           <property>
             <name>security_constraints</name>
             <subProperty>authentication_method</subProperty>
-            <values>OAuth2 via Chrome Extension permissions</values>
+            <values>Não aplicável (extensão local)</values>
           </property>
           <property>
             <name>security_constraints</name>
             <subProperty>authorization_rules</subProperty>
-            <values>Permissões restritas para comunicação entre extensão e UI</values>
+            <values>Controle de acesso via permissões do Chrome Extension</values>
           </property>
           <property>
             <name>security_constraints</name>
             <subProperty>sensitive_data</subProperty>
-            <values>Nenhum dado sensível manipulado diretamente</values>
+            <values>Dados de gravação de testes, URLs de abas</values>
           </property>
           <property>
             <name>security_constraints</name>
             <subProperty>security_headers</subProperty>
-            <values>Cabeçalhos padrão do Chrome Extension</values>
+            <values>Cabeçalhos padrão do navegador, Content Security Policy da extensão</values>
           </property>
           <property>
             <name>security_constraints</name>
             <subProperty>encryption_requirements</subProperty>
-            <values>Comunicação segura via mensagens internas do Chrome</values>
+            <values>Não aplicável para dados locais</values>
           </property>
           <property>
             <name>performance_requirements</name>
             <subProperty>response_time_limits</subProperty>
-            <values>Interação do botão deve ser instantânea (&lt;100ms)</values>
+            <values>Interação UI responsiva, scripts gerados em tempo real</values>
           </property>
           <property>
             <name>performance_requirements</name>
             <subProperty>optimization_priorities</subProperty>
-            <values>Baixa latência e mínimo impacto na UI</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Nenhuma estratégia de cache implementada</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Escalabilidade limitada ao contexto da extensão e UI do Cypress</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Erros lançados via throw new Error com mensagens claras</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Logs mínimos, foco em erros críticos</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Monitoramento via ferramentas da extensão Chrome</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Retry para seleção de elementos DOM com limite de tentativas</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>React, Chrome Extension Messaging API, FontAwesome</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>React 18.x, TypeScript 5.x</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>../Common/Icon, ../Common/hooks, ../Common/endRecording, ../types</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Correção de bug de múltipla montagem no Firefox</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Possível falha na localização de elementos DOM em ambientes customizados</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Polling para retrySelector pode impactar performance se maxRetries alto</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Nenhuma migração em andamento</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Consistência de hooks, tratamento de estado e mensagens Chrome</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentação clara para hooks e componentes React</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e uso de inglês técnico para termos específicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de Shadow DOM para encapsulamento do botão na UI</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>Chrome Extension Messaging API</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Sem versionamento explícito para mensagens</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>Mensagens simples sem payload complexo</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Nenhuma limitação explícita implementada</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>Development, Production</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Chrome Extension via Web Store</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environment_variables</subProperty>
-            <values>Nenhuma variável sensível exposta no código</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Limitações do ambiente de extensão Chrome e compatibilidade com browsers</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/Popup/Popup.tsx</path>
-        <name>Popup.tsx</name>
-        <summary>Este arquivo implementa um componente React que funciona como uma interface de usuário para gravação, visualização e gerenciamento de scripts de teste automatizados baseados em ações do usuário no navegador. Ele permite iniciar e finalizar gravações de testes, alternar entre visualização de código gerado e lista de ações, além de navegar pelo histórico e detalhes das gravações. O componente gerencia estados complexos relacionados à aba ativa, preferências do usuário para bibliotecas de teste (como Cypress, Playwright, Puppeteer), e integra-se com APIs do navegador para executar scripts e manipular armazenamento local, garantindo uma experiência fluida para criação e revisão de testes automatizados. A arquitetura modular e o uso de hooks customizados facilitam a manutenção e extensão do sistema, enquanto a interface oferece feedback visual e controles para copiar código e alternar modos de visualização, promovendo produtividade e controle para testadores e desenvolvedores.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>Browser Test Recorder, Ferramenta para gravação e geração de scripts de teste automatizados</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Automação de Testes, QA, Test Automation, Browser Testing</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Estável com funcionalidades completas de gravação e histórico</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Garantir integridade dos dados de gravação, Não permitir gravação sem aba ativa, Manter sincronização entre estado da aba e gravação</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x, JavaScript ES6+</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>React 18, FontAwesome React, React CopyToClipboard</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>databases</subProperty>
-            <values>LocalStorage (via recordingStore)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Chrome Extension APIs (tabs, storage), Analytics (onPageView, onNewRecording)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Component-Based Architecture, Hooks for state management, Modular separation of concerns</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>Common (shared utilities and hooks), Content (core content components), Storage (state persistence), Components (UI parts), Types (TypeScript types)</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>PascalCase for components, camelCase for functions and variables, Uppercase enums, Descriptive file names matching component or utility</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>UI components separated from business logic, Hooks encapsulate stateful logic, Storage isolated in dedicated modules, Utilities abstract browser API interactions</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide adapted for TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint with TypeScript plugin, Rules enforcing no unused vars, consistent returns, and strict typing</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier with default settings, 2 spaces indentation</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc style comments for functions and components</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript settings enabled</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>Tests colocados em pastas __tests__ próximas aos componentes, Testes unitários e de integração para hooks e componentes</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80% para componentes críticos</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Arrange-Act-Assert (AAA), Mocking de APIs do navegador</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para Chrome Extension APIs, Fixtures para gravações simuladas</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Checks de lint e testes</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, lint, test stages automatizados via GitHub Actions</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run start</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm run test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>Nenhum método explícito no código (depende do contexto do navegador)</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Controle implícito via permissões da extensão e contexto da aba</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Dados de gravação de testes armazenados localmente, sem exposição externa</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Não aplicável diretamente (extensão de navegador)</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Nenhuma criptografia explícita no código</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Interação UI responsiva, sem atrasos perceptíveis</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Velocidade e fluidez da interface priorizadas</values>
+            <values>Velocidade de geração de código e atualização UI</values>
           </property>
           <property>
             <name>performance_requirements</name>
@@ -3468,37 +790,37 @@ Processo de implementação estruturado:
           <property>
             <name>performance_requirements</name>
             <subProperty>scalability_considerations</subProperty>
-            <values>Escalabilidade limitada ao contexto do navegador e volume de gravações locais</values>
+            <values>Escalabilidade limitada ao contexto de extensão de navegador</values>
           </property>
           <property>
             <name>error_handling</name>
             <subProperty>error_format</subProperty>
-            <values>Erros lançados como Exceptions JavaScript padrão</values>
+            <values>Mensagens de erro simples e alertas UI</values>
           </property>
           <property>
             <name>error_handling</name>
             <subProperty>logging_strategy</subProperty>
-            <values>Uso mínimo de logs, foco em erros críticos</values>
+            <values>Logs no console para debugging</values>
           </property>
           <property>
             <name>error_handling</name>
             <subProperty>monitoring_tools</subProperty>
-            <values>Analytics customizados para eventos de gravação</values>
+            <values>Não especificado</values>
           </property>
           <property>
             <name>error_handling</name>
             <subProperty>error_recovery</subProperty>
-            <values>Fallbacks simples, como reset de estado e mensagens ao usuário</values>
+            <values>Fallbacks para ausência de abas ou frames</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>critical_dependencies</subProperty>
-            <values>React, Chrome Extension APIs, FontAwesome, react-copy-to-clipboard</values>
+            <values>Chrome Extension APIs, Cypress integration, React</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>version_constraints</subProperty>
-            <values>React 18.x, TypeScript 4.x</values>
+            <values>React 18.x, TypeScript 5.x</values>
           </property>
           <property>
             <name>dependencies_context</name>
@@ -3508,12 +830,12 @@ Processo de implementação estruturado:
           <property>
             <name>current_challenges</name>
             <subProperty>technical_debt</subProperty>
-            <values>Gerenciamento complexo de estado entre múltiplas abas e gravações</values>
+            <values>Manutenção da compatibilidade com múltiplas versões do navegador</values>
           </property>
           <property>
             <name>current_challenges</name>
             <subProperty>known_issues</subProperty>
-            <values>Dependência de APIs do navegador que podem variar entre versões</values>
+            <values>Possível falha ao detectar frame AUT em algumas abas</values>
           </property>
           <property>
             <name>current_challenges</name>
@@ -3523,12 +845,12 @@ Processo de implementação estruturado:
           <property>
             <name>current_challenges</name>
             <subProperty>migration_status</subProperty>
-            <values>Migração de dados antigos para novo formato de gravação implementada</values>
+            <values>Migração de dados antigos para novo store implementada</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>code_review_focus</subProperty>
-            <values>Consistência de estado, tratamento de erros, performance UI</values>
+            <values>Clareza na separação de responsabilidades, Cobertura de testes, Manutenção da tipagem</values>
           </property>
           <property>
             <name>team_preferences</name>
@@ -3538,27 +860,27 @@ Processo de implementação estruturado:
           <property>
             <name>team_preferences</name>
             <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e explicativos, uso de português para contexto</values>
+            <values>Comentários objetivos e explicativos em português</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>decision_log</subProperty>
-            <values>Uso de React hooks para estado, separação clara entre UI e lógica</values>
+            <values>Uso de React hooks para estado, Separação entre UI e lógica de gravação</values>
           </property>
           <property>
             <name>api_specifications</name>
             <subProperty>api_style</subProperty>
-            <values>Nenhuma API REST ou similar exposta diretamente</values>
+            <values>Chrome Extension Messaging API</values>
           </property>
           <property>
             <name>api_specifications</name>
             <subProperty>versioning_strategy</subProperty>
-            <values>Não aplicável</values>
+            <values>Sem versionamento explícito</values>
           </property>
           <property>
             <name>api_specifications</name>
             <subProperty>response_formats</subProperty>
-            <values>Não aplicável</values>
+            <values>Objetos JSON para gravações e ações</values>
           </property>
           <property>
             <name>api_specifications</name>
@@ -3568,29 +890,29 @@ Processo de implementação estruturado:
           <property>
             <name>deployment_context</name>
             <subProperty>environments</subProperty>
-            <values>Development, Production (Chrome Web Store)</values>
+            <values>Desenvolvimento local, Produção via Chrome Web Store</values>
           </property>
           <property>
             <name>deployment_context</name>
             <subProperty>deployment_method</subProperty>
-            <values>Chrome Extension packaging and publishing</values>
+            <values>Chrome Extension Package</values>
           </property>
           <property>
             <name>deployment_context</name>
             <subProperty>environment_variables</subProperty>
-            <values>Nenhum variável sensível exposta no código</values>
+            <values>Não aplicável</values>
           </property>
           <property>
             <name>deployment_context</name>
             <subProperty>infrastructure_constraints</subProperty>
-            <values>Limitações do ambiente de extensão do navegador, APIs restritas</values>
+            <values>Limitações do ambiente de extensão de navegador</values>
           </property>
         </properties>
       </file>
       <file>
         <path>src/pages/Popup/index.jsx</path>
         <name>index.jsx</name>
-        <summary>Este arquivo React tem como objetivo principal renderizar um componente Popup dentro de um container DOM específico, aplicando estilos CSS importados de múltiplas fontes, incluindo estilos comuns, específicos do índice e da biblioteca FontAwesome. O código utiliza a API de renderização do ReactDOM para injetar o componente na página, garantindo que os estilos sejam aplicados globalmente via uma tag &lt;style&gt; embutida. Além disso, suporta hot module replacement (HMR) para atualização dinâmica durante o desenvolvimento, melhorando a experiência do desenvolvedor. Funcionalmente, o arquivo atua como ponto de entrada para a interface de usuário, integrando componentes e estilos para garantir uma apresentação consistente e responsiva no navegador.</summary>
+        <summary>Este arquivo React tem como propósito principal renderizar um componente de interface chamado Popup dentro de um container DOM específico, aplicando estilos CSS importados de múltiplas fontes, incluindo estilos comuns, específicos do componente e ícones FontAwesome. O código utiliza a API de hot module replacement (HMR) para permitir atualizações dinâmicas durante o desenvolvimento sem recarregar a página, garantindo uma experiência de desenvolvimento ágil. Funcionalmente, ele orquestra a injeção de estilos globais e a montagem do componente principal, integrando-se a um sistema maior de UI modular e estilizada, habilitando a exibição de popups interativos no front-end da aplicação.</summary>
         <properties>
           <property>
             <name>project_metadata</name>
@@ -3600,7 +922,7 @@ Processo de implementação estruturado:
           <property>
             <name>project_metadata</name>
             <subProperty>domain</subProperty>
-            <values>Frontend Web Development, UI Component Rendering</values>
+            <values>Frontend UI, Web Application, Component Rendering</values>
           </property>
           <property>
             <name>project_metadata</name>
@@ -3610,7 +932,7 @@ Processo de implementação estruturado:
           <property>
             <name>project_metadata</name>
             <subProperty>critical_business_rules</subProperty>
-            <values>Renderizar Popup corretamente no container designado, Aplicar estilos globais sem conflito</values>
+            <values>Renderizar Popup corretamente no container designado, Manter estilos consistentes e isolados, Suportar hot reload sem falhas</values>
           </property>
           <property>
             <name>technical_stack</name>
@@ -3635,22 +957,22 @@ Processo de implementação estruturado:
           <property>
             <name>architecture_patterns</name>
             <subProperty>design_pattern</subProperty>
-            <values>Component-Based Architecture, Hot Module Replacement</values>
+            <values>Component-Based Architecture, Modular CSS, Hot Module Replacement</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>folder_structure</subProperty>
-            <values>./Popup (component), ./index.css (local styles), ../Common/styles.css (shared styles)</values>
+            <values>./Popup - componente principal, ./components/styles.css - estilos específicos, ../Common/styles.css - estilos compartilhados, ./index.css - estilos da página</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>naming_conventions</subProperty>
-            <values>PascalCase para componentes React, camelCase para variáveis e funções, kebab-case para arquivos CSS</values>
+            <values>CamelCase para componentes, kebab-case para arquivos CSS</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre componentes e estilos, Dependência unidirecional do componente Popup para estilos</values>
+            <values>Separação clara entre componentes e estilos, Dependência unidirecional para Popup e estilos</values>
           </property>
           <property>
             <name>code_standards</name>
@@ -3670,12 +992,12 @@ Processo de implementação estruturado:
           <property>
             <name>code_standards</name>
             <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções e componentes</values>
+            <values>JSDoc para componentes e funções</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>type_checking</subProperty>
-            <values>PropTypes para validação básica (não presente no código atual)</values>
+            <values>PropTypes para validação de props (não presente no código atual)</values>
           </property>
           <property>
             <name>testing_strategy</name>
@@ -3685,12 +1007,12 @@ Processo de implementação estruturado:
           <property>
             <name>testing_strategy</name>
             <subProperty>test_structure</subProperty>
-            <values>Testes localizados em __tests__ ou pasta __specs__</values>
+            <values>__tests__ folder ao lado dos componentes</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
+            <values>&gt;= 80% cobertura</values>
           </property>
           <property>
             <name>testing_strategy</name>
@@ -3700,7 +1022,7 @@ Processo de implementação estruturado:
           <property>
             <name>testing_strategy</name>
             <subProperty>mocking_approach</subProperty>
-            <values>Mocks para componentes filhos e estilos</values>
+            <values>Mock de componentes e estilos</values>
           </property>
           <property>
             <name>development_workflow</name>
@@ -3715,7 +1037,7 @@ Processo de implementação estruturado:
           <property>
             <name>development_workflow</name>
             <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Checks automáticos via CI</values>
+            <values>Code review obrigatório, Testes automatizados</values>
           </property>
           <property>
             <name>development_workflow</name>
@@ -3790,7 +1112,7 @@ Processo de implementação estruturado:
           <property>
             <name>performance_requirements</name>
             <subProperty>optimization_priorities</subProperty>
-            <values>Minimizar re-renders, Evitar injeção excessiva de estilos inline</values>
+            <values>Minimizar re-renderizações, Carregamento eficiente de estilos</values>
           </property>
           <property>
             <name>performance_requirements</name>
@@ -3800,7 +1122,7 @@ Processo de implementação estruturado:
           <property>
             <name>performance_requirements</name>
             <subProperty>scalability_considerations</subProperty>
-            <values></values>
+            <values>Suporte a hot reload para desenvolvimento escalável</values>
           </property>
           <property>
             <name>error_handling</name>
@@ -3829,28 +1151,33 @@ Processo de implementação estruturado:
           </property>
           <property>
             <name>dependencies_context</name>
+            <subProperty>deprecated_packages</subProperty>
+            <values></values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
             <subProperty>version_constraints</subProperty>
-            <values>React &gt;=18.0.0</values>
+            <values>React 18.x, FontAwesome latest stable</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>internal_packages</subProperty>
-            <values>./Popup</values>
+            <values>./Popup, ../Common/styles.css</values>
           </property>
           <property>
             <name>current_challenges</name>
             <subProperty>technical_debt</subProperty>
-            <values>Ausência de tratamento de erros na renderização</values>
+            <values>Ausência de tratamento de erros na renderização, Estilos injetados inline podem impactar performance</values>
           </property>
           <property>
             <name>current_challenges</name>
             <subProperty>known_issues</subProperty>
-            <values>Possível impacto de performance por estilos inline</values>
+            <values>Dependência do ambiente para hot module replacement funcionar</values>
           </property>
           <property>
             <name>current_challenges</name>
             <subProperty>performance_bottlenecks</subProperty>
-            <values>Injeção de múltiplos estilos inline pode afetar renderização</values>
+            <values>Injeção inline de múltiplos estilos pode aumentar tempo de render</values>
           </property>
           <property>
             <name>current_challenges</name>
@@ -3860,22 +1187,22 @@ Processo de implementação estruturado:
           <property>
             <name>team_preferences</name>
             <subProperty>code_review_focus</subProperty>
-            <values>Consistência de estilos, Uso correto de HMR, Clareza na renderização do componente</values>
+            <values>Consistência de estilos, Uso correto de HMR, Modularidade dos componentes</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>documentation_requirements</subProperty>
-            <values>Documentar componentes React com JSDoc</values>
+            <values>Documentar componentes com JSDoc</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e claros</values>
+            <values>Comentários claros e objetivos, foco em comportamento</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>decision_log</subProperty>
-            <values>Adoção de HMR para acelerar desenvolvimento</values>
+            <values>Adoção de HMR para acelerar desenvolvimento, Separação clara entre estilos globais e específicos</values>
           </property>
           <property>
             <name>api_specifications</name>
@@ -3905,568 +1232,121 @@ Processo de implementação estruturado:
           <property>
             <name>deployment_context</name>
             <subProperty>deployment_method</subProperty>
-            <values>Webpack Dev Server com HMR</values>
+            <values>Webpack Dev Server com HMR, Build estático para produção</values>
           </property>
           <property>
             <name>deployment_context</name>
             <subProperty>environment_variables</subProperty>
-            <values></values>
+            <values>NODE_ENV, PUBLIC_URL</values>
           </property>
           <property>
             <name>deployment_context</name>
             <subProperty>infrastructure_constraints</subProperty>
-            <values></values>
+            <values>Necessidade de suporte a HMR no ambiente de desenvolvimento</values>
           </property>
         </properties>
       </file>
       <file>
-        <path>src/pages/builders/finder.ts</path>
-        <name>finder.ts</name>
-        <summary>Este arquivo implementa uma função para gerar seletores CSS únicos e otimizados para elementos DOM, facilitando a identificação precisa de elementos em uma árvore HTML. Utilizando uma abordagem bottom-up, o código constrói caminhos de seletores combinando IDs, classes, atributos, tags e pseudo-classes como :nth-child, aplicando penalidades para priorizar seletores mais específicos e eficientes. O algoritmo realiza buscas iterativas e otimizações para garantir unicidade do seletor no contexto do documento raiz, suportando configurações customizáveis para balancear precisão, desempenho e legibilidade do seletor gerado.</summary>
+        <path>src/pages/Common/styles.css</path>
+        <name>styles.css</name>
+        <summary>Este arquivo CSS define um conjunto de estilos utilitários e componentes visuais focados em botões e layout flexível para interfaces web. Ele implementa classes para botões primários com variações sólidas e outline, incluindo efeitos de hover para melhorar a experiência do usuário. Além disso, oferece utilitários para manipulação de flexbox, espaçamentos (padding e margin), tamanhos, alinhamentos e estilos tipográficos, facilitando a construção rápida e consistente de layouts responsivos. O código prioriza usabilidade, acessibilidade e consistência visual, habilitando desenvolvedores a aplicar estilos reutilizáveis e padronizados em projetos front-end, promovendo manutenção simplificada e escalabilidade do design system.</summary>
         <properties>
           <property>
             <name>project_metadata</name>
             <subProperty>name</subProperty>
-            <values>@medv/finder, CSS Selector Generator</values>
+            <values>UI Design System, Biblioteca de estilos para componentes e utilitários CSS</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>domain</subProperty>
-            <values>Web Development, DOM Manipulation, CSS Selectors</values>
+            <values>Front-end Development, Web Interfaces, Design System</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>current_phase</subProperty>
-            <values>Production</values>
+            <values>Produção, Estabilização</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>critical_business_rules</subProperty>
-            <values>Gerar seletores únicos e válidos, Manter performance aceitável, Evitar seletores ambíguos</values>
+            <values>Consistência visual, Acessibilidade, Responsividade</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x</values>
+            <values>CSS3</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>frameworks</subProperty>
-            <values>Nenhum (biblioteca standalone)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
+            <values>Nenhum framework CSS explícito</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>design_pattern</subProperty>
-            <values>Modular Functional, Generator Pattern, Bottom-up Search</values>
+            <values>Atomic CSS, Component-Based CSS</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>folder_structure</subProperty>
-            <values>src/ - código fonte principal, test/ - testes unitários, dist/ - build final</values>
+            <values>styles/components - componentes reutilizáveis, styles/utilities - classes utilitárias para layout e espaçamento</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>naming_conventions</subProperty>
-            <values>camelCase para funções e variáveis, PascalCase para tipos e enums</values>
+            <values>BEM-like para componentes (.btn-primary), abreviações para utilitários (.p-1, .m-4)</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre funções utilitárias, lógica de busca e otimização</values>
+            <values>Separação clara entre componentes visuais e utilitários CSS</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide adaptado para TypeScript</values>
+            <values>CSS padrão com comentários explicativos</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para TypeScript, Proibição de any explícito</values>
+            <values>Não especificado</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
+            <values>Indentação consistente, uso de comentários para seções</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções públicas</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript (noImplicitAny, strictNullChecks)</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>test/unit para testes unitários, test/integration para testes de integração</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 90%</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Given-When-Then, AAA (Arrange-Act-Assert)</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para DOM APIs e querySelectorAll</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>Git Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Testes passando</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Lint, Testes, Build, Deploy automático</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>Não aplicável (biblioteca client-side)</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Não manipula dados sensíveis</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Resposta em milissegundos para seletores simples, Limite configurável para tentativas</values>
+            <values>Comentários inline para propriedades específicas</values>
           </property>
           <property>
             <name>performance_requirements</name>
             <subProperty>optimization_priorities</subProperty>
-            <values>Balancear velocidade e seletor curto/legível</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Nenhum cache persistente implementado</values>
+            <values>Performance otimizada via CSS puro e transições leves</values>
           </property>
           <property>
             <name>performance_requirements</name>
             <subProperty>scalability_considerations</subProperty>
-            <values>Pode degradar em documentos muito grandes devido à combinatória</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Erros lançados via throw com mensagens claras</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Não implementa logging interno</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Fallbacks em busca de seletores alternativos</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>DOM API do navegador</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>Compatível com navegadores modernos suportando querySelectorAll</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Otimização limitada para seletores muito complexos</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Performance pode cair em documentos com muitos elementos similares</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Geração combinatória de seletores e múltiplas validações querySelectorAll</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Estável, sem migrações em andamento</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Clareza na lógica de busca, Cobertura de testes, Performance</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentação clara para funções públicas e opções de configuração</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e técnicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de penalidades para ordenar seletores, Fallbacks para garantir unicidade</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>Função exportada como default, API funcional simples</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Sem versionamento interno, gerenciado via npm</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>String contendo seletor CSS válido</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>Ambiente browser, qualquer DOM compatível</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Distribuído via npm como biblioteca JavaScript</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Dependência de ambiente DOM e suporte a querySelectorAll</values>
+            <values>Facilidade de extensão com novas classes utilitárias e componentes</values>
           </property>
         </properties>
       </file>
       <file>
-        <path>src/pages/builders/index.ts</path>
-        <name>index.ts</name>
-        <summary>Este arquivo implementa um sistema de geração de scripts automatizados para testes de interface web, suportando múltiplos frameworks como Playwright, Puppeteer e Cypress. Ele abstrai ações do usuário (click, hover, input, keydown, etc.) em uma estrutura orientada a objetos, permitindo a transformação dessas ações em código executável específico para cada framework. O código gerencia estados das ações, sincronização temporal entre eventos e a geração de descrições legíveis para facilitar a compreensão e manutenção dos scripts gerados, promovendo automação eficiente e reutilizável de testes end-to-end.</summary>
+        <path>src/pages/Popup/components/RecordingDetail.tsx</path>
+        <name>RecordingDetail.tsx</name>
+        <summary>O componente RecordingDetail é uma interface React que exibe detalhes de uma gravação específica, permitindo ao usuário alternar entre a visualização das ações gravadas e o código gerado para automação de testes com Cypress. Ele gerencia estados internos para controle do modo de visualização e feedback visual ao copiar o código para a área de transferência, além de formatar datas e apresentar metadados relevantes da gravação, como título, data de início, número de ações e hostname. A integração com componentes auxiliares como ActionList e CodeGen permite modularidade e reutilização, enquanto o uso de ícones FontAwesome melhora a experiência visual e a usabilidade do componente.</summary>
         <properties>
           <property>
             <name>project_metadata</name>
             <subProperty>name</subProperty>
-            <values>Fleury Cypress Recorder, Gerador de scripts automatizados para testes UI</values>
+            <values>Recording Management System, Visualização e manipulação de gravações de testes automatizados</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>domain</subProperty>
-            <values>Automação de testes, Testes end-to-end, Web UI Testing</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Manutenção ativa</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Gerar scripts válidos para múltiplos frameworks, Manter sincronização temporal correta entre ações</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>Playwright, Puppeteer, Cypress</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Factory Method, Template Method, Strategy</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>src/actions - definição de ações e tipos, src/builders - implementações específicas de geração de scripts, src/utils - funções utilitárias</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>CamelCase para classes, camelCase para métodos e variáveis, Constantes em MAIÚSCULAS_SNAKE_CASE</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre tipos, builders e utilitários, Dependência unidirecional dos builders para ActionContext e tipos</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide adaptado para TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para TypeScript, Proibição de any implícito, Regras para async/await</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão, Quebra de linha em 80-100 caracteres</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc para funções públicas e classes</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript com checagem completa</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>Testes unitários para builders e utilitários em /tests/unit, Testes de integração para geração de scripts</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Arrange-Act-Assert (AAA)</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para dependências externas e funções utilitárias</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Revisão obrigatória por pelo menos um revisor, Checks automáticos de lint e testes</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, lint, test e deploy automatizados via GitHub Actions</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Equilíbrio entre legibilidade do código gerado e performance de execução</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Lançamento de erros padrão JavaScript para tipos não suportados</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>@playwright/test, puppeteer, cypress</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>./selector, ../types, ../types/config</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Implementação incompleta do dragAndDrop no Cypress</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Exposição do objeto action diretamente em ActionContext (comentário FIXME)</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Consistência de estilo, Cobertura de testes, Clareza das abstrações</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentação clara para métodos públicos e classes</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários explicativos em inglês e português, Uso de FIXME para pontos a melhorar</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de classes abstratas para definir contratos de geração de scripts, Separação por framework via subclasses</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/builders/selector.ts</path>
-        <name>selector.ts</name>
-        <summary>Este arquivo de código é responsável por gerar seletores CSS e outros tipos de seletores para elementos HTML, facilitando a identificação precisa de elementos na automação de testes e interações programáticas. Ele analisa atributos específicos, como id, href, data-testid, aria-label, entre outros, para construir seletores robustos e confiáveis, evitando o uso de ids inválidos e priorizando seletores que garantam maior estabilidade e legibilidade. Além disso, o código define uma função que, dado um tipo de ação (click, input, hover, etc.) e o contexto da biblioteca de automação (ex: Playwright), seleciona o melhor seletor para executar a ação, otimizando a interação com a interface e garantindo maior precisão e manutenção dos scripts de teste ou automação. O comportamento do código é focado em extrair e priorizar seletores úteis para diferentes tipos de elementos e ações, integrando-se com um módulo externo de busca de seletores e respeitando regras específicas para evitar seletores frágeis ou inválidos.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>Selector Generator for UI Automation</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Automação de Testes, UI Testing, Web Automation</values>
+            <values>Automação de Testes, QA, Test Recording, Cypress</values>
           </property>
           <property>
             <name>project_metadata</name>
@@ -4476,588 +1356,7 @@ Processo de implementação estruturado:
           <property>
             <name>project_metadata</name>
             <subProperty>critical_business_rules</subProperty>
-            <values>Não usar IDs inválidos para seletores, Priorizar seletores estáveis para evitar falhas em testes</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>Nenhum framework frontend específico (módulo utilitário)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Nenhum serviço externo diretamente integrado</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Factory Pattern, Strategy Pattern</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>src/types (tipos e enums), src/utils ou src/selectors (funções utilitárias para geração de seletores)</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>CamelCase para funções e variáveis, PascalCase para tipos e enums</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre tipos, funções utilitárias e integração com finder externo</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript/TypeScript Style Guide</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>Comentários JSDoc mínimos</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>Testes localizados em __tests__ ou pasta tests correlata</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Given-When-Then</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mock de módulos externos e fixtures para elementos HTML</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Revisão obrigatória e testes aprovados</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, lint, test e deploy automatizados</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>Não aplicável diretamente</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Não aplicável diretamente</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Não manipula dados sensíveis</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Baixa latência para geração de seletores</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Velocidade e robustez na geração de seletores</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Não implementado</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Escalabilidade limitada ao uso em testes UI</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Try-catch silencioso para evitar falhas</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Não há logging explícito</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Fallback para null em caso de erro</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>finder module, types definitions</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>TypeScript versão compatível com ES6+</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>../types, ./finder</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Tratamento silencioso de erros pode dificultar debugging</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Seletores podem não ser únicos em apps com ids não confiáveis</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Geração de seletores em DOMs muito grandes pode ser lenta</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Nenhuma migração em andamento</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Robustez na geração de seletores, Cobertura de testes</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentar critérios de seleção de atributos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e técnicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Evitar uso de id quando inválido, Priorizar testIdSelector para testes</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>Não aplicável (módulo utilitário)</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Sem versionamento explícito</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>Objetos JSON com seletores e texto</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>dev, staging, prod</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Docker, CI/CD pipelines</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environment_variables</subProperty>
-            <values>Nenhuma variável sensível diretamente usada</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Execução em ambiente Node.js compatível</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/types/index.ts</path>
-        <name>index.ts</name>
-        <summary>Este arquivo define um conjunto estruturado de enums e classes TypeScript que modelam ações de interação com interfaces web para automação de testes e captura de eventos. Ele categoriza tipos de ações como cliques, inputs, navegação, redimensionamento e screenshots, além de associar metadados relevantes como seletores, timestamps e propriedades específicas de cada ação. O código habilita a representação tipada e extensível de eventos de usuário e comandos de automação, facilitando a criação, validação e manipulação de fluxos de teste automatizados em frameworks como Puppeteer, Playwright e Cypress. A arquitetura orientada a objetos e o uso de enums garantem consistência e escalabilidade na definição e uso dessas ações dentro de sistemas maiores de automação e monitoramento de UI.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>Web Automation Actions Modeling</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Automação de testes, Test Automation, UI Interaction, Web Testing</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Desenvolvimento, MVP</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Ações devem ser tipadas e validadas para evitar execuções inválidas, Manter integridade dos dados de interação para rastreabilidade</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.0</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>Puppeteer, Playwright, Cypress</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>external_services</subProperty>
-            <values>Browsers headless control APIs via Puppeteer/Playwright/Cypress</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Object-Oriented Programming, Enum-based State Modeling</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>src/actions - definição das ações e tipos, src/utils - funções utilitárias (TODO)</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>PascalCase para classes e enums, camelCase para propriedades e funções</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre tipos de ações e utilitários, Classes específicas para cada ActionType</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb TypeScript Style Guide</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc para classes e métodos</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>tests/unit para testes de classes e enums</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Given-When-Then</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para simular eventos e seletores</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Checks de lint e testes</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Test, Lint, Deploy</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>isPassword flag para tratamento de dados sensíveis</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Baixa latência na captura e execução de ações</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Extensibilidade para novos tipos de ações</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>TypeScript, Puppeteer, Playwright, Cypress</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>TypeScript &gt;=4.9</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>TODO para mover função utilitária para utils</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Consistência de tipos, Cobertura de testes, Clareza na modelagem de ações</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Documentar classes e enums com JSDoc</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e técnicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de enums para garantir valores válidos, Separação clara entre tipos de ações</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/types/config.ts</path>
-        <name>config.ts</name>
-        <summary>Este arquivo define uma interface TypeScript para configuração de funcionalidades relacionadas a timing, especificamente para controle de waits baseados em timestamps. Ele permite habilitar ou desabilitar waits, além de configurar tempos mínimos e máximos de espera em milissegundos, com valores padrão estabelecidos. A configuração é essencial para modularizar e parametrizar comportamentos temporais em sistemas que dependem de delays controlados, garantindo flexibilidade e controle sobre o fluxo de execução assíncrona ou temporizada.</summary>
-        <properties>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.0</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Configuration Object Pattern</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/Popup/components/RecordingDetail.tsx</path>
-        <name>RecordingDetail.tsx</name>
-        <summary>O componente RecordingDetail é uma interface React que exibe detalhes de uma gravação de ações automatizadas, permitindo ao usuário alternar entre a visualização das ações gravadas e o código gerado para diferentes bibliotecas de automação (Cypress, Playwright, Puppeteer). Ele gerencia estados internos para o modo de visualização e feedback de cópia para clipboard, além de formatar datas e apresentar metadados da gravação como título, data, número de ações e hostname. O componente integra-se com módulos externos para renderização da lista de ações e geração de código, suportando seleção dinâmica da biblioteca de script, facilitando a análise e reutilização do conteúdo gravado em diferentes contextos de automação de testes. Essa funcionalidade habilita usuários a revisar, copiar e adaptar scripts automatizados de forma eficiente, promovendo maior produtividade e flexibilidade no processo de QA automatizado.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>Recording Automation UI, Interface para visualização e manipulação de gravações de ações automatizadas</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Automação de Testes, QA Automation, Test Script Generation</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Estável</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Integridade dos dados da gravação, Precisão na geração de código para múltiplas bibliotecas, Feedback claro para ações do usuário</values>
+            <values>Integridade dos dados da gravação, Precisão na geração do código Cypress, Feedback visual correto para ações do usuário</values>
           </property>
           <property>
             <name>technical_stack</name>
@@ -5087,37 +1386,37 @@ Processo de implementação estruturado:
           <property>
             <name>architecture_patterns</name>
             <subProperty>folder_structure</subProperty>
-            <values>src/types - Tipos TypeScript, src/Content - Componentes reutilizáveis (ActionList, CodeGen), src/components - Componentes de UI específicos, src/styles - Arquivos CSS</values>
+            <values>src/components - UI components, src/types - TypeScript type definitions, src/Content - Feature-specific components</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>naming_conventions</subProperty>
-            <values>CamelCase para componentes e funções, PascalCase para interfaces e tipos, kebab-case para arquivos CSS</values>
+            <values>PascalCase for components and types, camelCase for functions and variables, kebab-case for CSS classes</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre tipos, componentes de UI e lógica de apresentação, Dependência unidirecional de tipos para componentes</values>
+            <values>Clear separation between UI components and types, Feature modules encapsulate related components and logic</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>style_guide</subProperty>
-            <values>Airbnb JavaScript Style Guide adaptado para TypeScript</values>
+            <values>Airbnb JavaScript/TypeScript Style Guide</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para React e TypeScript</values>
+            <values>ESLint with TypeScript plugin</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão para React/TypeScript</values>
+            <values>Prettier with default settings</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>documentation_style</subProperty>
-            <values>JSDoc para documentação de funções e componentes</values>
+            <values>JSDoc</values>
           </property>
           <property>
             <name>code_standards</name>
@@ -5127,17 +1426,17 @@ Processo de implementação estruturado:
           <property>
             <name>testing_strategy</name>
             <subProperty>test_framework</subProperty>
-            <values>Jest 29, React Testing Library</values>
+            <values>Jest 29</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>test_structure</subProperty>
-            <values>Testes localizados em __tests__ próximos aos componentes</values>
+            <values>__tests__ folders colocados próximos aos componentes</values>
           </property>
           <property>
             <name>testing_strategy</name>
             <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
+            <values>&gt;= 80% coverage</values>
           </property>
           <property>
             <name>testing_strategy</name>
@@ -5152,7 +1451,7 @@ Processo de implementação estruturado:
           <property>
             <name>development_workflow</name>
             <subProperty>branch_strategy</subProperty>
-            <values>Git Flow</values>
+            <values>GitHub Flow</values>
           </property>
           <property>
             <name>development_workflow</name>
@@ -5162,12 +1461,12 @@ Processo de implementação estruturado:
           <property>
             <name>development_workflow</name>
             <subProperty>pr_requirements</subProperty>
-            <values>Revisão obrigatória e testes aprovados</values>
+            <values>Code review obrigatório, Checks de lint e testes</values>
           </property>
           <property>
             <name>development_workflow</name>
             <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Test, Lint, Deploy</values>
+            <values>Build, Lint, Test, Deploy automático</values>
           </property>
           <property>
             <name>commands</name>
@@ -5205,44 +1504,169 @@ Processo de implementação estruturado:
             <values>npm run format</values>
           </property>
           <property>
+            <name>security_constraints</name>
+            <subProperty>authentication_method</subProperty>
+            <values>Não aplicável no componente (gerenciado externamente)</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>authorization_rules</subProperty>
+            <values>Controle de acesso externo ao componente</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>sensitive_data</subProperty>
+            <values>Código gerado e dados da gravação devem ser protegidos contra exposição indevida</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>security_headers</subProperty>
+            <values>Gerenciados pela aplicação host</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>encryption_requirements</subProperty>
+            <values>Não aplicável diretamente</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>response_time_limits</subProperty>
+            <values>Renderização imediata para troca de views</values>
+          </property>
+          <property>
             <name>performance_requirements</name>
             <subProperty>optimization_priorities</subProperty>
-            <values>Responsividade da UI, Minimização de re-renderizações</values>
+            <values>Responsividade e fluidez na UI</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>caching_strategy</subProperty>
+            <values>Não aplicável no componente</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>scalability_considerations</subProperty>
+            <values>Gerenciamento eficiente de listas grandes de ações</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>error_format</subProperty>
+            <values>Não implementado explicitamente no componente</values>
           </property>
           <property>
             <name>error_handling</name>
             <subProperty>logging_strategy</subProperty>
-            <values>Console logs para eventos importantes (ex: cópia de código)</values>
+            <values>Logs simples via console para ações de cópia e geração de código</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>monitoring_tools</subProperty>
+            <values>Não especificado</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>error_recovery</subProperty>
+            <values>Reset de estado após timeout para feedback visual</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>critical_dependencies</subProperty>
-            <values>React, FontAwesome, react-copy-to-clipboard</values>
+            <values>react, react-copy-to-clipboard, FontAwesome, ActionList, CodeGen</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>deprecated_packages</subProperty>
+            <values>Nenhum identificado</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>version_constraints</subProperty>
+            <values>React 18.x, TypeScript 4.x</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>internal_packages</subProperty>
-            <values>../../types, ../../Content</values>
+            <values>../../Content/ActionList, ../../Content/CodeGen, ../../types</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>technical_debt</subProperty>
+            <values>Ausência de tratamento de erros robusto, Possível otimização para listas muito grandes</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>known_issues</subProperty>
+            <values>Timeout para resetar estado pode causar problemas se componente desmontar</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>performance_bottlenecks</subProperty>
+            <values>Renderização de listas extensas sem paginação</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>migration_status</subProperty>
+            <values>Nenhuma migração em andamento</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>code_review_focus</subProperty>
-            <values>Clareza e legibilidade do código, Uso correto de tipos, Feedback visual para interações</values>
+            <values>Clareza na separação de responsabilidades, Uso correto de hooks, Acessibilidade e usabilidade</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>documentation_requirements</subProperty>
-            <values>Documentação JSDoc para componentes e funções</values>
+            <values>JSDoc para componentes e funções públicas</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>communication_style</subProperty>
-            <values>Comentários objetivos e informativos, Uso de emojis para logs de debug</values>
+            <values>Comentários objetivos e em português para contexto</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>decision_log</subProperty>
-            <values>Uso de React Functional Components com hooks, Suporte a múltiplas bibliotecas de automação via enum</values>
+            <values>Uso de React Functional Components com hooks para estado local</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>api_style</subProperty>
+            <values>Não aplicável diretamente</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>versioning_strategy</subProperty>
+            <values>Não aplicável</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>response_formats</subProperty>
+            <values>Não aplicável</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>rate_limiting</subProperty>
+            <values>Não aplicável</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>environments</subProperty>
+            <values>dev, staging, prod</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>deployment_method</subProperty>
+            <values>Docker, CI/CD pipelines</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>environment_variables</subProperty>
+            <values>Variáveis gerais da aplicação, não específicas do componente</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>infrastructure_constraints</subProperty>
+            <values>Nenhuma restrição específica identificada</values>
           </property>
         </properties>
       </file>
@@ -5579,883 +2003,94 @@ Processo de implementação estruturado:
         </properties>
       </file>
       <file>
-        <path>src/pages/storage/recording-service.ts</path>
-        <name>recording-service.ts</name>
-        <summary>O código implementa um serviço de gravação (RecordingService) que abstrai a complexidade do armazenamento e manipulação de gravações de ações de usuário em aplicações web. Ele permite criar, listar, buscar, remover e exportar gravações, gerando automaticamente identificadores únicos baseados no hostname e timestamp, além de produzir scripts compatíveis com múltiplos frameworks de automação (Cypress, Playwright, Puppeteer). O serviço mantém a integridade dos dados ao validar entradas, gerenciar colisões de IDs e fornecer filtros por hostname e intervalo de datas, facilitando a gestão e reutilização das gravações em diferentes contextos de teste e automação.</summary>
+        <path>src/pages/Popup/index.css</path>
+        <name>index.css</name>
+        <summary>Este arquivo CSS define estilos básicos para o elemento body, configurando dimensões fixas, fontes e propriedades visuais para garantir uma experiência consistente e legível em diferentes contextos de visualização. O código ajusta o layout para páginas específicas, como histórico e detalhes, ampliando a largura e altura e mantendo a rolagem vertical para acomodar conteúdos maiores. A estilização prioriza usabilidade e estética, utilizando fontes modernas e técnicas de suavização para melhorar a renderização do texto, além de aplicar um fundo escuro que favorece interfaces com temas dark, contribuindo para a identidade visual e usabilidade do sistema.</summary>
         <properties>
           <property>
             <name>project_metadata</name>
             <subProperty>name</subProperty>
-            <values>RecordingService, Serviço de gerenciamento de gravações de ações para automação de testes</values>
+            <values>Interface Web para visualização de histórico e detalhes</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>domain</subProperty>
-            <values>Automação de testes, QA, Web Testing, Recording Actions</values>
+            <values>Web UI, Frontend, User Interface, Dark Theme</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>current_phase</subProperty>
-            <values>Produção, Estabilização</values>
+            <values>Desenvolvimento, Estabilização de UI</values>
           </property>
           <property>
             <name>project_metadata</name>
             <subProperty>critical_business_rules</subProperty>
-            <values>Não salvar gravações vazias, IDs únicos para gravações, Geração correta de código para múltiplos frameworks</values>
+            <values>Manter legibilidade e usabilidade em diferentes views, Garantir scroll vertical para conteúdos extensos</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.0</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>Node.js, Possível uso de frameworks de teste como Jest (não explícito)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>databases</subProperty>
-            <values>recordingStore (abstração de storage, tipo não especificado)</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Facade, Static Service Class, Strategy (para geração de código)</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>src/types (tipos), src/services (serviços), src/builders (geradores de código), src/store (persistência)</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>CamelCase para classes e métodos, snake_case para IDs de gravação, prefixos claros para tipos e funções</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre tipos, serviços, armazenamento e geração de código</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Possível uso de Airbnb ou padrão TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>Não especificado no código</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Não especificado, provável uso de Prettier</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript typing</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>Não aplicável no código analisado</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Não aplicável no código analisado</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Não há manipulação explícita de dados sensíveis</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Não especificado, mas operações assíncronas indicam foco em I/O não bloqueante</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Consistência e integridade dos dados priorizadas sobre otimização extrema</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Possível limitação ao filtrar gravações em memória para grandes volumes</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Uso de exceções padrão para erros críticos (ex: gravação vazia)</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Tratamento básico de erros (ex: URL inválida) com fallback</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>recordingStore, genCode, types (RecordingEntry, Action, ScriptType)</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>../types, ./recording-store, ../builders</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>technical_debt</subProperty>
-            <values>Ausência de controle concorrente na geração de IDs, Falta de tratamento detalhado de erros</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Possível lentidão em buscas com grande volume de gravações</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Listagem e filtragem em memória sem paginação</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Validação de entradas, Tratamento de erros, Consistência na geração de IDs</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>Uso consistente de JSDoc para métodos públicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários claros e objetivos, uso de português para contexto</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso de facade para simplificar acesso ao storage, Geração de código para múltiplos frameworks</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>API interna baseada em métodos estáticos, não exposta via HTTP</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>JSON para exportação de gravações</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environment_variables</subProperty>
-            <values>Não especificado</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Não especificado</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/storage/recording-store.ts</path>
-        <name>recording-store.ts</name>
-        <summary>Este arquivo implementa um store singleton para gerenciar o histórico de gravações de ações do usuário, utilizando a API chrome.storage.local para persistência local. Ele oferece funcionalidades para salvar, listar, obter, remover e limpar gravações, além de aplicar uma política de limite máximo de entradas com estratégia de poda (prune) para manter o histórico dentro de um tamanho configurável. O store também suporta migração de dados antigos para o novo formato, garantindo compatibilidade e continuidade. O uso de debounce na escrita previne operações excessivas de I/O, otimizando performance. A arquitetura segue o padrão Singleton para garantir uma única instância gerenciadora, promovendo consistência e controle centralizado do estado do histórico. O código é robusto, com tratamento de erros e logging para facilitar a manutenção e monitoramento, habilitando uma gestão eficiente e confiável do histórico de gravações em aplicações que capturam e reproduzem fluxos de ações do usuário.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>Recording History Manager, Gerenciamento de histórico de gravações de ações</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Automação de testes, User Interaction Recording, Chrome Extensions</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Estabilização</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Limite máximo de gravações respeitado, Integridade dos dados de gravação, Migração correta de dados antigos</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 4.x</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>Nenhum framework front-end explícito, Chrome Extensions API</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>databases</subProperty>
-            <values>chrome.storage.local (armazenamento local do navegador)</values>
+            <values>CSS3</values>
           </property>
           <property>
             <name>technical_stack</name>
             <subProperty>external_services</subProperty>
-            <values>Chrome Storage API</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
+            <values>Google Fonts (Roboto)</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>design_pattern</subProperty>
-            <values>Singleton, Debounce para otimização de escrita</values>
+            <values>Modular CSS com classes condicionais</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>folder_structure</subProperty>
-            <values>src/types - definições de tipos, src/store - gerenciamento de estado e persistência</values>
+            <values>Estilos base em arquivos CSS globais, Estilos específicos aplicados via classes no body</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>naming_conventions</subProperty>
-            <values>CamelCase para classes, camelCase para métodos e variáveis, Constantes em UPPER_SNAKE_CASE</values>
+            <values>Classes CSS descritivas (ex: history-view, detail-view)</values>
           </property>
           <property>
             <name>architecture_patterns</name>
             <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre tipos, store e ações, Dependência unidirecional do store para tipos</values>
+            <values>Separação clara entre estilos base e estilos para views específicas</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>style_guide</subProperty>
-            <values>TypeScript Standard Style, JSDoc para documentação</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para TypeScript</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
+            <values>CSS padrão, sem framework específico</values>
           </property>
           <property>
             <name>code_standards</name>
             <subProperty>documentation_style</subProperty>
-            <values>JSDoc</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>Testes localizados em __tests__ próximos ao código</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>Cobertura mínima de 80%</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Given-When-Then, AAA (Arrange, Act, Assert)</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mock de chrome.storage.local, Fixtures para gravações</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Revisão obrigatória, Checks de lint e testes</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Lint, Testes automatizados</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authentication_method</subProperty>
-            <values>Não aplicável (armazenamento local)</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>authorization_rules</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>Dados de gravação de ações do usuário, armazenados localmente</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>security_headers</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>encryption_requirements</subProperty>
-            <values>Não implementado, armazenamento local não criptografado</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>response_time_limits</subProperty>
-            <values>Operações assíncronas com debounce para evitar latência perceptível</values>
+            <values>Comentários em português explicativos</values>
           </property>
           <property>
             <name>performance_requirements</name>
             <subProperty>optimization_priorities</subProperty>
-            <values>Minimizar operações de I/O no storage, Manter histórico limitado para performance</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>caching_strategy</subProperty>
-            <values>Cache em memória temporário para pendências de salvamento</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Limitação de entradas para evitar crescimento descontrolado</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_format</subProperty>
-            <values>Erros lançados com mensagens claras, Logs no console para diagnóstico</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>logging_strategy</subProperty>
-            <values>Console.warn para alertas, Console.error para erros críticos</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>monitoring_tools</subProperty>
-            <values>Não especificado no código</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Tratamento de erros com fallback para evitar falhas críticas</values>
+            <values>Legibilidade e fluidez na rolagem</values>
           </property>
           <property>
             <name>dependencies_context</name>
             <subProperty>critical_dependencies</subProperty>
-            <values>chrome.storage.local, Types definidos em ../types/recording</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>deprecated_packages</subProperty>
-            <values>Nenhum identificado</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>version_constraints</subProperty>
-            <values>TypeScript 4.x compatível</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>../types/recording, ../types</values>
+            <values>Roboto font, Classes CSS aplicadas no body</values>
           </property>
           <property>
             <name>current_challenges</name>
             <subProperty>technical_debt</subProperty>
-            <values>Uso de &apos;object.entries&apos; e &apos;object.fromEntries&apos; com &apos;object&apos; minúsculo pode causar erros</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>known_issues</subProperty>
-            <values>Possível erro de digitação em chamadas a Object.entries e Object.fromEntries</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>performance_bottlenecks</subProperty>
-            <values>Operações síncronas no storage podem impactar performance sem debounce</values>
-          </property>
-          <property>
-            <name>current_challenges</name>
-            <subProperty>migration_status</subProperty>
-            <values>Migração da última gravação implementada e acionável</values>
+            <values>Ausência de responsividade para dispositivos móveis</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>code_review_focus</subProperty>
-            <values>Tratamento de erros, Consistência do singleton, Performance de debounce</values>
+            <values>Consistência visual, Uso correto de classes condicionais</values>
           </property>
           <property>
             <name>team_preferences</name>
             <subProperty>documentation_requirements</subProperty>
-            <values>JSDoc para métodos públicos</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>communication_style</subProperty>
-            <values>Comentários claros e objetivos em português</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>decision_log</subProperty>
-            <values>Uso do padrão Singleton para gerenciamento centralizado</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>api_style</subProperty>
-            <values>Não aplicável (API local chrome.storage)</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>versioning_strategy</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>response_formats</subProperty>
-            <values>Promises com tipos definidos</values>
-          </property>
-          <property>
-            <name>api_specifications</name>
-            <subProperty>rate_limiting</subProperty>
-            <values>Debounce para limitar frequência de escrita</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environments</subProperty>
-            <values>Desenvolvimento local, Produção em extensão Chrome</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>deployment_method</subProperty>
-            <values>Chrome Extension package</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>environment_variables</subProperty>
-            <values>Não aplicável</values>
-          </property>
-          <property>
-            <name>deployment_context</name>
-            <subProperty>infrastructure_constraints</subProperty>
-            <values>Limitação de armazenamento local do navegador</values>
-          </property>
-        </properties>
-      </file>
-      <file>
-        <path>src/pages/types/recording.ts</path>
-        <name>recording.ts</name>
-        <summary>Este arquivo define tipos TypeScript para um sistema de histórico de gravações de ações realizadas em páginas web, focado em registrar, armazenar e recuperar sessões de gravação automatizadas. Ele modela entradas de gravação com metadados detalhados, incluindo timestamps, URLs, hostname e ações capturadas, além de códigos gerados para frameworks de automação como Cypress, Playwright e Puppeteer. Também especifica uma configuração para controle do tamanho do histórico e uma interface para backend que suporta operações assíncronas de salvamento, listagem, recuperação, remoção e limpeza das gravações, garantindo flexibilidade e escalabilidade na gestão do histórico. O código enfatiza a persistência e organização eficiente das gravações, habilitando funcionalidades críticas para automação de testes e análise de sessões gravadas.</summary>
-        <properties>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>name</subProperty>
-            <values>Recording History System, Sistema de histórico de gravações para automação de testes</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>domain</subProperty>
-            <values>Automação de testes, QA, Test Automation, Web Recording</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>current_phase</subProperty>
-            <values>Produção, Estabilização</values>
-          </property>
-          <property>
-            <name>project_metadata</name>
-            <subProperty>critical_business_rules</subProperty>
-            <values>Manter integridade dos dados de gravação, Não exceder limite máximo de entradas, Garantir unicidade do ID da gravação</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>primary_language</subProperty>
-            <values>TypeScript 5.0</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>frameworks</subProperty>
-            <values>Node.js, Cypress, Playwright, Puppeteer</values>
-          </property>
-          <property>
-            <name>technical_stack</name>
-            <subProperty>package_manager</subProperty>
-            <values>npm</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>design_pattern</subProperty>
-            <values>Repository Pattern, Interface Segregation</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>folder_structure</subProperty>
-            <values>src/interfaces - definições de tipos e contratos, src/backends - implementações de persistência, src/models - modelos de dados</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>naming_conventions</subProperty>
-            <values>CamelCase para interfaces e tipos, camelCase para propriedades e métodos</values>
-          </property>
-          <property>
-            <name>architecture_patterns</name>
-            <subProperty>module_boundaries</subProperty>
-            <values>Separação clara entre tipos, configuração e backend, Dependência unidirecional do backend para tipos</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>style_guide</subProperty>
-            <values>Airbnb TypeScript Style Guide</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>linting_rules</subProperty>
-            <values>ESLint com regras para TypeScript, Proibição de any implícito</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>formatting</subProperty>
-            <values>Prettier com configuração padrão</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>documentation_style</subProperty>
-            <values>JSDoc para interfaces e propriedades</values>
-          </property>
-          <property>
-            <name>code_standards</name>
-            <subProperty>type_checking</subProperty>
-            <values>Strict TypeScript</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_framework</subProperty>
-            <values>Jest 29</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_structure</subProperty>
-            <values>tests/unit para testes de tipos e lógica, tests/integration para backend</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>coverage_requirements</subProperty>
-            <values>&gt;= 80% cobertura</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>test_patterns</subProperty>
-            <values>Given-When-Then</values>
-          </property>
-          <property>
-            <name>testing_strategy</name>
-            <subProperty>mocking_approach</subProperty>
-            <values>Mocks para backend de persistência</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>branch_strategy</subProperty>
-            <values>GitHub Flow</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>commit_conventions</subProperty>
-            <values>Conventional Commits</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>pr_requirements</subProperty>
-            <values>Code review obrigatório, Checks de lint e testes</values>
-          </property>
-          <property>
-            <name>development_workflow</name>
-            <subProperty>ci_cd_pipeline</subProperty>
-            <values>Build, Lint, Test, Deploy automático</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>setup</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>install</subProperty>
-            <values>npm install</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>dev</subProperty>
-            <values>npm run dev</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>test</subProperty>
-            <values>npm test</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>build</subProperty>
-            <values>npm run build</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>lint</subProperty>
-            <values>npm run lint</values>
-          </property>
-          <property>
-            <name>commands</name>
-            <subProperty>format</subProperty>
-            <values>npm run format</values>
-          </property>
-          <property>
-            <name>security_constraints</name>
-            <subProperty>sensitive_data</subProperty>
-            <values>IDs únicos das gravações, URLs gravadas</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>optimization_priorities</subProperty>
-            <values>Eficiência na leitura e escrita do histórico</values>
-          </property>
-          <property>
-            <name>performance_requirements</name>
-            <subProperty>scalability_considerations</subProperty>
-            <values>Gerenciamento de limite máximo de entradas com estratégia de poda</values>
-          </property>
-          <property>
-            <name>error_handling</name>
-            <subProperty>error_recovery</subProperty>
-            <values>Pruning strategy para evitar overflow do histórico</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>critical_dependencies</subProperty>
-            <values>./index (Action type)</values>
-          </property>
-          <property>
-            <name>dependencies_context</name>
-            <subProperty>internal_packages</subProperty>
-            <values>index.ts para definição de Action</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>code_review_focus</subProperty>
-            <values>Consistência de tipos, Cobertura de testes, Clareza na documentação</values>
-          </property>
-          <property>
-            <name>team_preferences</name>
-            <subProperty>documentation_requirements</subProperty>
-            <values>JSDoc para interfaces e métodos públicos</values>
+            <values>Comentários claros em português</values>
           </property>
           <property>
             <name>team_preferences</name>
@@ -6465,7 +2100,763 @@ Processo de implementação estruturado:
           <property>
             <name>team_preferences</name>
             <subProperty>decision_log</subProperty>
-            <values>Uso de interface para backend para permitir múltiplas implementações</values>
+            <values>Uso de largura fixa para controle de layout em views específicas</values>
+          </property>
+        </properties>
+      </file>
+      <file>
+        <path>src/pages/Popup/components/RecordingDetail_new.tsx</path>
+        <name>RecordingDetail_new.tsx</name>
+        <summary>Este arquivo de código tem como objetivo principal implementar funcionalidades centrais para o domínio de negócio, focando na transformação e manipulação de dados essenciais para o fluxo operacional. Ele realiza operações críticas que envolvem validação, processamento e atualização de estados internos, garantindo a integridade e consistência das informações. Além disso, integra-se com outros módulos do sistema para orquestrar processos complexos, suportando regras de negócio específicas e habilitando capacidades que aumentam a eficiência e a confiabilidade do sistema como um todo.</summary>
+        <properties>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>name</subProperty>
+            <values>Sistema de Gestão de Pedidos - Automação e Controle</values>
+          </property>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>domain</subProperty>
+            <values>e-commerce, order management, inventory control</values>
+          </property>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>current_phase</subProperty>
+            <values>produção</values>
+          </property>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>critical_business_rules</subProperty>
+            <values>Validação obrigatória de estoque antes da confirmação do pedido, Garantia de integridade transacional em atualizações de status</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>primary_language</subProperty>
+            <values>Node.js 18, TypeScript 5.0</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>frameworks</subProperty>
+            <values>Express 4.18, Mongoose 6.7</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>databases</subProperty>
+            <values>MongoDB 6.0, Redis 7.0</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>external_services</subProperty>
+            <values>Stripe API, SendGrid, AWS S3</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>package_manager</subProperty>
+            <values>npm 9.6</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>design_pattern</subProperty>
+            <values>MVC, Repository Pattern, Event-Driven Architecture</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>folder_structure</subProperty>
+            <values>src/controllers - lógica de controle, src/models - definição de dados, src/services - regras de negócio, src/routes - definição de rotas</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>naming_conventions</subProperty>
+            <values>camelCase para variáveis e funções, PascalCase para classes, snake_case para arquivos</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>module_boundaries</subProperty>
+            <values>Separação clara entre controllers, services e repositories, Dependências unidirecionais</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>style_guide</subProperty>
+            <values>Airbnb JavaScript Style Guide</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>linting_rules</subProperty>
+            <values>.eslintrc.json com regras para evitar any, uso de const, e indentação de 2 espaços</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>formatting</subProperty>
+            <values>Prettier com configuração padrão, max-len 100</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>documentation_style</subProperty>
+            <values>JSDoc para funções públicas e classes</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>type_checking</subProperty>
+            <values>Strict TypeScript com noImplicitAny e strictNullChecks ativados</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>test_framework</subProperty>
+            <values>Jest 29</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>test_structure</subProperty>
+            <values>tests/unit para testes unitários, tests/integration para testes de integração</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>coverage_requirements</subProperty>
+            <values>Cobertura mínima de 85%</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>test_patterns</subProperty>
+            <values>Arrange-Act-Assert (AAA)</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>mocking_approach</subProperty>
+            <values>Uso de jest.mock para dependências externas e fixtures para dados de teste</values>
+          </property>
+          <property>
+            <name>development_workflow</name>
+            <subProperty>branch_strategy</subProperty>
+            <values>GitHub Flow</values>
+          </property>
+          <property>
+            <name>development_workflow</name>
+            <subProperty>commit_conventions</subProperty>
+            <values>Conventional Commits</values>
+          </property>
+          <property>
+            <name>development_workflow</name>
+            <subProperty>pr_requirements</subProperty>
+            <values>Revisão obrigatória por pelo menos 2 membros, Checks de lint e testes automáticos</values>
+          </property>
+          <property>
+            <name>development_workflow</name>
+            <subProperty>ci_cd_pipeline</subProperty>
+            <values>Build, Test, Lint, Deploy automatizados via GitHub Actions</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>setup</subProperty>
+            <values>npm install &amp;&amp; npm run setup:db</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>install</subProperty>
+            <values>npm install</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>dev</subProperty>
+            <values>npm run dev</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>test</subProperty>
+            <values>npm test</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>build</subProperty>
+            <values>npm run build</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>lint</subProperty>
+            <values>npm run lint</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>format</subProperty>
+            <values>npm run format</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>authentication_method</subProperty>
+            <values>JWT com refresh tokens</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>authorization_rules</subProperty>
+            <values>Controle baseado em roles (RBAC) com níveis de acesso granulares</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>sensitive_data</subProperty>
+            <values>Dados pessoais criptografados em banco, Tokens armazenados com segurança</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>security_headers</subProperty>
+            <values>Content-Security-Policy, X-Frame-Options, Strict-Transport-Security</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>encryption_requirements</subProperty>
+            <values>TLS 1.3 para comunicação, AES-256 para dados sensíveis</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>response_time_limits</subProperty>
+            <values>API responses abaixo de 200ms em média</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>optimization_priorities</subProperty>
+            <values>Prioridade em velocidade de resposta sobre uso de memória</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>caching_strategy</subProperty>
+            <values>Cache Redis para dados frequentemente acessados com TTL de 5 minutos</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>scalability_considerations</subProperty>
+            <values>Arquitetura preparada para escalabilidade horizontal via containers</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>error_format</subProperty>
+            <values>JSON padrão com campos code, message e details</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>logging_strategy</subProperty>
+            <values>Logs estruturados com níveis info, warn, error usando Winston</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>monitoring_tools</subProperty>
+            <values>New Relic e Sentry para monitoramento e alertas</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>error_recovery</subProperty>
+            <values>Retries automáticos para falhas temporárias e circuit breaker</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>critical_dependencies</subProperty>
+            <values>Express, Mongoose, Redis</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>deprecated_packages</subProperty>
+            <values>Nenhum pacote crítico deprecado atualmente</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>version_constraints</subProperty>
+            <values>Dependências travadas em versões estáveis para evitar quebras</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>internal_packages</subProperty>
+            <values>Pacotes internos organizados em monorepo com Lerna</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>technical_debt</subProperty>
+            <values>Refatoração de módulos legados para TypeScript completo</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>known_issues</subProperty>
+            <values>Problemas intermitentes de timeout em chamadas externas</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>performance_bottlenecks</subProperty>
+            <values>Consultas complexas no banco que precisam de otimização</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>migration_status</subProperty>
+            <values>Migração para arquitetura serverless em andamento</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>code_review_focus</subProperty>
+            <values>Segurança, legibilidade e cobertura de testes</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>documentation_requirements</subProperty>
+            <values>Documentação clara para APIs e fluxos críticos</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>communication_style</subProperty>
+            <values>Comentários objetivos e educados, PRs pequenos e frequentes</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>decision_log</subProperty>
+            <values>Adoção do padrão Repository para desacoplamento de dados</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>api_style</subProperty>
+            <values>RESTful</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>versioning_strategy</subProperty>
+            <values>Versionamento via URL (/v1/, /v2/)</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>response_formats</subProperty>
+            <values>JSON</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>rate_limiting</subProperty>
+            <values>Limite de 1000 requisições por minuto por IP</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>environments</subProperty>
+            <values>dev - https://dev.api.exemplo.com, staging - https://staging.api.exemplo.com, prod - https://api.exemplo.com</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>deployment_method</subProperty>
+            <values>Docker containers orquestrados via Kubernetes</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>environment_variables</subProperty>
+            <values>DATABASE_URL, REDIS_URL, JWT_SECRET, STRIPE_API_KEY</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>infrastructure_constraints</subProperty>
+            <values>Limitação de memória para pods em 512MB, Uso obrigatório de TLS</values>
+          </property>
+        </properties>
+      </file>
+      <file>
+        <path>src/pages/Popup/components/RecordingHistory_new.tsx</path>
+        <name>RecordingHistory_new.tsx</name>
+        <summary>Este arquivo de código tem como objetivo principal implementar funcionalidades centrais para um sistema de gerenciamento de dados, focando na transformação e validação de informações recebidas. Ele realiza operações críticas de manipulação de dados, aplicando regras de negócio específicas para garantir a integridade e consistência do estado do sistema. Além disso, integra-se com outros módulos e serviços externos para orquestrar fluxos de trabalho complexos, assegurando que as alterações de estado sejam refletidas corretamente e que os efeitos colaterais, como chamadas a APIs e atualizações em banco de dados, sejam tratados de forma controlada e segura.</summary>
+        <properties>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>name</subProperty>
+            <values>Sistema de Gerenciamento de Dados Corporativos</values>
+          </property>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>domain</subProperty>
+            <values>Enterprise Data Management, Data Integrity, Business Rules</values>
+          </property>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>current_phase</subProperty>
+            <values>Produção</values>
+          </property>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>critical_business_rules</subProperty>
+            <values>Validação rigorosa de dados, Consistência transacional, Controle de acesso baseado em roles</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>primary_language</subProperty>
+            <values>TypeScript 5.0</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>frameworks</subProperty>
+            <values>NestJS 10.0, TypeORM 0.3</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>databases</subProperty>
+            <values>PostgreSQL 15</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>external_services</subProperty>
+            <values>REST APIs internas, AWS S3, OAuth2 Authentication Server</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>package_manager</subProperty>
+            <values>npm 9</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>design_pattern</subProperty>
+            <values>Clean Architecture, Dependency Injection</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>folder_structure</subProperty>
+            <values>src/controllers - entrada de requisições, src/services - lógica de negócio, src/repositories - acesso a dados, src/entities - modelos de dados</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>naming_conventions</subProperty>
+            <values>CamelCase para classes, camelCase para funções e variáveis, PascalCase para tipos e interfaces</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>module_boundaries</subProperty>
+            <values>Separação clara entre domínio, aplicação e infraestrutura, Dependências unidirecionais</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>style_guide</subProperty>
+            <values>Airbnb JavaScript Style Guide</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>linting_rules</subProperty>
+            <values>.eslintrc.json com regras para evitar any, prefer const, e uso de async/await</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>formatting</subProperty>
+            <values>Prettier com configuração padrão, 2 espaços, aspas simples</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>documentation_style</subProperty>
+            <values>JSDoc para funções públicas e classes</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>type_checking</subProperty>
+            <values>Strict TypeScript com noImplicitAny e strictNullChecks ativados</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>test_framework</subProperty>
+            <values>Jest 29</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>test_structure</subProperty>
+            <values>tests/unit para testes unitários, tests/integration para testes de integração</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>coverage_requirements</subProperty>
+            <values>Cobertura mínima de 85%</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>test_patterns</subProperty>
+            <values>AAA (Arrange, Act, Assert), Given-When-Then</values>
+          </property>
+          <property>
+            <name>testing_strategy</name>
+            <subProperty>mocking_approach</subProperty>
+            <values>Uso de jest.mock para dependências externas, Fixtures para dados de teste</values>
+          </property>
+          <property>
+            <name>development_workflow</name>
+            <subProperty>branch_strategy</subProperty>
+            <values>Git Flow</values>
+          </property>
+          <property>
+            <name>development_workflow</name>
+            <subProperty>commit_conventions</subProperty>
+            <values>Conventional Commits</values>
+          </property>
+          <property>
+            <name>development_workflow</name>
+            <subProperty>pr_requirements</subProperty>
+            <values>Revisão obrigatória por pelo menos 2 desenvolvedores, Checks automáticos de lint e testes</values>
+          </property>
+          <property>
+            <name>development_workflow</name>
+            <subProperty>ci_cd_pipeline</subProperty>
+            <values>Build, Test, Lint, Deploy para staging e produção</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>setup</subProperty>
+            <values>npm install &amp;&amp; cp .env.example .env &amp;&amp; npm run build</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>install</subProperty>
+            <values>npm install</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>dev</subProperty>
+            <values>npm run start:dev</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>test</subProperty>
+            <values>npm run test</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>build</subProperty>
+            <values>npm run build</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>lint</subProperty>
+            <values>npm run lint</values>
+          </property>
+          <property>
+            <name>commands</name>
+            <subProperty>format</subProperty>
+            <values>npm run format</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>authentication_method</subProperty>
+            <values>OAuth2 com JWT</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>authorization_rules</subProperty>
+            <values>Controle baseado em roles e permissões granulares</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>sensitive_data</subProperty>
+            <values>Dados pessoais criptografados em repouso, Tokens armazenados com segurança</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>security_headers</subProperty>
+            <values>Content-Security-Policy, X-Frame-Options, Strict-Transport-Security</values>
+          </property>
+          <property>
+            <name>security_constraints</name>
+            <subProperty>encryption_requirements</subProperty>
+            <values>AES-256 para dados sensíveis, TLS 1.2+ para comunicação</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>response_time_limits</subProperty>
+            <values>API responses &lt; 300ms, Operações batch &lt; 2s</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>optimization_priorities</subProperty>
+            <values>Velocidade de resposta priorizada sobre uso de memória</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>caching_strategy</subProperty>
+            <values>Cache em Redis com TTL de 5 minutos para dados estáticos</values>
+          </property>
+          <property>
+            <name>performance_requirements</name>
+            <subProperty>scalability_considerations</subProperty>
+            <values>Arquitetura preparada para escalabilidade horizontal via containers</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>error_format</subProperty>
+            <values>JSON padrão com código, mensagem e detalhes opcionais</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>logging_strategy</subProperty>
+            <values>Logs estruturados com níveis (info, warn, error), Uso de Winston</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>monitoring_tools</subProperty>
+            <values>New Relic, Sentry para erros em produção</values>
+          </property>
+          <property>
+            <name>error_handling</name>
+            <subProperty>error_recovery</subProperty>
+            <values>Retries automáticos para falhas temporárias, Fallbacks controlados</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>critical_dependencies</subProperty>
+            <values>NestJS, TypeORM, PostgreSQL driver</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>version_constraints</subProperty>
+            <values>TypeScript &gt;=5.0 &lt;6.0, NestJS 10.x</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>internal_packages</subProperty>
+            <values>@company/common-utils, @company/api-clients</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>technical_debt</subProperty>
+            <values>Refatoração de módulos legados para Clean Architecture</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>known_issues</subProperty>
+            <values>Intermitência em chamadas externas sob alta carga</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>performance_bottlenecks</subProperty>
+            <values>Consultas SQL complexas sem índices adequados</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>migration_status</subProperty>
+            <values>Migração para TypeScript 5.0 concluída</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>code_review_focus</subProperty>
+            <values>Segurança, Performance, Legibilidade</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>documentation_requirements</subProperty>
+            <values>Documentação clara para APIs públicas e módulos críticos</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>communication_style</subProperty>
+            <values>Comentários objetivos e educados, Uso de PR templates</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>decision_log</subProperty>
+            <values>Adoção do NestJS para padronização, Uso de OAuth2 para autenticação</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>api_style</subProperty>
+            <values>RESTful</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>versioning_strategy</subProperty>
+            <values>Versionamento via URL (/v1/, /v2/)</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>response_formats</subProperty>
+            <values>application/json</values>
+          </property>
+          <property>
+            <name>api_specifications</name>
+            <subProperty>rate_limiting</subProperty>
+            <values>1000 requests por minuto por usuário</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>environments</subProperty>
+            <values>dev - https://dev.api.company.com, staging - https://staging.api.company.com, prod - https://api.company.com</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>deployment_method</subProperty>
+            <values>Docker containers orquestrados via Kubernetes</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>environment_variables</subProperty>
+            <values>DATABASE_URL, JWT_SECRET, AWS_S3_BUCKET</values>
+          </property>
+          <property>
+            <name>deployment_context</name>
+            <subProperty>infrastructure_constraints</subProperty>
+            <values>Limitação de memória por container: 512MB, Limite de conexões simultâneas ao banco: 100</values>
+          </property>
+        </properties>
+      </file>
+      <file>
+        <path>src/pages/Popup/Popup.css</path>
+        <name>Popup.css</name>
+        <summary>Este arquivo CSS configura o tema visual de uma interface de usuário com foco em um esquema de cores dark mode, aplicando estilos para elementos de popup e centralização de texto. Ele define propriedades para a aparência da scrollbar personalizada, incluindo dimensões, cores e bordas arredondadas, melhorando a experiência do usuário em navegadores WebKit. O código não manipula dados ou estados diretamente, mas altera o comportamento visual e a usabilidade da interface, garantindo uma apresentação consistente e moderna em ambientes escuros. A estilização é simples, porém essencial para manter a identidade visual e acessibilidade do sistema, integrando-se a um front-end maior que depende dessas definições para coerência estética e usabilidade aprimorada.</summary>
+        <properties>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>name</subProperty>
+            <values>UI Theming Dark Mode</values>
+          </property>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>domain</subProperty>
+            <values>Frontend UI, User Experience, Dark Mode Styling</values>
+          </property>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>current_phase</subProperty>
+            <values>Production</values>
+          </property>
+          <property>
+            <name>project_metadata</name>
+            <subProperty>critical_business_rules</subProperty>
+            <values>Consistent dark mode color scheme, Scrollbar usability and visibility</values>
+          </property>
+          <property>
+            <name>technical_stack</name>
+            <subProperty>primary_language</subProperty>
+            <values>CSS3</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>design_pattern</subProperty>
+            <values>CSS Theming, Component-based Styling</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>folder_structure</subProperty>
+            <values>Stylesheets organized por componentes visuais e temas</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>naming_conventions</subProperty>
+            <values>BEM-like classes (.Popup, .text-center)</values>
+          </property>
+          <property>
+            <name>architecture_patterns</name>
+            <subProperty>module_boundaries</subProperty>
+            <values>Separação clara entre estilos globais (:root) e componentes específicos (.Popup)</values>
+          </property>
+          <property>
+            <name>code_standards</name>
+            <subProperty>style_guide</subProperty>
+            <values>CSS standard conventions</values>
+          </property>
+          <property>
+            <name>dependencies_context</name>
+            <subProperty>critical_dependencies</subProperty>
+            <values>WebKit browser support</values>
+          </property>
+          <property>
+            <name>current_challenges</name>
+            <subProperty>known_issues</subProperty>
+            <values>Scrollbar customization limitado a WebKit</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>code_review_focus</subProperty>
+            <values>Consistência visual, Compatibilidade cross-browser</values>
+          </property>
+          <property>
+            <name>team_preferences</name>
+            <subProperty>decision_log</subProperty>
+            <values>Adotar dark mode como padrão visual</values>
           </property>
         </properties>
       </file>
@@ -6476,39 +2867,52 @@ Processo de implementação estruturado:
 </system_architecture>
 
 <implementation_plan priority="high">
-Comando original: Remova todos os outros exports de código que não sejam Cypress. A partir de agora, esta extensão exporta apenas Cypress. Portanto, você pode remover Playwright e Puppeteer. O código gerado será somente Cypress. Pode modificar o README, o código injetado na página e o popup. Queremos apenas gerar output de Cypress.
+Comando original: Atualmente, consegui resolver um problema que existia na nossa extensão. Se você analisar o código do popup, ao entrar no histórico de gravações e selecionar uma gravação, o layout apresentado está muito bom, porém é diferente do layout exibido quando apenas abrimos o popup. Quero que esse layout novo seja aplicado também ao abrir o popup, incluindo a logo da Fleury.
 
-Último plano: O plano apresenta 10 perguntas-chave com respostas detalhadas que cobrem remoção de bibliotecas, refatoração de módulos, ajuste de UI, testes, performance e segurança. Cada resposta descreve exatamente como implementar as mudanças para tornar a extensão monotecnologia Cypress.
+Outro ponto: percebi que as cores estão em um gradiente linear, algo puxado para o roxo, mas não é isso que eu quero. É necessário usar a cor do botão 'Iniciar Gravação' da aba atual como cor principal da aplicação. Ou seja, o background que está roxo deve ser substituído por esse tom de vermelho.
+
+Além disso, a borda da tabela de gravações e o campo de busca por site ou URL estão com padding muito grande. É preciso reduzir esse padding, pois estamos em uma tela pequena, de 800x600, e os elementos ficaram grandes demais. Diminua o tamanho desses componentes.
+
+Outro ajuste: os ícones dos itens do histórico de gravação — como o ícone de calendário, tempo, etc. — atualmente aparecem em cada item da lista. Eles devem estar apenas no header da tabela, na primeira linha (TR), e não em cada linha dos itens.
+
+Mais um ponto: ao clicar em um item do histórico e visualizar o código Cypress, o código precisa ser exibido em tema dark, não light. Essa alteração também deve ser feita.
+
+Resumindo: todo o histórico de gravações e a tela de detalhes de uma gravação devem estar em tema dark, pois atualmente estão em tema light. Faça essa troca para o tema dark.
+
+Último plano: Geraremos um plano de implementação detalhado para unificar layouts, ajustar cores, otimizar paddings, mover ícones, habilitar tema dark global e garantir que todo o Popup siga a nova identidade visual da Fleury sem comprometer funcionalidades existentes.
 
 Pergunta 1: Q1 - Qual é o problema principal e como vamos resolvê-lo especificamente?
-Resposta: Precisamos eliminar suporte a Playwright e Puppeteer em todo o repo. Criaremos a branch feat/cypress-only, removendo dependências dos packages.json ("@playwright/test", "puppeteer"). Refatoraremos src/pages/builders/index.ts para exportar somente CypressBuilder, apagando PlaywrightBuilder e PuppeteerBuilder. Ajustaremos importações nos arquivos CodeGen.tsx e RecordingDetail.tsx para aceitar apenas enum ScriptType.CYPRESS, que será promovido a valor único em src/pages/types/index.ts. Finalmente, rodaremos yarn prune && yarn install para limpar node_modules e verificar build.
+Resposta: Criaremos novo componente LayoutWrapper (src/pages/Popup/components/LayoutWrapper.tsx) que reutiliza o mesmo grid/flex do histórico. No index.jsx montaremos <LayoutWrapper view="home" /> garantindo que o header com LogoFleury.tsx (SVG otimizado) e ActionButtons seja renderizado. Substituímos importações de estilos roxos por theme-red.scss, aplicando variables.scss.$primary=#C1121F. Mantemos comportamento do botão Recorder intacto usando props repassadas via context.
 
 Pergunta 2: Q2 - Como os dados serão estruturados e qual a estratégia de persistência?
-Resposta: Atualizaremos src/pages/types/index.ts para reduzir enum ScriptType a { CYPRESS = 'cypress' }. Interfaces RecordingEntry e Action permanecem, porém configureremos campo library fixo em 'cypress'. No storage/recording-store.ts validaremos que qualquer gravação salva tenha entry.library === 'cypress', rejeitando valores divergentes. Persistência continua em chrome.storage.local com chave HISTORY_V2; migrações antigas passam por migrateToCypressOnly() que converte frameworks legados para 'cypress'.
+Resposta: Manteremos RecordingDTO em src/types/recording.ts. Para theme, criaremos interface ThemePalette { primary:string; bg:string; text:string } em src/types/theme.ts e persistiremos preferências em chrome.storage.sync na chave "ds_theme". LayoutWrapper buscará ThemeProviderContext (novo) que despacha cores para styled-components ou CSS variables via :root--primary. Cache in-memory em useRef para render sem flicker.
 
 Pergunta 3: Q3 - Quais módulos existentes serão integrados e como?
-Resposta: src/pages/Common/endRecording.ts: substituir chamada genCode(actions, library) por genCypressCode(actions). src/pages/Content/CodeGen.tsx: remover seletor de biblioteca; importar único gerador { genCypressCode } de builders. src/pages/Popup/components/RecordingDetail.tsx: trocar estado selectedLib por constante. src/pages/Content/ActionList.tsx e ControlBar.tsx continuam exibindo ações; qualquer switch-case sobre ScriptType será reduzido para default Cypress. Ajustar exportação em builders/index.ts para "export { default as genCypressCode } from './cypressBuilder'".
+Resposta: Modificaremos: 1) src/pages/Popup/Popup.tsx para injetar ThemeProviderContext; 2) src/pages/Popup/components/RecordingHistory.tsx para remover ícones internos e adicionar HeaderIcons.tsx na <thead>; 3) src/pages/Popup/components/RecordingDetail.tsx incluindo switch de PrismTheme para vs-dark; 4) src/pages/Common/styles.css receberá variables overrides; 5) src/pages/Popup/index.css terá tokens --primary e --bg-dark.
 
 Pergunta 4: Q4 - Quais casos extremos e erros devemos tratar?
-Resposta: 1) Gravações antigas com library !== 'cypress' – executar migração automática na inicialização do store. 2) Imports órfãos após remoção de builders – adicionar eslint rule no .eslintrc: no-restricted-imports [error, { patterns: ['*playwright*','*puppeteer*'] }]. 3) Tests quebrando por enums faltantes – comandos jest --passWithNoTests nas suites Playwright/Puppeteer serão desativados. 4) JSON armazenado sem library – aplicar fallback 'cypress'. 5) Build CI falhando em references – usar tsc --noEmit para capturar.
+Resposta: Edge cases: a) ausência de cor do botão (fallback #C1121F); b) telas <600px exigem overflow auto; c) browsers antigos sem prefers-color-scheme; d) recordings vazios não geram tabela; e) migração de themes pré-existentes; f) falha ao carregar logo (usa SVG inline). Implementaremos try/catch em useThemeLoader com custom Error "ThemeLoadError" e fallback para defaultTheme.
 
 Pergunta 5: Q5 - Como tornar a solução configurável e extensível?
-Resposta: Introduziremos arquivo src/config/cypress-only.ts exportando const CYPRESS_ONLY = true; futuros módulos que checam múltiplas libs lerão esse flag via import { CYPRESS_ONLY }. Caso se deseje reintroduzir outro framework, basta substituir flag por lista SUPPORTED_LIBS = ['cypress']. Hooks usePreferredLibrary e ScriptTypeSelect serão mantidos, mas retornarão 'cypress' fixo; deixamos interfaces para permitir rollback simples sem refatoração massiva.
+Resposta: Arquivo config/theme.config.ts exportará DEFAULT_THEME e função registerTheme(name,palette). addThemeHook(externalPalette) permite skins futuras. Variables CSS --primary,--secondary,--bg serão geradas dinamicamente via document.documentElement.style.setProperty. Usuário poderá alternar light/dark via switch salvo em chrome.storage.sync.
 
 Pergunta 6: Q6 - Qual a arquitetura técnica detalhada da implementação?
-Resposta: Design modular: Builders Layer agora possui apenas CypressBuilder (Factory Method). Service Layer (RecordingService) simplifica Strategy para sempre usar CypressStrategy. UI Layer (Popup, CodeGen, RecordingDetail) passa de polimorfismo para configuração única hard-coded. Diagrama textual: UI → services/recording-service → builders/cypressBuilder → utils/genCypressCode. Nenhum Observer adicional é tocado. Diagramaremos no README usando Mermaid para facilitar revisão.
+Resposta: Aplicaremos Pattern ThemeContext (Singleton) + Factory para geração de CSS variables, Observer para notificar componentes. Estrutura:
+Popup.tsx→ThemeProvider→LayoutWrapper→(RecordingHistory|HomeView)
+           ↘ CodeHighlighter (prismjs theme)
+Cada componente consome useTheme(). Style tokens aplicados por css-modules com :root selectors carregados em theme-red.scss e theme-dark.scss.
 
 Pergunta 7: Q7 - Como garantir performance e escalabilidade?
-Resposta: Remover as duas bibliotecas reduz bundle em ~1.2 MB; webpack.config.js terá externals ajustados. Analisamos big-O: geração de código é O(n) no número de actions; não muda. Para build speed habilitamos cache webpack 5 persistent. CI benchmark: yarn build antes 42 s, depois 31 s. Adicionamos lighthouse ci para garantir background script <200 KB gzip. Monitoring: webpack-bundle-analyzer via npm run stats.
+Resposta: Interpolamos cores via CSS variables evitando re-render React; complexidade O(1) para switch de tema. useMemo memoiza columns da TanStack Table. Lazy-load prismjs/themes/vs-dark.js somente quando user clica “Código”. Bundle split via webpack code-splitting (chunk "code-panel"). Minificamos logo.svg (<2KB). Benchmarks: render inicial <50ms, theme switch <10ms, memory <30MB.
 
 Pergunta 8: Q8 - Quais validações e medidas de segurança implementar?
-Resposta: TypeScript strict verifica que qualquer variável library é literal 'cypress'. Adicionamos schema Zod RecordingEntrySchema com field library literal('cypress') no RecordingService. Sanitizamos código gerado substituindo backticks por '\`'. Manifest.json permissions não mudam, mas retiramos "clipboardWrite" para Playwright export. Secrets: removemos PLAYWRIGHT_API_KEY do .env.example. ESLint plugin-security inspeciona new Function uso em builders.
+Resposta: Sanitizamos valores de storage via regex /^#([0-9A-F]{3}){1,2}$/i. Conteúdo de código permanece escapado (react-syntax-highlighter já faz). Message origin validated in Background→Content handshake remains untouched. CSP será atualizado para permitir data:image/svg+xml base64 para LogoFleury sem abrir wildcard. Somente leitura de chrome.storage.sync para tema bloqueia writes não autorizadas.
 
 Pergunta 9: Q9 - Como testar completamente a implementação?
-Resposta: Criaremos testes unitários em builders/__tests__/cypressBuilder.test.ts validando que click → cy.get('button').click() é gerado corretamente. Atualizamos snapshots do CodeGen usando jest-snapshot. Integration test: jest/e2e/endRecording.spec.ts injeta 5 actions, chama endRecording, espera genCypressCode no message payload. Coverage lcov target >= 80%. GitHub Actions job cypress-only-test.yml roda yarn test, yarn build, eslint.
+Resposta: Unit tests em __tests__/themeProvider.test.ts simulam storage miss/hit. Snapshot tests para LayoutWrapper dark e red theme usando react-testing-library + jest-dom. e2e Cypress "popup-layout.spec.ts": abre extensão, verifica .logo-fleury visível, assert background-color == rgb(193,18,31). Usa cy.window().its('document.documentElement').should('have.css','--primary','rgb(193, 18, 31)'). Cobertura alvo 85%.
 
 Pergunta 10: Q10 - Como validar que a implementação está correta e completa?
-Resposta: Checklist: 1) yarn lint sem erros restritos. 2) yarn test coverage >=80%. 3) yarn build produz dist size <3 MB. 4) Popup exibe somente Cypress sem dropdown. 5) RecordingHistory exporta .cy.js contendo cy.* comandos. 6) chrome extension installed → start recording → generated code file header '// Cypress script'. 7) README atualizado remove referências a Playwright/Puppeteer. QA manual em Chrome 120 confirma gravação, histórico e cópia funcionando.
+Resposta: Checklist: 1) Popup home identical to history layout; 2) Background #C1121F em todas views; 3) Table header possui ícones, linhas não; 4) Padding .table, .search-input ≤8px; 5) Prism theme dark aplicado; 6) LogoFleury carrega em <header>; 7) Todos testes CI verdes; 8) Lighthouse contraste AA; 9) Nenhum erro Sentry; 10) QA manual em janela 800×600 confirmando dimensões.
 </implementation_plan>
 </context>
 

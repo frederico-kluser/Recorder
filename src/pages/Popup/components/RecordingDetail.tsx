@@ -20,7 +20,7 @@ import {
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ActionList from '../../Content/ActionList';
 import CodeGen from '../../Content/CodeGen';
-import './styles.css';
+import './detail-dark.css';
 
 interface RecordingDetailProps {
   recording: RecordingEntry;

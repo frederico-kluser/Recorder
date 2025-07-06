@@ -27,7 +27,7 @@ import {
   SortingState,
   getFilteredRowModel,
 } from '@tanstack/react-table';
-import './styles.css';
+import './history-dark.css';
 
 interface RecordingHistoryProps {
   onSelectRecording: (recording: RecordingEntry) => void;
@@ -208,49 +208,56 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
         size: 50,
       }),
       columnHelper.accessor('title', {
-        header: 'Gravação',
+        header: () => (
+          <span>
+            <FontAwesomeIcon icon={faGlobe} style={{ marginRight: '6px' }} />
+            Gravação
+          </span>
+        ),
         cell: ({ row }) => (
           <div>
-            <div className="recording-title">
-              <FontAwesomeIcon icon={faGlobe} />
-              {row.original.title}
-            </div>
+            <div className="recording-title">{row.original.title}</div>
             <div className="recording-url">{row.original.url}</div>
           </div>
         ),
         enableSorting: true,
       }),
       columnHelper.accessor('startedAt', {
-        header: 'Data',
-        cell: ({ row }) => (
-          <span className="date-badge">
-            <FontAwesomeIcon
-              icon={faCalendarAlt}
-              style={{ marginRight: '6px' }}
-            />
-            {formatDate(row.original.startedAt)}
+        header: () => (
+          <span>
+            <FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '6px' }} />
+            Data
           </span>
+        ),
+        cell: ({ row }) => (
+          <span className="date-badge">{formatDate(row.original.startedAt)}</span>
         ),
         enableSorting: true,
       }),
       columnHelper.display({
         id: 'duration',
-        header: 'Duração',
+        header: () => (
+          <span>
+            <FontAwesomeIcon icon={faClock} style={{ marginRight: '6px' }} />
+            Duração
+          </span>
+        ),
         cell: ({ row }) => (
           <span className="duration-badge">
-            <FontAwesomeIcon icon={faClock} style={{ marginRight: '6px' }} />
             {formatDuration(row.original.startedAt, row.original.endedAt)}
           </span>
         ),
         enableSorting: false,
       }),
       columnHelper.accessor('actions', {
-        header: 'Ações',
-        cell: ({ row }) => (
-          <span className="actions-badge">
+        header: () => (
+          <span>
             <FontAwesomeIcon icon={faTasks} style={{ marginRight: '6px' }} />
-            {row.original.actions.length}
+            Ações
           </span>
+        ),
+        cell: ({ row }) => (
+          <span className="actions-badge">{row.original.actions.length}</span>
         ),
         enableSorting: true,
       }),

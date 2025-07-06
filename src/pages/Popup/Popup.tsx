@@ -11,6 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import Logo from '../Common/Logo';
+import LayoutWrapper from './components/LayoutWrapper';
 import CodeGen from '../Content/CodeGen';
 import ActionList from '../Content/ActionList';
 import { endRecording } from '../Common/endRecording';
@@ -34,6 +35,7 @@ import type { Action } from '../types';
 import { ActionsMode, ScriptType } from '../types';
 
 import PopupStyle from './Popup.css';
+import './components/dark-theme.css';
 
 import { onPageView, onNewRecording } from './analytics';
 onPageView('/popup');
@@ -246,12 +248,11 @@ const Popup = () => {
   return (
     <>
       <style>{PopupStyle}</style>
-      <div className="Popup" style={{ background: '#080A0B' }}>
+      <div className="Popup">
         {activePage === 'recording' && (
-          <>
-            <Logo />
+          <LayoutWrapper view="home" title="Gravando...">
             <div className="text-center" style={{ marginTop: '2em' }}>
-              <div className="text-xl text-red">
+              <div className="text-xl" style={{ color: 'var(--primary-color)' }}>
                 Gravando
                 {isRecordingCurrentTab ? ' Teste...' : ' em Outra Aba'}
               </div>
@@ -278,14 +279,11 @@ const Popup = () => {
                 &nbsp; Finalizar Gravação do Teste
               </button>
             </div>
-          </>
+          </LayoutWrapper>
         )}
         {activePage === 'home' && (
-          <>
-            <div className="d-flex justify-between items-center">
-              <Logo />
-            </div>
-            <div className="text-center mt-12">
+          <LayoutWrapper view="home">
+            <div className="text-center" style={{ marginTop: '3em' }}>
               <div
                 style={{
                   fontSize: 14,
@@ -331,7 +329,7 @@ const Popup = () => {
                 </span>
               </div>
             </div>
-          </>
+          </LayoutWrapper>
         )}
         {activePage === 'lastTest' && (
           <LastStepPanel

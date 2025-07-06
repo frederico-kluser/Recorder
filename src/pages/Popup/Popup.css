@@ -1,26 +1,41 @@
 :root {
   color-scheme: dark;
+  /* Tema dark com cores Fleury */
+  --primary-color: #C1121F;
+  --primary-hover: #A00F1A;
+  --primary-light: rgba(193, 18, 31, 0.1);
+  --bg-dark: #1a1a1a;
+  --bg-darker: #141414;
+  --bg-card: #242424;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-color: #333333;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .Popup {
   height: 100%;
-  background-color: #282c34;
-  color: white;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
 }
 
 .text-center {
   text-align: center;
 }
 
+/* CustomScrollBar - Tema Dark */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-corner {
-  background: rgba(0, 0, 0, 0);
+  background: var(--bg-darker);
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 8px;
-  background: rgba(100, 100, 100, 0.8);
+  border-radius: 4px;
+  background: var(--border-color);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #444444;
 }
