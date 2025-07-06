@@ -11175,7 +11175,7 @@
     ]
   },
   "src/pages/Popup/index.jsx": {
-    "summary": "Este arquivo React tem como objetivo principal renderizar um componente Popup dentro de um container DOM específico, aplicando estilos CSS importados de múltiplas fontes, incluindo estilos comuns, específicos do índice e da biblioteca FontAwesome. O código utiliza a API de renderização do ReactDOM para injetar o componente na página, garantindo que os estilos sejam aplicados globalmente via uma tag <style> embutida. Além disso, suporta hot module replacement (HMR) para atualização dinâmica durante o desenvolvimento, melhorando a experiência do desenvolvedor. Funcionalmente, o arquivo atua como ponto de entrada para a interface de usuário, integrando componentes e estilos para garantir uma apresentação consistente e responsiva no navegador.",
+    "summary": "Este arquivo React tem como propósito principal renderizar um componente de interface chamado Popup dentro de um container DOM específico, aplicando estilos CSS importados de múltiplas fontes, incluindo estilos comuns, específicos do componente e ícones FontAwesome. O código utiliza a API de hot module replacement (HMR) para permitir atualizações dinâmicas durante o desenvolvimento sem recarregar a página, garantindo uma experiência de desenvolvimento ágil. Funcionalmente, ele orquestra a injeção de estilos globais e a montagem do componente principal, integrando-se a um sistema maior de UI modular e estilizada, habilitando a exibição de popups interativos no front-end da aplicação.",
     "properties": [
       {
         "property": "project_metadata",
@@ -11188,8 +11188,9 @@
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Frontend Web Development",
-          "UI Component Rendering"
+          "Frontend UI",
+          "Web Application",
+          "Component Rendering"
         ]
       },
       {
@@ -11204,7 +11205,8 @@
         "subProperty": "critical_business_rules",
         "value": [
           "Renderizar Popup corretamente no container designado",
-          "Aplicar estilos globais sem conflito"
+          "Manter estilos consistentes e isolados",
+          "Suportar hot reload sem falhas"
         ]
       },
       {
@@ -11246,6 +11248,7 @@
         "subProperty": "design_pattern",
         "value": [
           "Component-Based Architecture",
+          "Modular CSS",
           "Hot Module Replacement"
         ]
       },
@@ -11253,17 +11256,17 @@
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "./Popup (component)",
-          "./index.css (local styles)",
-          "../Common/styles.css (shared styles)"
+          "./Popup - componente principal",
+          "./components/styles.css - estilos específicos",
+          "../Common/styles.css - estilos compartilhados",
+          "./index.css - estilos da página"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "PascalCase para componentes React",
-          "camelCase para variáveis e funções",
+          "CamelCase para componentes",
           "kebab-case para arquivos CSS"
         ]
       },
@@ -11272,7 +11275,7 @@
         "subProperty": "module_boundaries",
         "value": [
           "Separação clara entre componentes e estilos",
-          "Dependência unidirecional do componente Popup para estilos"
+          "Dependência unidirecional para Popup e estilos"
         ]
       },
       {
@@ -11300,14 +11303,14 @@
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "JSDoc para funções e componentes"
+          "JSDoc para componentes e funções"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "type_checking",
         "value": [
-          "PropTypes para validação básica (não presente no código atual)"
+          "PropTypes para validação de props (não presente no código atual)"
         ]
       },
       {
@@ -11321,14 +11324,14 @@
         "property": "testing_strategy",
         "subProperty": "test_structure",
         "value": [
-          "Testes localizados em __tests__ ou pasta __specs__"
+          "__tests__ folder ao lado dos componentes"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
         "value": [
-          "Cobertura mínima de 80%"
+          ">= 80% cobertura"
         ]
       },
       {
@@ -11342,7 +11345,7 @@
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Mocks para componentes filhos e estilos"
+          "Mock de componentes e estilos"
         ]
       },
       {
@@ -11364,7 +11367,7 @@
         "subProperty": "pr_requirements",
         "value": [
           "Code review obrigatório",
-          "Checks automáticos via CI"
+          "Testes automatizados"
         ]
       },
       {
@@ -11469,8 +11472,8 @@
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Minimizar re-renders",
-          "Evitar injeção excessiva de estilos inline"
+          "Minimizar re-renderizações",
+          "Carregamento eficiente de estilos"
         ]
       },
       {
@@ -11484,7 +11487,7 @@
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
         "value": [
-          ""
+          "Suporte a hot reload para desenvolvimento escalável"
         ]
       },
       {
@@ -11527,41 +11530,46 @@
       {
         "property": "dependencies_context",
         "subProperty": "deprecated_packages",
-        "value": []
+        "value": [
+          ""
+        ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "version_constraints",
         "value": [
-          "React >=18.0.0"
+          "React 18.x",
+          "FontAwesome latest stable"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "internal_packages",
         "value": [
-          "./Popup"
+          "./Popup",
+          "../Common/styles.css"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "technical_debt",
         "value": [
-          "Ausência de tratamento de erros na renderização"
+          "Ausência de tratamento de erros na renderização",
+          "Estilos injetados inline podem impactar performance"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
         "value": [
-          "Possível impacto de performance por estilos inline"
+          "Dependência do ambiente para hot module replacement funcionar"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
         "value": [
-          "Injeção de múltiplos estilos inline pode afetar renderização"
+          "Injeção inline de múltiplos estilos pode aumentar tempo de render"
         ]
       },
       {
@@ -11577,28 +11585,29 @@
         "value": [
           "Consistência de estilos",
           "Uso correto de HMR",
-          "Clareza na renderização do componente"
+          "Modularidade dos componentes"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "Documentar componentes React com JSDoc"
+          "Documentar componentes com JSDoc"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários objetivos e claros"
+          "Comentários claros e objetivos, foco em comportamento"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Adoção de HMR para acelerar desenvolvimento"
+          "Adoção de HMR para acelerar desenvolvimento",
+          "Separação clara entre estilos globais e específicos"
         ]
       },
       {
@@ -11641,21 +11650,23 @@
         "property": "deployment_context",
         "subProperty": "deployment_method",
         "value": [
-          "Webpack Dev Server com HMR"
+          "Webpack Dev Server com HMR",
+          "Build estático para produção"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "environment_variables",
         "value": [
-          ""
+          "NODE_ENV",
+          "PUBLIC_URL"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
         "value": [
-          ""
+          "Necessidade de suporte a HMR no ambiente de desenvolvimento"
         ]
       }
     ]
@@ -22429,6 +22440,379 @@
           "Limitação de memória por container: 512MB",
           "Limite de conexões simultâneas ao banco: 100"
         ]
+      }
+    ]
+  },
+  "src/pages/Popup/Popup.css": {
+    "summary": "Este arquivo CSS configura o tema visual de uma interface de usuário com foco em um esquema de cores dark mode, aplicando estilos para elementos de popup e centralização de texto. Ele define propriedades para a aparência da scrollbar personalizada, incluindo dimensões, cores e bordas arredondadas, melhorando a experiência do usuário em navegadores WebKit. O código não manipula dados ou estados diretamente, mas altera o comportamento visual e a usabilidade da interface, garantindo uma apresentação consistente e moderna em ambientes escuros. A estilização é simples, porém essencial para manter a identidade visual e acessibilidade do sistema, integrando-se a um front-end maior que depende dessas definições para coerência estética e usabilidade aprimorada.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "UI Theming Dark Mode"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Frontend UI",
+          "User Experience",
+          "Dark Mode Styling"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Production"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Consistent dark mode color scheme",
+          "Scrollbar usability and visibility"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "CSS3"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": []
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "CSS Theming",
+          "Component-based Styling"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "Stylesheets organized por componentes visuais e temas"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "BEM-like classes (.Popup, .text-center)"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Separação clara entre estilos globais (:root) e componentes específicos (.Popup)"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "CSS standard conventions"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": []
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": []
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": []
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "WebKit browser support"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": [
+          "Scrollbar customization limitado a WebKit"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Consistência visual",
+          "Compatibilidade cross-browser"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Adotar dark mode como padrão visual"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
       }
     ]
   }
