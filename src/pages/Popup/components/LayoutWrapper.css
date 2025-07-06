@@ -1,25 +1,15 @@
-/* Variáveis do tema */
-:root {
-  --primary-color: #C1121F;
-  --primary-hover: #A00F1A;
-  --primary-light: rgba(193, 18, 31, 0.1);
-  --bg-dark: #1a1a1a;
-  --bg-darker: #141414;
-  --bg-card: #242424;
-  --text-primary: #ffffff;
-  --text-secondary: #b3b3b3;
-  --border-color: #333333;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
+/* Tema dark unificado importado via index.jsx */
 
-/* Layout Wrapper */
+/* Layout Wrapper - Container principal 800x600 */
 .layout-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: 800px;
+  height: 600px;
   background-color: var(--bg-dark);
   color: var(--text-primary);
   overflow: hidden;
+  margin: 0 auto;
 }
 
 /* Header */
@@ -48,19 +38,25 @@
 }
 
 .back-button {
-  background: none;
+  background-color: var(--primary-color);
   border: none;
-  color: var(--text-secondary);
+  color: var(--primary-contrast);
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  font-size: 14px;
+  padding: var(--btn-padding-sm);
+  height: var(--btn-height-sm);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .back-button:hover {
-  background-color: var(--bg-card);
-  color: var(--text-primary);
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Content */
@@ -86,7 +82,7 @@
 
 /* Scrollbar personalizada */
 .layout-content::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .layout-content::-webkit-scrollbar-track {
@@ -95,9 +91,9 @@
 
 .layout-content::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .layout-content::-webkit-scrollbar-thumb:hover {
-  background: #444444;
+  background: var(--border-hover);
 }

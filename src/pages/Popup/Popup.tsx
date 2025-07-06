@@ -34,8 +34,7 @@ import { recordingStore } from '../storage/recording-store';
 import type { Action } from '../types';
 import { ActionsMode, ScriptType } from '../types';
 
-import PopupStyle from './Popup.css';
-import './components/dark-theme.css';
+// CSS será importado via index.jsx
 
 import { onPageView, onNewRecording } from './analytics';
 onPageView('/popup');
@@ -247,7 +246,6 @@ const Popup = () => {
 
   return (
     <>
-      <style>{PopupStyle}</style>
       <div className="Popup">
         {activePage === 'recording' && (
           <LayoutWrapper view="home" title="Gravando...">

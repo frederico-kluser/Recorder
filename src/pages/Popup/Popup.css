@@ -1,16 +1,7 @@
+/* Tema dark unificado - importado via index.jsx */
+
 :root {
   color-scheme: dark;
-  /* Tema dark com cores Fleury */
-  --primary-color: #c1121f;
-  --primary-hover: #a00f1a;
-  --primary-light: rgba(193, 18, 31, 0.1);
-  --bg-dark: #1a1a1a;
-  --bg-darker: #141414;
-  --bg-card: #242424;
-  --text-primary: #ffffff;
-  --text-secondary: #b3b3b3;
-  --border-color: #333333;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .modern-library-label {
@@ -29,17 +20,17 @@
 
 /* CustomScrollBar - Tema Dark */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-corner {
   background: var(--bg-darker);
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   background: var(--border-color);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #444444;
+  background: var(--border-hover);
 }

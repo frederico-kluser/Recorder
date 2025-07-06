@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoFleury from '../../Common/LogoFleury';
+import logoSvg from '../logo.svg';
 import './LayoutWrapper.css';
 
 interface LayoutWrapperProps {
@@ -13,17 +13,23 @@ interface LayoutWrapperProps {
  * Wrapper component para unificar o layout em todas as views do popup
  * Garante consistência visual com header, logo e container padronizados
  */
-const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ 
-  children, 
+const LayoutWrapper: React.FC<LayoutWrapperProps> = ({
+  children,
   view = 'home',
   title,
-  onBack 
+  onBack,
 }) => {
   return (
     <div className={`layout-wrapper layout-${view}`}>
       <header className="layout-header">
         <div className="header-content">
-          <LogoFleury height={28} className="logo-fleury" />
+          <img
+            src={logoSvg}
+            alt="Logo"
+            height={28}
+            className="logo-fleury"
+            style={{ userSelect: 'none', width: 'auto' }}
+          />
           {title && <h1 className="header-title">{title}</h1>}
         </div>
         {onBack && (
@@ -32,9 +38,7 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({
           </button>
         )}
       </header>
-      <main className="layout-content">
-        {children}
-      </main>
+      <main className="layout-content">{children}</main>
     </div>
   );
 };
