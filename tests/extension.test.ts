@@ -97,7 +97,7 @@ test('control bar shows correct actions during recording', async () => {
   await page.close();
 });
 
-test('can click through recording steps and it generates the right code', async () => {
+test('can click through recording steps and it generates the right Cypress code', async () => {
   expect(browserContext).toBeTruthy();
   if (browserContext == null) {
     return;
@@ -121,37 +121,29 @@ test('can click through recording steps and it generates the right code', async 
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
   await page.click('[data-testid="end-test-recording"]');
   await page.click('[data-testid="view-last-test"]');
-  await page
-    .locator('[data-testid="script-type-select"]')
-    .selectOption('playwright');
 
   // Grab code generated
   const content = await page.textContent('[data-testid="code-block"]');
   expect(content).toEqual(
-    expect.stringContaining("import { test, expect } from '@playwright/test'")
+    expect.stringContaining("it('Written with Fleury Cypress Recorder', () =>")
+  );
+  expect(content).toEqual(
+    expect.stringContaining("cy.get('#searchInput').click();")
+  );
+  expect(content).toEqual(
+    expect.stringContaining('cy.get(\'#searchInput\').type("tacos");')
+  );
+  expect(content).toEqual(
+    expect.stringContaining("cy.get('#searchInput').type('{Enter}');")
   );
   expect(content).toEqual(
     expect.stringContaining(
-      "test('Written with DeploySentinel Recorder', async ({ page }) =>"
-    )
-  );
-  expect(content).toEqual(
-    expect.stringContaining("page.click('#searchInput');")
-  );
-  expect(content).toEqual(
-    expect.stringContaining('page.fill(\'#searchInput\', "tacos");')
-  );
-  expect(content).toEqual(
-    expect.stringContaining("page.press('#searchInput', 'Enter'),")
-  );
-  expect(content).toEqual(
-    expect.stringContaining(
-      'page.click(\'[href="/wiki/Corn_tortilla"]:nth-child(7)\'),'
+      'cy.get(\'[href="/wiki/Corn_tortilla"]:nth-child(7)\').click();'
     )
   );
   expect(content).toEqual(
     expect.stringContaining(
-      "await page.screenshot({ path: 'screenshot.png', fullPage: true });"
+      "cy.screenshot();"
     )
   );
 

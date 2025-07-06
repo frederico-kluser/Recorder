@@ -1,5 +1,6 @@
 body {
-  width: 420px;
+  width: 800px;
+  height: 600px;
   overflow-y: auto;
   margin: 0;
   font-family: 'Roboto', sans-serif;
@@ -10,5 +11,5 @@ body {
 
   font-size: 16px;
 
-  background: #080a0b;
+  background: var(--bg-dark, #1a1a1a);
 }

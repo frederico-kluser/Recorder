@@ -9,8 +9,6 @@ export enum BarPosition {
 }
 
 export enum ScriptType {
-  Puppeteer = 'puppeteer',
-  Playwright = 'playwright',
   Cypress = 'cypress',
 }
 

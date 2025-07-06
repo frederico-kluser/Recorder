@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ScriptType } from '../types';
 
+/**
+ * Componente que exibe o tipo de script (sempre Cypress)
+ * Mantém a interface anterior para compatibilidade, mas agora é apenas visual
+ */
 export default function ScriptTypeSelect({
   value,
   onChange,
@@ -14,29 +18,27 @@ export default function ScriptTypeSelect({
   fontSize?: number;
   shortDescription?: boolean;
 }) {
+  // Sempre retorna Cypress como valor fixo
+  React.useEffect(() => {
+    if (value !== ScriptType.Cypress) {
+      onChange(ScriptType.Cypress);
+    }
+  }, [value, onChange]);
+
   return (
-    <select
+    <div
       className="link-button mr-4"
       style={{
         backgroundColor: '#080a0b',
         color: color ?? 'white',
-        border: 'none',
-        outline: 'none',
+        padding: '2px 8px',
+        borderRadius: '4px',
         fontSize,
+        display: 'inline-block',
       }}
-      onChange={(e) => onChange(e.target.value as ScriptType)}
-      value={value}
-      data-testid="script-type-select"
+      data-testid="script-type-display"
     >
-      <option value={ScriptType.Playwright}>
-        Playwright{!shortDescription ? ' Library' : ''}
-      </option>
-      <option value={ScriptType.Puppeteer}>
-        Puppeteer{!shortDescription ? ' Library' : ''}
-      </option>
-      <option value={ScriptType.Cypress}>
-        Cypress{!shortDescription ? ' Library' : ''}
-      </option>
-    </select>
+      Cypress{!shortDescription ? ' Library' : ''}
+    </div>
   );
 }

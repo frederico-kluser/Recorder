@@ -8,6 +8,7 @@ import {
   TagName,
   isSupportedActionType,
 } from '../types';
+import { TimingConfig, DEFAULT_TIMING_CONFIG } from '../types/config';
 
 const FILLABLE_INPUT_TYPES = [
   '',
@@ -146,10 +147,16 @@ export abstract class ScriptBuilder {
 
   protected readonly showComments: boolean;
 
-  constructor(showComments: boolean) {
+  protected readonly timingConfig: TimingConfig;
+
+  constructor(
+    showComments: boolean,
+    timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG
+  ) {
     this.codes = [];
     this.actionContexts = [];
     this.showComments = showComments;
+    this.timingConfig = timingConfig;
   }
 
   abstract click: (selector: string, causesNavigation: boolean) => this;
@@ -201,6 +208,8 @@ export abstract class ScriptBuilder {
   abstract fullScreenshot: () => this;
 
   abstract awaitText: (test: string) => this;
+
+  abstract wait: (ms: number) => this;
 
   abstract buildScript: () => string;
 
@@ -299,8 +308,39 @@ export abstract class ScriptBuilder {
 
   buildCodes = () => {
     let prevActionContext: ActionContext | undefined;
+    let prevTimestamp: number | undefined;
 
     for (const actionContext of this.actionContexts) {
+      const currentAction = actionContext.getAction();
+      const currentTimestamp = currentAction.timestamp;
+
+      // Adiciona wait entre ações se configurado e houver diferença significativa de tempo
+      if (
+        this.timingConfig.enableWaits &&
+        prevTimestamp !== undefined &&
+        currentTimestamp !== undefined
+      ) {
+        const timeDiff = currentTimestamp - prevTimestamp;
+        // Apenas adiciona wait se o tempo for maior que minWaitMs
+        if (
+          timeDiff > this.timingConfig.minWaitMs &&
+          timeDiff <= this.timingConfig.maxWaitMs
+        ) {
+          if (this.showComments) {
+            this.pushComments(`// Wait ${timeDiff}ms`);
+          }
+          this.wait(timeDiff);
+        } else if (timeDiff > this.timingConfig.maxWaitMs) {
+          // Se o tempo for maior que maxWaitMs, limita ao máximo configurado
+          if (this.showComments) {
+            this.pushComments(
+              `// Wait ${timeDiff}ms (truncated to ${this.timingConfig.maxWaitMs}ms)`
+            );
+          }
+          this.wait(this.timingConfig.maxWaitMs);
+        }
+      }
+
       if (!actionContext.getActionState().isStateful) {
         if (
           prevActionContext !== undefined &&
@@ -310,7 +350,9 @@ export abstract class ScriptBuilder {
         }
         this.transformActionIntoCodes(actionContext);
       }
+
       prevActionContext = actionContext;
+      prevTimestamp = currentTimestamp;
     }
 
     // edge case
@@ -325,286 +367,6 @@ export abstract class ScriptBuilder {
 
   // for test
   getLatestCode = () => this.codes[this.codes.length - 1];
-}
-
-export class PlaywrightScriptBuilder extends ScriptBuilder {
-  private waitForNavigation() {
-    return `page.waitForNavigation()`;
-  }
-
-  private waitForActionAndNavigation(action: string) {
-    return `await Promise.all([\n    ${action},\n    ${this.waitForNavigation()}\n  ]);`;
-  }
-
-  click = (selector: string, causesNavigation: boolean) => {
-    const actionStr = `page.click('${selector}')`;
-    const action = causesNavigation
-      ? this.waitForActionAndNavigation(actionStr)
-      : `await ${actionStr};`;
-    this.pushCodes(action);
-    return this;
-  };
-
-  hover = (selector: string, causesNavigation: boolean) => {
-    const actionStr = `page.hover('${selector}')`;
-    const action = causesNavigation
-      ? this.waitForActionAndNavigation(actionStr)
-      : `await ${actionStr};`;
-    this.pushCodes(action);
-    return this;
-  };
-
-  load = (url: string) => {
-    this.pushCodes(`await page.goto('${url}');`);
-    return this;
-  };
-
-  resize = (width: number, height: number) => {
-    this.pushCodes(
-      `await page.setViewportSize({ width: ${width}, height: ${height} });`
-    );
-    return this;
-  };
-
-  fill = (selector: string, value: string, causesNavigation: boolean) => {
-    const actionStr = `page.fill('${selector}', ${JSON.stringify(value)})`;
-    const action = causesNavigation
-      ? this.waitForActionAndNavigation(actionStr)
-      : `await ${actionStr};`;
-    this.pushCodes(action);
-    return this;
-  };
-
-  type = (selector: string, value: string, causesNavigation: boolean) => {
-    const actionStr = `page.type('${selector}', ${JSON.stringify(value)})`;
-    const action = causesNavigation
-      ? this.waitForActionAndNavigation(actionStr)
-      : `await ${actionStr};`;
-    this.pushCodes(action);
-    return this;
-  };
-
-  select = (selector: string, option: string, causesNavigation: boolean) => {
-    const actionStr = `page.selectOption('${selector}', '${option}')`;
-    const action = causesNavigation
-      ? this.waitForActionAndNavigation(actionStr)
-      : `await ${actionStr};`;
-    this.pushCodes(action);
-    return this;
-  };
-
-  keydown = (selector: string, key: string, causesNavigation: boolean) => {
-    const actionStr = `page.press('${selector}', '${key}')`;
-    const action = causesNavigation
-      ? this.waitForActionAndNavigation(actionStr)
-      : `await ${actionStr};`;
-    this.pushCodes(action);
-    return this;
-  };
-
-  wheel = (deltaX: number, deltaY: number) => {
-    this.pushCodes(
-      `await page.mouse.wheel(${Math.floor(deltaX)}, ${Math.floor(deltaY)});`
-    );
-    return this;
-  };
-
-  fullScreenshot = () => {
-    this.pushCodes(
-      `await page.screenshot({ path: 'screenshot.png', fullPage: true });`
-    );
-    return this;
-  };
-
-  awaitText = (text: string) => {
-    this.pushCodes(`await page.waitForSelector('text=${text}');`);
-    return this;
-  };
-
-  dragAndDrop = (
-    sourceX: number,
-    sourceY: number,
-    targetX: number,
-    targetY: number
-  ) => {
-    this.pushCodes(
-      [
-        `await page.mouse.move(${sourceX}, ${sourceY});`,
-        '  await page.mouse.down();',
-        `  await page.mouse.move(${targetX}, ${targetY});`,
-        '  await page.mouse.up();',
-      ].join('\n')
-    );
-    return this;
-  };
-
-  buildScript = () => {
-    return `import { test, expect } from '@playwright/test';
-
-test('Written with DeploySentinel Recorder', async ({ page }) => {${this.codes.join(
-      ''
-    )}});`;
-  };
-}
-
-export class PuppeteerScriptBuilder extends ScriptBuilder {
-  private waitForSelector(selector: string) {
-    return `page.waitForSelector('${selector}')`;
-  }
-  private waitForNavigation() {
-    return `page.waitForNavigation()`;
-  }
-  private waitForSelectorAndNavigation(selector: string, action: string) {
-    return `await ${this.waitForSelector(
-      selector
-    )};\n  await Promise.all([\n    ${action},\n    ${this.waitForNavigation()}\n  ]);`;
-  }
-
-  click = (selector: string, causesNavigation: boolean) => {
-    const pageClick = `page.click('${selector}')`;
-    if (causesNavigation) {
-      this.pushCodes(this.waitForSelectorAndNavigation(selector, pageClick));
-    } else {
-      this.pushCodes(
-        `await ${this.waitForSelector(selector)};\n  await ${pageClick};`
-      );
-    }
-    return this;
-  };
-
-  hover = (selector: string, causesNavigation: boolean) => {
-    const pageHover = `page.hover('${selector}')`;
-    if (causesNavigation) {
-      this.pushCodes(this.waitForSelectorAndNavigation(selector, pageHover));
-    } else {
-      this.pushCodes(
-        `await ${this.waitForSelector(selector)};\n  await ${pageHover};`
-      );
-    }
-    return this;
-  };
-
-  load = (url: string) => {
-    this.pushCodes(`await page.goto('${url}');`);
-    return this;
-  };
-
-  resize = (width: number, height: number) => {
-    this.pushCodes(
-      `await page.setViewport({ width: ${width}, height: ${height} });`
-    );
-    return this;
-  };
-
-  type = (selector: string, value: string, causesNavigation: boolean) => {
-    const pageType = `page.type('${selector}', ${JSON.stringify(value)})`;
-    if (causesNavigation) {
-      this.pushCodes(this.waitForSelectorAndNavigation(selector, pageType));
-    } else {
-      this.pushCodes(
-        `await ${this.waitForSelector(selector)};\n  await ${pageType};`
-      );
-    }
-    return this;
-  };
-
-  // Puppeteer doesn't support `fill` so we'll do our own actionability checks
-  // but still type
-  fill = (selector: string, value: string, causesNavigation: boolean) => {
-    const pageType = `page.type('${selector}', ${JSON.stringify(value)})`;
-    if (causesNavigation) {
-      this.pushCodes(
-        this.waitForSelectorAndNavigation(
-          `${selector}:not([disabled])`,
-          pageType
-        )
-      );
-    } else {
-      // Do more actionability checks
-      this.pushCodes(
-        `await ${this.waitForSelector(
-          `${selector}:not([disabled])`
-        )};\n  await ${pageType};`
-      );
-    }
-    return this;
-  };
-
-  select = (selector: string, option: string, causesNavigation: boolean) => {
-    const pageSelectOption = `page.select('${selector}', '${option}')`;
-    if (causesNavigation) {
-      this.pushCodes(
-        this.waitForSelectorAndNavigation(selector, pageSelectOption)
-      );
-    } else {
-      this.pushCodes(
-        `await ${this.waitForSelector(selector)};\n  await ${pageSelectOption};`
-      );
-    }
-    return this;
-  };
-
-  keydown = (selector: string, key: string, causesNavigation: boolean) => {
-    const pagePress = `page.keyboard.press('${key}')`;
-    if (causesNavigation) {
-      this.pushCodes(this.waitForSelectorAndNavigation(selector, pagePress));
-    } else {
-      this.pushCodes(
-        `await page.waitForSelector('${selector}');\n  await page.keyboard.press('${key}');`
-      );
-    }
-    return this;
-  };
-
-  wheel = (deltaX: number, deltaY: number) => {
-    this.pushCodes(
-      `await page.evaluate(() => window.scrollBy(${deltaX}, ${deltaY}));`
-    );
-    return this;
-  };
-
-  fullScreenshot = () => {
-    this.pushCodes(
-      `await page.screenshot({ path: 'screenshot.png', fullPage: true });`
-    );
-    return this;
-  };
-
-  awaitText = (text: string) => {
-    this.pushCodes(
-      `await page.waitForFunction("document.body.innerText.includes('${text}')");`
-    );
-    return this;
-  };
-
-  dragAndDrop = (
-    sourceX: number,
-    sourceY: number,
-    targetX: number,
-    targetY: number
-  ) => {
-    this.pushCodes(
-      [
-        `await page.mouse.move(${sourceX}, ${sourceY});`,
-        '  await page.mouse.down();',
-        `  await page.mouse.move(${targetX}, ${targetY});`,
-        '  await page.mouse.up();',
-      ].join('\n')
-    );
-    return this;
-  };
-
-  buildScript = () => {
-    return `const puppeteer = require('puppeteer');
-(async () => {
-  const browser = await puppeteer.launch({
-    // headless: false, slowMo: 100, // Uncomment to visualize test
-  });
-  const page = await browser.newPage();
-${this.codes.join('')}
-  await browser.close();
-})();`;
-  };
 }
 
 export class CypressScriptBuilder extends ScriptBuilder {
@@ -684,33 +446,34 @@ export class CypressScriptBuilder extends ScriptBuilder {
     return this;
   };
 
+  wait = (ms: number) => {
+    this.pushCodes(`cy.wait(${ms});`);
+    return this;
+  };
+
   buildScript = () => {
-    return `it('Written with DeploySentinel Recorder', () => {${this.codes.join(
+    return `it('Written with Fleury Cypress Recorder', () => {${this.codes.join(
       ''
     )}});`;
   };
 }
 
+/**
+ * Gera código de teste automatizado apenas para Cypress
+ * @param actions - Array de ações capturadas
+ * @param showComments - Se deve incluir comentários no código gerado
+ * @param scriptType - Tipo de script (atualmente apenas Cypress é suportado)
+ * @param timingConfig - Configuração de timing para waits entre ações
+ * @returns Código Cypress formatado
+ */
 export const genCode = (
   actions: Action[],
   showComments: boolean,
-  scriptType: ScriptType
+  scriptType: ScriptType,
+  timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG
 ): string => {
-  let scriptBuilder: ScriptBuilder;
-
-  switch (scriptType) {
-    case ScriptType.Playwright:
-      scriptBuilder = new PlaywrightScriptBuilder(showComments);
-      break;
-    case ScriptType.Puppeteer:
-      scriptBuilder = new PuppeteerScriptBuilder(showComments);
-      break;
-    case ScriptType.Cypress:
-      scriptBuilder = new CypressScriptBuilder(showComments);
-      break;
-    default:
-      throw new Error('Unsupported script type');
-  }
+  // Agora sempre usa CypressScriptBuilder
+  const scriptBuilder = new CypressScriptBuilder(showComments, timingConfig);
 
   for (let i = 0; i < actions.length; i++) {
     const action = actions[i];
@@ -723,7 +486,7 @@ export const genCode = (
     const causesNavigation = nextAction?.type === ActionType.Navigate;
 
     scriptBuilder.pushActionContext(
-      new ActionContext(action, scriptType, {
+      new ActionContext(action, ScriptType.Cypress, {
         causesNavigation,
         isStateful: isActionStateful(action),
       })
@@ -731,4 +494,19 @@ export const genCode = (
   }
 
   return scriptBuilder.buildCodes().buildScript();
+};
+
+/**
+ * Exporta uma função específica para gerar código Cypress
+ * @param actions - Array de ações capturadas
+ * @param showComments - Se deve incluir comentários no código gerado
+ * @param timingConfig - Configuração de timing para waits entre ações
+ * @returns Código Cypress formatado
+ */
+export const genCypressCode = (
+  actions: Action[],
+  showComments: boolean = true,
+  timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG
+): string => {
+  return genCode(actions, showComments, ScriptType.Cypress, timingConfig);
 };

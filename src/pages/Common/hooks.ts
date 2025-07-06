@@ -4,27 +4,31 @@ import {
   setPreferredLibraryStorage,
   setPreferredBarPositionStorage,
   localStorageGet,
+  localStorageSet,
 } from './utils';
 import { ScriptType, BarPosition } from '../types';
+import { TimingConfig, DEFAULT_TIMING_CONFIG } from '../types/config';
 
 import type { Action } from '../types';
 
 export function usePreferredLibrary() {
-  const [preferredLibrary, setPreferredLibrary] = useState<ScriptType | null>(
-    null
+  // Sempre retorna Cypress como biblioteca fixa
+  const [preferredLibrary, setPreferredLibrary] = useState<ScriptType>(
+    ScriptType.Cypress
   );
 
   useEffect(() => {
-    localStorageGet(['preferredLibrary']).then(
-      ({ preferredLibrary: storedPreferredLibrary }) => {
-        setPreferredLibrary(storedPreferredLibrary);
-      }
-    );
+    // Garante que sempre use Cypress, mesmo se houver valor antigo no storage
+    localStorageGet(['preferredLibrary']).then(() => {
+      setPreferredLibrary(ScriptType.Cypress);
+      setPreferredLibraryStorage(ScriptType.Cypress);
+    });
   }, []);
 
   const setPreferredLibraryWithStorage = (library: ScriptType) => {
-    setPreferredLibrary(library);
-    setPreferredLibraryStorage(library);
+    // Ignora o parâmetro e sempre usa Cypress
+    setPreferredLibrary(ScriptType.Cypress);
+    setPreferredLibraryStorage(ScriptType.Cypress);
   };
 
   return [preferredLibrary, setPreferredLibraryWithStorage] as const;
@@ -79,4 +83,30 @@ export function useRecordingState() {
   }, []);
 
   return [recordingTabId, actions] as const;
+}
+
+/**
+ * Hook para gerenciar configurações de timing
+ */
+export function useTimingConfig() {
+  const [timingConfig, setTimingConfig] = useState<TimingConfig>(DEFAULT_TIMING_CONFIG);
+
+  useEffect(() => {
+    localStorageGet(['timingConfig']).then(({ timingConfig: storedConfig }) => {
+      if (storedConfig) {
+        setTimingConfig({
+          ...DEFAULT_TIMING_CONFIG,
+          ...storedConfig
+        });
+      }
+    });
+  }, []);
+
+  const setTimingConfigWithStorage = (config: Partial<TimingConfig>) => {
+    const newConfig = { ...timingConfig, ...config };
+    setTimingConfig(newConfig);
+    localStorageSet({ timingConfig: newConfig });
+  };
+
+  return [timingConfig, setTimingConfigWithStorage] as const;
 }

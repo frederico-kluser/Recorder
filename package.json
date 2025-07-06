@@ -1,11 +1,11 @@
 {
   "name": "deploysentinel-recorder",
   "version": "0.7.1",
-  "description": "A browser extension that generates Cypress, Playwright and Puppeteer scripts automatically from your browser interactions.",
+  "description": "A browser extension that generates Cypress scripts automatically from your browser interactions.",
   "license": "Apache-2.0",
   "scripts": {
-    "build-chrome": "MANIFEST_VERSION=3 node utils/build.js && rm -f build/.DS_Store && zip -r build_chrome.zip build",
-    "build-ff": "MANIFEST_VERSION=2 node utils/build.js && rm -f build/.DS_Store && zip -jr build_ff.zip build",
+    "build-chrome": "NODE_OPTIONS=--openssl-legacy-provider MANIFEST_VERSION=3 node utils/build.js && rm -f build/.DS_Store && zip -r build_chrome.zip build",
+    "build-ff": "NODE_OPTIONS=--openssl-legacy-provider MANIFEST_VERSION=2 node utils/build.js && rm -f build/.DS_Store && zip -jr build_ff.zip build",
     "start-chrome": "MANIFEST_VERSION=3 node utils/webserver.js",
     "start-ff": "MANIFEST_VERSION=2 node utils/webserver.js",
     "bundle-source": "zip source.zip -r ./* -x ./node_modules/\\* -x .git/\\* -x .vscode/\\* -x \\*.log",
@@ -17,6 +17,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@hot-loader/react-dom": "^17.0.1",
+    "@tanstack/react-table": "^8.21.3",
     "@types/chrome": "^0.0.154",
     "@types/firefox": "^0.0.31",
     "@types/lodash.debounce": "^4.0.6",
@@ -39,6 +40,7 @@
     "@types/jest": "^27.0.2",
     "@types/lodash.throttle": "^4.1.6",
     "@types/react-syntax-highlighter": "^13.5.2",
+    "@types/styled-components": "^5.1.34",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
     "babel-preset-react-app": "^10.0.0",
@@ -60,7 +62,6 @@
     "jest": "^27.3.1",
     "lint-staged": "^12.3.7",
     "loader": "^2.1.1",
-    "playwright": "^1.16.3",
     "prettier": "^2.2.1",
     "source-map-loader": "^2.0.1",
     "style-loader": "^2.0.0",
@@ -76,5 +77,6 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

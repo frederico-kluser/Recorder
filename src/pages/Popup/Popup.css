@@ -1,27 +1,36 @@
+/* Tema dark unificado - importado via index.jsx */
+
 :root {
   color-scheme: dark;
 }
 
+.modern-library-label {
+  color: #000;
+}
+
 .Popup {
   height: 100%;
-  padding: 1.5em;
-  background-color: #282c34;
-  color: white;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
 }
 
 .text-center {
   text-align: center;
 }
 
+/* CustomScrollBar - Tema Dark */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar,
 ::-webkit-scrollbar-corner {
-  background: rgba(0, 0, 0, 0);
+  background: var(--bg-darker);
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 8px;
-  background: rgba(100, 100, 100, 0.8);
+  border-radius: var(--radius-sm);
+  background: var(--border-color);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
 }

@@ -4,17 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSquare,
   faCircle,
-  faInfoCircle,
   faCopy,
   faCheck,
   faChevronLeft,
+  faHistory,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Logo from '../Common/Logo';
+import LogoFleury from '../Common/LogoFleury';
+import LayoutWrapper from './components/LayoutWrapper';
 import CodeGen from '../Content/CodeGen';
 import ActionList from '../Content/ActionList';
 import { endRecording } from '../Common/endRecording';
-import { genCode } from '../builders';
+import { genCypressCode } from '../builders';
 import {
   setStartRecordingStorage,
   getCurrentTab,
@@ -25,11 +27,15 @@ import {
 } from '../Common/utils';
 import { usePreferredLibrary, useRecordingState } from '../Common/hooks';
 import ScriptTypeSelect from '../Common/ScriptTypeSelect';
+import { RecordingHistory } from './components/RecordingHistory';
+import { RecordingDetail } from './components/RecordingDetail';
+import { RecordingEntry } from '../types/recording';
+import { recordingStore } from '../storage/recording-store';
 
 import type { Action } from '../types';
 import { ActionsMode, ScriptType } from '../types';
 
-import PopupStyle from './Popup.css';
+// CSS será importado via index.jsx
 
 import { onPageView, onNewRecording } from './analytics';
 onPageView('/popup');
@@ -54,15 +60,13 @@ function LastStepPanel({
     <div>
       <div>
         <span className="text-button text-sm" onClick={onBack}>
-          <FontAwesomeIcon icon={faChevronLeft} /> Back
+          <FontAwesomeIcon icon={faChevronLeft} /> Voltar
         </span>
       </div>
       <div className="d-flex justify-between mt-4 items-end text-sm">
         <div className="font-bold text-xl">
-          Last Test{' '}
-          {showActionsMode === ActionsMode.Actions
-            ? 'Actions'
-            : 'Generated Code'}
+          Último Teste{' '}
+          {showActionsMode === ActionsMode.Actions ? 'Ações' : 'Código Gerado'}
         </div>
         <div>
           <span
@@ -75,10 +79,10 @@ function LastStepPanel({
               );
             }}
           >
-            Show{' '}
+            Mostrar{' '}
             {showActionsMode === ActionsMode.Actions
-              ? 'Generated Code'
-              : 'Actions'}
+              ? 'Código Gerado'
+              : 'Ações'}
           </span>
         </div>
       </div>
@@ -90,7 +94,7 @@ function LastStepPanel({
               value={displayedScriptType}
             />
             <CopyToClipboard
-              text={genCode(actions, true, displayedScriptType)}
+              text={genCypressCode(actions, true)}
               onCopy={() => {
                 setCopyCodeConfirm(true);
                 setTimeout(() => {
@@ -107,7 +111,7 @@ function LastStepPanel({
                   icon={copyCodeConfirm ? faCheck : faCopy}
                   size="sm"
                 />{' '}
-                Copy Code
+                Copiar Código
               </span>
             </CopyToClipboard>
           </div>
@@ -135,16 +139,21 @@ const Popup = () => {
   const [currentTabId, setCurrentTabId] = useState<number | null>(null);
 
   const [isShowingLastTest, setIsShowingLastTest] = useState<boolean>(false);
-
-  const [showBetaCTA, setShowBetaCTA] = useState<boolean>(
-    localStorage.getItem('showBetaCta') !== 'false'
-  );
+  const [isShowingHistory, setIsShowingHistory] = useState<boolean>(false);
+  const [selectedRecording, setSelectedRecording] =
+    useState<RecordingEntry | null>(null);
 
   useEffect(() => {
     getCurrentTab().then((tab) => {
       const { id } = tab;
       setCurrentTabId(id ?? null);
     });
+  }, []);
+
+  // Inicializa o store e migra dados antigos
+  useEffect(() => {
+    recordingStore.initialize();
+    recordingStore.migrateLastRecording();
   }, []);
 
   // Sets Cypress as default library if we're in the Cypress test browser
@@ -197,23 +206,58 @@ const Popup = () => {
   const activePage =
     recordingTabId != null
       ? 'recording'
+      : isShowingHistory
+      ? 'history'
+      : selectedRecording
+      ? 'detail'
       : isShowingLastTest
       ? 'lastTest'
       : 'home';
 
   const isRecordingCurrentTab = currentTabId === recordingTabId;
 
+  // Aplica classes ao body baseado na página ativa
+  useEffect(() => {
+    document.body.classList.remove('history-view', 'detail-view');
+
+    if (activePage === 'history') {
+      document.body.classList.add('history-view');
+    } else if (activePage === 'detail') {
+      document.body.classList.add('detail-view');
+    }
+
+    return () => {
+      document.body.classList.remove('history-view', 'detail-view');
+    };
+  }, [activePage]);
+
+  const handleSelectRecording = (recording: RecordingEntry) => {
+    setSelectedRecording(recording);
+    setIsShowingHistory(false);
+  };
+
+  const handleBackFromDetail = () => {
+    setSelectedRecording(null);
+    setIsShowingHistory(true);
+  };
+
+  const handleBackFromHistory = () => {
+    setIsShowingHistory(false);
+    setSelectedRecording(null);
+  };
+
   return (
     <>
-      <style>{PopupStyle}</style>
-      <div className="Popup" style={{ background: '#080A0B' }}>
+      <div className="Popup">
         {activePage === 'recording' && (
-          <>
-            <Logo />
+          <LayoutWrapper view="home" title="Gravando...">
             <div className="text-center" style={{ marginTop: '2em' }}>
-              <div className="text-xl text-red">
-                Currently Recording
-                {isRecordingCurrentTab ? ' Test...' : ' on Another Tab'}
+              <div
+                className="text-xl"
+                style={{ color: 'var(--primary-color)' }}
+              >
+                Gravando
+                {isRecordingCurrentTab ? ' Teste...' : ' em Outra Aba'}
               </div>
               {!isRecordingCurrentTab && recordingTabId != null && (
                 <div className="mt-4">
@@ -224,7 +268,7 @@ const Popup = () => {
                       window.close();
                     }}
                   >
-                    Go To Active Recording Tab
+                    Ir para Aba de Gravação Ativa
                   </span>
                 </div>
               )}
@@ -235,26 +279,17 @@ const Popup = () => {
                 data-testid="end-test-recording"
               >
                 <FontAwesomeIcon className="mr-1" icon={faSquare} />
-                &nbsp; End Test Recording
+                &nbsp; Finalizar Gravação do Teste
               </button>
             </div>
-          </>
+          </LayoutWrapper>
         )}
         {activePage === 'home' && (
-          <>
-            <div className="d-flex justify-between items-center">
-              <Logo />
-              <div>
-                <a
-                  href="https://www.deploysentinel.com/docs/recorder"
-                  target="_blank"
-                  className="text-button text-decoration-none text-sm text-grey"
-                >
-                  <FontAwesomeIcon icon={faInfoCircle} className="mr-1" /> Docs
-                </a>
+          <LayoutWrapper view="home">
+            <div className="text-center" style={{ marginTop: '2em' }}>
+              <div className="logo-container">
+                <LogoFleury height={80} />
               </div>
-            </div>
-            <div className="text-center mt-12">
               <div
                 style={{
                   fontSize: 14,
@@ -262,8 +297,8 @@ const Popup = () => {
                 }}
                 className="text-grey mt-6"
               >
-                Generate Cypress, Playwright & Puppeteer scripts from your
-                browser actions (ex. click, type, scroll).
+                Gere scripts Cypress a partir de suas ações no navegador (ex.
+                clicar, digitar, rolar).
               </div>
               <button
                 className="btn-primary mt-8"
@@ -275,11 +310,11 @@ const Popup = () => {
                   style={{ color: '#EA4240' }}
                   icon={faCircle}
                 />
-                &nbsp; Start Recording from Current Tab
+                &nbsp; Iniciar Gravação da Aba Atual
               </button>
               <div className="d-flex text-sm justify-content-center text-grey mt-6">
                 <div className="d-flex">
-                  <div>Preferred Library: &nbsp;</div>
+                  <div>Biblioteca Preferida: &nbsp;</div>
                   <ScriptTypeSelect
                     color="#c4c4c4"
                     value={preferredLibrary ?? ScriptType.Cypress}
@@ -292,51 +327,15 @@ const Popup = () => {
                 <span
                   className="link-button"
                   onClick={() => {
-                    setIsShowingLastTest(true);
+                    setIsShowingHistory(true);
                   }}
-                  data-testid="view-last-test"
+                  data-testid="view-recordings"
                 >
-                  View Last Recording
+                  <FontAwesomeIcon icon={faHistory} /> Ver Gravações
                 </span>
               </div>
-              {showBetaCTA &&
-                (preferredLibrary === ScriptType.Cypress ||
-                  preferredLibrary == null) && (
-                  <div
-                    style={{ background: '#21272e' }}
-                    className="rounded p-3 text-left mt-12"
-                  >
-                    <div className="fw-bold">
-                      <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
-                      Fix Flaky Cypress Tests w/ DeploySentinel
-                    </div>
-                    <div className="mt-4" style={{ lineHeight: '1.5rem' }}>
-                      Save time debugging test failures & flakes using DOM,
-                      network, and console events captured while running in CI.
-                    </div>
-                    <div className="mt-4">
-                      <a
-                        href="https://deploysentinel.com?utm_source=rcd&utm_medium=bnr"
-                        target="_blank"
-                        className="link-button text-decoration-none fw-bold mr-5"
-                      >
-                        Learn More
-                      </a>
-                      <span
-                        className="text-button text-grey"
-                        onClick={() => {
-                          localStorage?.setItem('showBetaCta', 'false');
-                          setShowBetaCTA(false);
-                        }}
-                        data-testid="view-last-test"
-                      >
-                        No Thanks
-                      </span>
-                    </div>
-                  </div>
-                )}
             </div>
-          </>
+          </LayoutWrapper>
         )}
         {activePage === 'lastTest' && (
           <LastStepPanel
@@ -344,6 +343,18 @@ const Popup = () => {
             onBack={() => {
               setIsShowingLastTest(false);
             }}
+          />
+        )}
+        {activePage === 'history' && (
+          <RecordingHistory
+            onSelectRecording={handleSelectRecording}
+            onBack={handleBackFromHistory}
+          />
+        )}
+        {activePage === 'detail' && selectedRecording && (
+          <RecordingDetail
+            recording={selectedRecording}
+            onBack={handleBackFromDetail}
           />
         )}
       </div>

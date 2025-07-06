@@ -25,6 +25,7 @@ export function setStartRecordingStorage(
     recordingState: 'active',
     recordingTabId: tabId,
     recordingFrameId: frameId,
+    recordingStartTime: Date.now(),
     recording: [
       {
         type: 'load',
@@ -55,6 +56,18 @@ export function localStorageGet(keys: string[]) {
   return new Promise<{ [key: string]: any }>((resolve, reject) => {
     chrome.storage.local.get(keys, (storage) => {
       resolve(storage);
+    });
+  });
+}
+
+export function localStorageSet(items: { [key: string]: any }) {
+  return new Promise<void>((resolve, reject) => {
+    chrome.storage.local.set(items, () => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve();
+      }
     });
   });
 }

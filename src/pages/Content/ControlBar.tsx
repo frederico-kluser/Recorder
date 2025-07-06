@@ -69,12 +69,12 @@ function RenderActionText({ action }: { action: Action }) {
       {action.type === ActionType.Click
         ? `Click on ${action.tagName.toLowerCase()} ${getBestSelectorForAction(
             action,
-            ScriptType.Playwright
+            ScriptType.Cypress
           )}`
         : action.type === ActionType.Hover
         ? `Hover over ${action.tagName.toLowerCase()} ${getBestSelectorForAction(
             action,
-            ScriptType.Playwright
+            ScriptType.Cypress
           )}`
         : action.type === ActionType.Input
         ? `Fill "${
@@ -83,7 +83,7 @@ function RenderActionText({ action }: { action: Action }) {
               : action.value
           }" on ${action.tagName.toLowerCase()} ${getBestSelectorForAction(
             action,
-            ScriptType.Playwright
+            ScriptType.Cypress
           )}`
         : action.type === ActionType.Keydown
         ? `Press ${action.key} on ${action.tagName.toLowerCase()}`

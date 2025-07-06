@@ -1,101 +1,134 @@
-# DeploySentinel Recorder
+# Fleury Cypress Recorder
 
 ![Chrome Web Store](https://img.shields.io/chrome-web-store/rating/geggbdbnidkhbnbjoganapfhkpgkndfo?color=8F57F3&label=Chrome%20Rating)
 ![Tests](https://github.com/DeploySentinel/Recorder/actions/workflows/main.yml/badge.svg)
 
-A Browser Extension that generates Cypress, Playwright and Puppeteer scripts
-automatically from your browser interactions.
+Uma extensão de navegador open source desenvolvida pela **Fleury** que gera automaticamente scripts de teste para Cypress a partir das suas interações no navegador.
 
-Simply step through your website while recording with DeploySentinel Recorder
-and the extension will convert the captured user flow into a Cypress, Playwright
-or Puppeteer script.
+Simplesmente navegue pelo seu site enquanto grava com o Fleury Cypress Recorder e a extensão converterá o fluxo capturado em scripts de teste automatizados.
 
 [![Chrome Store Icon](assets/ChromeStoreIcon.png)](https://chrome.google.com/webstore/detail/deploysentinel-recorder/geggbdbnidkhbnbjoganapfhkpgkndfo)
 [![Firefox Addon Icon](assets/FirefoxAddonIcon.png)](https://addons.mozilla.org/en-US/firefox/addon/deploysentinel-recorder/)
 
-Looking for a Cypress Studio alternative? Check out our
-[Cypress Recorder Plugin](https://github.com/DeploySentinel/cypress-recorder).
-
-# Demo
+# Demonstração
 
 ![Demo](assets/demo.gif)
 
-# Features
+# Recursos
 
-- 💻 Automatically capture clicks, keyboard inputs, window resizes, and scroll
-  events.
-- 🤖 Generate clean and commented scripts for Cypress, Playwright and Puppeteer.
-- 📋 Preview recording progress and copy generated scripts mid-test to
-  clipboard.
-- 📛 Generate element selectors using `id` and `class` as well as other HTML
-  properties (ex. `aria-label`, `alt`, `name`, `data-testid`)
-- 🖱 Capture hover events via context menu option (right-click)
-- ✅ Assert/wait for specific text to be visible on the page
-- 📸 Generate full page screenshot events
+- 💻 Captura automática de cliques, entradas de teclado, redimensionamento de janelas e eventos de rolagem
+- 🤖 Gera scripts limpos e comentados para Cypress
+- 📋 Visualize o progresso da gravação e copie scripts gerados durante o teste
+- 📛 Gera seletores de elementos usando `id` e `class`, além de outras propriedades HTML (ex: `aria-label`, `alt`, `name`, `data-testid`)
+- 🖱 Captura eventos de hover através do menu de contexto (clique direito)
+- ✅ Asserções/espera por texto específico visível na página
+- 📸 Gera eventos de captura de tela de página completa
+- 📊 **Histórico completo de gravações** com busca, filtros e exportação
+- 🎯 **Interface em português** otimizada para equipes brasileiras
+- 💾 **Armazenamento persistente** de todas as gravações realizadas
 
-# Getting Started
+# Como Começar
 
-1. Download the Extension
-2. Visit the site you want to start recording from
-3. Click the extension icon and click "Start Recording from Current Tab"
-4. Use the site as you would normally (click links, fill forms, etc.)
+1. Baixe a extensão
+2. Visite o site que deseja começar a gravar
+3. Clique no ícone da extensão e selecione "Iniciar Gravação"
+4. Use o site normalmente (clique em links, preencha formulários, etc.)
 
-   - Right-click an element and select "Record hover over element" to record a
-     hover event over an element.
-   - Highlight any text on the page, right-click and select "DeploySentinel
-     Recorder" > "Assert/wait for selected text" to add a text-based assertion.
+   - Clique com o botão direito em um elemento e selecione "Gravar hover sobre elemento" para gravar um evento de hover
+   - Selecione qualquer texto na página, clique com o botão direito e escolha "Fleury Cypress Recorder" > "Assertar/aguardar texto selecionado" para adicionar uma asserção baseada em texto
 
-5. Click "End Test" whenever you are done. You can copy the generated script via
-   the recording overlay.
-6. Click the extension icon and select "View Last Recording" to access the last
-   recorded test any time afterwards.
+5. Clique em "Finalizar Teste" quando terminar. Você pode copiar o script gerado através da sobreposição de gravação
+6. Acesse o **Histórico de Gravações** a qualquer momento para revisar, buscar e exportar gravações anteriores
 
-_Pro tip: To view captured steps or generated code mid-recording, click "Show
-More" in the recording overlay._
+_Dica: Para visualizar os passos capturados ou o código gerado durante a gravação, clique em "Mostrar Mais" na sobreposição de gravação._
 
-# Alternatives Comparison
+# Recursos Exclusivos da Versão Fleury
 
-We think there are other great open source codegen tools out there, here is how
-we think we compare with them. We're always looking to improve our features, so
-feel free to open an issue or PR for what you think is missing.
+## Histórico de Gravações
 
-|                                | DeploySentinel Recorder | Headless Recorder | Chrome Puppeteer Recorder | Playwright CLI Codegen |
+O Fleury Cypress Recorder inclui um sistema completo de histórico que permite:
+
+- **Buscar gravações** por site ou URL
+- **Ordenar** por data, duração ou número de ações
+- **Visualizar detalhes** de cada gravação individual
+- **Exportar gravações** selecionadas
+- **Gerenciar** todas as suas gravações em um só lugar
+
+## Interface em Português
+
+Toda a interface foi traduzida e adaptada para o português brasileiro, facilitando o uso por equipes de QA e desenvolvimento no Brasil.
+
+# Comparação com Alternativas
+
+|                                | Fleury Cypress Recorder | Headless Recorder | Chrome Puppeteer Recorder | Playwright CLI Codegen |
 | ------------------------------ | ----------------------- | ----------------- | ------------------------- | ---------------------- |
-| Automatic Click Capture        | ✅                      | ✅                | ✅                        | ✅                     |
-| Automatic Input Capture        | ✅                      | ⚠                 | ✅                        | ✅                     |
-| Automatic File Upload Capture  | ❌                      | ❌                | ✅                        | ✅                     |
-| Accessibility Selector Support | ✅                      | ❌                | ✅                        | ✅                     |
-| Copy Code to Clipboard         | ✅                      | ✅                | ❌                        | ✅                     |
-| data-testid Selector Support   | ✅                      | ✅                | ❌                        | ✅                     |
-| Text selector support          | ⚠                       | ❌                | ❌                        | ✅                     |
-| Screenshot event generation    | ✅                      | ✅                | ❌                        | ❌                     |
-| Hover event generation         | ✅                      | ❌                | ❌                        | ❌                     |
-| Record from Chrome Stable      | ✅                      | ✅                | ✅                        | ❌                     |
+| Captura Automática de Cliques  | ✅                      | ✅                | ✅                        | ✅                     |
+| Captura Automática de Inputs   | ✅                      | ⚠                 | ✅                        | ✅                     |
+| Captura de Upload de Arquivos  | ❌                      | ❌                | ✅                        | ✅                     |
+| Suporte a Seletores de Acesso. | ✅                      | ❌                | ✅                        | ✅                     |
+| Copiar Código                  | ✅                      | ✅                | ❌                        | ✅                     |
+| Suporte a data-testid          | ✅                      | ✅                | ❌                        | ✅                     |
+| Suporte a seletores de texto   | ⚠                       | ❌                | ❌                        | ✅                     |
+| Geração de screenshots         | ✅                      | ✅                | ❌                        | ❌                     |
+| Geração de eventos hover       | ✅                      | ❌                | ❌                        | ❌                     |
+| Histórico de Gravações         | ✅                      | ❌                | ❌                        | ❌                     |
+| Interface em Português         | ✅                      | ❌                | ❌                        | ❌                     |
 
-# Development Instructions
+# Instruções para Desenvolvimento
 
-Install Dependencies: `yarn` (or `yarn --frozen-lockfile`)
+Instalar Dependências: `yarn` (ou `yarn --frozen-lockfile`)
 
 ## Firefox
 
-Start Local Webpack Dev Server for Firefox: `yarn run start-ff`
+Iniciar servidor de desenvolvimento local para Firefox: `yarn run start-ff`
 
-Compressed Firefox Extension: `yarn run build-ff`
+Gerar extensão comprimida para Firefox: `yarn run build-ff`
 
-Bundle source files for review: `yarn run bundle-source`
+Empacotar arquivos fonte para revisão: `yarn run bundle-source`
 
 ## Chrome
 
-Start Local Webpack Dev Server for Chrome: `yarn run start-chrome`
+Iniciar servidor de desenvolvimento local para Chrome: `yarn run start-chrome`
 
-Compressed Chrome Extension: `yarn run build-chrome`
+Gerar extensão comprimida para Chrome: `yarn run build-chrome`
 
-Run E2E Tests: `yarn test`
+Executar testes E2E: `yarn test`
+
+# Tecnologias Utilizadas
+
+- **React** com TypeScript para a interface
+- **Chrome Extension API** para funcionalidades do navegador
+- **TanStack Table** para gerenciamento de tabelas
+- **React Syntax Highlighter** para visualização de código
+- **Jest** e **Playwright** para testes
+
+# Contribuindo
+
+Este é um projeto open source desenvolvido e mantido pela equipe de tecnologia da Fleury. Contribuições são bem-vindas! Por favor, abra uma issue ou pull request no repositório.
+
+## Funcionalidades Cypress
+
+O Fleury Cypress Recorder foi otimizado especificamente para gerar código Cypress de alta qualidade:
+
+- **Seletores inteligentes**: Prioriza seletores estáveis como data-testid e id
+- **Comandos idiomáticos**: Gera código usando as melhores práticas do Cypress
+- **Asserções automáticas**: Adiciona verificações de visibilidade e texto
+- **Comandos customizados**: Suporte para comandos específicos do seu projeto
+
+## Processo de Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
+4. Push para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um Pull Request
+
+# Licença
+
+Este projeto é licenciado sob a Apache License 2.0 - veja o arquivo LICENSE para detalhes.
 
 ---
 
-## Made with ❤️ by [DeploySentinel](https://deploysentinel.com)
+## Desenvolvido com ❤️ pela equipe de tecnologia [Fleury](https://www.fleury.com.br)
 
-Use DeploySentinel to save hours of failed Cypress test debugging by using DOM,
-network, and console events captured from your CI.
-[Learn more.](https://deploysentinel.com)
+O Fleury Cypress Recorder é uma ferramenta essencial para automatizar testes em aplicações web, economizando tempo e aumentando a qualidade dos nossos produtos digitais.
