@@ -10248,14 +10248,14 @@
     ]
   },
   "src/pages/Popup/Popup.tsx": {
-    "summary": "Este arquivo implementa um componente React chamado Popup que serve como interface principal para um sistema de gravação e geração de scripts de teste automatizados, focado em Cypress. Ele gerencia o estado da aplicação para alternar entre diferentes modos, como gravação ativa, visualização do histórico de gravações, detalhes de gravações específicas e exibição do último teste gerado. O componente integra funcionalidades para iniciar e finalizar gravações, selecionar bibliotecas preferidas para geração de código, copiar scripts gerados para a área de transferência e navegar entre diferentes visualizações. Além disso, o código interage com APIs do navegador para manipular abas, executa scripts injetados para captura de ações do usuário e mantém um armazenamento local para persistência e migração de dados. A arquitetura modularizada e o uso de hooks customizados facilitam a manutenção do estado e a integração com outras partes do sistema, garantindo uma experiência fluida para o usuário na criação e gerenciamento de testes automatizados baseados em ações reais no navegador.",
+    "summary": "Este arquivo implementa um componente React para uma extensão de navegador focada na gravação e geração de scripts de teste automatizados, especialmente para Cypress. Ele gerencia o estado da gravação de testes, histórico e visualização detalhada das gravações, permitindo ao usuário iniciar, finalizar e revisar testes gravados. O componente integra funcionalidades para seleção da biblioteca preferida, cópia do código gerado, e navegação entre diferentes modos de visualização, além de interagir com APIs do navegador para controle de abas e execução de scripts. A arquitetura modular e o uso de hooks personalizados facilitam a manutenção e extensão do sistema, enquanto a interface oferece feedback visual e controle intuitivo para o usuário final.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "Cypress Test Recorder",
-          "Ferramenta para gravação e geração de scripts de teste automatizados"
+          "Cypress Test Recorder Extension",
+          "Extensão para gravação e geração de scripts de teste automatizados"
         ]
       },
       {
@@ -10263,9 +10263,9 @@
         "subProperty": "domain",
         "value": [
           "Automação de Testes",
-          "QA",
-          "Test Automation",
-          "Browser Testing"
+          "Testes End-to-End",
+          "Cypress",
+          "Browser Automation"
         ]
       },
       {
@@ -10273,23 +10273,23 @@
         "subProperty": "current_phase",
         "value": [
           "Produção",
-          "Estável"
+          "Estabilização e melhorias incrementais"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "critical_business_rules",
         "value": [
-          "Garantir integridade das gravações",
-          "Persistência correta do histórico",
-          "Execução segura dos scripts injetados"
+          "Integridade dos dados de gravação",
+          "Sincronização correta entre abas e gravação",
+          "Geração precisa do código de teste"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "primary_language",
         "value": [
-          "TypeScript 5.x",
+          "TypeScript 4.x",
           "JavaScript ES6+"
         ]
       },
@@ -10297,16 +10297,14 @@
         "property": "technical_stack",
         "subProperty": "frameworks",
         "value": [
-          "React 18.x",
-          "FontAwesome",
-          "react-copy-to-clipboard"
+          "React 18.x"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "databases",
         "value": [
-          "LocalStorage (browser)"
+          "IndexedDB (via recordingStore)"
         ]
       },
       {
@@ -10314,7 +10312,7 @@
         "subProperty": "external_services",
         "value": [
           "Chrome Extension APIs",
-          "Cypress Test Runner Integration"
+          "FontAwesome Icons"
         ]
       },
       {
@@ -10330,18 +10328,17 @@
         "value": [
           "Component-Based Architecture",
           "Hooks Pattern",
-          "Modularization"
+          "Modular Design"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "Common: componentes e utilitários compartilhados",
-          "Content: componentes específicos para geração e listagem de ações",
-          "Storage: gerenciamento de estado persistente",
-          "Types: definições de tipos TypeScript",
-          "Components: subdivisões para funcionalidades específicas como histórico e detalhes"
+          "Common - utilitários e hooks compartilhados",
+          "Content - componentes relacionados ao conteúdo gerado",
+          "Popup - UI principal da extensão",
+          "Storage - gerenciamento de dados persistentes"
         ]
       },
       {
@@ -10358,7 +10355,7 @@
         "subProperty": "module_boundaries",
         "value": [
           "Separação clara entre UI, lógica de gravação e armazenamento",
-          "Uso de hooks para encapsular estado e lógica"
+          "Dependências unidirecionais para facilitar manutenção"
         ]
       },
       {
@@ -10379,7 +10376,7 @@
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
-          "Prettier com configuração padrão para React/TypeScript"
+          "Prettier com configuração padrão"
         ]
       },
       {
@@ -10400,15 +10397,14 @@
         "property": "testing_strategy",
         "subProperty": "test_framework",
         "value": [
-          "Jest 29",
-          "React Testing Library"
+          "Jest 29"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_structure",
         "value": [
-          "Testes localizados em __tests__ próximos aos componentes"
+          "Testes localizados em pastas __tests__ correspondentes aos componentes"
         ]
       },
       {
@@ -10422,15 +10418,15 @@
         "property": "testing_strategy",
         "subProperty": "test_patterns",
         "value": [
-          "AAA (Arrange-Act-Assert)",
-          "Mocking de APIs do navegador"
+          "Given-When-Then",
+          "AAA (Arrange, Act, Assert)"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Mocks para Chrome Extension APIs e funções assíncronas"
+          "Mocks para APIs do navegador e módulos externos"
         ]
       },
       {
@@ -10451,15 +10447,14 @@
         "property": "development_workflow",
         "subProperty": "pr_requirements",
         "value": [
-          "Revisão obrigatória",
-          "Checks de lint e testes"
+          "Revisão obrigatória e testes aprovados"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Build, Test, Lint, Deploy automáticos via GitHub Actions"
+          "Build, Test, Lint e Deploy automatizados"
         ]
       },
       {
@@ -10515,56 +10510,56 @@
         "property": "security_constraints",
         "subProperty": "authentication_method",
         "value": [
-          "Não aplicável (extensão local)"
+          "Nenhum método explícito no código analisado"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "authorization_rules",
         "value": [
-          "Controle de acesso via permissões do Chrome Extension"
+          "Controle baseado em contexto de aba e permissões do navegador"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "sensitive_data",
         "value": [
-          "Dados de gravação de testes, URLs de abas"
+          "URLs e dados de gravação tratados localmente, sem exposição externa"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "security_headers",
         "value": [
-          "Cabeçalhos padrão do navegador, Content Security Policy da extensão"
+          "Gerenciados pelo navegador, não explicitados no código"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "encryption_requirements",
         "value": [
-          "Não aplicável para dados locais"
+          "Não aplicável no escopo do código"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "response_time_limits",
         "value": [
-          "Interação UI responsiva, scripts gerados em tempo real"
+          "Interação UI responsiva, sem bloqueios perceptíveis"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Velocidade de geração de código e atualização UI"
+          "Velocidade e fluidez da interface priorizadas"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "caching_strategy",
         "value": [
-          "Uso de armazenamento local para persistência de gravações"
+          "Uso de IndexedDB para armazenamento local de gravações"
         ]
       },
       {
@@ -10578,14 +10573,14 @@
         "property": "error_handling",
         "subProperty": "error_format",
         "value": [
-          "Mensagens de erro simples e alertas UI"
+          "Erros lançados como Exceptions JavaScript padrão"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "logging_strategy",
         "value": [
-          "Logs no console para debugging"
+          "Não explícito no código analisado"
         ]
       },
       {
@@ -10599,67 +10594,71 @@
         "property": "error_handling",
         "subProperty": "error_recovery",
         "value": [
-          "Fallbacks para ausência de abas ou frames"
+          "Tratamento básico via try/catch implícito, mas pode ser melhorado"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "critical_dependencies",
         "value": [
+          "React",
           "Chrome Extension APIs",
-          "Cypress integration",
-          "React"
+          "recordingStore"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "deprecated_packages",
-        "value": []
+        "value": [
+          "Nenhum identificado"
+        ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "version_constraints",
         "value": [
           "React 18.x",
-          "TypeScript 5.x"
+          "TypeScript 4.x"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "internal_packages",
         "value": [
-          "Common",
-          "Content",
-          "Storage",
-          "Types"
+          "../Common",
+          "../Content",
+          "../storage",
+          "../builders"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "technical_debt",
         "value": [
-          "Manutenção da compatibilidade com múltiplas versões do navegador"
+          "Melhor tratamento de erros assíncronos",
+          "Isolamento de estado para testes"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
         "value": [
-          "Possível falha ao detectar frame AUT em algumas abas"
+          "Dependência forte do contexto da aba ativa",
+          "Possível condição de corrida em efeitos useEffect"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
         "value": [
-          "Renderização de listas grandes de ações pode impactar UI"
+          "Nenhum crítico identificado"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "migration_status",
         "value": [
-          "Migração de dados antigos para novo store implementada"
+          "Migração de dados de gravação implementada no store"
         ]
       },
       {
@@ -10667,8 +10666,8 @@
         "subProperty": "code_review_focus",
         "value": [
           "Clareza na separação de responsabilidades",
-          "Cobertura de testes",
-          "Manutenção da tipagem"
+          "Tratamento de estados assíncronos",
+          "Consistência no uso de hooks"
         ]
       },
       {
@@ -10682,36 +10681,35 @@
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários objetivos e explicativos em português"
+          "Comentários objetivos e em português para contexto"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Uso de React hooks para estado",
-          "Separação entre UI e lógica de gravação"
+          "Uso de Cypress como biblioteca padrão para geração de código"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "api_style",
         "value": [
-          "Chrome Extension Messaging API"
+          "APIs do navegador Chrome Extension"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "versioning_strategy",
         "value": [
-          "Sem versionamento explícito"
+          "Não aplicável"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "response_formats",
         "value": [
-          "Objetos JSON para gravações e ações"
+          "Promises e callbacks padrão do navegador"
         ]
       },
       {
@@ -10733,7 +10731,7 @@
         "property": "deployment_context",
         "subProperty": "deployment_method",
         "value": [
-          "Chrome Extension Package"
+          "Extensão Chrome empacotada"
         ]
       },
       {
@@ -18373,40 +18371,37 @@
     ]
   },
   "src/pages/Common/styles.css": {
-    "summary": "Este arquivo CSS define um conjunto de estilos utilitários e componentes visuais focados em botões e layout flexível para interfaces web. Ele implementa classes para botões primários com variações sólidas e outline, incluindo efeitos de hover para melhorar a experiência do usuário. Além disso, oferece utilitários para manipulação de flexbox, espaçamentos (padding e margin), tamanhos, alinhamentos e estilos tipográficos, facilitando a construção rápida e consistente de layouts responsivos. O código prioriza usabilidade, acessibilidade e consistência visual, habilitando desenvolvedores a aplicar estilos reutilizáveis e padronizados em projetos front-end, promovendo manutenção simplificada e escalabilidade do design system.",
+    "summary": "Este arquivo CSS define estilos para botões primários e utilitários de layout, focando em usabilidade, responsividade e consistência visual. Ele habilita interações visuais suaves e padronizadas, facilitando a construção de interfaces web acessíveis e modulares.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "UI Design System",
-          "Biblioteca de estilos para componentes e utilitários CSS"
+          "UI Component Library - Button and Layout Utilities"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Front-end Development",
-          "Web Interfaces",
-          "Design System"
+          "Web Development",
+          "Frontend UI",
+          "CSS Utility Classes"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "current_phase",
         "value": [
-          "Produção",
-          "Estabilização"
+          "Production"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "critical_business_rules",
         "value": [
-          "Consistência visual",
-          "Acessibilidade",
-          "Responsividade"
+          "Consistent visual feedback on interactive elements",
+          "Accessibility compliance with user-select and cursor states"
         ]
       },
       {
@@ -18420,7 +18415,7 @@
         "property": "technical_stack",
         "subProperty": "frameworks",
         "value": [
-          "Nenhum framework CSS explícito"
+          "None (Vanilla CSS)"
         ]
       },
       {
@@ -18442,59 +18437,56 @@
         "property": "architecture_patterns",
         "subProperty": "design_pattern",
         "value": [
-          "Atomic CSS",
-          "Component-Based CSS"
+          "Atomic Design (Component-based CSS)"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "styles/components - componentes reutilizáveis",
-          "styles/utilities - classes utilitárias para layout e espaçamento"
+          "Styles organized by component and utility classes for modularity"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "BEM-like para componentes (.btn-primary)",
-          "abreviações para utilitários (.p-1, .m-4)"
+          "BEM-like class naming for components (e.g., btn-primary, btn-primary-outline)"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Separação clara entre componentes visuais e utilitários CSS"
+          "Separation between component styles and utility classes"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "style_guide",
         "value": [
-          "CSS padrão com comentários explicativos"
+          "CSS standard conventions with comments for clarity"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "linting_rules",
         "value": [
-          "Não especificado"
+          "No explicit linting config in code, assumed CSSLint or Stylelint"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
-          "Indentação consistente, uso de comentários para seções"
+          "Consistent indentation and spacing"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "Comentários inline para propriedades específicas"
+          "Inline comments for key properties"
         ]
       },
       {
@@ -18616,7 +18608,7 @@
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Performance otimizada via CSS puro e transições leves"
+          "Fast rendering and smooth UI transitions"
         ]
       },
       {
@@ -18627,9 +18619,7 @@
       {
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
-        "value": [
-          "Facilidade de extensão com novas classes utilitárias e componentes"
-        ]
+        "value": []
       },
       {
         "property": "error_handling",
@@ -18754,14 +18744,14 @@
     ]
   },
   "src/pages/Popup/components/RecordingDetail.tsx": {
-    "summary": "O componente RecordingDetail é uma interface React que exibe detalhes de uma gravação específica, permitindo ao usuário alternar entre a visualização das ações gravadas e o código gerado para automação de testes com Cypress. Ele gerencia estados internos para controle do modo de visualização e feedback visual ao copiar o código para a área de transferência, além de formatar datas e apresentar metadados relevantes da gravação, como título, data de início, número de ações e hostname. A integração com componentes auxiliares como ActionList e CodeGen permite modularidade e reutilização, enquanto o uso de ícones FontAwesome melhora a experiência visual e a usabilidade do componente.",
+    "summary": "O componente RecordingDetail é uma interface React que exibe detalhes de uma gravação específica de ações automatizadas, focando em apresentar tanto a lista de ações quanto o código gerado para execução em Cypress. Ele permite alternar entre a visualização das ações gravadas e o código correspondente, além de oferecer funcionalidade para copiar o código para a área de transferência, com feedback visual ao usuário. O componente também formata e exibe metadados da gravação, como título, data de início, número de ações e hostname, integrando-se com outros módulos para renderizar listas de ações e geração de código, facilitando a análise e reutilização das gravações em testes automatizados. A estrutura modular e o uso de hooks React garantem uma experiência interativa e responsiva, alinhada a práticas modernas de desenvolvimento frontend.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "Recording Management System",
-          "Visualização e manipulação de gravações de testes automatizados"
+          "Recording Automation Platform",
+          "Interface para visualização e manipulação de gravações de testes automatizados"
         ]
       },
       {
@@ -18770,7 +18760,7 @@
         "value": [
           "Automação de Testes",
           "QA",
-          "Test Recording",
+          "Test Automation",
           "Cypress"
         ]
       },
@@ -18787,7 +18777,7 @@
         "value": [
           "Integridade dos dados da gravação",
           "Precisão na geração do código Cypress",
-          "Feedback visual correto para ações do usuário"
+          "Feedback imediato ao usuário em ações de cópia"
         ]
       },
       {
@@ -18812,10 +18802,7 @@
       {
         "property": "technical_stack",
         "subProperty": "external_services",
-        "value": [
-          "FontAwesome Icons",
-          "Clipboard API via react-copy-to-clipboard"
-        ]
+        "value": []
       },
       {
         "property": "technical_stack",
@@ -18836,54 +18823,54 @@
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "src/components - UI components",
-          "src/types - TypeScript type definitions",
-          "src/Content - Feature-specific components"
+          "src/types - definições de tipos",
+          "src/Content - componentes reutilizáveis de UI",
+          "src/components - componentes específicos de tela"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "PascalCase for components and types",
-          "camelCase for functions and variables",
-          "kebab-case for CSS classes"
+          "CamelCase para componentes e funções",
+          "kebab-case para arquivos CSS",
+          "PascalCase para interfaces e tipos"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Clear separation between UI components and types",
-          "Feature modules encapsulate related components and logic"
+          "Separação clara entre tipos, componentes de UI e lógica de negócio",
+          "Dependências unidirecionais para facilitar manutenção"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "style_guide",
         "value": [
-          "Airbnb JavaScript/TypeScript Style Guide"
+          "Airbnb JavaScript Style Guide adaptado para TypeScript"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "linting_rules",
         "value": [
-          "ESLint with TypeScript plugin"
+          "ESLint com regras para React e TypeScript"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
-          "Prettier with default settings"
+          "Prettier com configuração padrão para React/TypeScript"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "JSDoc"
+          "JSDoc para documentação de funções e componentes"
         ]
       },
       {
@@ -18904,21 +18891,21 @@
         "property": "testing_strategy",
         "subProperty": "test_structure",
         "value": [
-          "__tests__ folders colocados próximos aos componentes"
+          "Testes localizados em __tests__ próximos aos componentes"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
         "value": [
-          ">= 80% coverage"
+          "Cobertura mínima de 80%"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_patterns",
         "value": [
-          "Arrange-Act-Assert (AAA)"
+          "AAA (Arrange, Act, Assert)"
         ]
       },
       {
@@ -18946,18 +18933,14 @@
         "property": "development_workflow",
         "subProperty": "pr_requirements",
         "value": [
-          "Code review obrigatório",
-          "Checks de lint e testes"
+          "Revisão obrigatória e testes aprovados"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Build",
-          "Lint",
-          "Test",
-          "Deploy automático"
+          "Build, Test, Lint, Deploy"
         ]
       },
       {
@@ -19012,101 +18995,80 @@
       {
         "property": "security_constraints",
         "subProperty": "authentication_method",
-        "value": [
-          "Não aplicável no componente (gerenciado externamente)"
-        ]
+        "value": []
       },
       {
         "property": "security_constraints",
         "subProperty": "authorization_rules",
-        "value": [
-          "Controle de acesso externo ao componente"
-        ]
+        "value": []
       },
       {
         "property": "security_constraints",
         "subProperty": "sensitive_data",
-        "value": [
-          "Código gerado e dados da gravação devem ser protegidos contra exposição indevida"
-        ]
+        "value": []
       },
       {
         "property": "security_constraints",
         "subProperty": "security_headers",
-        "value": [
-          "Gerenciados pela aplicação host"
-        ]
+        "value": []
       },
       {
         "property": "security_constraints",
         "subProperty": "encryption_requirements",
-        "value": [
-          "Não aplicável diretamente"
-        ]
+        "value": []
       },
       {
         "property": "performance_requirements",
         "subProperty": "response_time_limits",
-        "value": [
-          "Renderização imediata para troca de views"
-        ]
+        "value": []
       },
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Responsividade e fluidez na UI"
+          "Responsividade UI",
+          "Minimização de re-renderizações"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "caching_strategy",
-        "value": [
-          "Não aplicável no componente"
-        ]
+        "value": []
       },
       {
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
-        "value": [
-          "Gerenciamento eficiente de listas grandes de ações"
-        ]
+        "value": []
       },
       {
         "property": "error_handling",
         "subProperty": "error_format",
-        "value": [
-          "Não implementado explicitamente no componente"
-        ]
+        "value": []
       },
       {
         "property": "error_handling",
         "subProperty": "logging_strategy",
         "value": [
-          "Logs simples via console para ações de cópia e geração de código"
+          "Console logs para eventos importantes como cópia e geração de código"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "monitoring_tools",
-        "value": [
-          "Não especificado"
-        ]
+        "value": []
       },
       {
         "property": "error_handling",
         "subProperty": "error_recovery",
-        "value": [
-          "Reset de estado após timeout para feedback visual"
-        ]
+        "value": []
       },
       {
         "property": "dependencies_context",
         "subProperty": "critical_dependencies",
         "value": [
-          "react",
-          "react-copy-to-clipboard",
+          "React",
           "FontAwesome",
+          "CopyToClipboard",
           "ActionList",
           "CodeGen"
         ]
@@ -19114,17 +19076,12 @@
       {
         "property": "dependencies_context",
         "subProperty": "deprecated_packages",
-        "value": [
-          "Nenhum identificado"
-        ]
+        "value": []
       },
       {
         "property": "dependencies_context",
         "subProperty": "version_constraints",
-        "value": [
-          "React 18.x",
-          "TypeScript 4.x"
-        ]
+        "value": []
       },
       {
         "property": "dependencies_context",
@@ -19138,31 +19095,22 @@
       {
         "property": "current_challenges",
         "subProperty": "technical_debt",
-        "value": [
-          "Ausência de tratamento de erros robusto",
-          "Possível otimização para listas muito grandes"
-        ]
+        "value": []
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
-        "value": [
-          "Timeout para resetar estado pode causar problemas se componente desmontar"
-        ]
+        "value": []
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
-        "value": [
-          "Renderização de listas extensas sem paginação"
-        ]
+        "value": []
       },
       {
         "property": "current_challenges",
         "subProperty": "migration_status",
-        "value": [
-          "Nenhuma migração em andamento"
-        ]
+        "value": []
       },
       {
         "property": "team_preferences",
@@ -19177,92 +19125,76 @@
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "JSDoc para componentes e funções públicas"
+          "Documentação JSDoc para componentes e funções públicas"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários objetivos e em português para contexto"
+          "Comentários objetivos e claros",
+          "Uso de emojis para feedback visual em logs"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Uso de React Functional Components com hooks para estado local"
+          "Uso de React Functional Components com hooks para estado local",
+          "Separação entre visualização de ações e código"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "api_style",
-        "value": [
-          "Não aplicável diretamente"
-        ]
+        "value": []
       },
       {
         "property": "api_specifications",
         "subProperty": "versioning_strategy",
-        "value": [
-          "Não aplicável"
-        ]
+        "value": []
       },
       {
         "property": "api_specifications",
         "subProperty": "response_formats",
-        "value": [
-          "Não aplicável"
-        ]
+        "value": []
       },
       {
         "property": "api_specifications",
         "subProperty": "rate_limiting",
-        "value": [
-          "Não aplicável"
-        ]
+        "value": []
       },
       {
         "property": "deployment_context",
         "subProperty": "environments",
-        "value": [
-          "dev",
-          "staging",
-          "prod"
-        ]
+        "value": []
       },
       {
         "property": "deployment_context",
         "subProperty": "deployment_method",
-        "value": [
-          "Docker",
-          "CI/CD pipelines"
-        ]
+        "value": []
       },
       {
         "property": "deployment_context",
         "subProperty": "environment_variables",
-        "value": [
-          "Variáveis gerais da aplicação, não específicas do componente"
-        ]
+        "value": []
       },
       {
         "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
-        "value": [
-          "Nenhuma restrição específica identificada"
-        ]
+        "value": []
       }
     ]
   },
   "src/pages/Popup/components/RecordingHistory.tsx": {
-    "summary": "O componente RecordingHistory é uma interface React que gerencia e exibe um histórico de gravações, permitindo aos usuários visualizar, buscar, selecionar, exportar e excluir registros de gravações. Ele integra funcionalidades de filtragem dinâmica por termos de busca, ordenação customizável das colunas e seleção múltipla para operações em lote, como exportação. O componente mantém estados internos para controle de carregamento, seleção e ordenação, além de interagir com um serviço externo RecordingService para persistência e manipulação dos dados. A interface é construída com a biblioteca TanStack Table para renderização eficiente e flexível da tabela, e utiliza ícones FontAwesome para melhorar a usabilidade e a experiência visual. O componente também implementa formatações específicas para datas e durações, facilitando a compreensão dos dados pelo usuário final, e inclui confirmações para ações destrutivas, garantindo segurança na manipulação das gravações.",
+    "summary": "O componente RecordingHistory é uma interface React que exibe e gerencia um histórico de gravações, permitindo aos usuários visualizar, buscar, selecionar, exportar e excluir registros de gravações armazenados. Ele integra funcionalidades de filtragem dinâmica por termos de busca, ordenação customizável das colunas e seleção múltipla para operações em lote, como exportação. O componente mantém estados internos para controle de carregamento, seleção e ordenação, além de interagir com um serviço externo RecordingService para operações de listagem, remoção e exportação de dados. A tabela é construída com a biblioteca TanStack Table, garantindo uma experiência responsiva e interativa, enquanto ícones FontAwesome enriquecem a usabilidade visual. O componente também implementa formatações específicas para datas e durações, além de confirmar ações críticas como exclusão, promovendo segurança e usabilidade no gerenciamento do histórico de gravações.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "Recording History Management System"
+          "Recording History Manager",
+          "Interface para gerenciamento de histórico de gravações"
         ]
       },
       {
@@ -19278,7 +19210,8 @@
         "property": "project_metadata",
         "subProperty": "current_phase",
         "value": [
-          "Production"
+          "Produção",
+          "Estável com funcionalidades completas de visualização e exportação"
         ]
       },
       {
@@ -19286,15 +19219,16 @@
         "subProperty": "critical_business_rules",
         "value": [
           "Não permitir exclusão sem confirmação explícita",
-          "Integridade dos dados durante exportação",
-          "Atualização consistente do estado após operações CRUD"
+          "Exportação deve conter apenas gravações selecionadas",
+          "Busca deve filtrar por título, hostname e URL"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "primary_language",
         "value": [
-          "TypeScript 5.0"
+          "TypeScript 4.x",
+          "React 18"
         ]
       },
       {
@@ -19302,20 +19236,22 @@
         "subProperty": "frameworks",
         "value": [
           "React 18.2",
-          "TanStack Table 8.x",
+          "@tanstack/react-table 8.x",
           "FontAwesome React 0.2.x"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "databases",
-        "value": []
+        "value": [
+          "Não aplicável diretamente (armazenamento via RecordingService)"
+        ]
       },
       {
         "property": "technical_stack",
         "subProperty": "external_services",
         "value": [
-          "RecordingService (local storage or backend API)"
+          "RecordingService API (local ou remota)"
         ]
       },
       {
@@ -19330,113 +19266,117 @@
         "subProperty": "design_pattern",
         "value": [
           "Component-Based Architecture",
-          "Service Layer Pattern"
+          "Service Layer Pattern",
+          "Declarative UI"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "components/: UI components",
-          "storage/: data persistence services",
-          "types/: TypeScript type definitions",
-          "styles/: CSS files"
+          "components/ - UI components",
+          "storage/ - serviços de persistência",
+          "types/ - definições de tipos",
+          "styles/ - arquivos CSS"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "PascalCase for components",
-          "camelCase for functions and variables",
-          "kebab-case for CSS classes"
+          "CamelCase para componentes e funções",
+          "snake-case para arquivos CSS",
+          "prefixo 'on' para props de eventos"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "UI components depend on types and services",
-          "Services encapsulate data access",
-          "No circular dependencies"
+          "UI desacoplada da lógica de dados via RecordingService",
+          "Componentes isolados com props para comunicação"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "style_guide",
         "value": [
-          "Airbnb JavaScript Style Guide adapted for TypeScript"
+          "Airbnb JavaScript Style Guide adaptado para TypeScript"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "linting_rules",
         "value": [
-          "ESLint with TypeScript plugin, rules for no unused vars, consistent return, strict typing"
+          "ESLint com regras para React e TypeScript",
+          "Proibição de uso de any",
+          "Regras para hooks"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
-          "Prettier with 2 spaces indentation, single quotes, trailing commas"
+          "Prettier com configuração padrão para React/TypeScript"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "JSDoc style comments for components and functions"
+          "JSDoc para funções e componentes"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "type_checking",
         "value": [
-          "Strict TypeScript mode enabled"
+          "Strict TypeScript com tipagem explícita para props e estados"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_framework",
         "value": [
-          "Jest 29"
+          "Jest 29",
+          "React Testing Library"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_structure",
         "value": [
-          "__tests__ folders adjacent to components",
-          "unit and integration tests"
+          "tests/components/ para testes unitários de UI",
+          "mocks para RecordingService"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
         "value": [
-          "Minimum 80% coverage"
+          "Cobertura mínima de 80% para componentes críticos"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_patterns",
         "value": [
-          "Arrange-Act-Assert (AAA)"
+          "Arrange-Act-Assert",
+          "Mocking de serviços externos"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Mock RecordingService methods with Jest mocks"
+          "Mock de RecordingService para simular respostas assíncronas"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "branch_strategy",
         "value": [
-          "GitHub Flow"
+          "GitHub Flow com branches feature, main e hotfix"
         ]
       },
       {
@@ -19450,18 +19390,15 @@
         "property": "development_workflow",
         "subProperty": "pr_requirements",
         "value": [
-          "Code review mandatory",
-          "Passing CI checks"
+          "Revisão obrigatória por pelo menos um desenvolvedor",
+          "Checks de lint e testes automáticos"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Linting",
-          "Unit tests",
-          "Build",
-          "Deploy"
+          "Build, lint, test e deploy automatizados via GitHub Actions"
         ]
       },
       {
@@ -19517,7 +19454,7 @@
         "property": "security_constraints",
         "subProperty": "authentication_method",
         "value": [
-          "Não especificado no componente"
+          "Não aplicável diretamente neste componente"
         ]
       },
       {
@@ -19531,49 +19468,49 @@
         "property": "security_constraints",
         "subProperty": "sensitive_data",
         "value": [
-          "Dados das gravações (URLs, títulos) tratados localmente"
+          "Dados de gravação podem conter URLs e títulos, tratados localmente"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "security_headers",
         "value": [
-          "Não aplicável no componente UI"
+          "Não aplicável diretamente neste componente"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "encryption_requirements",
         "value": [
-          "Não aplicável no componente UI"
+          "Não aplicável diretamente neste componente"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "response_time_limits",
         "value": [
-          "Carregamento rápido das gravações para boa UX"
+          "Carregamento e filtragem devem ser responsivos, idealmente < 200ms para datasets moderados"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Velocidade de renderização da tabela e filtragem"
+          "Otimização para velocidade de renderização e filtragem no cliente"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "caching_strategy",
         "value": [
-          "Cache local via RecordingService (não detalhado)"
+          "Cache local via estado React, sem cache persistente explícito"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
         "value": [
-          "Suporte a grandes listas via virtualização não implementada"
+          "Pode necessitar paginação ou virtualização para grandes volumes de gravações"
         ]
       },
       {
@@ -19587,22 +19524,21 @@
         "property": "error_handling",
         "subProperty": "logging_strategy",
         "value": [
-          "Console logs com emojis para status e erros"
+          "Uso de console.log e console.error para rastreamento"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "monitoring_tools",
         "value": [
-          "Não especificado"
+          "Não especificado no código"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "error_recovery",
         "value": [
-          "Recarregamento da lista após exclusão",
-          "Fallback para estado vazio"
+          "Recarregamento das gravações após exclusão; fallback visual para estados vazios e erros"
         ]
       },
       {
@@ -19611,14 +19547,16 @@
         "value": [
           "RecordingService",
           "React",
-          "TanStack Table",
+          "@tanstack/react-table",
           "FontAwesome"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "deprecated_packages",
-        "value": []
+        "value": [
+          "Nenhum identificado"
+        ]
       },
       {
         "property": "dependencies_context",
@@ -19632,30 +19570,31 @@
         "property": "dependencies_context",
         "subProperty": "internal_packages",
         "value": [
-          "../../types/recording",
-          "../../storage/recording-service"
+          "../../storage/recording-service",
+          "../../types/recording"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "technical_debt",
         "value": [
-          "Ausência de virtualização para tabelas grandes",
-          "Tratamento básico de erros"
+          "Ausência de debounce na busca",
+          "Uso de confirm() nativo para exclusão"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
         "value": [
-          "Possível lentidão com grandes volumes de dados"
+          "Potencial lentidão com grandes volumes de dados",
+          "Falta de tratamento visual para erros de rede"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
         "value": [
-          "Filtragem e renderização client-side sem otimizações"
+          "Filtragem e renderização client-side sem paginação"
         ]
       },
       {
@@ -19669,94 +19608,93 @@
         "property": "team_preferences",
         "subProperty": "code_review_focus",
         "value": [
-          "Clareza na manipulação de estado",
-          "Tratamento de erros",
-          "Aderência a padrões React"
+          "Clareza na separação de responsabilidades",
+          "Tratamento adequado de estados assíncronos",
+          "Uso correto de hooks"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "Comentários JSDoc para componentes e funções"
+          "Documentação via JSDoc para componentes e funções públicas"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Uso de emojis em logs para facilitar leitura"
+          "Comentários claros e objetivos, uso de emojis para logs"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Uso de TanStack Table para flexibilidade e performance"
+          "Uso de TanStack Table para tabelas interativas",
+          "Separação do serviço de gravações em módulo distinto"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "api_style",
         "value": [
-          "Não aplicável - componente UI"
+          "REST-like para RecordingService"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "versioning_strategy",
         "value": [
-          "Não aplicável"
+          "Não especificado"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "response_formats",
         "value": [
-          "JSON para exportação de gravações"
+          "JSON para exportação e listagem"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "rate_limiting",
         "value": [
-          "Não aplicável"
+          "Não especificado"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "environments",
         "value": [
-          "Development",
-          "Staging",
-          "Production"
+          "Desenvolvimento, Staging, Produção"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "deployment_method",
         "value": [
-          "Containerized React app (Docker) or static hosting"
+          "Deploy via pipeline CI/CD (ex: Vercel, Netlify)"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "environment_variables",
         "value": [
-          "Não especificados no componente"
+          "Variáveis para configuração do RecordingService"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
         "value": [
-          "Requer conexão para acesso ao RecordingService"
+          "Limitações de armazenamento e performance do backend RecordingService"
         ]
       }
     ]
   },
   "src/pages/Popup/index.css": {
-    "summary": "Este arquivo CSS define estilos básicos para o elemento body, configurando dimensões fixas, fontes e propriedades visuais para garantir uma experiência consistente e legível em diferentes contextos de visualização. O código ajusta o layout para páginas específicas, como histórico e detalhes, ampliando a largura e altura e mantendo a rolagem vertical para acomodar conteúdos maiores. A estilização prioriza usabilidade e estética, utilizando fontes modernas e técnicas de suavização para melhorar a renderização do texto, além de aplicar um fundo escuro que favorece interfaces com temas dark, contribuindo para a identidade visual e usabilidade do sistema.",
+    "summary": "Este arquivo CSS define estilos básicos para o elemento body, configurando dimensões fixas, fontes e propriedades visuais para garantir uma experiência consistente e responsiva em diferentes contextos de visualização. O código ajusta o layout para páginas específicas, como visualizações de histórico e detalhes, ampliando a largura e altura para acomodar conteúdos mais complexos, além de habilitar rolagem vertical automática para melhor usabilidade. A utilização de variáveis CSS para cores e técnicas de font-smoothing assegura uma renderização visual aprimorada, contribuindo para a identidade visual e usabilidade da aplicação.",
     "properties": [
       {
         "property": "project_metadata",
@@ -19769,26 +19707,25 @@
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Web UI",
-          "Frontend",
-          "User Interface",
-          "Dark Theme"
+          "Web Application",
+          "UI/UX",
+          "Frontend Styling"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "current_phase",
         "value": [
-          "Desenvolvimento",
-          "Estabilização de UI"
+          "Produção"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "critical_business_rules",
         "value": [
-          "Manter legibilidade e usabilidade em diferentes views",
-          "Garantir scroll vertical para conteúdos extensos"
+          "Consistência visual",
+          "Suporte a múltiplas views",
+          "Legibilidade"
         ]
       },
       {
@@ -19824,36 +19761,36 @@
         "property": "architecture_patterns",
         "subProperty": "design_pattern",
         "value": [
-          "Modular CSS com classes condicionais"
+          "Modular CSS",
+          "Theming via CSS Variables"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "Estilos base em arquivos CSS globais",
-          "Estilos específicos aplicados via classes no body"
+          "styles/: arquivos CSS organizados por contexto e componente"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "Classes CSS descritivas (ex: history-view, detail-view)"
+          "BEM-like para classes contextuais (ex: history-view, detail-view)"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Separação clara entre estilos base e estilos para views específicas"
+          "Separação clara entre estilos base e estilos específicos de views"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "style_guide",
         "value": [
-          "CSS padrão, sem framework específico"
+          "CSS Standard Style"
         ]
       },
       {
@@ -19869,9 +19806,7 @@
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
-        "value": [
-          "Comentários em português explicativos"
-        ]
+        "value": []
       },
       {
         "property": "code_standards",
@@ -19992,7 +19927,7 @@
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Legibilidade e fluidez na rolagem"
+          "Legibilidade e performance visual"
         ]
       },
       {
@@ -20029,8 +19964,8 @@
         "property": "dependencies_context",
         "subProperty": "critical_dependencies",
         "value": [
-          "Roboto font",
-          "Classes CSS aplicadas no body"
+          "Variáveis CSS globais",
+          "Fonte Roboto"
         ]
       },
       {
@@ -20052,7 +19987,7 @@
         "property": "current_challenges",
         "subProperty": "technical_debt",
         "value": [
-          "Ausência de responsividade para dispositivos móveis"
+          "Falta de responsividade adaptativa"
         ]
       },
       {
@@ -20075,28 +20010,24 @@
         "subProperty": "code_review_focus",
         "value": [
           "Consistência visual",
-          "Uso correto de classes condicionais"
+          "Uso correto de variáveis CSS"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
-        "value": [
-          "Comentários claros em português"
-        ]
+        "value": []
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
-        "value": [
-          "Comentários objetivos e técnicos"
-        ]
+        "value": []
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Uso de largura fixa para controle de layout em views específicas"
+          "Separação de estilos base e contextuais via classes"
         ]
       },
       {
@@ -20132,7 +20063,9 @@
       {
         "property": "deployment_context",
         "subProperty": "environment_variables",
-        "value": []
+        "value": [
+          "--bg-dark"
+        ]
       },
       {
         "property": "deployment_context",
@@ -22444,37 +22377,37 @@
     ]
   },
   "src/pages/Popup/Popup.css": {
-    "summary": "Este arquivo CSS configura o tema visual de uma interface de usuário com foco em um esquema de cores dark mode, aplicando estilos para elementos de popup e centralização de texto. Ele define propriedades para a aparência da scrollbar personalizada, incluindo dimensões, cores e bordas arredondadas, melhorando a experiência do usuário em navegadores WebKit. O código não manipula dados ou estados diretamente, mas altera o comportamento visual e a usabilidade da interface, garantindo uma apresentação consistente e moderna em ambientes escuros. A estilização é simples, porém essencial para manter a identidade visual e acessibilidade do sistema, integrando-se a um front-end maior que depende dessas definições para coerência estética e usabilidade aprimorada.",
+    "summary": "Este arquivo CSS define um tema dark customizado para uma aplicação web, utilizando variáveis CSS para cores e estilos consistentes alinhados à identidade visual da marca Fleury. O código configura cores primárias, fundos, textos, bordas e sombras, além de estilizar componentes específicos como popups e labels, garantindo uma interface visualmente harmônica e acessível em modo escuro. Também implementa uma customização da scrollbar para navegadores WebKit, melhorando a experiência do usuário com barras de rolagem discretas e responsivas ao hover, reforçando a usabilidade e estética do sistema.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "UI Theming Dark Mode"
+          "Tema Dark Mode Fleury"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Frontend UI",
-          "User Experience",
-          "Dark Mode Styling"
+          "Healthcare",
+          "UI/UX Design",
+          "Branding"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "current_phase",
         "value": [
-          "Production"
+          "Produção"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "critical_business_rules",
         "value": [
-          "Consistent dark mode color scheme",
-          "Scrollbar usability and visibility"
+          "Manter consistência visual da marca",
+          "Garantir acessibilidade em modo dark"
         ]
       },
       {
@@ -22508,29 +22441,30 @@
         "property": "architecture_patterns",
         "subProperty": "design_pattern",
         "value": [
-          "CSS Theming",
-          "Component-based Styling"
+          "Theming via CSS Variables"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "Stylesheets organized por componentes visuais e temas"
+          "assets/css - arquivos de estilo",
+          "components - estilos específicos de componentes UI"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "BEM-like classes (.Popup, .text-center)"
+          "BEM-like para classes CSS",
+          "Variáveis CSS com prefixo -- para temas"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Separação clara entre estilos globais (:root) e componentes específicos (.Popup)"
+          "Separação clara entre variáveis globais e estilos de componentes"
         ]
       },
       {
@@ -22553,7 +22487,9 @@
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
-        "value": []
+        "value": [
+          "Comentários inline em português"
+        ]
       },
       {
         "property": "code_standards",
@@ -22709,7 +22645,8 @@
         "property": "dependencies_context",
         "subProperty": "critical_dependencies",
         "value": [
-          "WebKit browser support"
+          "CSS Variables",
+          "WebKit scrollbar pseudo-elements"
         ]
       },
       {
@@ -22736,7 +22673,7 @@
         "property": "current_challenges",
         "subProperty": "known_issues",
         "value": [
-          "Scrollbar customization limitado a WebKit"
+          "Incompatibilidade parcial de scrollbar customizada em navegadores não WebKit"
         ]
       },
       {
@@ -22754,24 +22691,2880 @@
         "subProperty": "code_review_focus",
         "value": [
           "Consistência visual",
-          "Compatibilidade cross-browser"
+          "Uso correto de variáveis CSS",
+          "Acessibilidade"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
-        "value": []
+        "value": [
+          "Comentários explicativos em português"
+        ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
-        "value": []
+        "value": [
+          "Clara e objetiva, preferencialmente em português"
+        ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Adotar dark mode como padrão visual"
+          "Adoção de tema dark com cores da marca Fleury",
+          "Customização da scrollbar para melhor UX"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
+      }
+    ]
+  },
+  "src/pages/Common/LogoFleury.tsx": {
+    "summary": "O arquivo contém um componente React funcional que renderiza o logo da empresa Fleury utilizando SVG. O componente é parametrizável, permitindo ajuste da altura e aplicação de classes CSS para customização visual, mantendo a identidade visual da marca com cores fixas. Seu comportamento é estático, sem manipulação de estado ou efeitos colaterais, focado em fornecer uma representação visual reutilizável e otimizada do logo para integração em interfaces web, garantindo consistência e flexibilidade na apresentação gráfica.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Fleury Brand Identity Component"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Healthcare",
+          "Branding",
+          "UI Components"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Production"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Manter identidade visual consistente",
+          "Garantir acessibilidade e responsividade"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "TypeScript 4.x",
+          "JavaScript ES6+"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "React 18.x"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Component-Based Architecture"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "src/components - componentes reutilizáveis de UI"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "PascalCase para componentes React",
+          "camelCase para props e variáveis"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Componentes isolados sem dependências internas complexas"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb JavaScript Style Guide"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          ".eslintrc.json com regras para React e TypeScript"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier com configuração padrão"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc para comentários de componentes"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": [
+          "Strict TypeScript"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest 29"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": [
+          "Testes localizados em __tests__ dentro da pasta components"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": [
+          "Cobertura mínima de 80%"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "Snapshot Testing para componentes visuais"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": [
+          "Mocks para props e estilos"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": [
+          "GitHub Flow"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": [
+          "Conventional Commits"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": [
+          "Code review obrigatório e testes aprovados"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": [
+          "Build, lint, test e deploy automatizados"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": [
+          "npm run start"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": [
+          "npm run test"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": [
+          "npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": [
+          "npm run lint"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": [
+          "npm run format"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Renderização rápida e leve",
+          "Baixo consumo de memória"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "react"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": [
+          "React >=18.0.0"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Consistência visual",
+          "Aderência a padrões de código",
+          "Testes de snapshot"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Documentação clara via JSDoc"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários objetivos e técnicos"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Uso de SVG inline para performance e flexibilidade"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
+      }
+    ]
+  },
+  "src/pages/Popup/components/LayoutWrapper.css": {
+    "summary": "Este arquivo CSS define um tema escuro para uma aplicação web, focando na estilização de um layout flexível e responsivo com componentes principais como header, conteúdo e botões de navegação. Utiliza variáveis CSS para cores primárias, fundos, textos e sombras, garantindo consistência visual e facilidade de manutenção. O código implementa comportamentos visuais como hover em botões, scrollbar customizada e ajustes específicos para diferentes views, promovendo uma experiência de usuário fluida e acessível em múltiplos contextos da aplicação.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Interface Theme Styling",
+          "Dark Mode UI Theme"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Web Application UI",
+          "User Experience Design"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Production",
+          "Stable UI Theme"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Consistent theming",
+          "Accessibility compliance",
+          "Responsive layout"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "CSS3"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "None (Vanilla CSS)"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": []
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Component-based CSS",
+          "Theming with CSS Variables"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "styles/: diretório principal para arquivos CSS",
+          "components/: estilos específicos por componente"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "BEM-like class names",
+          "CSS Variables com prefixo --"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Separação clara entre layout, header e conteúdo"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "CSS Standard Style Guide"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "Stylelint com regras básicas para CSS moderno"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier para CSS"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "Comentários CSS simples para seções"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Render performance",
+          "Smooth scrolling"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "CSS Variables support",
+          "Flexbox support"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": [
+          "Scrollbar customization limitada a Webkit browsers"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Consistência visual",
+          "Uso correto de variáveis CSS",
+          "Acessibilidade"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Comentários claros por seção"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Objetivo e direto em comentários"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Adoção de CSS Variables para theming",
+          "Flexbox para layout principal"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
+      }
+    ]
+  },
+  "src/pages/Popup/components/LayoutWrapper.tsx": {
+    "summary": "O componente LayoutWrapper é um wrapper React funcional que unifica o layout visual das diferentes views de um popup, garantindo consistência na interface com um header padronizado contendo logo, título opcional e botão de retorno. Ele aceita children para renderizar o conteúdo principal e permite customização do layout via prop 'view', que altera a classe CSS aplicada para diferentes contextos (home, history, detail). O componente não gerencia estado interno, mas expõe um callback onBack para ações de navegação, facilitando a integração com a lógica de navegação do sistema. Essa abordagem modular promove reutilização, padronização visual e separação clara entre estrutura e conteúdo, habilitando uma experiência de usuário consistente e manutenção simplificada.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Fleury Popup UI",
+          "Interface unificada para popup de visualização"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Healthcare",
+          "User Interface",
+          "React Components"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Consistência visual entre views",
+          "Callback onBack deve ser seguro e acionável"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "TypeScript 4.x",
+          "React 18"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "React 18.2"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm",
+          "yarn"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Component-Based Architecture",
+          "Wrapper/Layout Pattern"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "Common: componentes reutilizáveis",
+          "Views: telas específicas",
+          "Styles: arquivos CSS"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "PascalCase para componentes",
+          "camelCase para props e funções",
+          "kebab-case para classes CSS"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Separação clara entre componentes comuns e específicos",
+          "Dependência unidirecional para evitar acoplamento"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb JavaScript Style Guide adaptado para TypeScript"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "ESLint com regras para React e TypeScript"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier com configuração padrão"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc para componentes e funções"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": [
+          "Strict TypeScript"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest 29"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": [
+          "Testes localizados em __tests__ próximos aos componentes"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": [
+          "Cobertura mínima de 80%"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "Given-When-Then"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": [
+          "Mocks para callbacks e componentes filhos"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": [
+          "GitHub Flow"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": [
+          "Conventional Commits"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": [
+          "Revisão obrigatória e testes aprovados"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": [
+          "Build, Test, Lint, Deploy"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": [
+          "npm run dev"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": [
+          "npm test"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": [
+          "npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": [
+          "npm run lint"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": [
+          "npm run format"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Velocidade de renderização e responsividade"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "react",
+          "LogoFleury component"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": [
+          "React 18.x",
+          "TypeScript 4.x"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": [
+          "../../Common/LogoFleury"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Consistência visual",
+          "Uso correto de props",
+          "Acessibilidade do botão back"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "JSDoc para componentes e props"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Clara e objetiva, foco em comportamento e impacto"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Uso de wrapper para padronização visual",
+          "Manter props opcionais para flexibilidade"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": [
+          "dev",
+          "staging",
+          "prod"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": [
+          "Docker",
+          "CI/CD pipeline"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
+      }
+    ]
+  },
+  "src/pages/Popup/components/dark-theme.css": {
+    "summary": "Este arquivo CSS define um tema Dark para componentes de interface relacionados a um Popup de histórico de gravações, focando na estilização visual e usabilidade dos elementos. Ele estiliza tabelas de histórico, campos de busca, checkboxes, botões de ação, detalhes de gravação, abas, listas de ações, exibição de código, estados vazios e de carregamento, garantindo uma experiência consistente e acessível. O código utiliza variáveis CSS para cores e transições suaves, promovendo uma interface responsiva e interativa, com foco em feedback visual para ações do usuário, como hover, foco e estados desabilitados, suportando funcionalidades de navegação, filtragem e manipulação de dados exibidos no popup.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Popup Recording History UI Theme"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "User Interface",
+          "Frontend Styling",
+          "Dark Theme",
+          "Recording Management"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Production"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Consistent visual feedback for user interactions",
+          "Accessibility compliance",
+          "Theme consistency across components"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "CSS3"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "Nenhum framework CSS explícito, utiliza CSS custom properties"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": []
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Component-based Styling"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "Estilos organizados por componente funcional (ex: tables, buttons, tabs) para modularidade e manutenção"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "BEM-like class naming para clareza e escopo (ex: recording-history-table, action-button)"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Estilos isolados por componente, evitando vazamento de estilos globais"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "CSS3 padrão com uso de variáveis CSS para temas"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "Não especificado no código"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Indentação consistente, uso de comentários para seções"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "Comentários simples para seções de estilo"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Performance visual e responsividade"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "CSS Variables globais para cores e estilos"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Consistência visual",
+          "Uso correto de variáveis CSS",
+          "Acessibilidade"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Comentários claros para seções de estilo"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários objetivos e técnicos"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Adoção de tema Dark via CSS Variables para facilitar manutenção e customização"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
+      }
+    ]
+  },
+  "src/pages/Popup/components/detail-dark.css": {
+    "summary": "Este arquivo CSS define um tema Dark para o componente RecordingDetail, focado em uma interface moderna e responsiva para exibição detalhada de gravações. Ele organiza visualmente elementos como cabeçalho, botões de navegação, abas, áreas de conteúdo e ações relacionadas, utilizando variáveis CSS para cores e estilos consistentes. O código enfatiza usabilidade com estados interativos para botões e abas, além de garantir legibilidade de código exibido e ações associadas, suportando uma experiência de usuário fluida e visualmente agradável em ambientes escuros. A estrutura flexível e o uso de transições suaves indicam preocupação com a responsividade e feedback visual, facilitando a integração com sistemas maiores que exibem detalhes e ações de gravações em interfaces web modernas.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "RecordingDetail Dark Theme",
+          "Interface para visualização detalhada de gravações"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Web UI",
+          "User Interface",
+          "Recording Management"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção",
+          "Estabilização do tema visual"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Consistência visual do tema",
+          "Legibilidade do conteúdo de gravação",
+          "Feedback visual em interações"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "CSS3"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "Nenhum framework CSS explícito, uso de CSS custom properties"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": []
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Modular CSS",
+          "BEM Naming Convention"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "Estilos organizados por componente, separados em arquivos CSS específicos para temas"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "BEM (Block Element Modifier)"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Estilos isolados para o componente RecordingDetail, evitando vazamento para outros componentes"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "CSS padrão com uso de variáveis CSS"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "Não especificado no código"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Indentação consistente, uso de espaçamento e quebras de linha para legibilidade"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "Comentários mínimos, foco em nomes semânticos"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Legibilidade e responsividade visual"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "Variáveis CSS globais",
+          "Estrutura HTML compatível"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": [
+          "Ausência de media queries para responsividade"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": [
+          "Uso de múltiplas transições pode impactar dispositivos lentos"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Consistência visual",
+          "Uso correto de variáveis CSS",
+          "Nomenclatura BEM"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Comentários mínimos, foco em nomes semânticos"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Objetivo e direto, preferindo nomes claros"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Adoção do tema Dark via CSS custom properties",
+          "Uso do padrão BEM para organização"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": [
+          "Variáveis CSS globais para cores e estilos"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
+      }
+    ]
+  },
+  "src/pages/Popup/components/history-dark.css": {
+    "summary": "Este arquivo CSS define um tema Dark moderno para a interface de um componente RecordingHistory, focado em proporcionar uma experiência visual consistente e acessível para a visualização e manipulação de históricos de gravações. Ele estrutura a interface em seções claras, como cabeçalho, toolbar, área de conteúdo e tabelas, utilizando variáveis CSS para cores e estilos que garantem contraste adequado e responsividade visual. O código inclui estilos para botões interativos, campos de busca, estados vazios e carregamento, além de elementos de tabela com linhas clicáveis e botões de ação, suportando funcionalidades como seleção múltipla via checkboxes e exclusão de registros. A abordagem modular e o uso de transições suaves indicam foco em usabilidade e feedback visual, facilitando a integração com componentes JavaScript para manipulação dinâmica do estado e dados do histórico de gravações.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "RecordingHistory UI Theme",
+          "Interface para histórico de gravações"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Web Application",
+          "User Interface",
+          "Recording Management"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção",
+          "Estabilização visual"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Consistência visual do tema",
+          "Feedback visual claro para ações do usuário",
+          "Acessibilidade básica para navegação"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "CSS3"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "Nenhum framework CSS explícito",
+          "Possível integração com React ou Vue para JS"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": []
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Modular CSS",
+          "Component-based UI styling"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "Estilos organizados por componente UI",
+          "Separação clara entre header, toolbar, content e tabela"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "Classes com prefixo 'modern-' para escopo",
+          "Uso de nomes descritivos e BEM-like"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Estilos isolados para RecordingHistory",
+          "Dependência de variáveis CSS globais"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "CSS padrão, uso consistente de variáveis CSS"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "Não especificado no código"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Indentação consistente",
+          "Uso de espaços para alinhamento"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "Comentários mínimos, apenas cabeçalho do arquivo"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Responsividade visual",
+          "Transições suaves"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": [
+          "Suporte a tabelas com overflow e scroll vertical"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "Variáveis CSS globais",
+          "JavaScript para manipulação de estado"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": [
+          "Dependência de variáveis CSS externas não documentadas"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": [
+          "Possível lentidão em tabelas muito grandes devido a overflow e transições"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Consistência visual",
+          "Uso correto de variáveis CSS",
+          "Acessibilidade básica"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Comentários explicativos para variáveis CSS e estados"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários sucintos e objetivos"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Adoção de tema Dark para melhor experiência noturna"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
+      }
+    ]
+  },
+  "src/pages/Popup/components/styles.css": {
+    "summary": "Este arquivo CSS define estilos modernos e responsivos para componentes de interface relacionados ao histórico e detalhes de gravações (recordings). Ele organiza visualmente listas de gravações, ferramentas de busca, seleção, exportação e visualização detalhada, utilizando técnicas avançadas de layout como flexbox e grid, além de efeitos visuais como animações, gradientes animados e sombras para melhorar a experiência do usuário. O código enfatiza a usabilidade com estados de foco, transições suaves e responsividade para diferentes tamanhos de tela, suportando funcionalidades como seleção múltipla, alternância de visualizações e ações sobre gravações, garantindo uma interface intuitiva e visualmente atraente para gerenciamento e análise de dados de gravações em um sistema web.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Recording History UI",
+          "Interface para gerenciamento e visualização de gravações"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Media Management",
+          "User Interaction",
+          "Recording Analytics"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção",
+          "Estabilização UI"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Manter integridade visual e responsividade",
+          "Garantir acessibilidade e usabilidade",
+          "Preservar estados de seleção e ações do usuário"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "CSS3"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "Nenhum framework CSS explícito, uso de variáveis CSS customizadas"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": []
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Component-Based UI Styling",
+          "Responsive Design"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "Estilos organizados por contexto: history, detail, modern variants"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "BEM-like classes",
+          "Prefixos para contexto (.recording-, .modern-)"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Separação clara entre estilos de histórico e detalhes",
+          "Modularidade visual para componentes reutilizáveis"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "CSS moderno com variáveis e flexbox/grid",
+          "Uso consistente de nomenclatura e organização"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "Não especificado no código"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Indentação consistente",
+          "Uso de espaços para separação"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "Comentários em português explicando blocos principais"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": []
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": []
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": []
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Responsividade",
+          "Suavidade nas animações",
+          "Baixo impacto visual"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": [
+          "Layouts adaptativos para múltiplos dispositivos",
+          "Scrolls otimizados para listas grandes"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "Variáveis CSS customizadas (ex: --bg-dark, --bg-darker)"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Consistência visual",
+          "Acessibilidade",
+          "Responsividade"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Comentários claros em português para blocos CSS"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Objetivo e direto, com foco em usabilidade"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Separação entre estilos modernos e legacy",
+          "Uso de animações para feedback visual"
         ]
       },
       {
