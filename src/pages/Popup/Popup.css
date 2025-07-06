@@ -1,8 +1,8 @@
 :root {
   color-scheme: dark;
   /* Tema dark com cores Fleury */
-  --primary-color: #C1121F;
-  --primary-hover: #A00F1A;
+  --primary-color: #c1121f;
+  --primary-hover: #a00f1a;
   --primary-light: rgba(193, 18, 31, 0.1);
   --bg-dark: #1a1a1a;
   --bg-darker: #141414;
@@ -11,6 +11,10 @@
   --text-secondary: #b3b3b3;
   --border-color: #333333;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.modern-library-label {
+  color: #000;
 }
 
 .Popup {
