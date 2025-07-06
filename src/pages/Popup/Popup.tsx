@@ -11,6 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import Logo from '../Common/Logo';
+import LogoFleury from '../Common/LogoFleury';
 import LayoutWrapper from './components/LayoutWrapper';
 import CodeGen from '../Content/CodeGen';
 import ActionList from '../Content/ActionList';
@@ -139,7 +140,8 @@ const Popup = () => {
 
   const [isShowingLastTest, setIsShowingLastTest] = useState<boolean>(false);
   const [isShowingHistory, setIsShowingHistory] = useState<boolean>(false);
-  const [selectedRecording, setSelectedRecording] = useState<RecordingEntry | null>(null);
+  const [selectedRecording, setSelectedRecording] =
+    useState<RecordingEntry | null>(null);
 
   useEffect(() => {
     getCurrentTab().then((tab) => {
@@ -217,7 +219,7 @@ const Popup = () => {
   // Aplica classes ao body baseado na página ativa
   useEffect(() => {
     document.body.classList.remove('history-view', 'detail-view');
-    
+
     if (activePage === 'history') {
       document.body.classList.add('history-view');
     } else if (activePage === 'detail') {
@@ -250,7 +252,10 @@ const Popup = () => {
         {activePage === 'recording' && (
           <LayoutWrapper view="home" title="Gravando...">
             <div className="text-center" style={{ marginTop: '2em' }}>
-              <div className="text-xl" style={{ color: 'var(--primary-color)' }}>
+              <div
+                className="text-xl"
+                style={{ color: 'var(--primary-color)' }}
+              >
                 Gravando
                 {isRecordingCurrentTab ? ' Teste...' : ' em Outra Aba'}
               </div>
@@ -281,7 +286,10 @@ const Popup = () => {
         )}
         {activePage === 'home' && (
           <LayoutWrapper view="home">
-            <div className="text-center" style={{ marginTop: '3em' }}>
+            <div className="text-center" style={{ marginTop: '2em' }}>
+              <div className="logo-container">
+                <LogoFleury height={80} />
+              </div>
               <div
                 style={{
                   fontSize: 14,
@@ -289,8 +297,8 @@ const Popup = () => {
                 }}
                 className="text-grey mt-6"
               >
-                Gere scripts Cypress a partir de suas
-                ações no navegador (ex. clicar, digitar, rolar).
+                Gere scripts Cypress a partir de suas ações no navegador (ex.
+                clicar, digitar, rolar).
               </div>
               <button
                 className="btn-primary mt-8"
