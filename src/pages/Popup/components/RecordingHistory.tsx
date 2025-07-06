@@ -225,12 +225,17 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
       columnHelper.accessor('startedAt', {
         header: () => (
           <span>
-            <FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '6px' }} />
+            <FontAwesomeIcon
+              icon={faCalendarAlt}
+              style={{ marginRight: '6px' }}
+            />
             Data
           </span>
         ),
         cell: ({ row }) => (
-          <span className="date-badge">{formatDate(row.original.startedAt)}</span>
+          <span className="date-badge">
+            {formatDate(row.original.startedAt)}
+          </span>
         ),
         enableSorting: true,
       }),
@@ -319,7 +324,6 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
         style={{
           display: 'flex',
           gap: '8px',
-          marginBottom: '16px',
         }}
       >
         <div className="modern-search-box">
