@@ -693,6 +693,12 @@
   border-bottom: 2px solid #dee2e6;
 }
 
+.modern-table-header-cell > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .modern-table-header-cell {
   padding: 16px;
   text-align: left;
