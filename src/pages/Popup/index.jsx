@@ -4,6 +4,7 @@ import { render } from 'react-dom';
 import Popup from './Popup';
 import IndexStyle from './index.css';
 import CommonStyle from '../Common/styles.css';
+import ComponentStyles from './components/styles.css';
 import FaStyle from '@fortawesome/fontawesome-svg-core/styles.css';
 
 render(
@@ -12,6 +13,7 @@ render(
       {FaStyle}
       {CommonStyle}
       {IndexStyle}
+      {ComponentStyles}
     </style>
     <Popup />
   </>,
