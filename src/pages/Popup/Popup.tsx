@@ -307,22 +307,11 @@ const Popup = () => {
               >
                 <FontAwesomeIcon
                   className="mr-1"
-                  style={{ color: '#EA4240' }}
+                  style={{ color: '#fff' }}
                   icon={faCircle}
                 />
                 &nbsp; Iniciar Gravação da Aba Atual
               </button>
-              <div className="d-flex text-sm justify-content-center text-grey mt-6">
-                <div className="d-flex">
-                  <div>Biblioteca Preferida: &nbsp;</div>
-                  <ScriptTypeSelect
-                    color="#c4c4c4"
-                    value={preferredLibrary ?? ScriptType.Cypress}
-                    onChange={setPreferredLibrary}
-                    shortDescription
-                  />
-                </div>
-              </div>
               <div className="my-8">
                 <span
                   className="link-button"

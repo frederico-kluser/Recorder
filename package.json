@@ -4,7 +4,7 @@
   "description": "A browser extension that generates Cypress scripts automatically from your browser interactions.",
   "license": "Apache-2.0",
   "scripts": {
-    "build-chrome": "NODE_OPTIONS=--openssl-legacy-provider MANIFEST_VERSION=3 node utils/build.js && rm -f build/.DS_Store && zip -r build_chrome.zip build",
+    "build-chrome": "rm -rf build && NODE_OPTIONS=--openssl-legacy-provider MANIFEST_VERSION=3 node utils/build.js && rm -f build/.DS_Store && zip -r build_chrome.zip build",
     "build-ff": "NODE_OPTIONS=--openssl-legacy-provider MANIFEST_VERSION=2 node utils/build.js && rm -f build/.DS_Store && zip -jr build_ff.zip build",
     "start-chrome": "MANIFEST_VERSION=3 node utils/webserver.js",
     "start-ff": "MANIFEST_VERSION=2 node utils/webserver.js",
