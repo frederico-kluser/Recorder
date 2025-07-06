@@ -15,6 +15,8 @@ import DarkThemeStyle from './components/dark-theme.css';
 import DetailDarkStyle from './components/detail-dark.css';
 import HistoryDarkStyle from './components/history-dark.css';
 import LayoutWrapperStyle from './components/LayoutWrapper.css';
+import RecordingHistoryStyle from './components/recording-history.css';
+import RecordingDetailStyle from './components/recording-detail.css';
 
 render(
   <>
@@ -30,6 +32,8 @@ render(
       {DetailDarkStyle}
       {HistoryDarkStyle}
       {LayoutWrapperStyle}
+      {RecordingHistoryStyle}
+      {RecordingDetailStyle}
     </style>
     <Popup />
   </>,
