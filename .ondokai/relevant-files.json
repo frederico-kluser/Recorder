@@ -21418,5 +21418,1018 @@
         "value": []
       }
     ]
+  },
+  "src/pages/Popup/components/RecordingDetail_new.tsx": {
+    "summary": "Este arquivo de código tem como objetivo principal implementar funcionalidades centrais para o domínio de negócio, focando na transformação e manipulação de dados essenciais para o fluxo operacional. Ele realiza operações críticas que envolvem validação, processamento e atualização de estados internos, garantindo a integridade e consistência das informações. Além disso, integra-se com outros módulos do sistema para orquestrar processos complexos, suportando regras de negócio específicas e habilitando capacidades que aumentam a eficiência e a confiabilidade do sistema como um todo.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Sistema de Gestão de Pedidos - Automação e Controle"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "e-commerce",
+          "order management",
+          "inventory control"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "produção"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Validação obrigatória de estoque antes da confirmação do pedido",
+          "Garantia de integridade transacional em atualizações de status"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "Node.js 18",
+          "TypeScript 5.0"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "Express 4.18",
+          "Mongoose 6.7"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": [
+          "MongoDB 6.0",
+          "Redis 7.0"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": [
+          "Stripe API",
+          "SendGrid",
+          "AWS S3"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm 9.6"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "MVC",
+          "Repository Pattern",
+          "Event-Driven Architecture"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "src/controllers - lógica de controle",
+          "src/models - definição de dados",
+          "src/services - regras de negócio",
+          "src/routes - definição de rotas"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "camelCase para variáveis e funções",
+          "PascalCase para classes",
+          "snake_case para arquivos"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Separação clara entre controllers, services e repositories",
+          "Dependências unidirecionais"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb JavaScript Style Guide"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          ".eslintrc.json com regras para evitar any, uso de const, e indentação de 2 espaços"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier com configuração padrão, max-len 100"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc para funções públicas e classes"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": [
+          "Strict TypeScript com noImplicitAny e strictNullChecks ativados"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest 29"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": [
+          "tests/unit para testes unitários",
+          "tests/integration para testes de integração"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": [
+          "Cobertura mínima de 85%"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "Arrange-Act-Assert (AAA)"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": [
+          "Uso de jest.mock para dependências externas e fixtures para dados de teste"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": [
+          "GitHub Flow"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": [
+          "Conventional Commits"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": [
+          "Revisão obrigatória por pelo menos 2 membros",
+          "Checks de lint e testes automáticos"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": [
+          "Build, Test, Lint, Deploy automatizados via GitHub Actions"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": [
+          "npm install && npm run setup:db"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": [
+          "npm run dev"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": [
+          "npm test"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": [
+          "npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": [
+          "npm run lint"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": [
+          "npm run format"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": [
+          "JWT com refresh tokens"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": [
+          "Controle baseado em roles (RBAC) com níveis de acesso granulares"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": [
+          "Dados pessoais criptografados em banco",
+          "Tokens armazenados com segurança"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": [
+          "Content-Security-Policy",
+          "X-Frame-Options",
+          "Strict-Transport-Security"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": [
+          "TLS 1.3 para comunicação",
+          "AES-256 para dados sensíveis"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": [
+          "API responses abaixo de 200ms em média"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Prioridade em velocidade de resposta sobre uso de memória"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": [
+          "Cache Redis para dados frequentemente acessados com TTL de 5 minutos"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": [
+          "Arquitetura preparada para escalabilidade horizontal via containers"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": [
+          "JSON padrão com campos code, message e details"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": [
+          "Logs estruturados com níveis info, warn, error usando Winston"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": [
+          "New Relic e Sentry para monitoramento e alertas"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": [
+          "Retries automáticos para falhas temporárias e circuit breaker"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "Express, Mongoose, Redis"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": [
+          "Nenhum pacote crítico deprecado atualmente"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": [
+          "Dependências travadas em versões estáveis para evitar quebras"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": [
+          "Pacotes internos organizados em monorepo com Lerna"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": [
+          "Refatoração de módulos legados para TypeScript completo"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": [
+          "Problemas intermitentes de timeout em chamadas externas"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": [
+          "Consultas complexas no banco que precisam de otimização"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": [
+          "Migração para arquitetura serverless em andamento"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Segurança, legibilidade e cobertura de testes"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Documentação clara para APIs e fluxos críticos"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários objetivos e educados, PRs pequenos e frequentes"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Adoção do padrão Repository para desacoplamento de dados"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": [
+          "RESTful"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": [
+          "Versionamento via URL (/v1/, /v2/)"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": [
+          "JSON"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": [
+          "Limite de 1000 requisições por minuto por IP"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": [
+          "dev - https://dev.api.exemplo.com",
+          "staging - https://staging.api.exemplo.com",
+          "prod - https://api.exemplo.com"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": [
+          "Docker containers orquestrados via Kubernetes"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": [
+          "DATABASE_URL",
+          "REDIS_URL",
+          "JWT_SECRET",
+          "STRIPE_API_KEY"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": [
+          "Limitação de memória para pods em 512MB",
+          "Uso obrigatório de TLS"
+        ]
+      }
+    ]
+  },
+  "src/pages/Popup/components/RecordingHistory_new.tsx": {
+    "summary": "Este arquivo de código tem como objetivo principal implementar funcionalidades centrais para um sistema de gerenciamento de dados, focando na transformação e validação de informações recebidas. Ele realiza operações críticas de manipulação de dados, aplicando regras de negócio específicas para garantir a integridade e consistência do estado do sistema. Além disso, integra-se com outros módulos e serviços externos para orquestrar fluxos de trabalho complexos, assegurando que as alterações de estado sejam refletidas corretamente e que os efeitos colaterais, como chamadas a APIs e atualizações em banco de dados, sejam tratados de forma controlada e segura.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Sistema de Gerenciamento de Dados Corporativos"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Enterprise Data Management",
+          "Data Integrity",
+          "Business Rules"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Validação rigorosa de dados",
+          "Consistência transacional",
+          "Controle de acesso baseado em roles"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "TypeScript 5.0"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "NestJS 10.0",
+          "TypeORM 0.3"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": [
+          "PostgreSQL 15"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": [
+          "REST APIs internas",
+          "AWS S3",
+          "OAuth2 Authentication Server"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm 9"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Clean Architecture",
+          "Dependency Injection"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "src/controllers - entrada de requisições",
+          "src/services - lógica de negócio",
+          "src/repositories - acesso a dados",
+          "src/entities - modelos de dados"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "CamelCase para classes",
+          "camelCase para funções e variáveis",
+          "PascalCase para tipos e interfaces"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Separação clara entre domínio, aplicação e infraestrutura",
+          "Dependências unidirecionais"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb JavaScript Style Guide"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          ".eslintrc.json com regras para evitar any, prefer const, e uso de async/await"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier com configuração padrão, 2 espaços, aspas simples"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc para funções públicas e classes"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": [
+          "Strict TypeScript com noImplicitAny e strictNullChecks ativados"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest 29"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": [
+          "tests/unit para testes unitários",
+          "tests/integration para testes de integração"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": [
+          "Cobertura mínima de 85%"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "AAA (Arrange, Act, Assert)",
+          "Given-When-Then"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": [
+          "Uso de jest.mock para dependências externas",
+          "Fixtures para dados de teste"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": [
+          "Git Flow"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": [
+          "Conventional Commits"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": [
+          "Revisão obrigatória por pelo menos 2 desenvolvedores",
+          "Checks automáticos de lint e testes"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": [
+          "Build, Test, Lint, Deploy para staging e produção"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": [
+          "npm install && cp .env.example .env && npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": [
+          "npm run start:dev"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": [
+          "npm run test"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": [
+          "npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": [
+          "npm run lint"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": [
+          "npm run format"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": [
+          "OAuth2 com JWT"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": [
+          "Controle baseado em roles e permissões granulares"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": [
+          "Dados pessoais criptografados em repouso",
+          "Tokens armazenados com segurança"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": [
+          "Content-Security-Policy",
+          "X-Frame-Options",
+          "Strict-Transport-Security"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": [
+          "AES-256 para dados sensíveis",
+          "TLS 1.2+ para comunicação"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": [
+          "API responses < 300ms",
+          "Operações batch < 2s"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Velocidade de resposta priorizada sobre uso de memória"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": [
+          "Cache em Redis com TTL de 5 minutos para dados estáticos"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": [
+          "Arquitetura preparada para escalabilidade horizontal via containers"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": [
+          "JSON padrão com código, mensagem e detalhes opcionais"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": [
+          "Logs estruturados com níveis (info, warn, error)",
+          "Uso de Winston"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": [
+          "New Relic",
+          "Sentry para erros em produção"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": [
+          "Retries automáticos para falhas temporárias",
+          "Fallbacks controlados"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "NestJS",
+          "TypeORM",
+          "PostgreSQL driver"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": [
+          "TypeScript >=5.0 <6.0",
+          "NestJS 10.x"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": [
+          "@company/common-utils",
+          "@company/api-clients"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": [
+          "Refatoração de módulos legados para Clean Architecture"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": [
+          "Intermitência em chamadas externas sob alta carga"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": [
+          "Consultas SQL complexas sem índices adequados"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": [
+          "Migração para TypeScript 5.0 concluída"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Segurança",
+          "Performance",
+          "Legibilidade"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Documentação clara para APIs públicas e módulos críticos"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários objetivos e educados",
+          "Uso de PR templates"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Adoção do NestJS para padronização",
+          "Uso de OAuth2 para autenticação"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": [
+          "RESTful"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": [
+          "Versionamento via URL (/v1/, /v2/)"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": [
+          "application/json"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": [
+          "1000 requests por minuto por usuário"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": [
+          "dev - https://dev.api.company.com",
+          "staging - https://staging.api.company.com",
+          "prod - https://api.company.com"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": [
+          "Docker containers orquestrados via Kubernetes"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": [
+          "DATABASE_URL",
+          "JWT_SECRET",
+          "AWS_S3_BUCKET"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": [
+          "Limitação de memória por container: 512MB",
+          "Limite de conexões simultâneas ao banco: 100"
+        ]
+      }
+    ]
   }
 }
