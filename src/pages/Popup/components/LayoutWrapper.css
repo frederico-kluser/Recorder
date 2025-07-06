@@ -1,4 +1,5 @@
-/* Tema dark unificado importado via index.jsx */
+/* Importar tema dark unificado */
+@import '../themes/dark-core.css';
 
 /* Layout Wrapper - Container principal 800x600 */
 .layout-wrapper {

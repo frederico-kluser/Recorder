@@ -4,12 +4,12 @@ body {
   overflow-y: auto;
   margin: 0;
   font-family: 'Roboto', sans-serif;
-  font-size: 13px;
-  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-feature-settings: 'liga', 'kern';
+
+  position: relative;
+
+  font-size: 16px;
 
   background: var(--bg-dark, #1a1a1a);
 }
