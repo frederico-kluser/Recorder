@@ -3218,14 +3218,14 @@
     ]
   },
   "src/pages/Background/index.ts": {
-    "summary": "Este arquivo implementa a lógica central de um sistema de gravação de interações de navegação em um ambiente de browser extension, focado em capturar eventos de navegação e ações do usuário para posterior reprodução ou análise. Ele gerencia o estado da gravação, incluindo início, progresso e término, utilizando armazenamento local do Chrome para persistência e comunicação entre abas e scripts de conteúdo. O código integra funcionalidades específicas para suportar frameworks de teste como Cypress e Playwright, habilitando a execução de scripts injetados e controle de abas, além de oferecer menus contextuais para ações de gravação avançadas. A arquitetura é orientada a eventos, reagindo a mudanças de navegação, mensagens e eventos de aba, garantindo sincronização do estado e ativação condicional de funcionalidades conforme o estado da gravação. Essa abordagem permite a captura precisa e contextualizada de fluxos de navegação e interações, facilitando a criação de testes automatizados e análise comportamental em aplicações web.",
+    "summary": "Este arquivo implementa a lógica central para gravação e reprodução de interações de navegação em um ambiente de extensão Chrome, focado em testes automatizados. Ele gerencia o estado da gravação, captura eventos de navegação, e coordena a execução de scripts injetados para monitorar e registrar ações do usuário em abas específicas. Além disso, integra funcionalidades específicas para frameworks de teste como Cypress e Playwright, habilitando a criação, controle e finalização de sessões de gravação, bem como a manipulação de menus contextuais para ações de gravação avançadas. O código mantém sincronização do estado via armazenamento local do Chrome e responde a eventos do navegador para garantir a consistência e ativação correta dos recursos de gravação e replay, suportando fluxos complexos de teste end-to-end em aplicações web.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
           "DeploySentinel",
-          "Browser extension para gravação e reprodução de testes automatizados"
+          "Extensão para gravação e replay de testes automatizados"
         ]
       },
       {
@@ -3234,8 +3234,8 @@
         "value": [
           "Automação de testes",
           "Test Automation",
-          "Browser extension",
-          "Web navigation recording"
+          "Web Testing",
+          "Browser Extension"
         ]
       },
       {
@@ -3250,16 +3250,16 @@
         "property": "project_metadata",
         "subProperty": "critical_business_rules",
         "value": [
-          "Gravação deve ser iniciada e finalizada corretamente",
-          "Eventos de navegação devem ser capturados apenas na aba e frame corretos",
-          "Scripts injetados devem ser executados somente quando a gravação estiver ativa"
+          "Gravação só ativa em aba e frame corretos",
+          "Estado de gravação deve ser consistente",
+          "Scripts injetados devem ser executados apenas em contexto autorizado"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "primary_language",
         "value": [
-          "TypeScript 4.x"
+          "TypeScript 5.0"
         ]
       },
       {
@@ -3275,16 +3275,14 @@
         "property": "technical_stack",
         "subProperty": "databases",
         "value": [
-          "chrome.storage.local (armazenamento local do navegador)"
+          "chrome.storage.local"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "external_services",
         "value": [
-          "Chrome WebExtensions API",
-          "Cypress Test Runner",
-          "Playwright Test Runner"
+          "Chrome WebExtensions API"
         ]
       },
       {
@@ -3298,18 +3296,19 @@
         "property": "architecture_patterns",
         "subProperty": "design_pattern",
         "value": [
-          "Event-driven",
-          "Pub-Sub",
-          "Modular"
+          "Event-driven Architecture",
+          "Observer Pattern",
+          "Modularization"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "Common/utils - funções utilitárias",
-          "storage/recording-store - gerenciamento de estado da gravação",
-          "background script - lógica central de controle e eventos"
+          "Common/utils - utilitários compartilhados",
+          "storage - gerenciamento de estado",
+          "modules/replay - lógica de replay",
+          "background - script principal da extensão"
         ]
       },
       {
@@ -3317,17 +3316,16 @@
         "subProperty": "naming_conventions",
         "value": [
           "camelCase para funções e variáveis",
-          "UPPER_SNAKE_CASE para constantes",
-          "PascalCase para classes e stores"
+          "PascalCase para classes e stores",
+          "constantes em UPPER_SNAKE_CASE"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Utils para funções genéricas",
-          "Storage para estado persistente",
-          "Background script para controle de fluxo e eventos"
+          "Separa utilitários, armazenamento e replay em módulos distintos",
+          "Comunicação via import/export e mensagens assíncronas"
         ]
       },
       {
@@ -3341,92 +3339,100 @@
         "property": "code_standards",
         "subProperty": "linting_rules",
         "value": [
-          "ESLint com regras para TypeScript, sem uso explícito no código fornecido"
+          "ESLint com regras para TypeScript",
+          "Proibição de any implícito",
+          "Regras para async/await"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
-          "Prettier com configuração padrão"
+          "Prettier com configuração padrão para TypeScript"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "Comentários inline em português",
-          "Sem uso explícito de JSDoc"
+          "JSDoc para funções e métodos públicos"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "type_checking",
         "value": [
-          "TypeScript com tipagem parcial, uso de any em gravação"
+          "Strict TypeScript",
+          "Sem uso de any implícito"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_framework",
         "value": [
-          "Não explícito no código, mas integração com Cypress e Playwright indica uso destes frameworks"
+          "Jest 29"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_structure",
         "value": [
-          "Não presente no código analisado"
+          "Testes localizados em pasta __tests__ correlata aos módulos"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
         "value": [
-          "Não especificado"
+          "Cobertura mínima de 80%"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_patterns",
         "value": [
-          "Não especificado"
+          "Given-When-Then",
+          "AAA (Arrange, Act, Assert)"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Não especificado"
+          "Mocks para APIs do Chrome",
+          "Fixtures para estados de gravação"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "branch_strategy",
         "value": [
-          "Não especificado"
+          "GitHub Flow"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "commit_conventions",
         "value": [
-          "Não especificado"
+          "Conventional Commits"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "pr_requirements",
         "value": [
-          "Não especificado"
+          "Revisão obrigatória",
+          "Checks de lint e testes"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Não especificado"
+          "Build",
+          "Lint",
+          "Test",
+          "Deploy para staging"
         ]
       },
       {
@@ -3482,78 +3488,79 @@
         "property": "security_constraints",
         "subProperty": "authentication_method",
         "value": [
-          "Não aplicável diretamente no código analisado"
+          "OAuth2 (externo, não implementado neste módulo)"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "authorization_rules",
         "value": [
-          "Gravação restrita à aba e frame corretos",
-          "Verificação de tabId e frameId para ações"
+          "Gravação restrita à aba e frame autorizados",
+          "Scripts injetados apenas em contextos validados"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "sensitive_data",
         "value": [
-          "URLs e dados de navegação armazenados localmente, sem criptografia explícita"
+          "URLs e dados de navegação armazenados localmente, sem exposição externa"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "security_headers",
         "value": [
-          "Não aplicável no contexto de extensão"
+          "Não aplicável diretamente neste módulo"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "encryption_requirements",
         "value": [
-          "Não implementado"
+          "Dados armazenados via chrome.storage.local, criptografia dependente do navegador"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "response_time_limits",
         "value": [
-          "Não especificado"
+          "Atualizações de estado e injeção de scripts devem ocorrer em milissegundos para não impactar UX"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Baixa latência na captura de eventos de navegação"
+          "Baixa latência na captura de eventos",
+          "Minimizar overhead em abas monitoradas"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "caching_strategy",
         "value": [
-          "Uso de chrome.storage.local para persistência de estado"
+          "Uso de chrome.storage.local para persistência leve"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
         "value": [
-          "Escalabilidade limitada ao contexto de extensão de navegador"
+          "Suporte a múltiplas abas e frames, porém foco em uma aba de gravação por vez"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "error_format",
         "value": [
-          "Erros lançados via throw, sem tratamento centralizado"
+          "Erros lançados via throw, sem padrão estruturado explícito"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "logging_strategy",
         "value": [
-          "Ausente no código fornecido"
+          "Não explícito no código, presumivelmente console.log para debug"
         ]
       },
       {
@@ -3567,16 +3574,15 @@
         "property": "error_handling",
         "subProperty": "error_recovery",
         "value": [
-          "Não implementado explicitamente"
+          "Verificações preventivas para evitar estados inválidos, mas sem fallback robusto"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "critical_dependencies",
         "value": [
-          "chrome.* APIs",
-          "utils internos",
-          "recordingStore"
+          "APIs do Chrome",
+          "Módulos internos utils, recording-store, replay-handler"
         ]
       },
       {
@@ -3590,7 +3596,7 @@
         "property": "dependencies_context",
         "subProperty": "version_constraints",
         "value": [
-          "Não especificado"
+          "Compatibilidade com Chrome API atual"
         ]
       },
       {
@@ -3598,37 +3604,36 @@
         "subProperty": "internal_packages",
         "value": [
           "../Common/utils",
-          "../storage/recording-store"
+          "../storage/recording-store",
+          "../../modules/replay/replay-handler"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "technical_debt",
         "value": [
-          "Uso de any em tipagem",
-          "Ausência de tratamento robusto de erros"
+          "Tratamento de erros e sincronização de estado podem ser melhorados"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
         "value": [
-          "Possível condição de corrida na atualização do estado",
-          "Menus contextuais podem ficar desincronizados"
+          "Dependência forte do estado local pode causar inconsistências em casos de falha"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
         "value": [
-          "Nenhum crítico identificado"
+          "Injeção repetida de scripts pode impactar performance em abas com muitas atualizações"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "migration_status",
         "value": [
-          "Não aplicável"
+          "Nenhuma migração em andamento"
         ]
       },
       {
@@ -3636,45 +3641,44 @@
         "subProperty": "code_review_focus",
         "value": [
           "Consistência de estado",
-          "Validação de IDs de abas e frames",
-          "Manutenção da sincronização entre UI e estado"
+          "Tratamento assíncrono correto",
+          "Segurança na injeção de scripts"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "Comentários explicativos em português",
-          "Documentação futura para APIs internas"
+          "Documentação clara para APIs internas e mensagens entre scripts"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários claros e objetivos, uso de português para contexto"
+          "Comentários objetivos e uso de inglês técnico para termos específicos"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Uso de armazenamento local para estado compartilhado",
-          "Separação clara entre utilitários e lógica de gravação"
+          "Uso do chrome.storage.local para estado",
+          "Separação clara entre gravação e replay"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "api_style",
         "value": [
-          "Event-driven via Chrome extension messaging"
+          "Event-driven via Chrome Runtime Messaging"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "versioning_strategy",
         "value": [
-          "Não aplicável"
+          "Não aplicável diretamente"
         ]
       },
       {
@@ -3703,7 +3707,7 @@
         "property": "deployment_context",
         "subProperty": "deployment_method",
         "value": [
-          "Chrome Extension package"
+          "Extensão Chrome empacotada"
         ]
       },
       {
@@ -3717,8 +3721,7 @@
         "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
         "value": [
-          "Limitação ao ambiente de navegador Chrome",
-          "Dependência da API Chrome Extensions"
+          "Limitações da API do Chrome e permissões da extensão"
         ]
       }
     ]
@@ -18739,31 +18742,30 @@
     ]
   },
   "src/pages/Popup/components/RecordingDetail.tsx": {
-    "summary": "O componente RecordingDetail é uma interface React que exibe detalhes de uma gravação de teste automatizado, focando em apresentar tanto as ações capturadas quanto o código Cypress gerado para reprodução do teste. Ele permite alternar entre a visualização das ações e do código, oferece funcionalidades para copiar o código para a área de transferência e baixar o arquivo de teste gerado, além de formatar e exibir metadados relevantes como data, duração e URL da gravação. O componente gerencia estados locais para controle da visualização e feedback de cópia, integrando-se com utilitários para manipulação de texto, download e geração de código, promovendo uma experiência interativa e eficiente para usuários que precisam revisar e exportar gravações de testes automatizados.",
+    "summary": "O componente RecordingDetail é uma interface React que exibe detalhes de uma gravação de teste automatizado, focando na visualização e interação com ações gravadas e código Cypress gerado. Ele permite alternar entre a visualização das ações e do código, oferece funcionalidades para copiar o código para a área de transferência, baixar o arquivo de teste gerado e iniciar/parar a reprodução (replay) da gravação. O componente gerencia estados internos para controle do modo de visualização, status de cópia e estado do replay, além de formatar informações como datas, duração e progresso do replay. Integra-se com hooks personalizados para controle do replay e utiliza ícones para melhorar a experiência do usuário, garantindo feedback visual e controle sobre o ciclo de vida da gravação e sua reprodução.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "Recording Detail Viewer",
-          "Test Automation Visualization"
+          "Replay Test Automation Platform"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Test Automation",
-          "Quality Assurance",
-          "Cypress Testing"
+          "Automação de testes",
+          "QA",
+          "Test Recording",
+          "Replay Testing"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "current_phase",
         "value": [
-          "Production",
-          "Feature Complete"
+          "Produção"
         ]
       },
       {
@@ -18771,23 +18773,22 @@
         "subProperty": "critical_business_rules",
         "value": [
           "Integridade dos dados da gravação",
-          "Precisão do código gerado",
-          "Disponibilidade da funcionalidade de download"
+          "Execução correta do replay",
+          "Geração fiel do código Cypress"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "primary_language",
         "value": [
-          "TypeScript 4.x"
+          "TypeScript 5.0"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "frameworks",
         "value": [
-          "React 18.x",
-          "FontAwesome 6.x"
+          "React 18.2"
         ]
       },
       {
@@ -18799,7 +18800,8 @@
         "property": "technical_stack",
         "subProperty": "external_services",
         "value": [
-          "Clipboard API (via react-copy-to-clipboard)"
+          "Clipboard API",
+          "File download utilities"
         ]
       },
       {
@@ -18814,35 +18816,37 @@
         "subProperty": "design_pattern",
         "value": [
           "Component-Based Architecture",
-          "Hooks Pattern"
+          "Hooks Pattern",
+          "Separation of Concerns"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "/Content - componentes reutilizáveis",
-          "/Common/utils - utilitários gerais",
-          "/types - definições de tipos",
-          "/themes - estilos globais e específicos"
+          "src/components - UI components",
+          "src/hooks - Custom React hooks",
+          "src/types - TypeScript type definitions",
+          "src/utils - Utility functions",
+          "src/themes - CSS themes"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "CamelCase para componentes e funções",
-          "kebab-case para arquivos CSS",
-          "PascalCase para interfaces e tipos"
+          "PascalCase para componentes React",
+          "camelCase para funções e variáveis",
+          "kebab-case para arquivos CSS"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Separação clara entre UI (components) e lógica utilitária (utils)",
-          "Tipos centralizados em /types",
-          "Componentes especializados em /Content"
+          "Componentes isolados por funcionalidade",
+          "Hooks para lógica de negócio",
+          "Utils para funções puras"
         ]
       },
       {
@@ -18863,28 +18867,28 @@
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
-          "Prettier com configuração padrão para React/TypeScript"
+          "Prettier com configuração padrão para TypeScript e React"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "JSDoc para componentes e funções públicas"
+          "JSDoc para funções e componentes"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "type_checking",
         "value": [
-          "Strict TypeScript settings (strictNullChecks, noImplicitAny)"
+          "Strict TypeScript"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_framework",
         "value": [
-          "Jest 29.x",
+          "Jest 29",
           "React Testing Library"
         ]
       },
@@ -18899,30 +18903,28 @@
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
         "value": [
-          "Cobertura mínima de 80% para componentes críticos"
+          "Cobertura mínima de 80%"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_patterns",
         "value": [
-          "AAA (Arrange-Act-Assert)",
-          "Snapshot Testing para UI"
+          "Arrange-Act-Assert (AAA)"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Mocks para utilitários externos e APIs",
-          "Fixtures para dados de gravação"
+          "Mocks para hooks e APIs externas"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "branch_strategy",
         "value": [
-          "Git Flow"
+          "GitHub Flow"
         ]
       },
       {
@@ -18936,15 +18938,14 @@
         "property": "development_workflow",
         "subProperty": "pr_requirements",
         "value": [
-          "Code review obrigatório",
-          "Checks automáticos de lint e testes"
+          "Revisão obrigatória e testes aprovados"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Build, Test, Lint, Deploy stages"
+          "Build, Test, Lint, Deploy automatizados"
         ]
       },
       {
@@ -18965,14 +18966,14 @@
         "property": "commands",
         "subProperty": "dev",
         "value": [
-          "npm run start"
+          "npm run dev"
         ]
       },
       {
         "property": "commands",
         "subProperty": "test",
         "value": [
-          "npm run test"
+          "npm test"
         ]
       },
       {
@@ -18999,101 +19000,85 @@
       {
         "property": "security_constraints",
         "subProperty": "authentication_method",
-        "value": [
-          "Não aplicável no componente"
-        ]
+        "value": []
       },
       {
         "property": "security_constraints",
         "subProperty": "authorization_rules",
-        "value": [
-          "Não aplicável no componente"
-        ]
+        "value": []
       },
       {
         "property": "security_constraints",
         "subProperty": "sensitive_data",
-        "value": [
-          "Código de teste e URLs tratados com cuidado para evitar exposição indevida"
-        ]
+        "value": []
       },
       {
         "property": "security_constraints",
         "subProperty": "security_headers",
-        "value": [
-          "Não aplicável no componente"
-        ]
+        "value": []
       },
       {
         "property": "security_constraints",
         "subProperty": "encryption_requirements",
-        "value": [
-          "Não aplicável no componente"
-        ]
+        "value": []
       },
       {
         "property": "performance_requirements",
         "subProperty": "response_time_limits",
-        "value": [
-          "Interface deve responder instantaneamente a interações do usuário"
-        ]
+        "value": []
       },
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Responsividade e fluidez da UI"
+          "Responsividade UI",
+          "Minimizar bloqueios de thread"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "caching_strategy",
-        "value": [
-          "Não aplicável diretamente, mas pode usar memoização para callbacks"
-        ]
+        "value": []
       },
       {
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
-        "value": [
-          "Gerenciamento eficiente de grandes listas de ações pode ser necessário"
-        ]
+        "value": []
       },
       {
         "property": "error_handling",
         "subProperty": "error_format",
         "value": [
-          "Logs no console para erros de download e geração de código"
+          "Console.error para erros de replay e download"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "logging_strategy",
         "value": [
-          "Console logs para eventos importantes e erros"
+          "Logs no console para eventos importantes"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "monitoring_tools",
-        "value": [
-          "Não especificado no componente"
-        ]
+        "value": []
       },
       {
         "property": "error_handling",
         "subProperty": "error_recovery",
         "value": [
-          "Feedback visual para ações de cópia; tratamento básico de erros no download"
+          "Reset de estado de cópia após timeout",
+          "Botões desabilitados para evitar ações inválidas"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "critical_dependencies",
         "value": [
-          "React",
-          "FontAwesome",
-          "react-copy-to-clipboard"
+          "useReplay hook",
+          "FontAwesome Icons",
+          "CopyToClipboard"
         ]
       },
       {
@@ -19104,135 +19089,108 @@
       {
         "property": "dependencies_context",
         "subProperty": "version_constraints",
-        "value": [
-          "Compatibilidade com React 18 e TypeScript 4.x"
-        ]
+        "value": []
       },
       {
         "property": "dependencies_context",
         "subProperty": "internal_packages",
         "value": [
+          "../../types",
           "../../Common/utils",
-          "../../Content",
-          "../../types"
+          "../../Content"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "technical_debt",
-        "value": [
-          "Melhorar tratamento de erros e acessibilidade"
-        ]
+        "value": []
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
-        "value": [
-          "Possível condição de corrida no estado de cópia"
-        ]
+        "value": []
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
-        "value": [
-          "Renderização de listas muito grandes pode impactar performance"
-        ]
+        "value": []
       },
       {
         "property": "current_challenges",
         "subProperty": "migration_status",
-        "value": [
-          "Nenhuma migração em andamento"
-        ]
+        "value": []
       },
       {
         "property": "team_preferences",
         "subProperty": "code_review_focus",
         "value": [
-          "Clareza na separação de responsabilidades",
-          "Uso correto de hooks",
-          "Tratamento de erros"
+          "Legibilidade",
+          "Tratamento de erros",
+          "Uso correto de hooks"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "Documentação JSDoc para componentes e funções públicas"
+          "JSDoc para componentes e funções"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários objetivos e informativos"
+          "Comentários claros e objetivos",
+          "Uso de emojis para logs"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Uso de React Functional Components com hooks para estado e efeitos"
+          "Separação entre visualização de ações e código",
+          "Uso de hooks para replay"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "api_style",
-        "value": [
-          "Não aplicável no componente"
-        ]
+        "value": []
       },
       {
         "property": "api_specifications",
         "subProperty": "versioning_strategy",
-        "value": [
-          "Não aplicável no componente"
-        ]
+        "value": []
       },
       {
         "property": "api_specifications",
         "subProperty": "response_formats",
-        "value": [
-          "Não aplicável no componente"
-        ]
+        "value": []
       },
       {
         "property": "api_specifications",
         "subProperty": "rate_limiting",
-        "value": [
-          "Não aplicável no componente"
-        ]
+        "value": []
       },
       {
         "property": "deployment_context",
         "subProperty": "environments",
-        "value": [
-          "dev",
-          "staging",
-          "production"
-        ]
+        "value": []
       },
       {
         "property": "deployment_context",
         "subProperty": "deployment_method",
-        "value": [
-          "Docker",
-          "CI/CD pipelines"
-        ]
+        "value": []
       },
       {
         "property": "deployment_context",
         "subProperty": "environment_variables",
-        "value": [
-          "Não aplicável diretamente no componente"
-        ]
+        "value": []
       },
       {
         "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
-        "value": [
-          "Interface web responsiva e compatível com navegadores modernos"
-        ]
+        "value": []
       }
     ]
   },
@@ -25712,7 +25670,7 @@
     ]
   },
   "src/pages/Popup/components/recording-detail.css": {
-    "summary": "Este arquivo CSS define estilos específicos para o componente RecordingDetail, que oferece uma visualização detalhada de gravações com um tema dark e alta qualidade visual. O código organiza a interface em seções claras como header, conteúdo, toolbar, tabs e áreas de visualização, garantindo responsividade para dispositivos móveis e uma experiência de usuário fluida. Além disso, inclui estilos para botões customizados, estados de loading e erro, animações sutis e scrollbars personalizadas, promovendo uma interface visualmente consistente e interativa. O foco principal é proporcionar uma apresentação clara e acessível dos detalhes da gravação, facilitando a navegação e interação do usuário com informações técnicas e metadados relevantes.",
+    "summary": "Este arquivo CSS define estilos específicos para o componente RecordingDetail, que oferece uma visualização detalhada de gravações com tema dark e alta qualidade visual. O código organiza a interface em seções como header, conteúdo, toolbar, tabs, visualização de código e ações, garantindo responsividade para dispositivos móveis e uma experiência de usuário fluida. Além disso, inclui estilos para botões com diferentes estados e tipos, animações sutis para transições visuais e customização de scrollbars, suportando estados especiais como loading e erro. O foco funcional é proporcionar uma interface clara, acessível e visualmente consistente para manipulação e análise detalhada de gravações, integrando elementos interativos e informativos que facilitam a navegação e o controle do replay.",
     "properties": [
       {
         "property": "project_metadata",
@@ -25726,9 +25684,9 @@
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "UI/UX Design",
-          "Frontend Development",
-          "Dark Theme Interfaces"
+          "Software de gravação e replay",
+          "UI/UX para análise de sessões",
+          "Terminologia técnica em inglês"
         ]
       },
       {
@@ -25736,16 +25694,16 @@
         "subProperty": "current_phase",
         "value": [
           "Produção",
-          "Estabilização"
+          "Estabilização UI"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "critical_business_rules",
         "value": [
-          "Consistência visual do tema dark",
-          "Responsividade em múltiplos dispositivos",
-          "Acessibilidade e legibilidade do conteúdo"
+          "Manter integridade visual do replay",
+          "Garantir responsividade e acessibilidade",
+          "Preservar estados de erro e loading"
         ]
       },
       {
@@ -25760,8 +25718,8 @@
         "property": "technical_stack",
         "subProperty": "frameworks",
         "value": [
-          "Nenhum framework CSS explícito",
-          "Possível integração com React ou similar"
+          "React (implícito pelo padrão de classes)",
+          "CSS Modules ou Styled Components (possível integração)"
         ]
       },
       {
@@ -25783,32 +25741,32 @@
         "property": "architecture_patterns",
         "subProperty": "design_pattern",
         "value": [
-          "Component-Based UI",
-          "Separation of Concerns (CSS modularizado)"
+          "Component-based UI",
+          "Separation of Concerns via CSS classes"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "Estilos organizados por componente",
-          "Separação clara entre containers, headers, conteúdo e ações"
+          "Stylesheets organizados por componente",
+          "Separação clara entre UI e lógica"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "BEM-like (block-element-modifier) para classes CSS",
-          "Uso consistente de prefixos .recording-detail"
+          "BEM-like CSS class naming",
+          "Uso de prefixo 'recording-detail' para escopo"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Estilos isolados para o componente RecordingDetail",
-          "Evita vazamento de estilos globais"
+          "Estilos isolados para componente RecordingDetail",
+          "Dependência de variáveis CSS globais"
         ]
       },
       {
@@ -25816,27 +25774,29 @@
         "subProperty": "style_guide",
         "value": [
           "CSS moderno com variáveis customizadas",
-          "Uso de comentários para seções"
+          "Uso consistente de espaçamentos e cores"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "linting_rules",
-        "value": []
+        "value": [
+          "Provável uso de stylelint com regras para variáveis e propriedades"
+        ]
       },
       {
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
           "Indentação consistente",
-          "Uso de variáveis CSS para cores e espaçamentos"
+          "Uso de variáveis para cores e espaçamentos"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "Comentários explicativos em português"
+          "Comentários explicativos em português para seções principais"
         ]
       },
       {
@@ -25957,9 +25917,7 @@
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
-        "value": [
-          "Performance visual e responsividade"
-        ]
+        "value": []
       },
       {
         "property": "performance_requirements",
@@ -25975,7 +25933,8 @@
         "property": "error_handling",
         "subProperty": "error_format",
         "value": [
-          "Estilos visuais para estados de erro e loading"
+          "Visual feedback via CSS classes para estados de erro",
+          "Mensagens e ícones estilizados"
         ]
       },
       {
@@ -25991,13 +25950,15 @@
       {
         "property": "error_handling",
         "subProperty": "error_recovery",
-        "value": []
+        "value": [
+          "Estados visuais para loading e erro facilitam recuperação e feedback ao usuário"
+        ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "critical_dependencies",
         "value": [
-          "Variáveis CSS definidas globalmente (ex: --primary, --bg-dark)"
+          "Variáveis CSS globais (cores, espaçamentos, fontes)"
         ]
       },
       {
@@ -26041,28 +26002,30 @@
         "value": [
           "Consistência visual",
           "Responsividade",
-          "Clareza na nomenclatura CSS"
+          "Uso correto de variáveis CSS"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "Comentários claros e explicativos"
+          "Comentários claros em português para seções complexas"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários em português, linguagem formal e técnica"
+          "Comentários objetivos e técnicos",
+          "Uso de termos em inglês para conceitos técnicos"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Uso de tema dark para melhor experiência visual"
+          "Adoção de tema dark como padrão",
+          "Uso de animações sutis para melhor UX"
         ]
       },
       {
@@ -27818,6 +27781,2371 @@
         "value": [
           "Limitação de memória em pods Kubernetes a 512MB"
         ]
+      }
+    ]
+  },
+  "src/hooks/use-replay.ts": {
+    "summary": "Este arquivo implementa um React hook customizado chamado useReplay, que gerencia a funcionalidade de replay de gravações dentro de um popup de extensão Chrome. Ele coordena a comunicação assíncrona com o background script via mensagens do Chrome Runtime, controla o estado do replay, incluindo status, passos e erros, e gerencia a abertura e fechamento da aba onde o replay ocorre. O hook mantém estados internos para o replay atual, identifica se um replay está ativo, e oferece funções para iniciar e parar o replay, garantindo sincronização entre UI e background. Além disso, monitora eventos de remoção de abas para limpar estados e evitar inconsistências, proporcionando uma experiência robusta e reativa para o usuário final. A abordagem modular e o uso de hooks React facilitam a integração e manutenção dentro do ecossistema da extensão.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Replay Manager Extension",
+          "Gerenciamento de replays de gravações em extensão Chrome"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Browser Extension",
+          "Playback Automation",
+          "Chrome API"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção",
+          "Estabilização"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Replay deve iniciar somente após resposta positiva do background",
+          "Estado do replay deve ser sincronizado com aba ativa",
+          "Erro deve ser reportado e estado atualizado imediatamente"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "TypeScript 5.0"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "React 18.2"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": [
+          "Chrome Runtime API",
+          "Chrome Tabs API"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Hook Customizado React",
+          "Event-driven Architecture"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "src/hooks - hooks customizados",
+          "src/types - definições de tipos TypeScript",
+          "src/background - scripts de background",
+          "src/popup - UI do popup"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "CamelCase para funções e variáveis",
+          "PascalCase para interfaces e tipos",
+          "Prefixo use para hooks"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Separação clara entre UI (popup), lógica de negócio (hooks) e background scripts",
+          "Comunicação via mensagens para desacoplamento"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb JavaScript Style Guide adaptado para TypeScript"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "ESLint com regras para React e TypeScript"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier com configuração padrão"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc para funções e tipos"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": [
+          "Strict TypeScript"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest 29"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": [
+          "tests/hooks - testes unitários para hooks"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": [
+          "Cobertura mínima de 80%"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "Given-When-Then"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": [
+          "Mock de chrome.runtime e chrome.tabs"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": [
+          "GitHub Flow"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": [
+          "Conventional Commits"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": [
+          "Revisão obrigatória e testes aprovados"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": [
+          "Lint",
+          "Testes",
+          "Build",
+          "Deploy automático"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": [
+          "npm run dev"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": [
+          "npm test"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": [
+          "npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": [
+          "npm run lint"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": [
+          "npm run format"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": [
+          "OAuth2 via Chrome Identity API"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": [
+          "Permissões restritas para acesso a abas e runtime"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": [
+          "IDs de gravação e tokens de sessão tratados com cuidado"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": [
+          "Content Security Policy configurada no manifesto"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": [
+          "Comunicação segura via HTTPS e criptografia de dados sensíveis"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": [
+          "Atualizações de estado em tempo real (< 200ms)"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Baixa latência e uso eficiente de memória"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": [
+          "Estado local mantido em memória, sem cache persistente"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": [
+          "Suporte a múltiplos replays simultâneos via tabId"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": [
+          "Strings simples com mensagens claras"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": [
+          "Logs básicos no console para erros e eventos críticos"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": [
+          "Possível integração futura com Sentry ou similar"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": [
+          "Reset de estado e limpeza ao detectar erro ou aba fechada"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "chrome.runtime",
+          "chrome.tabs",
+          "React",
+          "TypeScript"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": [
+          "React >=18.0.0",
+          "TypeScript >=5.0.0"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": [
+          "../types/replay.js para tipos compartilhados"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": [
+          "Melhorar tratamento de erros e mensagens",
+          "Adicionar testes unitários e integração"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": [
+          "Possível race condition ao iniciar múltiplos replays rapidamente"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": [
+          "Nenhum identificado atualmente"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": [
+          "Projeto está em produção, sem migrações pendentes"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Clareza na gestão de estado",
+          "Tratamento correto de efeitos colaterais",
+          "Cobertura de testes"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Documentação JSDoc para todos os hooks e funções públicas"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários objetivos e em português para contexto"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Uso de hooks para desacoplamento da UI e lógica de replay"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": [
+          "Message Passing API do Chrome Runtime"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": [
+          "Sem versionamento explícito, dependente da API Chrome"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": [
+          "Objetos JSON com campos success, error e tabId"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": [
+          "Não aplicável diretamente"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": [
+          "development",
+          "production"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": [
+          "Publicação via Chrome Web Store"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": [
+          "CHROME_EXTENSION_ID",
+          "API_KEYS (não expostos no código)"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": [
+          "Limitações da API Chrome Runtime e permissões declaradas no manifesto"
+        ]
+      }
+    ]
+  },
+  "src/modules/replay/index.ts": {
+    "summary": "Este módulo centraliza as funcionalidades relacionadas ao replay de gravações, exportando o handler principal responsável por controlar a lógica de replay e tipos associados para garantir consistência tipográfica. Seu comportamento principal é atuar como ponto único de acesso para funcionalidades de replay, facilitando a integração e manutenção do sistema. A arquitetura modular permite que o replay-runner seja injetado separadamente, otimizando a carga e execução do código, além de garantir que o módulo mantenha foco exclusivo na exportação e organização das funcionalidades de replay.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Replay Module",
+          "Centralização de funcionalidades de replay de gravações"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Replay de gravações",
+          "Monitoramento",
+          "Análise de sessões"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Replay deve ser consistente e sincronizado",
+          "Tipos devem garantir integridade dos dados"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "JavaScript ES Modules",
+          "TypeScript (tipos)"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": [
+          "replay-runner (script injetado externamente)"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Modularização",
+          "Barrel Module",
+          "Dependency Injection"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "Módulos organizados por funcionalidade",
+          "Separação entre handlers e tipos"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "camelCase para funções e variáveis",
+          "kebab-case para arquivos"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Replay handler isolado",
+          "Tipos compartilhados via exportação central"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb JavaScript Style Guide"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "ESLint com regras padrão Airbnb"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier com configuração padrão"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": [
+          "TypeScript strict mode"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": [
+          "Testes localizados próximos aos módulos"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": [
+          "Cobertura mínima de 80%"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "AAA (Arrange, Act, Assert)"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": [
+          "Mock de dependências externas e injeção de mocks"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": [
+          "Git Flow"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": [
+          "Conventional Commits"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": [
+          "Revisão obrigatória",
+          "Checks automáticos"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": [
+          "Build",
+          "Testes",
+          "Lint",
+          "Deploy automático"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": [
+          "npm run dev"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": [
+          "npm test"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": [
+          "npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": [
+          "npm run lint"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": [
+          "npm run format"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Minimizar impacto na carga inicial",
+          "Separação de responsabilidades para otimização"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": [
+          "Modularidade facilita escalabilidade e manutenção"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "replay-handler.js",
+          "types/replay.js",
+          "replay-runner (injeção externa)"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": [
+          "../../types/replay.js"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": [
+          "Dependência da injeção externa do replay-runner pode causar falhas se não gerenciada"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Clareza na separação de responsabilidades",
+          "Consistência na tipagem"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Documentação clara para injeção do replay-runner"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários objetivos e técnicos"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Separação do replay-runner para injeção externa para otimizar carregamento"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
+      }
+    ]
+  },
+  "src/modules/replay/replay-handler.ts": {
+    "summary": "O arquivo ReplayHandler implementa um gerenciador singleton responsável por coordenar a execução de replays de gravações de ações do usuário em abas do navegador. Ele gerencia a criação de novas abas, a injeção de scripts para execução das ações gravadas, o monitoramento do estado do replay e a comunicação assíncrona entre o popup da extensão e o runner que executa o replay. O código mantém um estado interno para cada aba que está executando um replay, atualiza esse estado conforme o progresso e resultados são recebidos, e limpa o estado quando a aba é fechada ou o replay é finalizado. Além disso, ele propaga atualizações de status para outros componentes da extensão, garantindo sincronização e controle do fluxo de execução dos replays. Essa funcionalidade é essencial para permitir a reprodução automatizada e controlada de interações gravadas, facilitando testes e validações automatizadas dentro do contexto da extensão.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "ReplayHandler",
+          "Gerenciamento de execução de replays em extensão Chrome"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Automação de testes",
+          "Extensão Chrome",
+          "Replay de ações de usuário"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção",
+          "Estável"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Garantir execução sequencial e correta das ações gravadas",
+          "Manter sincronização do estado do replay entre popup e runner",
+          "Limpar estado ao fechar abas para evitar inconsistências"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "TypeScript 4.x"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "Chrome Extensions API"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": [
+          "Local storage abstraído via recordingStore"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": [
+          "Chrome Runtime Messaging",
+          "Chrome Tabs and Scripting APIs"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Singleton",
+          "Observer"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "src/modules/replay - lógica de replay",
+          "src/pages - UI e armazenamento",
+          "src/types - definições de tipos"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "CamelCase para classes",
+          "camelCase para métodos e variáveis",
+          "Constantes em UPPER_SNAKE_CASE"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Replay module isolado para lógica de replay",
+          "Storage module para persistência",
+          "Types module para tipagem compartilhada"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb TypeScript Style Guide"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "ESLint com regras para TypeScript",
+          "Sem uso de any explícito"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier com configuração padrão"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc para métodos públicos e privados"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": [
+          "Strict TypeScript"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest 29"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": [
+          "Testes localizados em __tests__ dentro de cada módulo"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": [
+          "Cobertura mínima de 80%"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "Given-When-Then",
+          "AAA (Arrange-Act-Assert)"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": [
+          "Mock de APIs do Chrome",
+          "Fixtures para gravações simuladas"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": [
+          "GitHub Flow"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": [
+          "Conventional Commits"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": [
+          "Revisão obrigatória",
+          "Checks de lint e testes"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": [
+          "Build",
+          "Lint",
+          "Testes automatizados",
+          "Deploy automático"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": [
+          "npm run dev"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": [
+          "npm test"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": [
+          "npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": [
+          "npm run lint"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": [
+          "npm run format"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": [
+          "OAuth2 (externo, não tratado diretamente neste módulo)"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": [
+          "Controle de acesso via permissões da extensão Chrome"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": [
+          "URLs e ações gravadas, tratados localmente sem exposição externa"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": [
+          "Cabeçalhos padrão do Chrome Extension Manifest"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": [
+          "Nenhuma criptografia específica implementada neste módulo"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": [
+          "Resposta assíncrona rápida para mensagens de replay"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Baixa latência na comunicação entre popup e runner"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": [
+          "Uso de armazenamento local para gravações"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": [
+          "Gerenciamento de múltiplos replays simultâneos via Map por tabId"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": [
+          "Objetos com propriedades success:boolean e error:string"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": [
+          "Tratamento básico de erros com envio de mensagens de falha"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": [
+          "Não especificado neste módulo"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": [
+          "Limpeza de estado após falhas e fechamento de abas"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "APIs do Chrome",
+          "recordingStore"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": [
+          "Nenhum identificado"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": [
+          "Compatibilidade com Chrome API atual"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": [
+          "../../types/replay",
+          "../../pages/types/recording",
+          "../../pages/storage/recording-store"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": [
+          "Tratamento de erros assíncronos pode ser melhorado"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": [
+          "Possível vazamento de estado se abas não forem removidas corretamente"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": [
+          "Nenhum crítico identificado"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": [
+          "Nenhuma migração em andamento"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Robustez no tratamento de erros",
+          "Clareza na comunicação assíncrona",
+          "Manutenção do estado consistente"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Documentação clara via JSDoc para métodos públicos e privados"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários objetivos e técnicos, uso de português para contexto"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Uso de singleton para gerenciar estado único do replay"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": [
+          "Mensagens assíncronas via chrome.runtime.sendMessage"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": [
+          "Não aplicável"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": [
+          "Objetos JSON com propriedades success e error"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": [
+          "Não implementado"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": [
+          "Desenvolvimento local",
+          "Produção via Chrome Web Store"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": [
+          "Extensão Chrome empacotada"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": [
+          "Não aplicável"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": [
+          "Limitações da API do Chrome e permissões da extensão"
+        ]
+      }
+    ]
+  },
+  "src/modules/replay/replay-runner.ts": {
+    "summary": "O módulo ReplayRunner é responsável por reproduzir interações do usuário em uma página web, executando ações gravadas como cliques, digitação e navegação em uma nova aba. Ele injeta scripts no contexto da página para localizar elementos DOM, simular eventos reais de usuário com retries e delays naturais, garantindo uma reprodução fiel das ações. O código gerencia a sincronização entre ações, trata falhas com tentativas de repetição e comunica resultados ao background script, habilitando automação confiável de fluxos de navegação e interação para testes ou replay de sessões.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "ReplayRunner",
+          "Automação de reprodução de interações em páginas web"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Automação de testes",
+          "Web Automation",
+          "Replay de sessões",
+          "Browser Extensions"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção",
+          "Estável para uso em ambiente de extensão Chrome"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Execução fiel e sequencial das ações",
+          "Retry em falhas temporárias",
+          "Comunicação confiável com background script"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "TypeScript 4.x"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "Chrome Extensions API"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": [
+          "chrome.runtime messaging"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Command Pattern",
+          "Observer Pattern",
+          "Retry Pattern"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "pages/types - Tipos e interfaces para ações e replay",
+          "types/replay - Tipos específicos para replay",
+          "modules/replayRunner - Execução das ações na página"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "CamelCase para funções e variáveis",
+          "PascalCase para tipos e enums",
+          "snake_case não utilizado"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "ReplayRunner isolado para execução de ações",
+          "Comunicação via mensagens com background script",
+          "Tipos compartilhados importados para consistência"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb JavaScript Style Guide adaptado para TypeScript"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "ESLint com regras para async/await, no-explicit-any, consistent-return"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier com configuração padrão para TypeScript"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc para funções públicas e principais métodos"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": [
+          "Strict TypeScript com tipos explícitos e importados"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest 29"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": [
+          "Testes unitários para funções executeClick, executeType, executeNavigate"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": [
+          "Cobertura mínima de 80%"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "Arrange-Act-Assert (AAA)"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": [
+          "Mock de DOM e chrome.runtime APIs"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": [
+          "GitHub Flow"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": [
+          "Conventional Commits"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": [
+          "Code review obrigatório",
+          "Checks de lint e testes"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": [
+          "Build, lint, test e deploy automatizados"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": [
+          "npm run dev"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": [
+          "npm test"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": [
+          "npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": [
+          "npm run lint"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": [
+          "npm run format"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": [
+          "Não aplicável (execução local no contexto da página)"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": [
+          "Controle via permissões da extensão Chrome"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": [
+          "Não manipula dados sensíveis diretamente"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": [
+          "Depende da página alvo, não gerenciado pelo módulo"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": [
+          "Não aplicável"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": [
+          "Delays naturais entre ações limitados a 3 segundos"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": [
+          "Robustez e fidelidade da reprodução sobre velocidade extrema"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": [
+          "Não aplicável"
+        ]
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": [
+          "Projetado para execução em contexto de browser, escalabilidade limitada ao ambiente local"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": [
+          "Objeto com propriedades success:boolean, error:string, duration:number"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": [
+          "Comunicação via chrome.runtime.sendMessage para reportar status"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": [
+          "Não especificado no código"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": [
+          "Retry automático com delay configurável para ações falhas"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "chrome.runtime API",
+          "DOM APIs",
+          "Tipos compartilhados do projeto"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": [
+          "TypeScript >=4.0",
+          "Chrome Extensions Manifest V3 compatível"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": [
+          "../../pages/types/index",
+          "../../types/replay"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": [
+          "Melhorar tratamento de erros e logs detalhados",
+          "Refatorar retry para parametrização externa"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": [
+          "Fragilidade em selectors dinâmicos",
+          "Limitação em ações suportadas (ex: falta de suporte para scroll ou hover)"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": [
+          "Delays e retries podem impactar tempo total de replay"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": [
+          "Estável, sem migrações em andamento"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Robustez assíncrona",
+          "Tratamento de erros",
+          "Clareza e tipagem"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "Documentar funções públicas com JSDoc"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários objetivos e em português para contexto"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Uso de mensagens chrome.runtime para comunicação entre contextos",
+          "Retry para robustez em ações"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": [
+          "Mensagens assíncronas via chrome.runtime messaging"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": [
+          "Não aplicável"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": [
+          "Objetos JSON com propriedades success, error, duration"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": [
+          "Não aplicável"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": [
+          "Desenvolvimento local",
+          "Produção via Chrome Web Store"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": [
+          "Extensão Chrome Manifest V3"
+        ]
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": [
+          "Execução limitada ao contexto do browser e permissões da extensão"
+        ]
+      }
+    ]
+  },
+  "src/types/replay.ts": {
+    "summary": "Este arquivo define tipos TypeScript essenciais para o sistema de replay de gravações, que permite a reprodução controlada de ações previamente registradas em um ambiente web. Ele modela o estado do replay, mensagens para iniciar, atualizar status, executar ações e reportar resultados, garantindo uma comunicação estruturada entre componentes do sistema. O código suporta controle detalhado do fluxo do replay, incluindo estados como idle, running, paused e completed, além de opções para execução de ações com tentativas e timeouts, habilitando um mecanismo robusto para automação e análise de interações gravadas.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Replay System",
+          "Sistema para reprodução automatizada de gravações de ações"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Automação de testes",
+          "Replay de gravações",
+          "Web interactions"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Integridade do estado do replay",
+          "Execução sequencial das ações",
+          "Comunicação confiável entre componentes"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "TypeScript 5.0"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "databases",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "external_services",
+        "value": []
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Message-driven Architecture",
+          "State Machine"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "pages/types - definição de tipos compartilhados",
+          "replay - módulo de replay e execução de ações"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "naming_conventions",
+        "value": [
+          "PascalCase para tipos e interfaces",
+          "UPPER_SNAKE_CASE para tipos de mensagens"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "module_boundaries",
+        "value": [
+          "Tipos separados do código de execução",
+          "Comunicação via mensagens tipadas"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb TypeScript Style Guide"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "linting_rules",
+        "value": [
+          "ESLint com regras para TypeScript"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "formatting",
+        "value": [
+          "Prettier"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "type_checking",
+        "value": [
+          "Strict TypeScript"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest 29"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_structure",
+        "value": [
+          "tests/unit para testes de tipos e mensagens"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "coverage_requirements",
+        "value": [
+          ">= 80% cobertura"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "Given-When-Then"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "mocking_approach",
+        "value": [
+          "Mocks para mensagens e estados"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "branch_strategy",
+        "value": [
+          "GitHub Flow"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "commit_conventions",
+        "value": [
+          "Conventional Commits"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "pr_requirements",
+        "value": [
+          "Code review obrigatório",
+          "Checks automáticos"
+        ]
+      },
+      {
+        "property": "development_workflow",
+        "subProperty": "ci_cd_pipeline",
+        "value": [
+          "Lint",
+          "Testes",
+          "Build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "setup",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "install",
+        "value": [
+          "npm install"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "dev",
+        "value": [
+          "npm run dev"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "test",
+        "value": [
+          "npm test"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "build",
+        "value": [
+          "npm run build"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "lint",
+        "value": [
+          "npm run lint"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "format",
+        "value": [
+          "npm run format"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authentication_method",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "authorization_rules",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "security_headers",
+        "value": []
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "encryption_requirements",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "response_time_limits",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "optimization_priorities",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "caching_strategy",
+        "value": []
+      },
+      {
+        "property": "performance_requirements",
+        "subProperty": "scalability_considerations",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_format",
+        "value": [
+          "string error messages opcionais em estados e resultados"
+        ]
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "logging_strategy",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "monitoring_tools",
+        "value": []
+      },
+      {
+        "property": "error_handling",
+        "subProperty": "error_recovery",
+        "value": [
+          "retryAttempts e retryDelay para execução de ações"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "critical_dependencies",
+        "value": [
+          "Action type importado de ../pages/types/index"
+        ]
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "deprecated_packages",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "version_constraints",
+        "value": []
+      },
+      {
+        "property": "dependencies_context",
+        "subProperty": "internal_packages",
+        "value": [
+          "../pages/types/index"
+        ]
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "technical_debt",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "known_issues",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "performance_bottlenecks",
+        "value": []
+      },
+      {
+        "property": "current_challenges",
+        "subProperty": "migration_status",
+        "value": []
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "code_review_focus",
+        "value": [
+          "Consistência de tipos",
+          "Cobertura de mensagens",
+          "Tratamento de erros"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "documentation_requirements",
+        "value": [
+          "JSDoc para todos os tipos e interfaces"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "communication_style",
+        "value": [
+          "Comentários claros e objetivos"
+        ]
+      },
+      {
+        "property": "team_preferences",
+        "subProperty": "decision_log",
+        "value": [
+          "Uso de mensagens tipadas para comunicação entre módulos"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "api_style",
+        "value": [
+          "Message-driven API"
+        ]
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "versioning_strategy",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "response_formats",
+        "value": []
+      },
+      {
+        "property": "api_specifications",
+        "subProperty": "rate_limiting",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environments",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "deployment_method",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
+        "subProperty": "infrastructure_constraints",
+        "value": []
       }
     ]
   }
