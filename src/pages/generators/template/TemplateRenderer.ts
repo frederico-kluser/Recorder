@@ -101,16 +101,35 @@ export class TemplateRenderer {
    * @returns Array de strings com os comandos formatados
    */
   private formatCommands(commands: string[]): string[] {
-    return commands
+    const filteredCommands = commands
       .filter(cmd => {
         const trimmed = cmd.trim();
         // Remove comandos cy.visit() e cy.viewport() pois já estão no template
-        return !trimmed.includes('cy.visit(') && !trimmed.includes('cy.viewport(');
-      })
-      .map(cmd => {
-        // Remove quebras de linha extras e ajusta indentação
-        return cmd.trim().replace(/\n\s*/g, '\n                ');
+        return trimmed && !trimmed.includes('cy.visit(') && !trimmed.includes('cy.viewport(');
       });
+
+    // Processa cada comando, garantindo formatação adequada
+    const formattedCommands: string[] = [];
+    
+    for (let i = 0; i < filteredCommands.length; i++) {
+      const cmd = filteredCommands[i].trim();
+      
+      if (cmd) {
+        // Adiciona quebra de linha antes de cada comando
+        if (i === 0) {
+          formattedCommands.push(`\n                ${cmd}`);
+        } else {
+          // Se for um comentário, adiciona quebra de linha extra
+          if (cmd.startsWith('//')) {
+            formattedCommands.push(`\n\n                ${cmd}`);
+          } else {
+            formattedCommands.push(`\n\n                ${cmd}`);
+          }
+        }
+      }
+    }
+    
+    return formattedCommands;
   }
 
   /**
@@ -188,8 +207,8 @@ sizes.forEach(size => {
                 cy.visit('${sanitizedUrl}')
             })
 
-            it('Gravado com Fleury Cypress Recorder', () => {${formattedCommands.join('')}
-            })
+            it('Gravado com Fleury Cypress Recorder', () => {${formattedCommands.length > 0 ? formattedCommands.join('') + '\n            ' : ''}})
+        
         }
     )
 })

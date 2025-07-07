@@ -295,12 +295,12 @@ export abstract class ScriptBuilder {
   };
 
   protected pushComments = (comments: string) => {
-    this.codes.push(`\n  ${comments}`);
+    this.codes.push(`${comments}`);
     return this;
   };
 
   protected pushCodes = (codes: string) => {
-    this.codes.push(`\n  ${codes}\n`);
+    this.codes.push(`${codes}`);
     return this;
   };
 
