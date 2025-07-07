@@ -60,10 +60,10 @@
       "Recording Detail Viewer",
       "Test Automation Visualization",
       "Recording History Manager",
-      "Interface para gerenciamento de histórico de gravações",
+      "Interface para gerenciamento de gravações de sessões",
       "Web UI Base Styling",
       "RecordingService",
-      "Gerenciamento de gravações de ações para testes automatizados",
+      "Gerenciamento de gravações para automação de testes",
       "Gerenciamento de histórico de gravações para extensões Chrome",
       "Sistema de Histórico de Gravações para Automação de Testes",
       "Dark Theme UI Styling",
@@ -85,10 +85,11 @@
       "Manipulação e truncamento de textos para UI",
       "RecordingDetail Component",
       "Visualização detalhada de gravações",
-      "RecordingHistory Component - Visualização e gerenciamento de histórico de gravações",
+      "RecordingHistory Component",
+      "Interface para gerenciamento de histórico de gravações",
       "Extensão com popup estilizado para interface dark mode",
-      "Fleury Dark Theme",
-      "Tema unificado para interface dark do sistema Fleury"
+      "Tema Dark Unificado Fleury",
+      "Sistema de Gerenciamento de Dados Empresariais"
     ],
     "domain": [
       "Web Development",
@@ -169,10 +170,9 @@
       "UI/UX",
       "Cypress Testing",
       "Web Application",
-      "User Session Recording",
-      "Playback and Analysis",
-      "Web Testing",
-      "Test Recording",
+      "Session Recording",
+      "User Interaction Tracking",
+      "Recording Management",
       "User Action Recording",
       "chrome.storage API",
       "Web Recording",
@@ -189,17 +189,21 @@
       "Recording analysis",
       "UI/UX design",
       "User Interface",
-      "Recording Management",
       "Media Management",
       "User Interaction",
       "Recording Analytics",
       "Cypress Testing Framework",
       "Text Processing",
       "Dark Theme Interfaces",
-      "Aplicação web de gerenciamento de mídia, interface de usuário para histórico de gravações, terminologia técnica em inglês para UI/UX",
+      "Recording History",
       "Extensões de navegador",
       "Dark mode theming",
-      "Dark Mode"
+      "Front-end Development",
+      "Theming",
+      "Dark Mode",
+      "Enterprise Data Management",
+      "Data Integrity",
+      "Business Rules"
     ],
     "current_phase": [
       "Development",
@@ -223,14 +227,15 @@
       "Testes unitários implementados",
       "Testes automatizados integrados",
       "Feature Complete",
-      "Estável com funcionalidades completas de visualização e exportação",
+      "Estável com funcionalidades completas de histórico",
       "Stable UI Theme",
       "Estabilização de UI",
       "Estabilização visual e usabilidade",
       "Estabilização do tema visual",
       "Estabilização visual",
       "Estabilização UI",
-      "Stable Utility Functions"
+      "Stable Utility Functions",
+      "Estabilização visual e responsiva"
     ],
     "critical_business_rules": [
       "Preserve fast refresh functionality",
@@ -338,15 +343,14 @@
       "Integridade dos dados da gravação",
       "Precisão do código gerado",
       "Disponibilidade da funcionalidade de download",
-      "Não permitir exclusão sem confirmação explícita",
-      "Exportação deve conter apenas gravações selecionadas",
-      "Busca deve filtrar por título, hostname e URL",
+      "Não perder dados de gravações ao excluir",
+      "Exportação e importação devem preservar integridade dos dados",
       "Consistent UI layout",
       "Accessible typography",
       "Responsive scrolling behavior",
       "Gravações vazias não podem ser salvas",
       "IDs de gravação devem ser únicos",
-      "Hostname deve ser extraído corretamente da URL",
+      "Importação deve validar formato e evitar duplicatas",
       "Limite máximo de entradas no histórico não pode ser ultrapassado sem poda",
       "Integridade dos dados de gravação deve ser mantida",
       "Migração de dados antigos deve preservar ações",
@@ -380,14 +384,17 @@
       "Preservar domínio completo em URLs truncadas",
       "Responsividade em múltiplos dispositivos",
       "Acessibilidade e legibilidade do conteúdo",
-      "Manter integridade visual e responsividade do histórico",
-      "Garantir usabilidade em estados de loading e vazio",
-      "Preservar acessibilidade e clareza na seleção e ações",
+      "Manter integridade visual e responsiva",
+      "Garantir feedback visual claro para ações do usuário",
+      "Preservar usabilidade em dispositivos móveis",
       "Manter consistência visual do tema dark",
       "Garantir legibilidade e acessibilidade",
-      "Manter contraste mínimo para acessibilidade",
-      "Preservar identidade visual da marca Fleury",
-      "Compatibilidade com resoluções 800x600"
+      "Manter alto contraste para acessibilidade",
+      "Consistência visual em todos os componentes",
+      "Compatibilidade com resolução 800x600",
+      "Validação rigorosa de dados",
+      "Consistência transacional",
+      "Controle de acesso baseado em roles"
     ]
   },
   "technical_stack": {
@@ -412,7 +419,9 @@
       "JavaScript (React integration)",
       "CSS Variables",
       "Custom Properties (CSS Variables)",
-      "CSS3 com custom properties"
+      "CSS Custom Properties (CSS Variables)",
+      "JavaScript ES2022",
+      "Node.js 18"
     ],
     "frameworks": [
       "React (via react-app preset)",
@@ -451,8 +460,6 @@
       "Jest 29",
       "Playwright 1.x",
       "None (Vanilla CSS)",
-      "@tanstack/react-table 8.x",
-      "FontAwesome React 0.2.x",
       "Nenhum framework frontend/backend explícito",
       "Nenhum framework CSS explícito",
       "Possível integração com React ou similar",
@@ -461,16 +468,20 @@
       "Possível integração com React ou Vue para JS",
       "Nenhum framework CSS explícito, uso de variáveis CSS customizadas",
       "Cypress (testes end-to-end)",
-      "React (implícito pelo contexto do componente)",
-      "Possível integração com React ou similar (não especificado)"
+      "React (presumido)",
+      "CSS Modules or Styled Components (possível integração)",
+      "Nenhum framework específico declarado",
+      "Express 4.18.2",
+      "Mongoose 6.7.0"
     ],
     "databases": [
       "chrome.storage.local",
       "chrome.storage.local (armazenamento local do navegador)",
       "Não aplicável",
       "LocalStorage (via recordingStore)",
-      "Não aplicável diretamente (armazenamento via RecordingService)",
-      "recordingStore (abstração de storage, tipo não especificado)"
+      "Não aplicável (armazenamento local via RecordingService)",
+      "recordingStore (abstração de storage, tipo não especificado)",
+      "MongoDB 6.0"
     ],
     "external_services": [
       "Chrome Web Store",
@@ -499,16 +510,19 @@
       "Chrome APIs",
       "Chromium Browser",
       "Clipboard API (via react-copy-to-clipboard)",
-      "RecordingService API (local ou remota)",
+      "RecordingService API (local storage abstraction)",
       "Google Fonts (Roboto)",
       "Font icon libraries (ex: FontAwesome)",
-      "Browser APIs (Blob, URL, DOM)"
+      "Browser APIs (Blob, URL, DOM)",
+      "File system APIs para import/export JSON (via browser)",
+      "REST APIs externas para autenticação e notificações"
     ],
     "package_manager": [
       "npm",
       "yarn",
       "Yarn",
-      "yarn 1.22.22"
+      "yarn 1.22.22",
+      "npm 9.6.7"
     ]
   },
   "architecture_patterns": {
@@ -574,12 +588,11 @@
       "Test Automation Pattern",
       "Page Object Pattern (implicit)",
       "Atomic Design (Component-based CSS)",
-      "Service Layer Pattern",
-      "Declarative UI",
+      "Component-based Architecture",
+      "Container/Presentational Pattern",
       "Modular CSS",
       "Theming with CSS Variables",
       "Service Facade",
-      "Singleton (via métodos estáticos)",
       "Strategy (para pruneStrategy)",
       "Repository Pattern",
       "Interface Segregation",
@@ -596,10 +609,9 @@
       "Factory Function",
       "Utility Module",
       "Separation of Concerns (CSS modularizado)",
-      "BEM CSS methodology",
+      "BEM CSS Naming",
       "Global Style Reset",
-      "Theming via CSS Custom Properties",
-      "Utility-first CSS"
+      "MVC"
     ],
     "folder_structure": [
       "Config files in root or config folder",
@@ -719,14 +731,13 @@
       "/Content - componentes reutilizáveis",
       "/Common/utils - utilitários gerais",
       "/themes - estilos globais e específicos",
-      "components/ - UI components",
-      "storage/ - serviços de persistência",
-      "types/ - definições de tipos",
+      "src/storage - serviços de persistência",
+      "src/Common/utils - utilitários gerais",
       "styles/ - arquivos CSS base e componentes",
       "assets/ - fontes e imagens",
+      "types/ - definições de tipos",
       "builders/ - geração de código",
-      "services/ - lógica de negócio e serviços",
-      "store/ - abstração de armazenamento",
+      "services/ - lógica de negócio e abstração de storage",
       "src/store - gerenciamento de estado e persistência",
       "src/actions - definição de ações do usuário",
       "src/types - definições de tipos e interfaces",
@@ -747,10 +758,15 @@
       "src/utils - funções utilitárias para manipulação de dados e strings",
       "Estilos organizados por componente",
       "Separação clara entre containers, headers, conteúdo e ações",
-      "Estilos organizados por componente, separados em arquivos CSS dedicados para modularidade",
+      "/components/recordingHistory - Componentes visuais e lógicos",
+      "/styles - Estilos globais e variáveis CSS",
       "Estilos globais em pasta /styles",
       "Componentes UI em /components",
-      "Arquivo central para tema dark contendo variáveis e estilos globais"
+      "Não aplicável - arquivo CSS único para tema",
+      "controllers para lógica de entrada",
+      "models para definição de dados",
+      "services para regras de negócio",
+      "routes para endpoints"
     ],
     "naming_conventions": [
       "camelCase for variables and functions",
@@ -819,10 +835,9 @@
       "Utility-first for helpers (.p-1, .d-flex)",
       "PascalCase para interfaces e tipos",
       "snake-case para arquivos CSS",
-      "prefixo 'on' para props de eventos",
       "BEM (Block Element Modifier) recomendado para classes adicionais",
       "camelCase para métodos e variáveis",
-      "snake_case para IDs de gravação",
+      "IDs formatados como hostname:data_timestamp",
       "CamelCase para classes e interfaces",
       "Interfaces prefixadas com I",
       "CamelCase para tipos e interfaces",
@@ -842,11 +857,13 @@
       "snake_case para nomes sanitizados de arquivos",
       "BEM-like (block-element-modifier) para classes CSS",
       "Uso consistente de prefixos .recording-detail",
-      "BEM (Block Element Modifier) para classes CSS",
+      "BEM para classes CSS",
+      "camelCase para variáveis JS/TS",
       "IDs para containers principais (#app-container)",
       "Variáveis CSS com prefixo --",
-      "Classes prefixadas com .ds-dark",
-      "Uso de nomes semânticos para variáveis CSS (--primary-color, --bg-dark)"
+      "BEM-like classes (.btn-primary, .ds-dark)",
+      "CSS variables com prefixo -- para organização",
+      "snake_case para arquivos"
     ],
     "module_boundaries": [
       "Separation between config and source code",
@@ -921,11 +938,11 @@
       "Separação clara entre UI (components) e lógica utilitária (utils)",
       "Tipos centralizados em /types",
       "Componentes especializados em /Content",
-      "UI desacoplada da lógica de dados via RecordingService",
       "Componentes isolados com props para comunicação",
+      "Serviços independentes para acesso a dados",
       "Separação clara entre estilos globais e componentes específicos",
-      "Separação clara entre tipos, armazenamento e lógica de serviço",
-      "Dependência unidirecional do serviço para o store e builders",
+      "RecordingService depende de recordingStore e builders",
+      "Tipos separados em pasta types",
       "Separação clara entre tipos, store e ações",
       "Dependência unidirecional do store para tipos e chrome API",
       "Separação clara entre tipos, configuração e backend",
@@ -946,10 +963,11 @@
       "Módulo isolado sem dependências externas, exporta funções puras",
       "Estilos isolados para o componente RecordingDetail",
       "Evita vazamento de estilos globais",
-      "Estilos isolados para o componente RecordingHistory, evitando vazamento para outros componentes",
+      "Separação clara entre estilos e lógica funcional",
+      "Isolamento do componente RecordingHistory",
       "Separação clara entre estilos globais e específicos do popup",
-      "Separação clara entre variáveis de tema e estilos de componentes",
-      "Estilos agrupados por tipo de componente (botões, inputs, cards)"
+      "Isolamento do tema via classe raiz .ds-dark",
+      "Separação clara entre camada de dados, lógica de negócio e interface"
     ]
   },
   "code_standards": {
@@ -977,9 +995,10 @@
       "JSDoc para documentação",
       "CSS moderno com variáveis customizadas",
       "Uso de comentários para seções",
-      "CSS moderno com custom properties, uso consistente de variáveis para cores e espaçamentos",
+      "CSS Standard Practices",
+      "BEM Methodology",
       "CSS3 standard",
-      "CSS padrão com comentários explicativos em português"
+      "CSS moderno com variáveis, comentários claros"
     ],
     "linting_rules": [
       "ESLint with React plugin",
@@ -1015,15 +1034,17 @@
       "Não explicitado no código fornecido",
       "Sem uso de any exceto em mocks",
       "Possível uso de stylelint com regras para propriedades e ordem",
-      "Proibição de uso de any",
-      "Regras para hooks",
       "stylelint com regras padrão para CSS3",
+      "ESLint com regras para async/await, uso de tipos, e tratamento de erros",
       "Regras padrão ESLint para TypeScript",
       "Sem regras customizadas explícitas no código",
       "stylelint para CSS",
       "eslint para JS/React",
       "Possível uso de stylelint com regras para variáveis e propriedades",
-      "Não especificado no código"
+      "Não especificado no código",
+      "stylelint com regras para CSS moderno e variáveis",
+      "Não especificado",
+      ".eslintrc.json com regras para evitar any, uso de const, e indentação de 2 espaços"
     ],
     "formatting": [
       "Prettier",
@@ -1051,7 +1072,9 @@
       "Uso de comentários para seções",
       "Uso de espaços para alinhamento",
       "Uso de espaços para separação",
-      "Uso de variáveis CSS para cores e espaçamentos"
+      "Uso de variáveis CSS para cores e espaçamentos",
+      "Indentação consistente, uso de comentários para seções",
+      "Prettier com configuração padrão, max-len 100"
     ],
     "documentation_style": [
       "JSDoc",
@@ -1078,6 +1101,7 @@
       "Inline comments para propriedades específicas",
       "JSDoc para componentes e funções públicas",
       "Comentários CSS padrão",
+      "JSDoc para métodos públicos",
       "JSDoc para documentação de métodos e classes",
       "Comentários CSS inline",
       "JSDoc para componentes React",
@@ -1088,9 +1112,8 @@
       "Comentários mínimos, apenas cabeçalho do arquivo",
       "Comentários em português explicando blocos principais",
       "Comentários explicativos em português",
-      "Comentários explicativos em português para seções principais",
       "Comentários em português para contexto",
-      "Comentários em bloco para seções principais"
+      "JSDoc para funções e classes"
     ],
     "type_checking": [
       "TypeScript optional, not explicit here",
@@ -1115,9 +1138,11 @@
       "Nenhum (JavaScript puro)",
       "TypeScript strict mode presumido",
       "Strict TypeScript settings (strictNullChecks, noImplicitAny)",
-      "Strict TypeScript com tipagem explícita para props e estados",
+      "Strict TypeScript com interfaces definidas para props e dados",
       "Strict TypeScript com tipos explícitos",
-      "TypeScript strict mode para React"
+      "TypeScript strict mode para React",
+      "Não aplicável para CSS",
+      "TypeScript strict mode desativado, uso parcial de tipagem"
     ]
   },
   "testing_strategy": {
@@ -1135,7 +1160,8 @@
       "Jest 29 (implícito para front-end)",
       "Jest 29 (provável)",
       "Não especificado",
-      "Não especificado no código fornecido"
+      "Não especificado no código fornecido",
+      "Jest (para lógica JS/TS associada)"
     ],
     "test_structure": [
       "__tests__ folders or *.test.js files",
@@ -1182,11 +1208,12 @@
       "Mocks e spies para isolamento",
       "Testes organizados em blocos beforeAll, afterAll e test",
       "Uso de async/await para controle assíncrono",
-      "tests/components/ para testes unitários de UI",
-      "mocks para RecordingService",
+      "Testes localizados em __tests__ dentro de cada componente",
+      "Testes localizados em __tests__ próximos aos serviços",
       "tests/integration para testes de integração",
       "Testes localizados em __tests__ dentro da pasta components",
-      "Testes unitários localizados em __tests__ próximos aos utilitários"
+      "Testes unitários localizados em __tests__ próximos aos utilitários",
+      "/tests/unit para testes de componentes e estilos"
     ],
     "coverage_requirements": [
       "Minimum 80% coverage",
@@ -1222,9 +1249,9 @@
       "Uso de waits configuráveis para sincronização",
       "Behavior Driven Development (BDD) style",
       "Snapshot Testing para UI",
-      "Arrange-Act-Assert",
       "Mocking de serviços externos",
-      "Snapshot Testing para componentes visuais"
+      "Snapshot Testing para componentes visuais",
+      "Behavior Driven Testing"
     ],
     "mocking_approach": [
       "jest.mock for modules",
@@ -1265,11 +1292,14 @@
       "Uso mínimo de mocks, testes end-to-end reais com navegador",
       "Mocks para utilitários externos e APIs",
       "Fixtures para dados de gravação",
-      "Mock de RecordingService para simular respostas assíncronas",
+      "Mock de RecordingService para testes unitários",
+      "Mock de recordingStore para testes unitários",
       "Mocks para APIs e serviços externos",
       "Mocks para callbacks e props",
       "Mocks para APIs do navegador e Date",
-      "Não aplicável - funções puras sem dependências externas"
+      "Não aplicável - funções puras sem dependências externas",
+      "Mocks para APIs de arquivos e eventos DOM",
+      "Uso de jest.mock para dependências externas"
     ]
   },
   "development_workflow": {
@@ -1277,8 +1307,7 @@
       "GitHub Flow",
       "Não especificado explicitamente",
       "Não especificado",
-      "Git Flow",
-      "GitHub Flow com branches feature, main e hotfix"
+      "Git Flow"
     ],
     "commit_conventions": [
       "Conventional Commits",
@@ -1307,8 +1336,8 @@
       "Checks automáticos",
       "Build deve passar sem erros",
       "Testes automatizados passando",
-      "Revisão obrigatória por pelo menos um desenvolvedor",
-      "Checks de lint e testes automáticos"
+      "Revisão obrigatória por pelo menos um revisor",
+      "Revisão obrigatória por pelo menos 2 membros"
     ],
     "ci_cd_pipeline": [
       "Linting",
@@ -1340,6 +1369,7 @@
       "Deploy automático em staging",
       "Build da extensão",
       "Deploy automatizado",
+      "Build, Test, Lint, Deploy automatizados via GitHub Actions",
       "Testes unitários"
     ]
   },
@@ -1348,7 +1378,9 @@
       "npm install",
       "yarn",
       "yarn install && yarn prepare",
-      "npm install ou yarn install"
+      "npm install ou yarn install",
+      "npm install && npm run setup",
+      "npm install && npm run setup-db"
     ],
     "install": [
       "npm install",
@@ -1415,9 +1447,11 @@
       "Não aplicável (extensão Chrome)",
       "Nenhum método de autenticação implementado no código de teste",
       "Não aplicável no componente",
-      "Não aplicável diretamente neste componente",
+      "Não aplicável no componente (depende do sistema maior)",
+      "Não aplicável no escopo do serviço",
       "Não aplicável (contexto local de extensão)",
-      ""
+      "",
+      "JWT com expiração curta"
     ],
     "authorization_rules": [
       "Permissões restritas via manifest para domínios e APIs específicas",
@@ -1435,8 +1469,10 @@
       "Não aplicável diretamente no build",
       "Controle de acesso via contexto do navegador isolado",
       "Não aplicável no componente",
-      "Confirmação explícita para exclusão de gravações",
-      ""
+      "Permissão para excluir e exportar gravações deve ser controlada externamente",
+      "Não aplicável no escopo do serviço",
+      "",
+      "Controle baseado em roles e permissões granulares"
     ],
     "sensitive_data": [
       "Dados de interação do usuário tratados localmente, sem envio externo não autorizado",
@@ -1458,9 +1494,11 @@
       "secrets.*.js",
       "Dados do usuário armazenados temporariamente em /tmp",
       "Código de teste e URLs tratados com cuidado para evitar exposição indevida",
-      "Dados de gravação podem conter URLs e títulos, tratados localmente",
+      "Dados de gravação podem conter informações sensíveis, devem ser tratados com cuidado",
+      "URLs e ações de usuário, tratados com validação e sanitização",
       "Dados de gravação de ações do usuário, tratados localmente sem exposição externa",
-      ""
+      "",
+      "Dados pessoais criptografados em repouso e em trânsito"
     ],
     "security_headers": [
       "Content Security Policy configurada via manifest",
@@ -1476,8 +1514,12 @@
       "Não aplicável no contexto do build",
       "Não aplicável diretamente no código de teste",
       "Não aplicável no componente",
-      "Não aplicável diretamente neste componente",
-      ""
+      "Não aplicável diretamente no componente",
+      "Não aplicável no escopo do serviço",
+      "",
+      "Content-Security-Policy",
+      "X-Frame-Options",
+      "Strict-Transport-Security"
     ],
     "encryption_requirements": [
       "Criptografia padrão do Chrome para armazenamento local",
@@ -1491,9 +1533,12 @@
       "Nenhuma criptografia aplicada",
       "Não aplicável no contexto do build",
       "Não aplicável no componente",
-      "Não aplicável diretamente neste componente",
+      "Não implementado no componente, deve ser tratado no armazenamento",
+      "Não especificado, depende do storage subjacente",
       "Não especificado, armazenamento local sem criptografia explícita",
-      ""
+      "",
+      "TLS 1.3 para comunicação",
+      "AES-256 para dados armazenados"
     ]
   },
   "performance_requirements": {
@@ -1516,10 +1561,12 @@
       "Não aplicável diretamente",
       "Timeouts configurados para espera de service workers (15s no Jest, 5s na espera explícita)",
       "Interface deve responder instantaneamente a interações do usuário",
-      "Carregamento e filtragem devem ser responsivos, idealmente < 200ms para datasets moderados",
+      "Carregamento e filtragem devem ser rápidos para boa UX",
+      "Operações assíncronas otimizadas, mas listagem pode ser custosa com muitos registros",
       "Operações de salvamento com debounce para evitar latência excessiva",
       "Download deve ser disparado imediatamente após chamada",
-      "Funções síncronas com tempo de execução constante e baixo"
+      "Funções síncronas com tempo de execução constante e baixo",
+      "API responses < 300ms em média"
     ],
     "optimization_priorities": [
       "Developer experience",
@@ -1569,9 +1616,10 @@
       "Fast rendering",
       "Minimal repaint on hover",
       "Responsividade e fluidez da UI",
-      "Otimização para velocidade de renderização e filtragem no cliente",
+      "Otimização para velocidade de renderização e resposta a interações",
       "Font loading performance",
       "Rendering smoothness",
+      "Consistência e integridade priorizadas sobre latência",
       "Minimizar chamadas ao storage para preservar performance e evitar bloqueios",
       "UI responsiveness",
       "Low memory footprint",
@@ -1588,8 +1636,11 @@
       "Baixo impacto visual",
       "Velocidade de resposta e baixo uso de memória para blobs",
       "Velocidade e simplicidade",
-      "Responsividade e fluidez visual em tabelas com scroll",
-      "Legibilidade e performance visual em dispositivos de baixa resolução"
+      "Responsividade e fluidez visual",
+      "Minimizar repaints e reflows",
+      "Visual consistency",
+      "Responsividade em resolução 800x600",
+      "Prioridade em velocidade de resposta sobre uso de memória"
     ],
     "caching_strategy": [
       "cache intermediário de build",
@@ -1610,9 +1661,11 @@
       "Cache desabilitado para popup.html para garantir atualização",
       "Uso de userDataDir para persistência temporária do contexto do navegador",
       "Não aplicável diretamente, mas pode usar memoização para callbacks",
-      "Cache local via estado React, sem cache persistente explícito",
+      "Uso de memoização para evitar recomputação desnecessária",
+      "Não implementado no serviço, depende do storage",
       "Uso de cache interno temporário (pendingSaves) para agrupar operações",
-      ""
+      "",
+      "Cache em memória com TTL de 5 minutos para dados estáticos"
     ],
     "scalability_considerations": [
       "paralelização de tarefas",
@@ -1635,14 +1688,16 @@
       "Operações em arrays grandes devem ser eficientes e imutáveis",
       "Testes isolados para permitir execução paralela",
       "Gerenciamento eficiente de grandes listas de ações pode ser necessário",
-      "Pode necessitar paginação ou virtualização para grandes volumes de gravações",
+      "Pode apresentar lentidão com grandes volumes de gravações em memória",
+      "Potencial gargalo em listagens e filtros em memória para grandes volumes",
       "Limitação do número máximo de entradas para evitar crescimento descontrolado",
       "Suporte a tabelas com overflow e scroll vertical",
       "Layouts adaptativos para múltiplos dispositivos",
       "Scrolls otimizados para listas grandes",
       "",
       "Funções puras facilmente escaláveis e reutilizáveis",
-      "Suporte a tabelas extensas com overflow e scroll vertical"
+      "Suporte a tabelas com grande volume via scroll e overflow",
+      "Arquitetura preparada para escalabilidade horizontal via containers"
     ]
   },
   "error_handling": {
@@ -1665,11 +1720,13 @@
       "Não especificado",
       "Erros lançados via exceptions padrão do JavaScript",
       "Logs no console para erros de download e geração de código",
-      "Logs no console para erros de carregamento, exclusão e exportação",
+      "Mensagens simples exibidas via notificações temporárias",
+      "Erros lançados como Exceptions com mensagens claras",
       "Erros lançados com mensagens claras, logs no console para diagnóstico",
       "Erro lançado com mensagem clara em falha de download",
       "Retorna string vazia ou texto original, sem lançar exceções",
-      "Estilos visuais para estados de erro e loading"
+      "Estilos visuais para estados de erro e loading",
+      "JSON padrão com código, mensagem e detalhes opcionais"
     ],
     "logging_strategy": [
       "console logs",
@@ -1691,9 +1748,11 @@
       "Uso de console.warn para alertas de timestamps inválidos",
       "Uso implícito de mensagens de erro via Jest",
       "Console logs para eventos importantes e erros",
-      "Uso de console.log e console.error para rastreamento",
+      "Logs no console para operações críticas",
+      "Logs de sucesso, warning e erro via console para operações críticas",
       "Uso de console.warn e console.error para alertas e erros",
-      "Logs no console para sucesso e erro"
+      "Logs no console para sucesso e erro",
+      "Logs estruturados com níveis info, warn, error"
     ],
     "monitoring_tools": [
       "GitHub Actions para monitoramento de build e testes",
@@ -1706,7 +1765,8 @@
       "Nenhuma ferramenta de monitoramento integrada",
       "Não especificado no componente",
       "Não especificado no código",
-      ""
+      "",
+      "Sentry para erros, Prometheus para métricas"
     ],
     "error_recovery": [
       "retry automático em falhas de build",
@@ -1730,10 +1790,12 @@
       "Correção automática de timestamps inválidos e negativos",
       "Rejeição de promises em timeout para falha controlada",
       "Feedback visual para ações de cópia; tratamento básico de erros no download",
-      "Recarregamento das gravações após exclusão; fallback visual para estados vazios e erros",
+      "Recarregamento da lista após operações de importação e exclusão",
+      "Tratamento de erros com try/catch e mensagens específicas para importação/exportação",
       "Tratamento de erros com fallback para evitar falhas críticas, especialmente em operações assíncronas",
       "Tratamento de exceções para evitar falhas silenciosas",
-      "Retorno seguro para entradas inválidas ou vazias"
+      "Retorno seguro para entradas inválidas ou vazias",
+      "Retries automáticos em falhas temporárias, fallback para operações críticas"
     ]
   },
   "dependencies_context": {
@@ -1816,7 +1878,6 @@
       "jest",
       "chromium browser",
       "react-copy-to-clipboard",
-      "@tanstack/react-table",
       "Roboto font",
       "CSS variable --bg-dark",
       "Tipos externos (RecordingEntry, HistoryConfig, Action)",
@@ -1835,11 +1896,15 @@
       "Variáveis CSS customizadas (ex: --bg-dark, --bg-darker)",
       "APIs do navegador para Blob e download",
       "Variáveis CSS definidas globalmente (ex: --primary, --bg-dark)",
-      "Variáveis CSS customizadas para tema e espaçamentos"
+      "CSS Variables",
+      "React (para lógica associada)",
+      "Nenhuma dependência externa explícita",
+      "Express, Mongoose, Joi"
     ],
     "deprecated_packages": [
       "Nenhum identificado",
-      "Manifest v2 APIs em processo de migração"
+      "Manifest v2 APIs em processo de migração",
+      "Nenhum pacote deprecado atualmente"
     ],
     "version_constraints": [
       "Compatibilidade com versões recentes do Chrome e Firefox",
@@ -1874,11 +1939,12 @@
       "Cypress >=12",
       "Jest timeout configurado para 15000ms",
       "Compatibilidade com React 18 e TypeScript 4.x",
-      "TanStack Table 8.x",
+      "TypeScript 5.0",
       "TypeScript 4.x compatível",
       "API chrome.storage local padrão",
       "React >=18.0",
-      "TypeScript >= 4.0"
+      "TypeScript >= 4.0",
+      "Dependências travadas em versões específicas para estabilidade"
     ],
     "internal_packages": [
       "Módulos internos para gravação e geração de scripts",
@@ -1927,10 +1993,12 @@
       "../../types",
       "../../storage/recording-service",
       "../../types/recording",
+      "../../Common/utils/text",
       "./recording-store",
       "../types/recording para tipos compartilhados",
       "./index",
-      "themes/dark-core.css"
+      "themes/dark-core.css",
+      "Pacotes internos para utilitários e middlewares"
     ]
   },
   "current_challenges": {
@@ -1965,16 +2033,18 @@
       "Uso incorreto de 'number.isFinite' ao invés de 'Number.isFinite'",
       "Uso de setInterval para polling pode ser substituído por eventos mais eficientes",
       "Melhorar tratamento de erros e acessibilidade",
-      "Ausência de debounce na busca",
-      "Uso de confirm() nativo para exclusão",
+      "Melhorar debounce na busca",
+      "Refatorar manipulação direta do DOM para download",
       "Uso de dimensões fixas pode limitar responsividade",
-      "Melhorar tratamento de erros assíncronos",
-      "Otimizar buscas para grandes volumes de gravações",
+      "Dependência de armazenamento não especificado pode dificultar testes e manutenção",
       "Dependência da API chrome.storage local que pode ter limitações de quota",
       "Dependência de variáveis CSS externas pode dificultar manutenção",
       "Dependência de variáveis CSS externas pode causar inconsistência",
       "Dependência de variáveis CSS externas não documentadas",
-      "Necessidade de suporte a navegadores legados"
+      "Necessidade de suporte a navegadores legados",
+      "Dependência de variáveis CSS globais",
+      "Falta de estilos focados em acessibilidade",
+      "Refatoração de módulos com alta complexidade ciclomática"
     ],
     "known_issues": [
       "Potential incompatibility of react-hot-loader with React 18+",
@@ -2005,16 +2075,17 @@
       "Dependência do relógio do sistema pode causar inconsistências",
       "Timeouts podem causar falhas intermitentes em ambientes lentos",
       "Possível condição de corrida no estado de cópia",
-      "Potencial lentidão com grandes volumes de dados",
-      "Falta de tratamento visual para erros de rede",
+      "Confirmação via confirm() pode impactar UX",
+      "Falta de validação rigorosa na importação JSON",
       "Fallback visual se variável --bg-dark não estiver definida",
-      "Possível colisão de IDs em alta concorrência",
-      "Validação de URL pode ser insuficiente",
+      "Possível lentidão em listagens e filtros com grande volume de dados",
       "Possível perda de dados se ocorrer erro durante flushPendingSaves",
       "Scrollbar customization limited to WebKit browsers",
       "Possível baixa acessibilidade se contraste não for suficiente",
       "Possível falha em ambientes sem suporte a Blob",
-      "Possível truncamento excessivo em URLs com domínios muito longos"
+      "Possível truncamento excessivo em URLs com domínios muito longos",
+      "Scrollbar customizada pode não funcionar em todos os browsers",
+      "Intermitência em chamadas externas sob alta carga"
     ],
     "performance_bottlenecks": [
       "build lento em grandes projetos",
@@ -2033,13 +2104,14 @@
       "Minificação desabilita mangling para facilitar debugging, impactando tamanho final",
       "Espera ativa para service workers pode impactar tempo total dos testes",
       "Renderização de listas muito grandes pode impactar performance",
-      "Filtragem e renderização client-side sem paginação",
+      "Renderização e filtragem podem ser lentas com muitos registros",
       "Carregamento da fonte externa pode impactar renderização inicial",
-      "Listagem e filtragem em memória sem paginação",
+      "Filtros realizados em memória após listagem completa",
       "Operações síncronas bloqueantes evitadas, mas potencial lentidão se histórico crescer muito",
       "Overflow em listas longas pode impactar performance",
       "Possível lentidão em tabelas muito grandes devido a overflow e transições",
-      "Renderização e scroll em tabelas muito grandes pode impactar performance"
+      "Renderização de tabelas muito grandes pode impactar performance",
+      "Consultas complexas ao banco de dados sem índices adequados"
     ],
     "migration_status": [
       "Completo para Manifest V3, sem migrações pendentes",
@@ -2051,7 +2123,8 @@
       "Não especificado",
       "Função migrateActionsTimestamp implementada e em uso",
       "Nenhuma migração em andamento detectada",
-      "Migração da última gravação implementada e executada sob demanda"
+      "Migração da última gravação implementada e executada sob demanda",
+      "Migração para TypeScript em andamento, 60% concluída"
     ]
   },
   "team_preferences": {
@@ -2130,10 +2203,11 @@
       "Uso correto de mocks",
       "Clareza nos testes, uso correto de async/await, cobertura de funcionalidades críticas",
       "Performance CSS",
-      "Tratamento adequado de estados assíncronos",
+      "Clareza na lógica de estado",
+      "Performance e otimização",
       "Uso correto de variáveis CSS",
       "Performance de fontes",
-      "Validação de regras de negócio",
+      "Validação de dados",
       "Consistência de IDs",
       "Tratamento correto de erros assíncronos",
       "Uso adequado do padrão Singleton",
@@ -2146,7 +2220,8 @@
       "Clareza na manipulação de DOM e tratamento de erros",
       "Clareza e simplicidade das funções",
       "Clareza na nomenclatura CSS",
-      "Consistência visual, responsividade, uso correto de variáveis CSS"
+      "Uso correto de BEM",
+      "Legibilidade, segurança, cobertura de testes"
     ],
     "documentation_requirements": [
       "Document config changes",
@@ -2188,9 +2263,9 @@
       "Documentação inline para funções complexas e testes",
       "Comentários inline para propriedades específicas",
       "Documentação JSDoc para componentes e funções públicas",
-      "Documentação via JSDoc para componentes e funções públicas",
+      "Documentação clara via JSDoc para novos componentes e funções",
       "Comentários claros sobre variáveis e propriedades usadas",
-      "Uso de JSDoc para métodos públicos",
+      "JSDoc para métodos públicos",
       "Documentação JSDoc para métodos públicos e classes",
       "Comentários claros em CSS e JS",
       "Documentação de theming",
@@ -2203,7 +2278,9 @@
       "JSDoc completo para funções públicas",
       "Documentação JSDoc para todas as funções públicas",
       "Comentários claros e explicativos",
-      "Comentários claros para seções CSS complexas ou estados especiais"
+      "Comentários claros em CSS e documentação de componentes",
+      "Comentários claros em português explicando variáveis e seções",
+      "Documentação clara para APIs e regras de negócio"
     ],
     "communication_style": [
       "Clear and concise comments",
@@ -2227,8 +2304,9 @@
       "Comentários sucintos e objetivos",
       "Comentários claros e objetivos em português",
       "Clara e objetiva, foco em comportamento visual",
-      "Comentários claros e objetivos, uso de emojis para logs",
+      "Comentários objetivos e explicativos, uso de emojis para logs",
       "Objetivo e técnico, foco em comportamento e impacto visual",
+      "Comentários claros e uso de emojis para logs",
       "Comentários claros em português explicando lógica e decisões",
       "Objetivo e direto em comentários e PRs",
       "Objetivo e direto",
@@ -2236,7 +2314,8 @@
       "Clara e objetiva, comentários explicativos",
       "Objetivo e direto, com foco em usabilidade",
       "Comentários em português, linguagem formal e técnica",
-      "Comentários em português explicativos e objetivos"
+      "Objetivo e direto, foco em comportamento e usabilidade",
+      "Comentários objetivos e educados, PRs pequenos e focados"
     ],
     "decision_log": [
       "Opted for react-app preset for simplicity",
@@ -2292,11 +2371,10 @@
       "Uso de utilitários CSS para acelerar desenvolvimento",
       "Separação clara entre componentes e utilitários",
       "Uso de React Functional Components com hooks para estado e efeitos",
-      "Uso de TanStack Table para tabelas interativas",
-      "Separação do serviço de gravações em módulo distinto",
+      "Uso de hooks para estado e efeitos",
+      "Separação clara entre UI e lógica de dados",
       "Escolha da fonte Roboto para legibilidade e padrão visual",
-      "Uso de Service Facade para abstração do storage",
-      "Geração de código Cypress integrada",
+      "Uso de IDs baseados em hostname e timestamp para unicidade",
       "Adoção do padrão Singleton para store",
       "Uso de debounce para otimização de salvamento",
       "Adotado dark mode unificado via CSS variables",
@@ -2314,7 +2392,10 @@
       "Uso de Blob para download por compatibilidade e simplicidade",
       "Manter funções puras para facilitar testes e manutenção",
       "Uso de tema dark para melhor experiência visual",
-      "Adoção do tema dark e uso de BEM para organização CSS"
+      "Adoção do tema dark para melhor experiência visual",
+      "Uso de CSS variables para facilitar customização",
+      "Uso de CSS variables para facilitar manutenção e customização do tema",
+      "Adoção do padrão MVC, uso de JWT para autenticação"
     ]
   },
   "api_specifications": {
@@ -2335,10 +2416,11 @@
       "Nenhuma API exposta diretamente",
       "Não aplicável",
       "Não aplicável no componente",
-      "REST-like para RecordingService",
-      "Internal Service API (métodos estáticos)",
+      "REST-like via RecordingService abstraído",
+      "Métodos assíncronos expostos via classe estática, estilo REST interno",
       "Não aplicável (API local chrome.storage)",
-      ""
+      "",
+      "RESTful"
     ],
     "versioning_strategy": [
       "Versionamento semântico para APIs externas",
@@ -2350,7 +2432,8 @@
       "Manifest version via variável de ambiente MANIFEST_VERSION",
       "Não aplicável no componente",
       "Não especificado",
-      ""
+      "",
+      "Versionamento via URL (/v1/, /v2/)"
     ],
     "response_formats": [
       "JSON",
@@ -2362,8 +2445,7 @@
       "Mensagens simples sem payload complexo",
       "String contendo seletor CSS válido",
       "Não aplicável no componente",
-      "JSON para exportação e listagem",
-      "JSON para exportação de gravações",
+      "JSON para exportação e importação",
       "Promises retornando dados ou void",
       ""
     ],
@@ -2375,7 +2457,8 @@
       "Nenhuma limitação explícita implementada",
       "Não aplicável no componente",
       "Debounce interno para limitar frequência de gravações",
-      ""
+      "",
+      "Limite de 100 requisições por minuto por IP"
     ]
   },
   "deployment_context": {
@@ -2403,7 +2486,10 @@
       "Local development",
       "Test environment",
       "Desenvolvimento, Staging, Produção",
-      "Extensão Chrome local, ambiente browser"
+      "Extensão Chrome local, ambiente browser",
+      "dev (dev.example.com)",
+      "staging (staging.example.com)",
+      "prod (example.com)"
     ],
     "deployment_method": [
       "Static hosting",
@@ -2431,7 +2517,9 @@
       "Local Node.js server",
       "Build via Webpack para extensão Chrome",
       "Extensão Chrome carregada localmente via Playwright",
-      "Deploy via pipeline CI/CD (ex: Vercel, Netlify)"
+      "Deploy via pipeline CI/CD (GitHub Actions)",
+      "Docker (presumido)",
+      "Docker containers orquestrados via Kubernetes"
     ],
     "environment_variables": [
       "MANIFEST_VERSION para controle de versão do manifest",
@@ -2459,8 +2547,15 @@
       ".env.production.local",
       "Nenhum variável de ambiente explícita",
       "Não aplicável diretamente no componente",
-      "Variáveis para configuração do RecordingService",
-      "--bg-dark"
+      "--bg-dark",
+      "Não especificado",
+      "--text-primary",
+      "--primary",
+      "--error",
+      "--success-bg",
+      "DATABASE_URL",
+      "JWT_SECRET",
+      "API_KEYS"
     ],
     "infrastructure_constraints": [
       "Limitações das APIs de extensão dos navegadores",
@@ -2486,9 +2581,11 @@
       "Compatibilidade com Chrome Extension Manifest v3",
       "Necessidade de ambiente com Chromium instalado",
       "Interface web responsiva e compatível com navegadores modernos",
-      "Limitações de armazenamento e performance do backend RecordingService",
-      "Limitações de armazenamento do chrome.storage.local (~5MB)"
+      "Dependência de armazenamento local via RecordingService",
+      "Dependência de storage externo para persistência",
+      "Limitações de armazenamento do chrome.storage.local (~5MB)",
+      "Limitação de memória em pods Kubernetes a 512MB"
     ]
   },
-  "lastCommitHash": "b9d9fe0b665248246c15e0d2b210159e44562c72"
+  "lastCommitHash": "36dcd26ae5a6cca86679a43268750e82a9ce25a5"
 }
