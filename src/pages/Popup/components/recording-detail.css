@@ -249,6 +249,60 @@
   color: var(--primary);
 }
 
+/* Botão danger para parar replay */
+.recording-btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.recording-btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Status do replay */
+.recording-detail-replay-status {
+  background-color: var(--bg-darker);
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.recording-detail-replay-status.error {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-color: rgba(220, 53, 69, 0.3);
+}
+
+.recording-detail-replay-status-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex: 1;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+}
+
+.recording-detail-replay-status.error .recording-detail-replay-status-content {
+  color: #dc3545;
+}
+
+/* Barra de progresso do replay */
+.recording-detail-replay-progress {
+  flex: 1;
+  height: 4px;
+  background-color: var(--bg-lightest);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-left: var(--spacing-md);
+}
+
+.recording-detail-replay-progress-bar {
+  height: 100%;
+  background-color: var(--accent-color);
+  transition: width 0.3s ease-out;
+}
+
 /* Estados especiais */
 .recording-detail-loading {
   display: flex;

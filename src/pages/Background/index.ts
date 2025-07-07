@@ -9,12 +9,16 @@ import {
   executeCleanUp,
 } from '../Common/utils';
 import { recordingStore } from '../storage/recording-store';
+import { replayHandler } from '../../modules/replay/replay-handler';
 
 const HOVER_CTX_MENU_ID = 'deploysentinel-menu-id';
 const AWAIT_TEXT_CTX_MENU_ID = 'deploysentinel-menu-await-text-id';
 
 // Inicializa o store de gravações
 recordingStore.initialize();
+
+// Inicializa o handler de replay
+replayHandler;
 
 async function recordNavigationEvent(
   url: string,

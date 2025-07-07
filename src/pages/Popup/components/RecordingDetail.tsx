@@ -5,6 +5,7 @@
 import React, { useState, useCallback } from 'react';
 import { RecordingEntry } from '../../types/recording';
 import { ScriptType } from '../../types';
+import { useReplay } from '../../../hooks/use-replay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronLeft,
@@ -17,6 +18,9 @@ import {
   faTasks,
   faGlobe,
   faDownload,
+  faRedo,
+  faStop,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ActionList from '../../Content/ActionList';
@@ -43,6 +47,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
 }) => {
   const [viewMode, setViewMode] = useState<'actions' | 'code'>('code');
   const [copied, setCopied] = useState(false);
+  const { replayState, isReplaying, startReplay, stopReplay, error } = useReplay();
 
   const handleCopy = useCallback(() => {
     console.log(
@@ -61,6 +66,20 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
       console.error('❌ [RecordingDetail] Erro ao baixar teste:', error);
     }
   }, [recording]);
+
+  const handleReplay = useCallback(async () => {
+    try {
+      console.log('🎬 [RecordingDetail] Iniciando replay da gravação:', recording.id);
+      await startReplay(recording.id);
+    } catch (error) {
+      console.error('❌ [RecordingDetail] Erro ao iniciar replay:', error);
+    }
+  }, [recording.id, startReplay]);
+
+  const handleStopReplay = useCallback(() => {
+    console.log('⏹️ [RecordingDetail] Parando replay');
+    stopReplay();
+  }, [stopReplay]);
 
   const formatDate = (timestamp: number): string => {
     const date = new Date(timestamp);
@@ -179,7 +198,74 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
               </button>
             </div>
           )}
+
+          {viewMode === 'actions' && (
+            <div className="recording-detail-actions">
+              {isReplaying ? (
+                <button 
+                  className="recording-btn recording-btn-danger"
+                  onClick={handleStopReplay}
+                >
+                  <FontAwesomeIcon icon={faStop} />
+                  Parar Replay
+                </button>
+              ) : (
+                <button 
+                  className="recording-btn recording-btn-primary"
+                  onClick={handleReplay}
+                  disabled={recording.actions.length === 0}
+                >
+                  <FontAwesomeIcon icon={faRedo} />
+                  Reproduzir
+                </button>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* Replay Status */}
+        {replayState && replayState.status !== 'idle' && (
+          <div className={`recording-detail-replay-status ${
+            replayState.status === 'error' ? 'error' : ''
+          }`}>
+            <div className="recording-detail-replay-status-content">
+              {replayState.status === 'preparing' && (
+                <>
+                  <FontAwesomeIcon icon={faSpinner} spin />
+                  <span>Preparando replay...</span>
+                </>
+              )}
+              {replayState.status === 'running' && (
+                <>
+                  <FontAwesomeIcon icon={faPlay} />
+                  <span>
+                    Executando: {replayState.currentStepIndex + 1} de {replayState.totalSteps} ações
+                  </span>
+                  <div className="recording-detail-replay-progress">
+                    <div 
+                      className="recording-detail-replay-progress-bar"
+                      style={{ 
+                        width: `${(replayState.currentStepIndex / replayState.totalSteps) * 100}%` 
+                      }}
+                    />
+                  </div>
+                </>
+              )}
+              {replayState.status === 'completed' && (
+                <>
+                  <FontAwesomeIcon icon={faCheck} />
+                  <span>Replay concluído com sucesso!</span>
+                </>
+              )}
+              {replayState.status === 'error' && (
+                <>
+                  <FontAwesomeIcon icon={faSpinner} />
+                  <span>Erro: {replayState.error || error || 'Erro desconhecido'}</span>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* View Content */}
         <div className="recording-detail-view">
