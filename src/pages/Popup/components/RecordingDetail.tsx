@@ -94,7 +94,8 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
 
   const getCypressCode = (): string => {
     console.log('🔄 [RecordingDetail] Gerando código para Cypress');
-    return recording.code.cypress;
+    // Usa o novo template se disponível, senão usa o código antigo
+    return recording.code.cypressTemplate || recording.code.cypress;
   };
 
   const formatDuration = (start: number, end: number): string => {
