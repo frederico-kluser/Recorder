@@ -3,7 +3,7 @@
  */
 
 import { TemplateRenderer, createTemplateRenderer, RecordingExportContext } from '../TemplateRenderer';
-import { ActionType } from '../../../types/index.js';
+import { ActionType } from '../../../types';
 
 describe('TemplateRenderer', () => {
   let renderer: TemplateRenderer;
@@ -25,7 +25,8 @@ describe('TemplateRenderer', () => {
             selectors: {},
             value: '',
             isPassword: false,
-            inputType: ''
+            inputType: '',
+            hasOnlyText: false
           }
         ],
         commands: [

@@ -9,7 +9,8 @@ import {
   isSupportedActionType,
 } from '../types';
 import { TimingConfig, DEFAULT_TIMING_CONFIG } from '../types/config';
-import { TemplateRenderer, createTemplateRenderer, type RecordingExportContext } from '../generators/template/TemplateRenderer.js';
+import type { RecordingExportContext } from '../generators/template/TemplateRenderer';
+import { TemplateRenderer, createTemplateRenderer } from '../generators/template/TemplateRenderer';
 
 const FILLABLE_INPUT_TYPES = [
   '',

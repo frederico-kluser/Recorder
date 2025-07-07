@@ -3,10 +3,10 @@
  * Abstrai a complexidade do storage e fornece uma API simples
  */
 
-import { RecordingEntry } from '../types/recording.js';
-import { Action } from '../types/index.js';
-import { recordingStore } from './recording-store.js';
-import { genCypressCode, genCypressCodeWithTemplate } from '../builders/index.js';
+import { RecordingEntry } from '../types/recording';
+import { Action } from '../types';
+import { recordingStore } from './recording-store';
+import { genCypressCode, genCypressCodeWithTemplate } from '../builders';
 
 /**
  * Service para operações de gravação

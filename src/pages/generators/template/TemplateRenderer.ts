@@ -3,7 +3,7 @@
  * Gera arquivos de teste no formato padrão com suporte a múltiplos dispositivos
  */
 
-import type { Action } from '../../types/index.js';
+import type { Action } from '../../types';
 
 /**
  * Contexto de exportação contendo todas as informações necessárias para gerar o script
