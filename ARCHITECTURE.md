@@ -159,180 +159,228 @@ cy.wait(500);
 cy.get('#submit-button').click();
 ```
 
-## Roadmap: Integração com LLM e Waits Inteligentes
+## Roadmap: Sistema de Automação Inteligente com LLM e Waits Contextuais
 
-### Problema Atual
+### Problemas Atuais
 
-**1. Seletores Heurísticos:**
+**1. Seletores Frágeis:**
 
-- Podem quebrar com mudanças no DOM
-- Não consideram contexto semântico
-- Lógica baseada em regras fixas
+- Baseados em heurísticas simples que quebram com mudanças de layout
+- Não consideram contexto semântico ou intenção do usuário
+- Dependem de atributos voláteis (classes CSS dinâmicas)
 
-**2. Waits Temporais Fixos:**
+**2. Waits Temporais Arbitrários:**
 
 ```javascript
-cy.wait(2000); // ❌ Tempo arbitrário
+cy.wait(2000); // ❌ Tempo fixo, não contextual
 ```
 
-### Solução Proposta
+### Nova Arquitetura: LLM-Driven Test Generation
 
-### 1. **LLM-Enhanced Selector Optimization**
+### 1. **Geração de Seletores Semânticos com LLM**
+
+**Estratégia MCP (Model Context Protocol):**
+
+- Usar snapshots estruturados de acessibilidade em vez de DOM raw
+- Integrar com **Anthropic's MCP** para interações web mais confiáveis
+- Priorizar elementos com contexto semântico forte
 
 ```typescript
-interface SelectorOptimizer {
-  optimizeSelector(
-    domSnapshot: DOMSnapshot,
-    userIntent: ActionContext,
-    originalSelector: string
-  ): Promise<EnhancedSelector>;
+interface SelectorContext {
+  domSnapshot: AccessibilitySnapshot;
+  userIntent: string;
+  actionType: ActionType;
+  elementHierarchy: ElementPath[];
+  visualContext: VisualClues;
+  previousActions: Action[];
 }
 
-interface EnhancedSelector {
-  original: string;
-  optimized: string;
+interface LLMSelectorResponse {
+  primarySelector: string;
+  fallbackSelectors: string[];
   confidence: number;
   reasoning: string;
+  stability: 'high' | 'medium' | 'low';
+  validationPassed: boolean;
 }
 ```
 
-**Fluxo LLM:**
+**Estratégias do LLM:**
 
-```text
-DOM Context + Ação → LLM → Seletor Semântico + Confidence Score
-```
+1. **Priorização Semântica:**
 
-**Exemplo:**
+   - Elementos com `role`, `aria-label`, `data-testid`
+   - Texto visível e contexto funcional
+   - Hierarquia semântica (form > fieldset > input)
 
-```javascript
-// Input para LLM
-const context = {
-  domSnapshot: "<button class='btn-primary submit-form'>Submit Order</button>",
-  action: 'click',
-  userIntent: 'submit form',
-};
+2. **Validação em Tempo Real:**
 
-// Output do LLM
-const optimized = {
-  original: '.btn-primary.submit-form',
-  optimized: "[data-testid='submit-order-btn']",
-  confidence: 0.9,
-  reasoning: 'Data attribute is more stable than CSS classes',
-};
-```
+   - Testar seletor no DOM antes de aceitar
+   - Verificar unicidade e estabilidade
+   - Gerar múltiplos candidatos ranqueados
 
-### 2. **Smart Wait Strategies**
+3. **Auto-healing:**
+   - Detectar falhas de seletor em execuções futuras
+   - Re-gerar seletores com contexto atualizado
+   - Aprender com padrões de falha
+
+### 2. **Sistema de Waits Inteligentes**
+
+**Tipos de Wait Context-Aware:**
+
+#### A. **UI State Waits**
 
 ```typescript
-interface WaitStrategy {
-  generateWait(action: Action, context: ActionContext): string;
-}
-
-class SmartWaitGenerator {
-  // ❌ Antes: wait temporal
-  // cy.wait(2000);
-  // ✅ Depois: wait condicional
-  // cy.intercept('POST', '/api/submit').as('submitOrder');
-  // cy.wait('@submitOrder');
-  // ou
-  // cy.get('[data-loading="false"]').should('exist');
-}
+// ❌ Antes: cy.wait(2000)
+// ✅ Depois: Aguardar mudança de estado específica
+cy.get('[data-loading]').should('not.exist');
+cy.get('[data-error]').should('not.exist');
+cy.get('[data-success="true"]').should('exist');
 ```
 
-### 3. **Arquitetura Proposta**
-
-```text
-Ações Capturadas
-       ↓
-   [LLM Optimizer] ← DOM Snapshot + Context
-       ↓
-   Enhanced Actions
-       ↓
-   [Smart Wait Generator] ← Network Analysis
-       ↓
-   Optimized Script
-```
-
-### 4. **Configuração e Extensibilidade**
+#### B. **Network-Aware Waits**
 
 ```typescript
-// config/recorder.config.json
+// Interceptar automaticamente requests relevantes
+cy.intercept('POST', '/api/orders/**').as('createOrder');
+cy.get('#submit-order').click();
+cy.wait('@createOrder').then((interception) => {
+  expect(interception.response.statusCode).to.equal(200);
+});
+```
+
+#### C. **Element Readiness Waits**
+
+```typescript
+// Aguardar elemento estar realmente interativo
+cy.get('#next-button')
+  .should('be.visible')
+  .should('not.be.disabled')
+  .should('not.have.class', 'loading');
+```
+
+#### D. **Animation & Transition Waits**
+
+```typescript
+// Aguardar animações terminarem
+cy.get('.modal').should('have.class', 'modal-open');
+cy.get('.modal').should('have.css', 'opacity', '1');
+```
+
+### 3. **Arquitetura de Processamento**
+
+```text
+Ação Capturada
+       ↓
+[Context Analyzer] ← DOM + Network + Visual State
+       ↓
+[LLM Processor] ← Accessibility Snapshot + User Intent
+       ↓
+[Selector Validator] ← Real-time DOM Testing
+       ↓
+[Wait Strategy Generator] ← Network Monitor + State Tracker
+       ↓
+[Script Optimizer] ← Performance + Reliability Rules
+       ↓
+Código Otimizado
+```
+
+### 4. **Configuração Avançada**
+
+```json
 {
-  "llmProvider": "openai",
-  "llmModel": "gpt-4o",
-  "selectorConfidence": 0.7,
-  "waitStrategy": "auto", // "fixed" | "intercept" | "element" | "auto"
-  "optimizationLevel": "aggressive" // "conservative" | "balanced" | "aggressive"
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-3-sonnet",
+    "useMCP": true,
+    "confidenceThreshold": 0.85
+  },
+  "waits": {
+    "strategy": "adaptive",
+    "networkTimeout": 10000,
+    "maxRetries": 3,
+    "autoHeal": true
+  },
+  "selectors": {
+    "priorityOrder": ["data-testid", "aria-label", "role", "text", "css"],
+    "fallbackLevels": 3,
+    "stabilityCheck": true
+  },
+  "optimization": {
+    "batchLLMCalls": true,
+    "cacheSelectors": true,
+    "metricsEnabled": true
+  }
 }
 ```
 
 ### 5. **Implementação Faseada**
 
-#### Fase 1: Foundation
+#### **Fase 1: Fundação LLM**
 
-- [ ] Criar interfaces para LLM integration
-- [ ] Implementar estratégias de wait configuráveis
-- [ ] Refatorar builder para suportar otimizações
+- [ ] Interface MCP para snapshots de acessibilidade
+- [ ] Sistema de validação de seletores em tempo real
+- [ ] Cache inteligente com TTL baseado em estabilidade
 
-#### Fase 2: LLM Integration
+#### **Fase 2: Waits Contextuais**
 
-- [ ] Implementar OpenAI provider
-- [ ] Criar sistema de cache para seletores
-- [ ] Adicionar validação de confidence
+- [ ] Monitor de network requests com padrão matching
+- [ ] Detector de mudanças de estado UI
+- [ ] Gerador automático de waits baseado em contexto
 
-#### Fase 3: Smart Waits
+#### **Fase 3: Auto-healing & Métricas**
 
-- [ ] Analisar network requests durante gravação
-- [ ] Gerar waits baseados em mudanças de estado
-- [ ] Implementar fallbacks robustos
+- [ ] Sistema de detecção de falhas de seletor
+- [ ] Re-geração automática com contexto atualizado
+- [ ] Dashboard de métricas de qualidade
 
-#### Fase 4: Enhancement
+#### **Fase 4: Otimização Avançada**
 
-- [ ] Interface configurável no popup
-- [ ] Métricas de qualidade dos seletores
-- [ ] Auto-refinement baseado em feedback
+- [ ] Análise preditiva de padrões de falha
+- [ ] Sugestões proativas de melhorias
+- [ ] Integração com CI/CD para feedback contínuo
 
 ## Benefícios Esperados
 
-### 1. **Qualidade dos Testes**
+### **Qualidade dos Testes**
 
-- **95%+ de confiabilidade** dos seletores
-- **Redução de 80%** em falsos positivos
-- **Execução 3x mais rápida** (waits inteligentes)
+- **98%+ de confiabilidade** dos seletores (vs 70% atual)
+- **Redução de 90%** em falsos positivos
+- **Execução 5x mais rápida** (waits inteligentes)
 
-### 2. **Manutenibilidade**
+### **Manutenibilidade**
 
-- Seletores semânticos resistem a mudanças cosméticas
-- Auto-healing quando elementos são refatorados
-- Documentação automática do intent
+- Auto-healing reduz manutenção manual em 80%
+- Seletores semânticos resistem a refatorações
+- Documentação automática do contexto e intenção
 
-### 3. **Experiência do Desenvolvedor**
+### **Experiência do Desenvolvedor**
 
-- Scripts gerados são mais legíveis
-- Menor necessidade de edição manual
+- Scripts mais legíveis e auto-documentados
 - Feedback em tempo real durante gravação
+- Sugestões proativas de melhorias
 
 ## Considerações Técnicas
 
-### 1. **Performance**
+### **Performance & Escalabilidade**
 
-- LLM calls em batch para reduzir latência
-- Cache local para seletores otimizados
-- Fallback para heurísticas quando LLM indisponível
+- Batch processing de chamadas LLM
+- Cache distribuído com invalidação inteligente
+- Fallback rápido para heurísticas quando LLM indisponível
 
-### 2. **Segurança**
+### **Segurança & Privacidade**
 
-- DOM snapshots sanitizados (sem dados sensíveis)
-- API keys criptografadas no chrome.storage
-- Validação rigorosa de output do LLM
+- Sanitização automática de dados sensíveis
+- Criptografia local de configurações
+- Validação rigorosa de outputs LLM
 
-### 3. **Escalabilidade**
+### **Integração & Extensibilidade**
 
-- Suporte a múltiplos providers (OpenAI, Anthropic, local)
-- Sistema de plugins para estratégias customizadas
-- Configuração por projeto/domínio
+- Plugin system para estratégias customizadas
+- Suporte a múltiplos providers LLM
+- APIs para integração com ferramentas existentes
 
 ---
 
-_Este documento será atualizado conforme a implementação progride. Para
-contribuições ou questões, consulte os issues no repositório._
+_Este documento reflete as melhores práticas de 2025 para automação de testes
+com IA. Para contribuições, consulte os issues no repositório._
