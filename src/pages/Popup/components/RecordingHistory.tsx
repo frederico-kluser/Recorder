@@ -50,6 +50,10 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     field: 'startedAt',
     direction: 'desc',
   });
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
 
   // Carrega as gravações ao montar o componente
   useEffect(() => {
@@ -157,6 +161,51 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     }
   }, [selectedIds, processedRecordings]);
 
+  // Auto-hide notification after 5 seconds
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
+
+  // Callback para sucesso na exportação
+  const handleExportSuccess = useCallback((count: number) => {
+    setNotification({
+      type: 'success',
+      message: `✅ ${count} gravação(ões) exportada(s) com sucesso!`,
+    });
+    setSelectedIds(new Set()); // Clear selection after export
+  }, []);
+
+  // Callback para erro na exportação
+  const handleExportError = useCallback((error: string) => {
+    setNotification({
+      type: 'error',
+      message: `❌ Erro na exportação: ${error}`,
+    });
+  }, []);
+
+  // Callback para sucesso na importação
+  const handleImportSuccess = useCallback(async (importedIds: string[]) => {
+    setNotification({
+      type: 'success',
+      message: `✅ ${importedIds.length} gravação(ões) importada(s) com sucesso!`,
+    });
+
+    // Recarrega a lista de gravações
+    await loadRecordings();
+  }, []);
+
+  // Callback para erro na importação
+  const handleImportError = useCallback((error: string) => {
+    setNotification({
+      type: 'error',
+      message: `❌ Erro na importação: ${error}`,
+    });
+  }, []);
 
   const formatDuration = (start: number, end: number): string => {
     const duration = end - start;
@@ -212,11 +261,101 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
           <FontAwesomeIcon icon={faHistory} />
           Histórico de Gravações
         </h2>
-        <button className="recording-btn recording-btn-back" onClick={onBack}>
-          <FontAwesomeIcon icon={faChevronLeft} />
-          Voltar
-        </button>
+
+        <div className="recording-history-header-actions">
+          {' '}
+          {/* Export/Import buttons */}
+          <div className="recording-history-bulk-actions">
+            {/* Export Button */}
+            <button
+              className="download-json-button"
+              onClick={async () => {
+                if (selectedIds.size === 0) return;
+
+                try {
+                  console.log('🚀 Iniciando exportação...');
+                  const exportData = await RecordingService.exportMany(
+                    Array.from(selectedIds)
+                  );
+
+                  // Download JSON
+                  const blob = new Blob([exportData], {
+                    type: 'application/json',
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = `recordings_${new Date()
+                    .toISOString()
+                    .replace(/[:.]/g, '-')
+                    .slice(0, -5)}.json`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(url);
+
+                  handleExportSuccess(selectedIds.size);
+                } catch (error) {
+                  handleExportError(
+                    error instanceof Error ? error.message : 'Erro desconhecido'
+                  );
+                }
+              }}
+              disabled={selectedIds.size === 0}
+              title={
+                selectedIds.size === 0
+                  ? 'Selecione gravações para exportar'
+                  : `Exportar ${selectedIds.size} gravação(ões)`
+              }
+            >
+              📥 Exportar ({selectedIds.size})
+            </button>
+
+            {/* Import Button */}
+            <button
+              className="import-json-button"
+              onClick={() => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = async (e) => {
+                  const file = (e.target as HTMLInputElement).files?.[0];
+                  if (!file) return;
+
+                  try {
+                    const content = await file.text();
+                    const importedIds = await RecordingService.importMany(
+                      content
+                    );
+                    handleImportSuccess(importedIds);
+                  } catch (error) {
+                    handleImportError(
+                      error instanceof Error
+                        ? error.message
+                        : 'Erro desconhecido'
+                    );
+                  }
+                };
+                input.click();
+              }}
+              title="Importar gravações de arquivo JSON"
+            >
+              📤 Importar
+            </button>
+          </div>
+          <button className="recording-btn recording-btn-back" onClick={onBack}>
+            <FontAwesomeIcon icon={faChevronLeft} />
+            Voltar
+          </button>
+        </div>
       </div>
+
+      {/* Notification */}
+      {notification && (
+        <div className={`recording-history-notification ${notification.type}`}>
+          {notification.message}
+        </div>
+      )}
 
       {/* Content */}
       <div className="recording-history-content">

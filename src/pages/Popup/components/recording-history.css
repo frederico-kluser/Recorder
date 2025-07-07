@@ -348,3 +348,164 @@
 .recording-history-table-container::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
 }
+
+/* Header Actions */
+.recording-history-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.recording-history-bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* Download JSON Button */
+.download-json-button {
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: all 0.2s ease;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.download-json-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.download-json-button:disabled {
+  background: var(--btn-disabled);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.download-json-button.downloading {
+  background: var(--btn-loading);
+  cursor: wait;
+}
+
+.download-json-button .spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Import JSON Button */
+.import-json-button {
+  background: var(--success-gradient);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: all 0.2s ease;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.import-json-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.import-json-button:disabled {
+  background: var(--btn-disabled);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.import-json-button.importing {
+  background: var(--btn-loading);
+  cursor: wait;
+}
+
+.import-json-button .spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Notification */
+.recording-history-notification {
+  margin: 0 var(--spacing-lg);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  animation: slideDown 0.3s ease;
+}
+
+.recording-history-notification.success {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
+}
+
+.recording-history-notification.error {
+  background: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments for bulk actions */
+@media (max-width: 768px) {
+  .recording-history-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .recording-history-header-actions {
+    justify-content: space-between;
+  }
+
+  .recording-history-bulk-actions {
+    flex: 1;
+    justify-content: flex-start;
+  }
+
+  .download-json-button,
+  .import-json-button {
+    font-size: var(--font-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    min-width: 80px;
+  }
+}
