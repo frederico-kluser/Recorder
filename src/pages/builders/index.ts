@@ -9,6 +9,8 @@ import {
   isSupportedActionType,
 } from '../types';
 import { TimingConfig, DEFAULT_TIMING_CONFIG } from '../types/config';
+import type { RecordingExportContext } from '../generators/template/TemplateRenderer';
+import { TemplateRenderer, createTemplateRenderer } from '../generators/template/TemplateRenderer';
 
 const FILLABLE_INPUT_TYPES = [
   '',
@@ -293,12 +295,12 @@ export abstract class ScriptBuilder {
   };
 
   protected pushComments = (comments: string) => {
-    this.codes.push(`\n  ${comments}`);
+    this.codes.push(`${comments}`);
     return this;
   };
 
   protected pushCodes = (codes: string) => {
-    this.codes.push(`\n  ${codes}\n`);
+    this.codes.push(`${codes}`);
     return this;
   };
 
@@ -370,6 +372,16 @@ export abstract class ScriptBuilder {
 }
 
 export class CypressScriptBuilder extends ScriptBuilder {
+  private templateRenderer: TemplateRenderer;
+
+  constructor(
+    showComments: boolean,
+    timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG
+  ) {
+    super(showComments, timingConfig);
+    this.templateRenderer = createTemplateRenderer();
+  }
+
   // Cypress automatically detects and waits for the page to finish loading
   click = (selector: string, causesNavigation: boolean) => {
     this.pushCodes(`cy.get('${selector}').click();`);
@@ -456,6 +468,37 @@ export class CypressScriptBuilder extends ScriptBuilder {
       ''
     )}});`;
   };
+
+  /**
+   * Retorna apenas os comandos Cypress sem o wrapper de teste
+   * @returns Array de comandos Cypress
+   */
+  getCommands = (): string[] => {
+    return this.codes;
+  };
+
+  /**
+   * Constrói o script completo usando o TemplateRenderer
+   * @param context - Contexto de exportação com informações do teste
+   * @returns Script Cypress formatado com o novo template
+   */
+  buildScriptWithTemplate = (context: Partial<RecordingExportContext>): string => {
+    const commands = this.getCommands();
+    
+    const fullContext: RecordingExportContext = {
+      testName: context.testName || 'Teste Automatizado',
+      url: context.url || '/',
+      actions: context.actions || [],
+      commands: commands,
+      showComments: this.showComments,
+      exportOptions: context.exportOptions || {
+        viewportWidth: 1366,
+        viewportHeight: 768
+      }
+    };
+
+    return this.templateRenderer.render(fullContext);
+  };
 }
 
 /**
@@ -509,4 +552,46 @@ export const genCypressCode = (
   timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG
 ): string => {
   return genCode(actions, showComments, ScriptType.Cypress, timingConfig);
+};
+
+/**
+ * Gera código Cypress usando o novo template com suporte a sizes
+ * @param actions - Array de ações capturadas
+ * @param context - Contexto de exportação com informações adicionais
+ * @param showComments - Se deve incluir comentários no código gerado
+ * @param timingConfig - Configuração de timing para waits entre ações
+ * @returns Código Cypress formatado com o novo template
+ */
+export const genCypressCodeWithTemplate = (
+  actions: Action[],
+  context: Partial<RecordingExportContext> = {},
+  showComments: boolean = true,
+  timingConfig: TimingConfig = DEFAULT_TIMING_CONFIG
+): string => {
+  const scriptBuilder = new CypressScriptBuilder(showComments, timingConfig);
+
+  for (let i = 0; i < actions.length; i++) {
+    const action = actions[i];
+
+    if (!isSupportedActionType(action.type)) {
+      continue;
+    }
+
+    const nextAction = actions[i + 1];
+    const causesNavigation = nextAction?.type === ActionType.Navigate;
+
+    scriptBuilder.pushActionContext(
+      new ActionContext(action, ScriptType.Cypress, {
+        causesNavigation,
+        isStateful: isActionStateful(action),
+      })
+    );
+  }
+
+  scriptBuilder.buildCodes();
+  
+  return scriptBuilder.buildScriptWithTemplate({
+    ...context,
+    actions
+  });
 };

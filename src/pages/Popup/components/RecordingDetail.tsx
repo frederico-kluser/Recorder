@@ -2,11 +2,12 @@
  * Componente para exibir os detalhes de uma gravação específica
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { RecordingEntry } from '../../types/recording';
 import { ScriptType } from '../../types';
 import { useReplay } from '../../../hooks/use-replay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { genCypressCodeWithTemplate } from '../../builders';
 import {
   faChevronLeft,
   faCode,
@@ -24,7 +25,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ActionList from '../../Content/ActionList';
-import CodeGen from '../../Content/CodeGen';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { truncateText } from '../../Common/utils/text';
 import {
   downloadTestFile,
@@ -49,6 +51,30 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
   const [copied, setCopied] = useState(false);
   const { replayState, isReplaying, startReplay, stopReplay, error } = useReplay();
 
+  const getCypressCode = useMemo((): string => {
+    console.log('🔄 [RecordingDetail] Gerando código para Cypress');
+    
+    // Se já tem o template novo, usa ele
+    if (recording.code.cypressTemplate) {
+      return recording.code.cypressTemplate;
+    }
+    
+    // Senão, gera o template novo a partir das ações
+    try {
+      return genCypressCodeWithTemplate(recording.actions, {
+        testName: recording.title,
+        url: recording.url,
+        exportOptions: {
+          viewportWidth: 1366,
+          viewportHeight: 768
+        }
+      }, true);
+    } catch (error) {
+      console.error('❌ Erro ao gerar template novo, usando código antigo:', error);
+      return recording.code.cypress;
+    }
+  }, [recording]);
+
   const handleCopy = useCallback(() => {
     console.log(
       '📋 [RecordingDetail] Código copiado para área de transferência'
@@ -59,13 +85,13 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
 
   const handleDownload = useCallback(() => {
     try {
-      const code = getCypressCode();
+      const code = getCypressCode;
       const { filename, content } = prepareTestDownload(code, recording.title);
       downloadTestFile(filename, content);
     } catch (error) {
       console.error('❌ [RecordingDetail] Erro ao baixar teste:', error);
     }
-  }, [recording]);
+  }, [getCypressCode, recording.title]);
 
   const handleReplay = useCallback(async () => {
     try {
@@ -90,11 +116,6 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
       hour: '2-digit',
       minute: '2-digit',
     });
-  };
-
-  const getCypressCode = (): string => {
-    console.log('🔄 [RecordingDetail] Gerando código para Cypress');
-    return recording.code.cypress;
   };
 
   const formatDuration = (start: number, end: number): string => {
@@ -182,7 +203,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
             <div className="recording-detail-actions">
               <span className="recording-detail-script-type">Cypress</span>
 
-              <CopyToClipboard text={getCypressCode()} onCopy={handleCopy}>
+              <CopyToClipboard text={getCypressCode} onCopy={handleCopy}>
                 <button className="recording-btn recording-btn-secondary">
                   <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
                   {copied ? 'Copiado!' : 'Copiar'}
@@ -281,10 +302,20 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
                 </span>
               </div>
               <div className="recording-detail-code-content">
-                <CodeGen
-                  actions={recording.actions}
-                  library={ScriptType.Cypress}
-                />
+                <SyntaxHighlighter
+                  language="javascript"
+                  style={vscDarkPlus}
+                  customStyle={{
+                    background: 'none',
+                    padding: 0,
+                    overflow: 'auto',
+                    paddingRight: '1em',
+                    paddingBottom: '1em',
+                  }}
+                  data-testid="code-block"
+                >
+                  {getCypressCode}
+                </SyntaxHighlighter>
               </div>
             </div>
           )}

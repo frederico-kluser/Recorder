@@ -6,7 +6,7 @@
 import { RecordingEntry } from '../types/recording';
 import { Action } from '../types';
 import { recordingStore } from './recording-store';
-import { genCypressCode } from '../builders';
+import { genCypressCode, genCypressCodeWithTemplate } from '../builders';
 
 /**
  * Service para operações de gravação
@@ -58,9 +58,18 @@ export class RecordingService {
       suffix++;
     }
 
-    // Gera código apenas para Cypress
+    // Gera código apenas para Cypress (mantém a versão antiga para compatibilidade)
     const code = {
       cypress: genCypressCode(actions, true),
+      // Nova versão com template - será usada no download
+      cypressTemplate: genCypressCodeWithTemplate(actions, {
+        testName: `${hostname} - ${dateStr} ${timeStr.replace('-', ':')}`,
+        url: url,
+        exportOptions: {
+          viewportWidth: 1366,
+          viewportHeight: 768
+        }
+      }, true),
     };
 
     // Cria entrada da gravação
@@ -329,6 +338,16 @@ export class RecordingService {
                 recording.cypressCode ||
                 recording.code?.cypress ||
                 genCypressCode(recording.actions),
+              cypressTemplate:
+                recording.code?.cypressTemplate ||
+                genCypressCodeWithTemplate(recording.actions, {
+                  testName: title,
+                  url: recording.url,
+                  exportOptions: {
+                    viewportWidth: 1366,
+                    viewportHeight: 768
+                  }
+                }, true),
             },
           };
 

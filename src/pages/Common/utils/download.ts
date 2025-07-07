@@ -28,7 +28,7 @@ function sanitizeFilename(filename: string): string {
 /**
  * Cria um nome de arquivo baseado no título da gravação
  * @param title - Título da gravação
- * @returns Nome do arquivo .ts
+ * @returns Nome do arquivo .cy.js
  */
 export function createTestFilename(title: string): string {
   const sanitized = sanitizeFilename(title);
@@ -37,7 +37,7 @@ export function createTestFilename(title: string): string {
   // Se o título ficar vazio após sanitização, usa um nome padrão
   const baseName = sanitized || 'cypress-test';
 
-  return `${baseName}_${timestamp}.spec.ts`;
+  return `${baseName}_${timestamp}.cy.js`;
 }
 
 /**
@@ -83,18 +83,8 @@ export function prepareTestDownload(
   code: string,
   title: string
 ): ExportableTest {
-  // Adiciona cabeçalho ao arquivo
-  const header = `/**
- * Teste Cypress gerado automaticamente
- * Gravação: ${title}
- * Data: ${new Date().toLocaleString('pt-BR')}
- * Gerado por: Fleury Cypress Recorder
- */
-
-`;
-
   return {
     filename: createTestFilename(title),
-    content: header + code,
+    content: code,
   };
 }

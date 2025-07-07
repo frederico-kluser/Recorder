@@ -32,6 +32,7 @@ export interface RecordingEntry {
   /** Código gerado para Cypress */
   code: {
     cypress: string;
+    cypressTemplate?: string; // Nova versão com template
   };
 }
 
