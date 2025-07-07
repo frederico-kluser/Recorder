@@ -101,10 +101,34 @@ export class TemplateRenderer {
    * @returns Array de strings com os comandos formatados
    */
   private formatCommands(commands: string[]): string[] {
-    return commands.map(cmd => {
-      // Remove quebras de linha extras e ajusta indentação
-      return cmd.trim().replace(/\n\s*/g, '\n    ');
-    });
+    return commands
+      .filter(cmd => {
+        const trimmed = cmd.trim();
+        // Remove comandos cy.visit() e cy.viewport() pois já estão no template
+        return !trimmed.includes('cy.visit(') && !trimmed.includes('cy.viewport(');
+      })
+      .map(cmd => {
+        // Remove quebras de linha extras e ajusta indentação
+        return cmd.trim().replace(/\n\s*/g, '\n                ');
+      });
+  }
+
+  /**
+   * Extrai dimensões do viewport dos comandos Cypress
+   * @param commands - Array de comandos
+   * @returns Objeto com largura e altura ou null
+   */
+  private extractViewportFromCommands(commands: string[]): { width: number; height: number } | null {
+    for (const cmd of commands) {
+      const viewportMatch = cmd.match(/cy\.viewport\((\d+),\s*(\d+)\)/);
+      if (viewportMatch) {
+        return {
+          width: parseInt(viewportMatch[1], 10),
+          height: parseInt(viewportMatch[2], 10)
+        };
+      }
+    }
+    return null;
   }
 
   /**
@@ -115,9 +139,12 @@ export class TemplateRenderer {
   render(context: RecordingExportContext): string {
     const { testName, url, commands, exportOptions } = context;
     
+    // Tenta extrair viewport dos comandos primeiro
+    const extractedViewport = this.extractViewportFromCommands(commands);
+    
     // Valida viewport
-    const viewportWidth = exportOptions?.viewportWidth || 1366;
-    const viewportHeight = exportOptions?.viewportHeight || 768;
+    const viewportWidth = extractedViewport?.width || exportOptions?.viewportWidth || 1366;
+    const viewportHeight = extractedViewport?.height || exportOptions?.viewportHeight || 768;
     
     if (viewportWidth < 320 || viewportWidth > 7680) {
       throw new Error(`Viewport width inválido: ${viewportWidth}. Deve estar entre 320 e 7680.`);
@@ -136,8 +163,9 @@ export class TemplateRenderer {
     const sanitizedUrl = this.sanitizeUrl(url);
     const formattedCommands = this.formatCommands(commands);
     
-    // Usa apenas um size com 'custom' conforme solicitado
-    const sizes = [['custom', viewportWidth, viewportHeight]];
+    // Determina o nome do dispositivo baseado no tamanho
+    const deviceName = viewportWidth >= 1366 ? 'Desktop' : 'custom';
+    const sizes = [[deviceName, viewportWidth, viewportHeight]];
 
     // Gera o template
     return `/// <reference types="cypress" />
