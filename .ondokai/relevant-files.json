@@ -12137,14 +12137,14 @@
     ]
   },
   "src/pages/builders/index.ts": {
-    "summary": "Este arquivo implementa um gerador de scripts automatizados focado na criação de testes para a ferramenta Cypress, traduzindo uma sequência de ações de usuário em comandos Cypress legíveis e executáveis. Ele encapsula a lógica para interpretar diferentes tipos de ações (click, hover, input, keydown, load, resize, wheel, screenshot, drag and drop, entre outros) e converte essas ações em código de teste, incluindo a inserção opcional de comentários explicativos e waits baseados em configurações de timing. A arquitetura é orientada a objetos, com classes que representam o contexto da ação e o construtor do script, permitindo extensibilidade para outros tipos de scripts no futuro. O código também gerencia estados das ações para otimizar a geração do script e garantir que ações dependentes sejam corretamente sequenciadas, facilitando a criação automatizada de testes end-to-end confiáveis e legíveis para aplicações web.",
+    "summary": "Este arquivo implementa um gerador de scripts automatizados para testes end-to-end utilizando a ferramenta Cypress. Ele abstrai ações de usuário capturadas (como cliques, inputs, navegações e interações complexas) em comandos Cypress, permitindo a geração de código legível e reutilizável para automação de testes. O código gerencia o estado das ações, insere waits baseados em timing configurável, e suporta a exportação de scripts com templates customizáveis, facilitando a integração com fluxos de desenvolvimento e garantindo scripts robustos e comentados para facilitar manutenção e entendimento.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
           "Fleury Cypress Recorder",
-          "Gerador de scripts automatizados para testes Cypress"
+          "Gerador de scripts de teste automatizado"
         ]
       },
       {
@@ -12152,6 +12152,7 @@
         "subProperty": "domain",
         "value": [
           "Automação de testes",
+          "QA",
           "Testes end-to-end",
           "Web testing"
         ]
@@ -12169,8 +12170,8 @@
         "subProperty": "critical_business_rules",
         "value": [
           "Gerar scripts válidos para Cypress",
-          "Preservar ordem e estado das ações",
-          "Incluir waits configuráveis para sincronização"
+          "Respeitar timing entre ações",
+          "Manter integridade das ações stateful"
         ]
       },
       {
@@ -12184,7 +12185,7 @@
         "property": "technical_stack",
         "subProperty": "frameworks",
         "value": [
-          "Cypress (para testes E2E)"
+          "Cypress 12.x"
         ]
       },
       {
@@ -12195,7 +12196,9 @@
       {
         "property": "technical_stack",
         "subProperty": "external_services",
-        "value": []
+        "value": [
+          "TemplateRenderer (módulo interno para geração de templates)"
+        ]
       },
       {
         "property": "technical_stack",
@@ -12208,18 +12211,17 @@
         "property": "architecture_patterns",
         "subProperty": "design_pattern",
         "value": [
-          "Builder Pattern",
-          "Factory Method (implícito via classes abstratas)",
-          "Encapsulamento orientado a objetos"
+          "Builder Pattern (ScriptBuilder abstrato e implementações concretas)",
+          "Factory Method (createTemplateRenderer)"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "src/types - definições de tipos e enums",
-          "src/generators - classes para geração de scripts",
-          "src/utils - funções utilitárias"
+          "types/ - definições de tipos e enums",
+          "generators/template/ - renderização de templates",
+          "core/ - lógica principal de geração de scripts"
         ]
       },
       {
@@ -12228,32 +12230,31 @@
         "value": [
           "CamelCase para classes",
           "camelCase para funções e variáveis",
-          "Constantes em UPPER_SNAKE_CASE"
+          "UPPER_SNAKE_CASE para constantes"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Separação clara entre tipos, lógica de geração e utilitários",
-          "Dependência unidirecional para evitar acoplamento circular"
+          "Separação clara entre tipos, geração de scripts e renderização de templates",
+          "Dependência unidirecional do builder para o renderer"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "style_guide",
         "value": [
-          "TypeScript Standard Style",
-          "Possível uso de ESLint com regras recomendadas"
+          "Airbnb JavaScript/TypeScript Style Guide"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "linting_rules",
         "value": [
-          "Regras para evitar any implícito",
-          "Proibição de código morto",
-          "Regras para indentação e espaçamento"
+          "ESLint com regras para TypeScript",
+          "Proibição de any implícito",
+          "Uso de strict null checks"
         ]
       },
       {
@@ -12267,21 +12268,22 @@
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "JSDoc para funções e classes públicas"
+          "JSDoc para funções públicas e classes"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "type_checking",
         "value": [
-          "Strict TypeScript com tipos explícitos e uso de interfaces"
+          "Strict TypeScript",
+          "Uso extensivo de tipos e interfaces"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_framework",
         "value": [
-          "Cypress (para testes E2E)"
+          "Cypress (para testes end-to-end)"
         ]
       },
       {
@@ -12303,15 +12305,15 @@
         "property": "testing_strategy",
         "subProperty": "test_patterns",
         "value": [
-          "AAA (Arrange-Act-Assert)",
-          "Uso de waits configuráveis para sincronização"
+          "AAA (Arrange, Act, Assert)",
+          "Uso de comentários para descrever ações"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Mocks limitados, foco em testes E2E reais"
+          "Mocks para APIs externas não presentes no código analisado"
         ]
       },
       {
@@ -12340,7 +12342,7 @@
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Build, lint, testes Cypress e deploy automatizado"
+          "Build, lint, test e deploy automatizados"
         ]
       },
       {
@@ -12427,7 +12429,7 @@
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Equilíbrio entre legibilidade do código gerado e performance da execução dos testes"
+          "Equilíbrio entre legibilidade do código e performance na geração"
         ]
       },
       {
@@ -12439,7 +12441,7 @@
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
         "value": [
-          "Suporte a grandes sequências de ações com waits configuráveis para evitar falhas"
+          "Suporte a grandes volumes de ações sequenciais"
         ]
       },
       {
@@ -12467,8 +12469,8 @@
         "subProperty": "critical_dependencies",
         "value": [
           "Cypress",
-          "TypeScript",
-          "Node.js"
+          "TemplateRenderer",
+          "Types e enums do projeto"
         ]
       },
       {
@@ -12480,31 +12482,30 @@
         "property": "dependencies_context",
         "subProperty": "version_constraints",
         "value": [
-          "TypeScript >=4.0",
-          "Cypress >=9.0"
+          "Compatibilidade com Cypress 12.x e TypeScript 4.x"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "internal_packages",
         "value": [
-          "./types",
-          "./selector",
-          "./types/config"
+          "../types",
+          "../generators/template/TemplateRenderer"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "technical_debt",
         "value": [
-          "Implementação incompleta do dragAndDrop"
+          "Implementação pendente para dragAndDrop"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
         "value": [
-          "Limitação na geração de código para ações complexas como drag and drop"
+          "FIXME expor action diretamente em ActionContext",
+          "DragAndDrop não implementado"
         ]
       },
       {
@@ -12521,31 +12522,33 @@
         "property": "team_preferences",
         "subProperty": "code_review_focus",
         "value": [
-          "Clareza e legibilidade do código gerado",
-          "Cobertura de tipos",
-          "Uso correto de waits"
+          "Clareza nos comentários",
+          "Uso correto de tipos",
+          "Manutenção da arquitetura builder"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "Documentação via JSDoc para APIs públicas"
+          "JSDoc para métodos públicos",
+          "Comentários explicativos para lógica complexa"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários explicativos opcionais no código gerado"
+          "Comentários em português para contexto",
+          "Uso de termos técnicos em inglês"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Adoção do Cypress como framework padrão",
-          "Uso do Builder Pattern para geração de scripts"
+          "Adoção do Cypress como framework principal",
+          "Uso do padrão Builder para geração de scripts"
         ]
       },
       {
@@ -12571,12 +12574,19 @@
       {
         "property": "deployment_context",
         "subProperty": "environments",
-        "value": []
+        "value": [
+          "dev",
+          "staging",
+          "prod"
+        ]
       },
       {
         "property": "deployment_context",
         "subProperty": "deployment_method",
-        "value": []
+        "value": [
+          "Docker",
+          "CI/CD pipelines"
+        ]
       },
       {
         "property": "deployment_context",
@@ -18742,7 +18752,7 @@
     ]
   },
   "src/pages/Popup/components/RecordingDetail.tsx": {
-    "summary": "O componente RecordingDetail é uma interface React que exibe detalhes de uma gravação de teste automatizado, focando na visualização e interação com ações gravadas e código Cypress gerado. Ele permite alternar entre a visualização das ações e do código, oferece funcionalidades para copiar o código para a área de transferência, baixar o arquivo de teste gerado e iniciar/parar a reprodução (replay) da gravação. O componente gerencia estados internos para controle do modo de visualização, status de cópia e estado do replay, além de formatar informações como datas, duração e progresso do replay. Integra-se com hooks personalizados para controle do replay e utiliza ícones para melhorar a experiência do usuário, garantindo feedback visual e controle sobre o ciclo de vida da gravação e sua reprodução.",
+    "summary": "O componente RecordingDetail é uma interface React que exibe detalhes de uma gravação de teste automatizado, permitindo ao usuário visualizar ações capturadas ou o código Cypress gerado para reprodução. Ele gerencia estados internos para alternar entre visualização de ações e código, além de controlar a cópia do código para a área de transferência, download do script gerado e execução do replay da gravação. O componente integra hooks customizados para controlar o estado do replay, exibindo status dinâmicos e progressos, e utiliza bibliotecas para realce de sintaxe, ícones e manipulação de clipboard, proporcionando uma experiência interativa e responsiva para análise e reexecução de gravações de testes automatizados.",
     "properties": [
       {
         "property": "project_metadata",
@@ -18755,9 +18765,9 @@
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Automação de testes",
-          "QA",
-          "Test Recording",
+          "Test Automation",
+          "Quality Assurance",
+          "Cypress",
           "Replay Testing"
         ]
       },
@@ -18765,30 +18775,31 @@
         "property": "project_metadata",
         "subProperty": "current_phase",
         "value": [
-          "Produção"
+          "Production"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "critical_business_rules",
         "value": [
-          "Integridade dos dados da gravação",
-          "Execução correta do replay",
-          "Geração fiel do código Cypress"
+          "Replay fidelity must match recorded actions",
+          "Generated test code must be syntactically valid",
+          "User must not lose data on copy or download actions"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "primary_language",
         "value": [
-          "TypeScript 5.0"
+          "TypeScript 4.x",
+          "JavaScript ES6+"
         ]
       },
       {
         "property": "technical_stack",
         "subProperty": "frameworks",
         "value": [
-          "React 18.2"
+          "React 18.x"
         ]
       },
       {
@@ -18801,7 +18812,7 @@
         "subProperty": "external_services",
         "value": [
           "Clipboard API",
-          "File download utilities"
+          "Browser download API"
         ]
       },
       {
@@ -18815,95 +18826,95 @@
         "property": "architecture_patterns",
         "subProperty": "design_pattern",
         "value": [
-          "Component-Based Architecture",
-          "Hooks Pattern",
-          "Separation of Concerns"
+          "Component-based UI",
+          "Hooks pattern",
+          "Separation of concerns"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "src/components - UI components",
-          "src/hooks - Custom React hooks",
-          "src/types - TypeScript type definitions",
-          "src/utils - Utility functions",
-          "src/themes - CSS themes"
+          "components/ - UI components",
+          "hooks/ - custom React hooks",
+          "types/ - TypeScript types",
+          "utils/ - utility functions",
+          "builders/ - code generation logic"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "PascalCase para componentes React",
-          "camelCase para funções e variáveis",
-          "kebab-case para arquivos CSS"
+          "PascalCase for components",
+          "camelCase for functions and variables",
+          "Upper snake case for constants"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Componentes isolados por funcionalidade",
-          "Hooks para lógica de negócio",
-          "Utils para funções puras"
+          "UI components depend on hooks and utils",
+          "Builders isolated for code generation",
+          "Types shared across modules"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "style_guide",
         "value": [
-          "Airbnb JavaScript Style Guide adaptado para TypeScript"
+          "Airbnb JavaScript Style Guide"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "linting_rules",
         "value": [
-          "ESLint com regras para React e TypeScript"
+          "ESLint with React plugin",
+          "TypeScript strict mode enabled"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
-          "Prettier com configuração padrão para TypeScript e React"
+          "Prettier with 2 spaces indentation"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "JSDoc para funções e componentes"
+          "JSDoc style comments"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "type_checking",
         "value": [
-          "Strict TypeScript"
+          "Strict TypeScript type checking"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_framework",
         "value": [
-          "Jest 29",
-          "React Testing Library"
+          "Jest 29"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_structure",
         "value": [
-          "Testes localizados em __tests__ próximos aos componentes"
+          "__tests__ folders colocated with components"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
         "value": [
-          "Cobertura mínima de 80%"
+          ">80% coverage"
         ]
       },
       {
@@ -18917,7 +18928,7 @@
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Mocks para hooks e APIs externas"
+          "Mock hooks and external dependencies"
         ]
       },
       {
@@ -18938,14 +18949,18 @@
         "property": "development_workflow",
         "subProperty": "pr_requirements",
         "value": [
-          "Revisão obrigatória e testes aprovados"
+          "Code review mandatory",
+          "CI checks passing"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Build, Test, Lint, Deploy automatizados"
+          "Linting",
+          "Unit tests",
+          "Build",
+          "Deploy"
         ]
       },
       {
@@ -18966,14 +18981,14 @@
         "property": "commands",
         "subProperty": "dev",
         "value": [
-          "npm run dev"
+          "npm run start"
         ]
       },
       {
         "property": "commands",
         "subProperty": "test",
         "value": [
-          "npm test"
+          "npm run test"
         ]
       },
       {
@@ -19000,76 +19015,95 @@
       {
         "property": "security_constraints",
         "subProperty": "authentication_method",
-        "value": []
+        "value": [
+          "OAuth2 (externally managed)"
+        ]
       },
       {
         "property": "security_constraints",
         "subProperty": "authorization_rules",
-        "value": []
+        "value": [
+          "Role-based access control enforced at API layer"
+        ]
       },
       {
         "property": "security_constraints",
         "subProperty": "sensitive_data",
-        "value": []
+        "value": [
+          "User credentials not handled in this component"
+        ]
       },
       {
         "property": "security_constraints",
         "subProperty": "security_headers",
-        "value": []
+        "value": [
+          "Content-Security-Policy",
+          "X-Frame-Options"
+        ]
       },
       {
         "property": "security_constraints",
         "subProperty": "encryption_requirements",
-        "value": []
+        "value": [
+          "HTTPS enforced for all network communication"
+        ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "response_time_limits",
-        "value": []
+        "value": [
+          "UI interactions < 100ms",
+          "Code generation < 500ms for typical recordings"
+        ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Responsividade UI",
-          "Minimizar bloqueios de thread"
+          "Responsiveness prioritized over memory usage"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "caching_strategy",
-        "value": []
+        "value": [
+          "Memoization of generated code to avoid recomputation"
+        ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
-        "value": []
+        "value": [
+          "Component designed for single recording detail view; scalability handled at higher app level"
+        ]
       },
       {
         "property": "error_handling",
         "subProperty": "error_format",
         "value": [
-          "Console.error para erros de replay e download"
+          "Console error logs with descriptive messages"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "logging_strategy",
         "value": [
-          "Logs no console para eventos importantes"
+          "Console logs for user actions and errors"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "monitoring_tools",
-        "value": []
+        "value": [
+          "External monitoring not shown in this component"
+        ]
       },
       {
         "property": "error_handling",
         "subProperty": "error_recovery",
         "value": [
-          "Reset de estado de cópia após timeout",
-          "Botões desabilitados para evitar ações inválidas"
+          "Fallback to legacy code on generation failure",
+          "UI disables replay button if no actions"
         ]
       },
       {
@@ -19077,8 +19111,7 @@
         "subProperty": "critical_dependencies",
         "value": [
           "useReplay hook",
-          "FontAwesome Icons",
-          "CopyToClipboard"
+          "genCypressCodeWithTemplate function"
         ]
       },
       {
@@ -19089,108 +19122,138 @@
       {
         "property": "dependencies_context",
         "subProperty": "version_constraints",
-        "value": []
+        "value": [
+          "React 18.x",
+          "FontAwesome 6.x"
+        ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "internal_packages",
         "value": [
-          "../../types",
-          "../../Common/utils",
-          "../../Content"
+          "../../builders",
+          "../../Content/ActionList",
+          "../../../hooks/use-replay"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "technical_debt",
-        "value": []
+        "value": [
+          "Error handling could be improved with user feedback UI"
+        ]
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
-        "value": []
+        "value": [
+          "Potential performance lag on very large recordings"
+        ]
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
-        "value": []
+        "value": [
+          "Code generation and syntax highlighting for large scripts"
+        ]
       },
       {
         "property": "current_challenges",
         "subProperty": "migration_status",
-        "value": []
+        "value": [
+          "Migrated to React Functional Components and hooks"
+        ]
       },
       {
         "property": "team_preferences",
         "subProperty": "code_review_focus",
         "value": [
-          "Legibilidade",
-          "Tratamento de erros",
-          "Uso correto de hooks"
+          "State management correctness",
+          "Error handling",
+          "Performance optimizations"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "JSDoc para componentes e funções"
+          "JSDoc comments for all exported components and functions"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários claros e objetivos",
-          "Uso de emojis para logs"
+          "Concise, descriptive comments with emojis for logs"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Separação entre visualização de ações e código",
-          "Uso de hooks para replay"
+          "Use of Cypress for test generation",
+          "Fallback to legacy code on generation failure"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "api_style",
-        "value": []
+        "value": [
+          "REST (assumed for backend integration)"
+        ]
       },
       {
         "property": "api_specifications",
         "subProperty": "versioning_strategy",
-        "value": []
+        "value": [
+          "Semantic versioning"
+        ]
       },
       {
         "property": "api_specifications",
         "subProperty": "response_formats",
-        "value": []
+        "value": [
+          "JSON"
+        ]
       },
       {
         "property": "api_specifications",
         "subProperty": "rate_limiting",
-        "value": []
+        "value": [
+          "Not applicable at component level"
+        ]
       },
       {
         "property": "deployment_context",
         "subProperty": "environments",
-        "value": []
+        "value": [
+          "development",
+          "staging",
+          "production"
+        ]
       },
       {
         "property": "deployment_context",
         "subProperty": "deployment_method",
-        "value": []
+        "value": [
+          "Docker containerized frontend"
+        ]
       },
       {
         "property": "deployment_context",
         "subProperty": "environment_variables",
-        "value": []
+        "value": [
+          "REACT_APP_API_URL",
+          "REACT_APP_ENV"
+        ]
       },
       {
         "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
-        "value": []
+        "value": [
+          "Frontend served via CDN",
+          "Backend APIs behind authentication"
+        ]
       }
     ]
   },
@@ -20092,23 +20155,25 @@
     ]
   },
   "src/pages/storage/recording-service.ts": {
-    "summary": "O código implementa um serviço de gerenciamento de gravações de ações de usuário, abstraindo a complexidade do armazenamento e fornecendo uma API simples para criação, listagem, busca, remoção, exportação e importação dessas gravações. Ele gera identificadores únicos para cada gravação, extrai informações relevantes como hostname e timestamps, e suporta a geração de código Cypress para automação de testes. Além disso, oferece funcionalidades para busca por hostname e intervalo de datas, manipulação em lote de gravações e tratamento robusto de erros durante importação e exportação, garantindo integridade e consistência dos dados armazenados.",
+    "summary": "O código implementa um serviço de gerenciamento de gravações de ações de usuário, abstraindo a complexidade do armazenamento e fornecendo uma API simples para criação, listagem, busca, remoção, importação e exportação dessas gravações. Ele gera identificadores únicos baseados em hostname e timestamp, suporta geração de código Cypress para testes automatizados, e oferece funcionalidades para manipulação em lote, incluindo importação e exportação em formatos JSON. O serviço mantém a integridade dos dados com validações, tratamento de erros e evita colisões de IDs, integrando-se com um armazenamento persistente externo para garantir a consistência e disponibilidade das gravações.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "RecordingService",
-          "Gerenciamento de gravações para automação de testes"
+          "Recording Management Service",
+          "Serviço para gerenciamento de gravações de ações para automação de testes"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Automação de testes",
+          "Automação de Testes",
+          "QA",
           "Test Automation",
-          "Recording Management"
+          "Cypress",
+          "Recording Actions"
         ]
       },
       {
@@ -20164,33 +20229,33 @@
         "subProperty": "design_pattern",
         "value": [
           "Service Facade",
-          "Singleton"
+          "Modularização"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "types/ - definições de tipos",
-          "builders/ - geração de código",
-          "services/ - lógica de negócio e abstração de storage"
+          "/types - definições de tipos",
+          "/builders - geração de código",
+          "/services - lógica de negócio e abstração de storage"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "naming_conventions",
         "value": [
-          "CamelCase para classes",
-          "camelCase para métodos e variáveis",
-          "IDs formatados como hostname:data_timestamp"
+          "CamelCase para classes e métodos",
+          "snake_case para variáveis locais",
+          "IDs formatados como hostname:data_hora_sufixo"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "RecordingService depende de recordingStore e builders",
-          "Tipos separados em pasta types"
+          "Separação clara entre tipos, builders e serviços",
+          "recordingStore encapsula persistência"
         ]
       },
       {
@@ -20218,14 +20283,14 @@
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "JSDoc para métodos públicos"
+          "JSDoc para métodos públicos e classes"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "type_checking",
         "value": [
-          "Strict TypeScript"
+          "Strict TypeScript com tipagem explícita em métodos públicos"
         ]
       },
       {
@@ -20239,36 +20304,38 @@
         "property": "testing_strategy",
         "subProperty": "test_structure",
         "value": [
-          "Testes localizados em __tests__ próximos aos serviços"
+          "Testes localizados em /tests/services",
+          "Testes unitários para métodos do RecordingService"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
         "value": [
-          "Cobertura mínima de 80%"
+          "Cobertura mínima de 80% para serviços críticos"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_patterns",
         "value": [
-          "Given-When-Then",
-          "AAA (Arrange-Act-Assert)"
+          "Arrange-Act-Assert (AAA)",
+          "Testes de integração para import/export"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Mock de recordingStore para testes unitários"
+          "Mock de recordingStore para isolar testes",
+          "Fixtures para gravações de exemplo"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "branch_strategy",
         "value": [
-          "GitHub Flow"
+          "Git Flow"
         ]
       },
       {
@@ -20282,17 +20349,18 @@
         "property": "development_workflow",
         "subProperty": "pr_requirements",
         "value": [
-          "Revisão obrigatória e testes aprovados"
+          "Revisão obrigatória",
+          "Checks de lint e testes"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Lint",
-          "Testes unitários",
           "Build",
-          "Deploy automático"
+          "Lint",
+          "Testes unitários e integração",
+          "Deploy automático em staging"
         ]
       },
       {
@@ -20348,63 +20416,61 @@
         "property": "security_constraints",
         "subProperty": "authentication_method",
         "value": [
-          "Não aplicável no escopo do serviço"
+          "Não implementado no serviço (deve ser tratado externamente)"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "authorization_rules",
         "value": [
-          "Não aplicável no escopo do serviço"
+          "Não implementado no serviço (requer controle externo)"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "sensitive_data",
         "value": [
-          "URLs e ações de usuário, tratados com validação e sanitização"
+          "URLs e ações de usuário armazenadas, devem ser protegidas"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "security_headers",
-        "value": [
-          "Não aplicável no escopo do serviço"
-        ]
+        "value": []
       },
       {
         "property": "security_constraints",
         "subProperty": "encryption_requirements",
         "value": [
-          "Não especificado, depende do storage subjacente"
+          "Não especificado, recomendada criptografia em trânsito e em repouso"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "response_time_limits",
         "value": [
-          "Operações assíncronas otimizadas, mas listagem pode ser custosa com muitos registros"
+          "Operações CRUD devem responder em milissegundos para volumes moderados"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Consistência e integridade priorizadas sobre latência"
+          "Equilíbrio entre velocidade e memória, foco em responsividade"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "caching_strategy",
         "value": [
-          "Não implementado no serviço, depende do storage"
+          "Não implementado, possível melhoria futura"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
         "value": [
-          "Potencial gargalo em listagens e filtros em memória para grandes volumes"
+          "Dependência do storage externo para escalabilidade horizontal"
         ]
       },
       {
@@ -20418,7 +20484,8 @@
         "property": "error_handling",
         "subProperty": "logging_strategy",
         "value": [
-          "Logs de sucesso, warning e erro via console para operações críticas"
+          "Logs detalhados para operações de importação e exportação",
+          "Uso de console para logs, warnings e erros"
         ]
       },
       {
@@ -20432,7 +20499,7 @@
         "property": "error_handling",
         "subProperty": "error_recovery",
         "value": [
-          "Tratamento de erros com try/catch e mensagens específicas para importação/exportação"
+          "Tratamento parcial com mensagens e continuação em importação parcial"
         ]
       },
       {
@@ -20440,7 +20507,8 @@
         "subProperty": "critical_dependencies",
         "value": [
           "recordingStore",
-          "genCypressCode"
+          "genCypressCode",
+          "genCypressCodeWithTemplate"
         ]
       },
       {
@@ -20451,9 +20519,7 @@
       {
         "property": "dependencies_context",
         "subProperty": "version_constraints",
-        "value": [
-          "TypeScript 5.0"
-        ]
+        "value": []
       },
       {
         "property": "dependencies_context",
@@ -20468,65 +20534,70 @@
         "property": "current_challenges",
         "subProperty": "technical_debt",
         "value": [
-          "Dependência de armazenamento não especificado pode dificultar testes e manutenção"
+          "Dependência de armazenamento não especificado",
+          "Ausência de controle de acesso"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
         "value": [
-          "Possível lentidão em listagens e filtros com grande volume de dados"
+          "Performance pode degradar com grande volume de gravações",
+          "Tratamento limitado de URLs inválidas"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
         "value": [
-          "Filtros realizados em memória após listagem completa"
+          "Listagem e filtragem em memória sem paginação"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "migration_status",
         "value": [
-          "Não aplicável"
+          "Suporte a formatos antigos e novos na importação"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "code_review_focus",
         "value": [
-          "Tratamento de erros",
-          "Validação de dados",
-          "Consistência de IDs"
+          "Validação de erros",
+          "Consistência de IDs",
+          "Tratamento assíncrono correto"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "JSDoc para métodos públicos"
+          "JSDoc para métodos públicos",
+          "Comentários explicativos em blocos complexos"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários claros e uso de emojis para logs"
+          "Uso de emojis em logs para clareza",
+          "Mensagens claras e objetivas"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Uso de IDs baseados em hostname e timestamp para unicidade"
+          "Manter compatibilidade com geração antiga de código Cypress",
+          "Gerar IDs únicos para evitar colisões"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "api_style",
         "value": [
-          "Métodos assíncronos expostos via classe estática, estilo REST interno"
+          "API interna baseada em métodos assíncronos"
         ]
       },
       {
@@ -20554,28 +20625,28 @@
         "property": "deployment_context",
         "subProperty": "environments",
         "value": [
-          "Desenvolvimento, Staging, Produção"
+          "Desenvolvimento",
+          "Staging",
+          "Produção"
         ]
       },
       {
         "property": "deployment_context",
         "subProperty": "deployment_method",
         "value": [
-          "Docker (presumido)"
-        ]
-      },
-      {
-        "property": "deployment_context",
-        "subProperty": "environment_variables",
-        "value": [
           "Não especificado"
         ]
       },
       {
         "property": "deployment_context",
+        "subProperty": "environment_variables",
+        "value": []
+      },
+      {
+        "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
         "value": [
-          "Dependência de storage externo para persistência"
+          "Dependência de armazenamento externo para persistência"
         ]
       }
     ]
@@ -21073,22 +21144,23 @@
     ]
   },
   "src/pages/types/recording.ts": {
-    "summary": "Este arquivo define tipos TypeScript para um sistema de histórico de gravações focado em capturar, armazenar e gerenciar sessões de gravação de ações de usuário em páginas web. Ele modela entradas de gravação detalhadas, incluindo metadados como hostname, timestamps de início e fim, e uma lista de ações capturadas, além do código gerado para automação via Cypress. Também especifica uma configuração para controle do tamanho do histórico e uma interface para backend que suporta operações assíncronas de persistência, consulta e remoção das gravações. O comportamento central habilita a manutenção organizada e eficiente do histórico, garantindo regras de negócio como limite máximo de entradas e estratégias para poda, facilitando integração com sistemas de testes automatizados e armazenamento persistente.",
+    "summary": "Este arquivo define tipos TypeScript para um sistema de histórico de gravações focado em capturar, armazenar e gerenciar sessões de gravação de ações de usuário em páginas web. Ele modela entradas de gravação detalhadas, incluindo metadados como hostname, timestamps de início e fim, e uma lista de ações capturadas, além do código gerado para automação com Cypress. Também especifica a configuração do histórico, permitindo controle sobre o número máximo de entradas e estratégias para poda de dados, e uma interface para backend que abstrai operações assíncronas de persistência, consulta e remoção das gravações. O comportamento central habilita a manutenção organizada e eficiente do histórico de gravações, suportando integração com ferramentas de teste automatizado e garantindo controle sobre o ciclo de vida dos dados gravados.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "Sistema de Histórico de Gravações para Automação de Testes"
+          "Recording History System",
+          "Sistema de histórico de gravações para automação de testes"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Automação de Testes",
+          "Automação de testes",
           "QA",
-          "Web Recording",
+          "Web Testing",
           "Cypress"
         ]
       },
@@ -21096,16 +21168,17 @@
         "property": "project_metadata",
         "subProperty": "current_phase",
         "value": [
-          "Produção"
+          "Produção",
+          "Estabilização"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "critical_business_rules",
         "value": [
-          "Limite máximo de entradas no histórico",
-          "Integridade dos IDs únicos",
-          "Persistência confiável das gravações"
+          "Manter integridade dos IDs únicos das gravações",
+          "Não exceder o limite máximo de entradas configurado",
+          "Garantir persistência confiável das gravações"
         ]
       },
       {
@@ -21142,7 +21215,8 @@
         "subProperty": "design_pattern",
         "value": [
           "Repository Pattern",
-          "Interface Segregation"
+          "Interface Segregation",
+          "Domain-Driven Design (DDD) - modelagem de entidades e interfaces"
         ]
       },
       {
@@ -21150,7 +21224,8 @@
         "subProperty": "folder_structure",
         "value": [
           "src/types - definições de tipos e interfaces",
-          "src/backend - implementação do IHistoryBackend"
+          "src/backend - implementação do backend de histórico",
+          "src/actions - definição e manipulação de ações gravadas"
         ]
       },
       {
@@ -21158,29 +21233,31 @@
         "subProperty": "naming_conventions",
         "value": [
           "Interfaces prefixadas com I",
-          "CamelCase para tipos e interfaces",
-          "snake_case para timestamps"
+          "Interfaces e tipos em PascalCase",
+          "Propriedades camelCase"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Separação clara entre tipos, configuração e backend"
+          "Separação clara entre tipos, backend e lógica de gravação",
+          "Dependência unidirecional do backend para tipos"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "style_guide",
         "value": [
-          "Airbnb TypeScript Style Guide"
+          "TypeScript ESLint Recommended"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "linting_rules",
         "value": [
-          "ESLint com regras para TypeScript"
+          "@typescript-eslint/no-explicit-any",
+          "@typescript-eslint/strict-boolean-expressions"
         ]
       },
       {
@@ -21207,82 +21284,120 @@
       {
         "property": "testing_strategy",
         "subProperty": "test_framework",
-        "value": []
+        "value": [
+          "Jest 29"
+        ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_structure",
-        "value": []
+        "value": [
+          "tests/unit para testes unitários",
+          "tests/integration para testes de integração"
+        ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
-        "value": []
+        "value": [
+          "Cobertura mínima de 80%"
+        ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "test_patterns",
-        "value": []
+        "value": [
+          "Given-When-Then"
+        ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
-        "value": []
+        "value": [
+          "Mocks para backend de histórico",
+          "Fixtures para entradas de gravação"
+        ]
       },
       {
         "property": "development_workflow",
         "subProperty": "branch_strategy",
-        "value": []
+        "value": [
+          "GitHub Flow"
+        ]
       },
       {
         "property": "development_workflow",
         "subProperty": "commit_conventions",
-        "value": []
+        "value": [
+          "Conventional Commits"
+        ]
       },
       {
         "property": "development_workflow",
         "subProperty": "pr_requirements",
-        "value": []
+        "value": [
+          "Revisão obrigatória",
+          "Checks de lint e testes"
+        ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
-        "value": []
+        "value": [
+          "Build",
+          "Lint",
+          "Test",
+          "Deploy automático"
+        ]
       },
       {
         "property": "commands",
         "subProperty": "setup",
-        "value": []
+        "value": [
+          "npm install"
+        ]
       },
       {
         "property": "commands",
         "subProperty": "install",
-        "value": []
+        "value": [
+          "npm install"
+        ]
       },
       {
         "property": "commands",
         "subProperty": "dev",
-        "value": []
+        "value": [
+          "npm run dev"
+        ]
       },
       {
         "property": "commands",
         "subProperty": "test",
-        "value": []
+        "value": [
+          "npm test"
+        ]
       },
       {
         "property": "commands",
         "subProperty": "build",
-        "value": []
+        "value": [
+          "npm run build"
+        ]
       },
       {
         "property": "commands",
         "subProperty": "lint",
-        "value": []
+        "value": [
+          "npm run lint"
+        ]
       },
       {
         "property": "commands",
         "subProperty": "format",
-        "value": []
+        "value": [
+          "npm run format"
+        ]
       },
       {
         "property": "security_constraints",
@@ -21317,7 +21432,9 @@
       {
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
-        "value": []
+        "value": [
+          "Eficiência na consulta e armazenamento das gravações"
+        ]
       },
       {
         "property": "performance_requirements",
@@ -21327,7 +21444,9 @@
       {
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
-        "value": []
+        "value": [
+          "Suporte a grande volume de gravações com poda automática"
+        ]
       },
       {
         "property": "error_handling",
@@ -21396,22 +21515,33 @@
       {
         "property": "team_preferences",
         "subProperty": "code_review_focus",
-        "value": []
+        "value": [
+          "Consistência de tipos",
+          "Cobertura de testes",
+          "Clareza na documentação"
+        ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
-        "value": []
+        "value": [
+          "JSDoc para todas as interfaces e funções públicas"
+        ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
-        "value": []
+        "value": [
+          "Comentários objetivos e técnicos"
+        ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
-        "value": []
+        "value": [
+          "Uso de interface para abstração do backend",
+          "Limite configurável de entradas no histórico"
+        ]
       },
       {
         "property": "api_specifications",
@@ -24763,23 +24893,24 @@
     ]
   },
   "src/pages/Common/utils/download.ts": {
-    "summary": "Este arquivo implementa utilitários para facilitar o download de arquivos de teste TypeScript gerados automaticamente, especialmente para testes Cypress. Ele oferece funções para sanitizar nomes de arquivos, criar nomes padronizados baseados em títulos e datas, preparar o conteúdo do arquivo com cabeçalhos informativos e realizar o download no navegador via Blob e elementos DOM temporários. O código foca em garantir nomes válidos e seguros para arquivos, além de prover uma experiência de download robusta com tratamento de erros e limpeza de recursos. Essa funcionalidade é essencial para automatizar a exportação de scripts de teste, integrando-se a ferramentas de gravação e geração de código para testes end-to-end.",
+    "summary": "Este arquivo contém utilitários para facilitar o download de arquivos de teste Cypress em formato TypeScript, focando na criação de nomes de arquivos sanitizados e seguros, preparação do conteúdo para download e execução do processo de download via browser. Ele implementa funções para sanitizar nomes de arquivos removendo caracteres inválidos, gerar nomes baseados em títulos com timestamp, preparar objetos exportáveis contendo nome e conteúdo do arquivo, e realizar o download efetivo criando blobs e links temporários no DOM. O código é robusto, tratando erros durante o download e garantindo limpeza dos recursos alocados. Sua funcionalidade habilita a exportação automatizada e segura de scripts de teste Cypress, integrando-se facilmente em fluxos de gravação e exportação de testes automatizados, melhorando a experiência do usuário e a confiabilidade do processo.",
     "properties": [
       {
         "property": "project_metadata",
         "subProperty": "name",
         "value": [
-          "Fleury Cypress Recorder",
-          "Automação de geração e download de testes Cypress"
+          "Cypress Test Exporter",
+          "Ferramenta para exportação automatizada de testes Cypress"
         ]
       },
       {
         "property": "project_metadata",
         "subProperty": "domain",
         "value": [
-          "Test Automation",
-          "Quality Assurance",
-          "Cypress Testing Framework"
+          "Automação de Testes",
+          "QA",
+          "Cypress",
+          "Test Scripts"
         ]
       },
       {
@@ -24796,7 +24927,7 @@
         "value": [
           "Nomes de arquivos devem ser válidos para sistemas de arquivos",
           "Downloads devem ser disparados sem falhas",
-          "Conteúdo do teste deve conter metadados para rastreabilidade"
+          "Conteúdo exportado deve refletir o código gerado"
         ]
       },
       {
@@ -24810,7 +24941,7 @@
         "property": "technical_stack",
         "subProperty": "frameworks",
         "value": [
-          "Cypress (testes end-to-end)"
+          "Cypress (para testes e geração de código)"
         ]
       },
       {
@@ -24822,7 +24953,7 @@
         "property": "technical_stack",
         "subProperty": "external_services",
         "value": [
-          "Browser APIs (Blob, URL, DOM)"
+          "Browser Web APIs (Blob, URL, DOM)"
         ]
       },
       {
@@ -24836,15 +24967,16 @@
         "property": "architecture_patterns",
         "subProperty": "design_pattern",
         "value": [
-          "Factory Function",
-          "Modularização funcional"
+          "Modularização funcional",
+          "Interface para tipagem clara"
         ]
       },
       {
         "property": "architecture_patterns",
         "subProperty": "folder_structure",
         "value": [
-          "src/utils - funções utilitárias para manipulação de arquivos e downloads"
+          "src/utils - funções utilitárias para download e manipulação de arquivos",
+          "src/interfaces - definições de tipos e interfaces"
         ]
       },
       {
@@ -24860,43 +24992,44 @@
         "property": "architecture_patterns",
         "subProperty": "module_boundaries",
         "value": [
-          "Módulo isolado para utilitários de download e manipulação de arquivos de teste"
+          "Separação clara entre preparação de dados (createTestFilename, prepareTestDownload) e execução do download (downloadTestFile)"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "style_guide",
         "value": [
-          "TypeScript Standard Style",
-          "JSDoc para documentação"
+          "Airbnb JavaScript Style Guide adaptado para TypeScript"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "linting_rules",
         "value": [
-          "ESLint com regras para TypeScript"
+          "ESLint com regras para TypeScript",
+          "Proibição de any implícito",
+          "Regras para evitar side effects em funções puras"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "formatting",
         "value": [
-          "Prettier com configuração padrão"
+          "Prettier com configuração padrão para TypeScript"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "documentation_style",
         "value": [
-          "JSDoc"
+          "JSDoc para funções e interfaces"
         ]
       },
       {
         "property": "code_standards",
         "subProperty": "type_checking",
         "value": [
-          "Strict TypeScript"
+          "Strict TypeScript (strict mode ativado)"
         ]
       },
       {
@@ -24910,14 +25043,14 @@
         "property": "testing_strategy",
         "subProperty": "test_structure",
         "value": [
-          "Testes unitários localizados em __tests__ próximos aos utilitários"
+          "Testes unitários para funções utilitárias em src/utils/__tests__"
         ]
       },
       {
         "property": "testing_strategy",
         "subProperty": "coverage_requirements",
         "value": [
-          "Cobertura mínima de 80%"
+          "Cobertura mínima de 90% para funções críticas"
         ]
       },
       {
@@ -24931,7 +25064,7 @@
         "property": "testing_strategy",
         "subProperty": "mocking_approach",
         "value": [
-          "Mocks para APIs do navegador e Date"
+          "Mock de APIs Web (Blob, URL) para testes isolados"
         ]
       },
       {
@@ -24952,14 +25085,18 @@
         "property": "development_workflow",
         "subProperty": "pr_requirements",
         "value": [
-          "Revisão obrigatória e testes aprovados"
+          "Revisão obrigatória",
+          "Checks de lint e testes"
         ]
       },
       {
         "property": "development_workflow",
         "subProperty": "ci_cd_pipeline",
         "value": [
-          "Build, Test, Lint, Deploy"
+          "Build",
+          "Lint",
+          "Test",
+          "Deploy automático para staging"
         ]
       },
       {
@@ -25015,35 +25152,35 @@
         "property": "security_constraints",
         "subProperty": "authentication_method",
         "value": [
-          ""
+          "N/A (funcionalidade client-side sem autenticação)"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "authorization_rules",
         "value": [
-          ""
+          "N/A"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "sensitive_data",
         "value": [
-          ""
+          "Nenhum dado sensível manipulado diretamente"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "security_headers",
         "value": [
-          ""
+          "N/A (funcionalidade client-side)"
         ]
       },
       {
         "property": "security_constraints",
         "subProperty": "encryption_requirements",
         "value": [
-          ""
+          "N/A"
         ]
       },
       {
@@ -25057,28 +25194,28 @@
         "property": "performance_requirements",
         "subProperty": "optimization_priorities",
         "value": [
-          "Velocidade de resposta e baixo uso de memória para blobs"
+          "Baixa latência na criação e disparo do download"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "caching_strategy",
         "value": [
-          ""
+          "URLs temporárias revogadas após uso para liberar memória"
         ]
       },
       {
         "property": "performance_requirements",
         "subProperty": "scalability_considerations",
         "value": [
-          ""
+          "Escalabilidade não aplicável, operação local no browser"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "error_format",
         "value": [
-          "Erro lançado com mensagem clara em falha de download"
+          "Erro lançado com mensagem clara em caso de falha no download"
         ]
       },
       {
@@ -25092,21 +25229,21 @@
         "property": "error_handling",
         "subProperty": "monitoring_tools",
         "value": [
-          ""
+          "N/A"
         ]
       },
       {
         "property": "error_handling",
         "subProperty": "error_recovery",
         "value": [
-          "Tratamento de exceções para evitar falhas silenciosas"
+          "Erro é lançado para ser tratado externamente, sem retry automático"
         ]
       },
       {
         "property": "dependencies_context",
         "subProperty": "critical_dependencies",
         "value": [
-          "APIs do navegador para Blob e download"
+          "Browser Web APIs (Blob, URL, DOM)"
         ]
       },
       {
@@ -25118,7 +25255,7 @@
         "property": "dependencies_context",
         "subProperty": "version_constraints",
         "value": [
-          "TypeScript >= 4.0"
+          "TypeScript >=5.0 para suporte a features usadas"
         ]
       },
       {
@@ -25130,80 +25267,87 @@
         "property": "current_challenges",
         "subProperty": "technical_debt",
         "value": [
-          "Necessidade de suporte a navegadores legados"
+          "Melhorar mensagens de erro para diagnóstico mais detalhado"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "known_issues",
         "value": [
-          "Possível falha em ambientes sem suporte a Blob"
+          "Sanitização pode gerar nomes duplicados para títulos iguais no mesmo dia"
         ]
       },
       {
         "property": "current_challenges",
         "subProperty": "performance_bottlenecks",
-        "value": []
+        "value": [
+          "Nenhum identificado, operação local e rápida"
+        ]
       },
       {
         "property": "current_challenges",
         "subProperty": "migration_status",
-        "value": []
+        "value": [
+          "Projeto está em produção estável, sem migrações em andamento"
+        ]
       },
       {
         "property": "team_preferences",
         "subProperty": "code_review_focus",
         "value": [
-          "Clareza na manipulação de DOM e tratamento de erros"
+          "Clareza na separação de responsabilidades",
+          "Tratamento adequado de erros",
+          "Cobertura de testes"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "documentation_requirements",
         "value": [
-          "JSDoc completo para funções públicas"
+          "Documentação clara via JSDoc para todas as funções públicas"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "communication_style",
         "value": [
-          "Comentários objetivos e em português"
+          "Comentários objetivos e técnicos, sem redundância"
         ]
       },
       {
         "property": "team_preferences",
         "subProperty": "decision_log",
         "value": [
-          "Uso de Blob para download por compatibilidade e simplicidade"
+          "Uso de nomes sanitizados para evitar erros em sistemas de arquivos",
+          "Download via Blob e URL temporária para compatibilidade cross-browser"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "api_style",
         "value": [
-          ""
+          "N/A (módulo utilitário client-side)"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "versioning_strategy",
         "value": [
-          ""
+          "N/A"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "response_formats",
         "value": [
-          ""
+          "N/A"
         ]
       },
       {
         "property": "api_specifications",
         "subProperty": "rate_limiting",
         "value": [
-          ""
+          "N/A"
         ]
       },
       {
@@ -25219,8 +25363,7 @@
         "property": "deployment_context",
         "subProperty": "deployment_method",
         "value": [
-          "Docker",
-          "CI/CD pipelines"
+          "Deploy via CI/CD pipeline para ambiente web"
         ]
       },
       {
@@ -25231,7 +25374,9 @@
       {
         "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
-        "value": []
+        "value": [
+          "Dependência de ambiente browser para execução"
+        ]
       }
     ]
   },
@@ -30146,6 +30291,204 @@
         "property": "deployment_context",
         "subProperty": "infrastructure_constraints",
         "value": []
+      }
+    ]
+  },
+  "src/pages/generators/template/TemplateRenderer.ts": {
+    "summary": "Este arquivo implementa um renderizador de templates para scripts de teste automatizados utilizando Cypress, focado em gerar código de teste padronizado e configurável para múltiplos dispositivos e tamanhos de viewport. Ele processa um contexto de exportação contendo nome do teste, URL, ações gravadas e comandos Cypress, sanitiza URLs, extrai informações relevantes como hostname e dimensões de viewport, e formata comandos para compor um script final que pode ser executado em diferentes configurações de tela. A classe TemplateRenderer oferece métodos para validação, sanitização, formatação e geração do template, garantindo que o código gerado esteja consistente, seguro e adaptado às necessidades do usuário, facilitando a criação automatizada de testes end-to-end com Cypress. Além disso, suporta atualização dinâmica das opções de template e encapsula regras de negócio importantes como validação de viewport e exclusão de comandos redundantes.",
+    "properties": [
+      {
+        "property": "testName",
+        "subProperty": "description",
+        "value": [
+          "Nome do teste usado no bloco describe do script Cypress",
+          "Extraído do contexto de exportação para identificar o teste"
+        ]
+      },
+      {
+        "property": "url",
+        "subProperty": "description",
+        "value": [
+          "URL base para o comando cy.visit() no teste",
+          "Sanitizada para permitir apenas protocolos http, https e file"
+        ]
+      },
+      {
+        "property": "actions",
+        "subProperty": "description",
+        "value": [
+          "Array de ações gravadas que originam comandos Cypress",
+          "Usadas para gerar comandos que simulam interações no teste"
+        ]
+      },
+      {
+        "property": "commands",
+        "subProperty": "description",
+        "value": [
+          "Array de comandos Cypress gerados a partir das ações",
+          "Filtrados para remover comandos cy.visit() e cy.viewport() redundantes",
+          "Formatados para inclusão no template final"
+        ]
+      },
+      {
+        "property": "showComments",
+        "subProperty": "description",
+        "value": [
+          "Flag que indica se comentários devem ser incluídos no código gerado",
+          "Controla a presença de comentários explicativos no script"
+        ]
+      },
+      {
+        "property": "exportOptions",
+        "subProperty": "viewportWidth",
+        "value": [
+          "Largura do viewport para o teste, usada se não extraída dos comandos",
+          "Valor padrão 1366 se não especificado"
+        ]
+      },
+      {
+        "property": "exportOptions",
+        "subProperty": "viewportHeight",
+        "value": [
+          "Altura do viewport para o teste, usada se não extraída dos comandos",
+          "Valor padrão 768 se não especificado"
+        ]
+      },
+      {
+        "property": "multiSizes",
+        "subProperty": "description",
+        "value": [
+          "Indica se o template deve gerar código para múltiplos tamanhos de tela",
+          "Controla se o script itera sobre diferentes configurações de viewport"
+        ]
+      },
+      {
+        "property": "sizes",
+        "subProperty": "description",
+        "value": [
+          "Array de configurações de tamanho contendo nome, largura e altura",
+          "Usado para definir múltiplos viewports no template quando multiSizes é true"
+        ]
+      }
+    ]
+  },
+  "src/pages/generators/template/__tests__/TemplateRenderer.test.ts": {
+    "summary": "Este arquivo contém um conjunto de testes automatizados para o componente TemplateRenderer, responsável por gerar templates de testes Cypress a partir de um contexto de gravação de ações do usuário. O código valida a geração correta da estrutura do template, sanitização de URLs para evitar vulnerabilidades XSS, escape de caracteres especiais no nome dos testes, e a validação de parâmetros críticos como viewport. Além disso, verifica o comportamento do renderer diante de cenários inválidos, como ausência de comandos ou parâmetros incorretos, garantindo robustez e confiabilidade na exportação dos testes. A abordagem foca em assegurar que o TemplateRenderer produza código Cypress válido, seguro e configurável, integrando-se ao fluxo de exportação de gravações de testes automatizados.",
+    "properties": [
+      {
+        "property": "project_metadata",
+        "subProperty": "name",
+        "value": [
+          "Fleury Cypress Recorder",
+          "Exportação automatizada de testes Cypress"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "domain",
+        "value": [
+          "Automação de testes",
+          "QA",
+          "Testes end-to-end",
+          "Cypress"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "current_phase",
+        "value": [
+          "Produção",
+          "Manutenção e melhoria contínua"
+        ]
+      },
+      {
+        "property": "project_metadata",
+        "subProperty": "critical_business_rules",
+        "value": [
+          "Sanitização de URLs para evitar XSS",
+          "Validação de parâmetros de viewport",
+          "Garantir presença de comandos para exportação"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "primary_language",
+        "value": [
+          "TypeScript 4.x"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "frameworks",
+        "value": [
+          "Cypress (para testes end-to-end)"
+        ]
+      },
+      {
+        "property": "technical_stack",
+        "subProperty": "package_manager",
+        "value": [
+          "npm"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "design_pattern",
+        "value": [
+          "Factory Pattern (createTemplateRenderer)",
+          "Modularização por responsabilidade"
+        ]
+      },
+      {
+        "property": "architecture_patterns",
+        "subProperty": "folder_structure",
+        "value": [
+          "src/TemplateRenderer - lógica de geração de templates",
+          "tests/ - testes unitários e de integração"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "style_guide",
+        "value": [
+          "Airbnb JavaScript Style Guide adaptado para TypeScript"
+        ]
+      },
+      {
+        "property": "code_standards",
+        "subProperty": "documentation_style",
+        "value": [
+          "JSDoc para documentação inline"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_framework",
+        "value": [
+          "Jest"
+        ]
+      },
+      {
+        "property": "testing_strategy",
+        "subProperty": "test_patterns",
+        "value": [
+          "AAA (Arrange-Act-Assert)",
+          "Testes unitários focados em comportamento"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "sensitive_data",
+        "value": [
+          "Sanitização de URLs para evitar execução de scripts maliciosos"
+        ]
+      },
+      {
+        "property": "security_constraints",
+        "subProperty": "error_handling",
+        "value": [
+          "Lançamento de erros claros para parâmetros inválidos (ex: viewport inválido, ausência de comandos)"
+        ]
       }
     ]
   }
