@@ -27,6 +27,7 @@ export function setStartRecordingStorage(
     recordingTabId: tabId,
     recordingFrameId: frameId,
     recordingStartTime: Date.now(),
+    firstUrl: newUrl, // Salva a URL inicial quando a gravação começa
     recording: [
       {
         type: 'load',

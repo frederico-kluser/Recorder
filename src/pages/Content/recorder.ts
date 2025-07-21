@@ -67,8 +67,13 @@ class Recorder {
     // Captura a primeira URL quando um evento relevante ocorre
     if (!this.firstUrlCaptured && action.type !== ActionType.Resize) {
       this.firstUrlCaptured = true;
-      const firstUrl = window.location.href;
-      chrome.storage.local.set({ firstUrl });
+      // Só define firstUrl se ainda não estiver definida
+      chrome.storage.local.get(['firstUrl'], (result) => {
+        if (!result.firstUrl) {
+          const firstUrl = window.location.href;
+          chrome.storage.local.set({ firstUrl });
+        }
+      });
     }
 
     this._recording.push(action);
