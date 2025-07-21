@@ -24,9 +24,9 @@ export type ReplayStatus = 'idle' | 'preparing' | 'running' | 'paused' | 'comple
  */
 export interface ReplayState {
   status: ReplayStatus;
-  currentStepIndex: number;
+  currentStep: number;
   totalSteps: number;
-  startTime: number | null;
+  tabId: number;
   error?: string;
 }
 
@@ -67,6 +67,19 @@ export interface ReplayResult {
   success: boolean;
   error?: string;
   completedSteps: number;
+}
+
+/**
+ * Enumeração dos tipos de mensagem
+ */
+export enum ReplayMessageType {
+  REPLAY_REQUEST = 'REPLAY_REQUEST',
+  REPLAY_STATUS = 'REPLAY_STATUS',
+  REPLAY_EXECUTE = 'REPLAY_EXECUTE',
+  REPLAY_RESULT = 'REPLAY_RESULT',
+  REPLAY_STOP = 'REPLAY_STOP',
+  RUNNER_READY = 'RUNNER_READY',
+  BG_STATUS = 'BG_STATUS'
 }
 
 /**

@@ -9,8 +9,9 @@ import {
   executeCleanUp,
 } from '../Common/utils';
 import { recordingStore } from '../storage/recording-store';
-import { replayHandler } from '../../modules/replay/replay-handler';
+import { replayController } from './replay-controller';
 import { executeMigrationsIfNeeded } from '../storage/migration';
+import { ReplayMessageType } from '../../types/replay';
 
 const HOVER_CTX_MENU_ID = 'deploysentinel-menu-id';
 const AWAIT_TEXT_CTX_MENU_ID = 'deploysentinel-menu-await-text-id';
@@ -23,8 +24,10 @@ executeMigrationsIfNeeded().then(() => {
 // Inicializa o store de gravações
 recordingStore.initialize();
 
-// Inicializa o handler de replay
-replayHandler;
+// Inicializa o replay controller no background
+replayController.init().then(() => {
+  console.log('✅ [REPLAY-BG] Replay controller inicializado');
+});
 
 async function recordNavigationEvent(
   url: string,
@@ -123,6 +126,26 @@ chrome.runtime.onMessage.addListener(async function (
     // No futuro, podemos criar uma página dedicada para o histórico
     sendResponse({ success: true });
     return true;
+  } else if (request.type === ReplayMessageType.REPLAY_REQUEST) {
+    // Processa requisição de replay via controller no background
+    console.log('[REPLAY-BG] Recebida requisição de replay:', request);
+    
+    replayController.start(request)
+      .then(tabId => {
+        console.log('[REPLAY-BG] Replay iniciado com sucesso, tabId:', tabId);
+        sendResponse({ success: true, tabId });
+      })
+      .catch(error => {
+        console.error('[REPLAY-BG] Erro ao iniciar replay:', error);
+        sendResponse({ success: false, error: error.message });
+      });
+    
+    return true; // Indica resposta assíncrona
+  } else if (request.type === ReplayMessageType.REPLAY_STOP) {
+    // Para o replay
+    console.log('[REPLAY-BG] Parando replay para tab:', request.tabId);
+    replayController.stop(request.tabId);
+    sendResponse({ success: true });
   }
 });
 

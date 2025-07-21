@@ -272,13 +272,13 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
                 <>
                   <FontAwesomeIcon icon={faPlay} />
                   <span>
-                    Executando: {replayState.currentStepIndex + 1} de {replayState.totalSteps} ações
+                    Executando: {replayState.currentStep + 1} de {replayState.totalSteps} ações
                   </span>
                   <div className="recording-detail-replay-progress">
                     <div 
                       className="recording-detail-replay-progress-bar"
                       style={{ 
-                        width: `${(replayState.currentStepIndex / replayState.totalSteps) * 100}%` 
+                        width: `${(replayState.currentStep / replayState.totalSteps) * 100}%` 
                       }}
                     />
                   </div>

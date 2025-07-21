@@ -17,9 +17,9 @@ interface UseReplayResult {
 
 const initialState: ReplayState = {
   status: 'idle',
-  currentStepIndex: 0,
+  currentStep: 0,
   totalSteps: 0,
-  startTime: null
+  tabId: -1
 };
 
 /**
@@ -34,22 +34,43 @@ export function useReplay(): UseReplayResult {
   useEffect(() => {
     const handleMessage = (message: any) => {
       if (message.type === 'REPLAY_STATUS') {
-        const statusUpdate = message as ReplayStatusUpdate;
+        console.log('[useReplay] Received REPLAY_STATUS:', message);
         
-        // Atualiza estado apenas se for da aba atual
-        if (replayTabId === null || statusUpdate.tabId === replayTabId) {
-          setReplayState(statusUpdate.state);
+        // Atualiza estado com base na mensagem
+        if (replayTabId === null || message.tabId === replayTabId) {
+          setReplayState({
+            status: message.status || 'running',
+            currentStep: message.currentStep || 0,
+            totalSteps: message.totalSteps || 0,
+            tabId: message.tabId || replayTabId || -1,
+            error: message.error
+          });
           
           // Limpa erro se status mudou para sucesso
-          if (statusUpdate.state.status === 'completed') {
+          if (message.status === 'completed') {
             setError(null);
           }
           
           // Define erro se status mudou para erro
-          if (statusUpdate.state.status === 'error' && statusUpdate.state.error) {
-            setError(statusUpdate.state.error);
+          if (message.status === 'error' && message.error) {
+            setError(message.error);
           }
         }
+      } else if (message.type === 'REPLAY_RESULT') {
+        console.log('[useReplay] Received REPLAY_RESULT:', message);
+        
+        if (replayTabId === null || message.tabId === replayTabId) {
+          if (message.success) {
+            setReplayState(prev => prev ? { ...prev, status: 'completed' } : null);
+            setError(null);
+          } else {
+            setReplayState(prev => prev ? { ...prev, status: 'error', error: message.error } : null);
+            setError(message.error || 'Replay failed');
+          }
+        }
+      } else if (message.type === 'BG_STATUS') {
+        // Logs do background para debugging
+        console.log('[useReplay] Background logs:', message.logs);
       }
     };
     

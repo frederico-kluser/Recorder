@@ -47,9 +47,9 @@ class ReplayHandler {
         this.replayTabs.delete(tabId);
         this.broadcastStatusUpdate(tabId, {
           status: 'idle',
-          currentStepIndex: 0,
+          currentStep: 0,
           totalSteps: 0,
-          startTime: null
+          tabId: tabId
         });
       }
     });
@@ -71,8 +71,14 @@ class ReplayHandler {
         return;
       }
       
-      // Cria nova aba com a URL original da gravação
-      const urlToUse = recording.urlOriginal || recording.firstUrl || recording.url || '/';
+      // Cria nova aba com a URL original da gravação com validação
+      const urlToUse = recording.urlOriginal || recording.firstUrl || recording.url;
+      
+      if (!urlToUse || urlToUse === 'undefined' || urlToUse === '/undefined/') {
+        sendResponse({ success: false, error: 'URL inicial inválida ou não definida na gravação' });
+        return;
+      }
+      
       const tab = await chrome.tabs.create({
         url: urlToUse,
         active: true
@@ -86,9 +92,9 @@ class ReplayHandler {
       // Inicializa estado do replay
       const state: ReplayState = {
         status: 'preparing',
-        currentStepIndex: 0,
+        currentStep: 0,
         totalSteps: recording.actions.length,
-        startTime: Date.now()
+        tabId: tab.id
       };
       
       this.replayTabs.set(tab.id, state);
@@ -152,7 +158,7 @@ class ReplayHandler {
     const updatedState: ReplayState = {
       ...state,
       status: result.success ? 'completed' : 'error',
-      currentStepIndex: result.completedSteps || 0,
+      currentStep: result.completedSteps || 0,
       error: result.error
     };
     
