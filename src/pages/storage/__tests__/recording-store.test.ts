@@ -6,13 +6,17 @@ import { RecordingStore } from '../recording-store';
 import { RecordingEntry } from '../../types/recording';
 
 // Mock do chrome.storage.local
+const mockGet = jest.fn();
+const mockSet = jest.fn();
+const mockRemove = jest.fn();
+
 const mockChromeStorage = {
   local: {
-    get: jest.fn(),
-    set: jest.fn(),
-    remove: jest.fn()
+    get: mockGet,
+    set: mockSet,
+    remove: mockRemove
   }
-};
+} as unknown as typeof chrome.storage;
 
 // @ts-ignore
 global.chrome = {
@@ -43,13 +47,13 @@ describe('RecordingStore - Migração de URLs', () => {
         }
       };
 
-      mockChromeStorage.local.get.mockResolvedValue({
+      mockGet.mockResolvedValue({
         recordingHistory: mockRecordings
       });
 
       await store.migrateToUrlOriginal();
 
-      expect(mockChromeStorage.local.set).toHaveBeenCalledWith({
+      expect(mockSet).toHaveBeenCalledWith({
         recordingHistory: {
           'test1': {
             ...mockRecordings.test1,
@@ -73,13 +77,13 @@ describe('RecordingStore - Migração de URLs', () => {
         }
       };
 
-      mockChromeStorage.local.get.mockResolvedValue({
+      mockGet.mockResolvedValue({
         recordingHistory: mockRecordings
       });
 
       await store.migrateToUrlOriginal();
 
-      expect(mockChromeStorage.local.set).toHaveBeenCalledWith({
+      expect(mockSet).toHaveBeenCalledWith({
         recordingHistory: {
           'test2': {
             ...mockRecordings.test2,
@@ -102,13 +106,13 @@ describe('RecordingStore - Migração de URLs', () => {
         }
       };
 
-      mockChromeStorage.local.get.mockResolvedValue({
+      mockGet.mockResolvedValue({
         recordingHistory: mockRecordings
       });
 
       await store.migrateToUrlOriginal();
 
-      expect(mockChromeStorage.local.set).toHaveBeenCalledWith({
+      expect(mockSet).toHaveBeenCalledWith({
         recordingHistory: {
           'test3': {
             ...mockRecordings.test3,
@@ -133,13 +137,13 @@ describe('RecordingStore - Migração de URLs', () => {
         }
       };
 
-      mockChromeStorage.local.get.mockResolvedValue({
+      mockGet.mockResolvedValue({
         recordingHistory: mockRecordings
       });
 
       await store.migrateToUrlOriginal();
 
-      expect(mockChromeStorage.local.set).not.toHaveBeenCalled();
+      expect(mockSet).not.toHaveBeenCalled();
     });
   });
 
@@ -157,7 +161,7 @@ describe('RecordingStore - Migração de URLs', () => {
         code: { cypress: '' }
       };
 
-      mockChromeStorage.local.get.mockResolvedValue({
+      mockGet.mockResolvedValue({
         recordingHistory: {}
       });
 
@@ -166,7 +170,7 @@ describe('RecordingStore - Migração de URLs', () => {
       // Aguarda o debounce
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      expect(mockChromeStorage.local.set).toHaveBeenCalledWith(
+      expect(mockSet).toHaveBeenCalledWith(
         expect.objectContaining({
           recordingHistory: expect.objectContaining({
             'new1': expect.objectContaining({

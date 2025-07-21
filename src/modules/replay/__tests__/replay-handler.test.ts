@@ -4,8 +4,9 @@
 
 import { replayHandler } from '../replay-handler';
 import { recordingStore } from '../../../pages/storage/recording-store';
-import { ReplayRequest } from '../../../types/replay';
+import { ReplayRequest, ReplayMode } from '../../../types/replay';
 import { RecordingEntry } from '../../../pages/types/recording';
+import { ActionType } from '../../../pages/types/index';
 
 // Mocks
 jest.mock('../../../pages/storage/recording-store');
@@ -50,7 +51,7 @@ describe('ReplayHandler - URL Original', () => {
       hostname: 'example.com',
       startedAt: 1000,
       endedAt: 2000,
-      actions: [{ type: 'click', timestamp: 1000 }],
+      actions: [{ type: ActionType.Click, timestamp: 1000 } as any],
       code: { cypress: '' }
     };
 
@@ -60,7 +61,7 @@ describe('ReplayHandler - URL Original', () => {
     const request: ReplayRequest = {
       type: 'REPLAY_REQUEST',
       recordingId: 'test1',
-      mode: 'KEEP_CACHE'
+      mode: ReplayMode.KEEP_CACHE
     };
 
     const sendResponse = jest.fn();
@@ -84,7 +85,7 @@ describe('ReplayHandler - URL Original', () => {
       hostname: 'example.com',
       startedAt: 1000,
       endedAt: 2000,
-      actions: [{ type: 'click', timestamp: 1000 }],
+      actions: [{ type: ActionType.Click, timestamp: 1000 } as any],
       code: { cypress: '' }
     } as RecordingEntry;
 
@@ -94,7 +95,7 @@ describe('ReplayHandler - URL Original', () => {
     const request: ReplayRequest = {
       type: 'REPLAY_REQUEST',
       recordingId: 'test2',
-      mode: 'KEEP_CACHE'
+      mode: ReplayMode.KEEP_CACHE
     };
 
     const sendResponse = jest.fn();
@@ -116,7 +117,7 @@ describe('ReplayHandler - URL Original', () => {
       hostname: 'example.com',
       startedAt: 1000,
       endedAt: 2000,
-      actions: [{ type: 'click', timestamp: 1000 }],
+      actions: [{ type: ActionType.Click, timestamp: 1000 } as any],
       code: { cypress: '' }
     } as RecordingEntry;
 
@@ -126,7 +127,7 @@ describe('ReplayHandler - URL Original', () => {
     const request: ReplayRequest = {
       type: 'REPLAY_REQUEST',
       recordingId: 'test3',
-      mode: 'KEEP_CACHE'
+      mode: ReplayMode.KEEP_CACHE
     };
 
     const sendResponse = jest.fn();
@@ -147,7 +148,7 @@ describe('ReplayHandler - URL Original', () => {
       hostname: 'localhost',
       startedAt: 1000,
       endedAt: 2000,
-      actions: [{ type: 'click', timestamp: 1000 }],
+      actions: [{ type: ActionType.Click, timestamp: 1000 } as any],
       code: { cypress: '' }
     } as RecordingEntry;
 
@@ -157,7 +158,7 @@ describe('ReplayHandler - URL Original', () => {
     const request: ReplayRequest = {
       type: 'REPLAY_REQUEST',
       recordingId: 'test4',
-      mode: 'KEEP_CACHE'
+      mode: ReplayMode.KEEP_CACHE
     };
 
     const sendResponse = jest.fn();

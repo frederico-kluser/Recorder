@@ -87,7 +87,7 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
         (recording) =>
           recording.title.toLowerCase().includes(term) ||
           recording.hostname.toLowerCase().includes(term) ||
-          recording.url.toLowerCase().includes(term)
+          (recording.url?.toLowerCase().includes(term) ?? false)
       );
     }
 
@@ -495,7 +495,7 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
                           {truncateText(recording.title, 35)}
                         </div>
                         <div className="recording-url">
-                          {truncateUrl(recording.url, 40)}
+                          {truncateUrl(recording.url || recording.urlOriginal, 40)}
                         </div>
                       </div>
                     </td>

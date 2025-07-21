@@ -13,14 +13,16 @@ jest.mock('../../storage/recording-service');
 const mockLocalStorageGet = localStorageGet as jest.MockedFunction<typeof localStorageGet>;
 const mockChromeRuntime = {
   sendMessage: jest.fn()
-};
+} as unknown as typeof chrome.runtime;
+
+const mockChromeTabs = {
+  query: jest.fn()
+} as unknown as typeof chrome.tabs;
 
 // @ts-ignore
 global.chrome = {
   runtime: mockChromeRuntime,
-  tabs: {
-    query: jest.fn()
-  }
+  tabs: mockChromeTabs
 };
 
 describe('endRecording - URL Original', () => {
