@@ -14,10 +14,13 @@ export interface RecordingEntry {
   /** Título formatado da gravação (hostname + data/hora) */
   title: string;
   
-  /** URL da página onde a gravação foi feita */
-  url: string;
+  /** URL original onde a gravação começou (campo principal) */
+  urlOriginal: string;
   
-  /** Primeira URL capturada durante a gravação (opcional por compatibilidade) */
+  /** URL da página onde a gravação foi feita (campo legado, será migrado para urlOriginal) */
+  url?: string;
+  
+  /** Primeira URL capturada durante a gravação (campo legado, será migrado para urlOriginal) */
   firstUrl?: string;
   
   /** Hostname extraído da URL */

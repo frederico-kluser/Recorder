@@ -65,7 +65,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
     try {
       return genCypressCodeWithTemplate(recording.actions, {
         testName: recording.title,
-        url: recording.url,
+        url: recording.urlOriginal || recording.firstUrl || recording.url || '/',
         exportOptions: {
           viewportWidth: 1366,
           viewportHeight: 768
@@ -164,7 +164,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
                 icon={faGlobe}
                 className="recording-detail-meta-icon"
               />
-              <span className="recording-detail-meta-url" title={recording.url}>
+              <span className="recording-detail-meta-url" title={recording.urlOriginal || recording.firstUrl || recording.url}>
                 {recording.hostname}
               </span>
             </span>

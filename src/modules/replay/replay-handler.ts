@@ -71,9 +71,10 @@ class ReplayHandler {
         return;
       }
       
-      // Cria nova aba
+      // Cria nova aba com a URL original da gravação
+      const urlToUse = recording.urlOriginal || recording.firstUrl || recording.url || '/';
       const tab = await chrome.tabs.create({
-        url: recording.url,
+        url: urlToUse,
         active: true
       });
       
@@ -106,7 +107,7 @@ class ReplayHandler {
             const executeMessage: ReplayExecute = {
               type: 'REPLAY_EXECUTE',
               actions: recording.actions,
-              initialUrl: recording.url,
+              initialUrl: recording.urlOriginal || recording.firstUrl || recording.url || '/',
               mode: request.mode
             };
             

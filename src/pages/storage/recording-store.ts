@@ -48,6 +48,9 @@ export class RecordingStore implements IHistoryBackend {
       if (result[CONFIG_KEY]) {
         this.config = { ...DEFAULT_CONFIG, ...result[CONFIG_KEY] };
       }
+      
+      // Executa migração de URLs se necessário
+      await this.migrateToUrlOriginal();
     } catch (error) {
       console.warn('Erro ao carregar configuração do histórico:', error);
     }
@@ -180,6 +183,35 @@ export class RecordingStore implements IHistoryBackend {
   }
 
   /**
+   * Migra gravações antigas para o novo formato com urlOriginal
+   */
+  async migrateToUrlOriginal(): Promise<void> {
+    try {
+      const result = await chrome.storage.local.get(STORAGE_KEY);
+      const recordings: Record<string, RecordingEntry> = result[STORAGE_KEY] || {};
+      
+      let hasChanges = false;
+      
+      for (const [id, entry] of Object.entries(recordings)) {
+        // Se não tem urlOriginal, migra
+        if (!entry.urlOriginal) {
+          // Prioridade: firstUrl > url
+          entry.urlOriginal = entry.firstUrl || entry.url || 'unknown';
+          hasChanges = true;
+          console.log(`Migrada gravação ${id}: urlOriginal = ${entry.urlOriginal}`);
+        }
+      }
+      
+      if (hasChanges) {
+        await chrome.storage.local.set({ [STORAGE_KEY]: recordings });
+        console.log('Migração de URLs concluída');
+      }
+    } catch (error) {
+      console.error('Erro ao migrar URLs:', error);
+    }
+  }
+  
+  /**
    * Migra a última gravação do formato antigo para o novo
    */
   async migrateLastRecording(): Promise<void> {
@@ -217,7 +249,8 @@ export class RecordingStore implements IHistoryBackend {
       const entry: RecordingEntry = {
         id: `${hostname}:${dateStr}_${timeStr}`,
         title: `${hostname} - ${dateStr} ${timeStr.replace('-', ':')}`,
-        url,
+        urlOriginal: url, // Campo principal
+        url: url, // Mantém para compatibilidade
         hostname,
         startedAt: timestamp,
         endedAt: lastAction.timestamp || timestamp,

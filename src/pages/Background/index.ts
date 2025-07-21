@@ -10,9 +10,15 @@ import {
 } from '../Common/utils';
 import { recordingStore } from '../storage/recording-store';
 import { replayHandler } from '../../modules/replay/replay-handler';
+import { executeMigrationsIfNeeded } from '../storage/migration';
 
 const HOVER_CTX_MENU_ID = 'deploysentinel-menu-id';
 const AWAIT_TEXT_CTX_MENU_ID = 'deploysentinel-menu-await-text-id';
+
+// Executa migrações se necessário
+executeMigrationsIfNeeded().then(() => {
+  console.log('✅ Sistema de gravação inicializado');
+});
 
 // Inicializa o store de gravações
 recordingStore.initialize();

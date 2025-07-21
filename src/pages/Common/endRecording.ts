@@ -14,25 +14,18 @@ export async function endRecording() {
   // Salva a gravação no histórico se houver ações gravadas
   if (recording && recording.length > 0) {
     try {
-      // Usa a primeira URL capturada ou busca a primeira ação Navigate
-      let url = firstUrl;
+      // SEMPRE usa a primeira URL capturada que foi salva no início da gravação
+      const urlOriginal = firstUrl;
       
-      if (!url) {
-        // Fallback: procura primeira ação Navigate
-        const firstNavigate = (recording as Action[]).find(action => action.type === 'navigate');
-        if (firstNavigate && 'url' in firstNavigate) {
-          url = firstNavigate.url;
-        } else {
-          // Se ainda não tiver, usa a URL atual da aba
-          const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-          url = activeTab?.url || 'unknown';
-        }
+      if (!urlOriginal) {
+        console.error('URL inicial não encontrada. Gravação não será salva.');
+        return;
       }
       
-      // Cria a entrada no histórico
+      // Cria a entrada no histórico com a URL original
       await RecordingService.createRecording(
         recording as Action[],
-        url,
+        urlOriginal,
         recordingStartTime || recording[0]?.timestamp,
         Date.now()
       );

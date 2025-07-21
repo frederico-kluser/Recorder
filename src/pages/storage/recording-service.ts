@@ -64,7 +64,7 @@ export class RecordingService {
       // Nova versão com template - será usada no download
       cypressTemplate: genCypressCodeWithTemplate(actions, {
         testName: `${hostname} - ${dateStr} ${timeStr.replace('-', ':')}`,
-        url: url,
+        url: url, // Usa a URL original
         exportOptions: {
           viewportWidth: 1366,
           viewportHeight: 768
@@ -72,11 +72,12 @@ export class RecordingService {
       }, true),
     };
 
-    // Cria entrada da gravação
+    // Cria entrada da gravação com urlOriginal como campo principal
     const entry: RecordingEntry = {
       id,
       title: `${hostname} - ${dateStr} ${timeStr.replace('-', ':')}`,
-      url,
+      urlOriginal: url, // Campo principal com a URL inicial
+      url: url, // Mantém para compatibilidade temporária
       hostname,
       startedAt: startedAt || actions[0]?.timestamp || now,
       endedAt: now,
@@ -328,7 +329,8 @@ export class RecordingService {
                 .toString(36)
                 .substr(2, 9)}`,
             title: title,
-            url: recording.url,
+            urlOriginal: recording.urlOriginal || recording.firstUrl || recording.url || 'unknown', // Campo principal
+            url: recording.url, // Mantém para compatibilidade
             hostname: hostname,
             startedAt: recording.startedAt || recording.createdAt || Date.now(),
             endedAt: recording.endedAt || recording.createdAt || Date.now(),
@@ -342,7 +344,7 @@ export class RecordingService {
                 recording.code?.cypressTemplate ||
                 genCypressCodeWithTemplate(recording.actions, {
                   testName: title,
-                  url: recording.url,
+                  url: recording.urlOriginal || recording.firstUrl || recording.url || 'unknown', // Usa URL original
                   exportOptions: {
                     viewportWidth: 1366,
                     viewportHeight: 768
