@@ -372,6 +372,9 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
               placeholder="Buscar por site ou URL..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                paddingLeft: '32px',
+              }}
             />
           </div>
 

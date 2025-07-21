@@ -100,7 +100,7 @@ class ReplayHandler {
           // Injeta script do runner
           chrome.scripting.executeScript({
             target: { tabId: tab.id! },
-            files: ['src/modules/replay/replay-runner.js']
+            files: ['replayRunner.bundle.js']
           }).then(() => {
             // Envia ações para execução
             const executeMessage: ReplayExecute = {

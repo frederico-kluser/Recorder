@@ -48,6 +48,7 @@ var options = {
       'CypressTrigger',
       'index.tsx'
     ),
+    replayRunner: path.join(__dirname, 'src', 'modules', 'replay', 'replay-runner.ts'),
   },
   chromeExtensionBoilerplate: {
     notHotReload: ['contentScript' /*, 'devtools'*/],
