@@ -61,8 +61,16 @@ class Recorder {
   private currentEventHandleType: string | null = null;
   private onAction: any;
   private lastContextMenuEvent: MouseEvent | null = null;
+  private firstUrlCaptured: boolean = false;
 
   private appendToRecording = (action: any) => {
+    // Captura a primeira URL quando um evento relevante ocorre
+    if (!this.firstUrlCaptured && action.type !== ActionType.Resize) {
+      this.firstUrlCaptured = true;
+      const firstUrl = window.location.href;
+      chrome.storage.local.set({ firstUrl });
+    }
+
     this._recording.push(action);
     chrome.storage.local.set({ recording: this._recording });
 

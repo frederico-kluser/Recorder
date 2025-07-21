@@ -4,6 +4,7 @@ export function setEndRecordingStorage() {
     recordingTabId: null,
     recordingFrameId: null,
     returnTabId: null,
+    firstUrl: null, // Limpa a primeira URL capturada
   });
 }
 

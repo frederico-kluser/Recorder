@@ -106,7 +106,8 @@ class ReplayHandler {
             const executeMessage: ReplayExecute = {
               type: 'REPLAY_EXECUTE',
               actions: recording.actions,
-              initialUrl: recording.url
+              initialUrl: recording.url,
+              mode: request.mode
             };
             
             chrome.tabs.sendMessage(tab.id!, executeMessage);

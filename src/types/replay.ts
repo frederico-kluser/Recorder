@@ -5,6 +5,16 @@
 import type { Action } from '../pages/types/index';
 
 /**
+ * Modos de replay disponíveis
+ */
+export enum ReplayMode {
+  /** Mantém o cache atual do navegador */
+  KEEP_CACHE = 'keep-cache',
+  /** Limpa todo o cache antes de iniciar */
+  CLEAN_CACHE = 'clean-cache'
+}
+
+/**
  * Status possíveis durante o replay
  */
 export type ReplayStatus = 'idle' | 'preparing' | 'running' | 'paused' | 'completed' | 'error';
@@ -27,6 +37,7 @@ export interface ReplayRequest {
   type: 'REPLAY_REQUEST';
   recordingId: string;
   tabId?: number;
+  mode?: ReplayMode;
 }
 
 /**
@@ -45,6 +56,7 @@ export interface ReplayExecute {
   type: 'REPLAY_EXECUTE';
   actions: Action[];
   initialUrl: string;
+  mode?: ReplayMode;
 }
 
 /**

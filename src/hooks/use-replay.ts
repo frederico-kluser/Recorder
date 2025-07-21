@@ -4,13 +4,13 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import type { ReplayState, ReplayRequest, ReplayStatusUpdate } from '../types/replay.js';
+import type { ReplayState, ReplayRequest, ReplayStatusUpdate, ReplayMode } from '../types/replay.js';
 
 interface UseReplayResult {
   replayState: ReplayState | null;
   isReplaying: boolean;
   replayTabId: number | null;
-  startReplay: (recordingId: string) => Promise<void>;
+  startReplay: (recordingId: string, mode?: ReplayMode) => Promise<void>;
   stopReplay: () => void;
   error: string | null;
 }
@@ -82,7 +82,7 @@ export function useReplay(): UseReplayResult {
   /**
    * Inicia replay de uma gravação
    */
-  const startReplay = useCallback(async (recordingId: string): Promise<void> => {
+  const startReplay = useCallback(async (recordingId: string, mode?: ReplayMode): Promise<void> => {
     try {
       setError(null);
       setReplayState({
@@ -93,7 +93,8 @@ export function useReplay(): UseReplayResult {
       // Envia requisição para background
       const request: ReplayRequest = {
         type: 'REPLAY_REQUEST',
-        recordingId
+        recordingId,
+        mode
       };
       
       const response = await chrome.runtime.sendMessage(request) as { success: boolean; error?: string; tabId?: number } | undefined;

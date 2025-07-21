@@ -6,6 +6,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { RecordingEntry } from '../../types/recording';
 import { ScriptType } from '../../types';
 import { useReplay } from '../../../hooks/use-replay';
+import { ReplayMode } from '../../../types/replay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { genCypressCodeWithTemplate } from '../../builders';
 import {
@@ -49,6 +50,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
 }) => {
   const [viewMode, setViewMode] = useState<'actions' | 'code'>('code');
   const [copied, setCopied] = useState(false);
+  const [replayMode, setReplayMode] = useState<ReplayMode>(ReplayMode.KEEP_CACHE);
   const { replayState, isReplaying, startReplay, stopReplay, error } = useReplay();
 
   const getCypressCode = useMemo((): string => {
@@ -95,12 +97,12 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
 
   const handleReplay = useCallback(async () => {
     try {
-      console.log('🎬 [RecordingDetail] Iniciando replay da gravação:', recording.id);
-      await startReplay(recording.id);
+      console.log('🎬 [RecordingDetail] Iniciando replay da gravação:', recording.id, 'Modo:', replayMode);
+      await startReplay(recording.id, replayMode);
     } catch (error) {
       console.error('❌ [RecordingDetail] Erro ao iniciar replay:', error);
     }
-  }, [recording.id, startReplay]);
+  }, [recording.id, replayMode, startReplay]);
 
   const handleStopReplay = useCallback(() => {
     console.log('⏹️ [RecordingDetail] Parando replay');
@@ -231,14 +233,24 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
                   Parar Replay
                 </button>
               ) : (
-                <button 
-                  className="recording-btn recording-btn-primary"
-                  onClick={handleReplay}
-                  disabled={recording.actions.length === 0}
-                >
-                  <FontAwesomeIcon icon={faRedo} />
-                  Reproduzir
-                </button>
+                <>
+                  <select 
+                    className="recording-select"
+                    value={replayMode}
+                    onChange={(e) => setReplayMode(e.target.value as ReplayMode)}
+                  >
+                    <option value={ReplayMode.KEEP_CACHE}>Manter Cache</option>
+                    <option value={ReplayMode.CLEAN_CACHE}>Limpar Cache</option>
+                  </select>
+                  <button 
+                    className="recording-btn recording-btn-primary"
+                    onClick={handleReplay}
+                    disabled={recording.actions.length === 0}
+                  >
+                    <FontAwesomeIcon icon={faRedo} />
+                    Reproduzir
+                  </button>
+                </>
               )}
             </div>
           )}

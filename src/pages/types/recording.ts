@@ -17,6 +17,9 @@ export interface RecordingEntry {
   /** URL da página onde a gravação foi feita */
   url: string;
   
+  /** Primeira URL capturada durante a gravação (opcional por compatibilidade) */
+  firstUrl?: string;
+  
   /** Hostname extraído da URL */
   hostname: string;
   

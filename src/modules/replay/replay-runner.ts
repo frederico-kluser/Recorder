@@ -6,6 +6,7 @@
 import type { Action } from '../../pages/types/index';
 import { ActionType } from '../../pages/types/index';
 import type { ActionExecutorOptions, ActionExecutionResult, ReplayExecute, ReplayResult } from '../../types/replay';
+import { ReplayMode } from '../../types/replay';
 
 /**
  * Executa uma ação de clique no elemento
@@ -183,13 +184,55 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
+ * Limpa cache do navegador e recarrega a página
+ */
+async function clearCacheAndReload(): Promise<void> {
+  try {
+    // Limpa localStorage
+    if (window.localStorage) {
+      window.localStorage.clear();
+    }
+    
+    // Limpa sessionStorage
+    if (window.sessionStorage) {
+      window.sessionStorage.clear();
+    }
+    
+    // Limpa cookies do domínio atual
+    if (document.cookie) {
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+    }
+    
+    // Força recarga sem cache
+    window.location.reload();
+    
+    // Aguarda a página recarregar
+    await new Promise(resolve => {
+      window.addEventListener('load', () => resolve(void 0));
+    });
+  } catch (error) {
+    console.error('Erro ao limpar cache:', error);
+  }
+}
+
+/**
  * Função principal do runner - executada no contexto da página
  */
 async function runReplay(message: ReplayExecute): Promise<void> {
-  const { actions, initialUrl } = message;
+  const { actions, initialUrl, mode } = message;
   let completedSteps = 0;
   
   try {
+    // Se modo clean-cache, limpa cache e recarrega primeiro
+    if (mode === ReplayMode.CLEAN_CACHE && window.location.href === initialUrl) {
+      await clearCacheAndReload();
+      // Após reload, não precisa continuar pois a página foi recarregada
+      // O script será reinjetado e continuará a partir daqui
+      return;
+    }
+    
     // Navega para URL inicial se diferente
     if (window.location.href !== initialUrl) {
       await executeNavigate(initialUrl);
@@ -201,6 +244,12 @@ async function runReplay(message: ReplayExecute): Promise<void> {
           window.addEventListener('load', () => resolve(void 0));
         }
       });
+      
+      // Se modo clean-cache e acabou de navegar, limpa cache e recarrega
+      if (mode === ReplayMode.CLEAN_CACHE) {
+        await clearCacheAndReload();
+        return;
+      }
     }
     
     // Executa cada ação respeitando delays
