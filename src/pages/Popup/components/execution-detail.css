@@ -36,6 +36,9 @@
   overflow-y: auto;
   background-color: var(--bg-primary, #1a1a1a);
   padding: 8px;
+  max-height: calc(
+    100vh - 250px
+  ); /* Garante que o scroll funcione corretamente */
 }
 
 .execution-log-item {
@@ -114,15 +117,23 @@
 
 .log-action {
   font-size: 14px;
-  color: var(--text-primary, #e0e0e0);
+  color: var(
+    --text-primary,
+    #ffffff
+  ); /* Cor mais clara para melhor legibilidade */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .log-timestamp {
   font-size: 12px;
-  color: var(--text-muted, #666);
+  color: var(
+    --text-secondary,
+    #b0b0b0
+  ); /* Cor mais clara para melhor contraste */
+  font-weight: 500;
 }
 
 /* Responsive */
