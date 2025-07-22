@@ -62,14 +62,18 @@ export class RecordingService {
     const code = {
       cypress: genCypressCode(actions, true),
       // Nova versão com template - será usada no download
-      cypressTemplate: genCypressCodeWithTemplate(actions, {
-        testName: `${hostname} - ${dateStr} ${timeStr.replace('-', ':')}`,
-        url: url, // Usa a URL original
-        exportOptions: {
-          viewportWidth: 1366,
-          viewportHeight: 768
-        }
-      }, true),
+      cypressTemplate: genCypressCodeWithTemplate(
+        actions,
+        {
+          testName: `${hostname} - ${dateStr} ${timeStr.replace('-', ':')}`,
+          url: url, // Usa a URL original
+          exportOptions: {
+            viewportWidth: 1366,
+            viewportHeight: 768,
+          },
+        },
+        true
+      ),
     };
 
     // Cria entrada da gravação com urlOriginal como campo principal
@@ -153,6 +157,7 @@ export class RecordingService {
 
   /**
    * Exporta gravações em formato JSON
+   * @deprecated Use PackageRecorder.exportAll() or exportByIds() instead
    */
   static async exportRecordings(ids?: string[]): Promise<string> {
     let recordings: RecordingEntry[];
@@ -329,7 +334,11 @@ export class RecordingService {
                 .toString(36)
                 .substr(2, 9)}`,
             title: title,
-            urlOriginal: recording.urlOriginal || recording.firstUrl || recording.url || 'unknown', // Campo principal
+            urlOriginal:
+              recording.urlOriginal ||
+              recording.firstUrl ||
+              recording.url ||
+              'unknown', // Campo principal
             url: recording.url, // Mantém para compatibilidade
             hostname: hostname,
             startedAt: recording.startedAt || recording.createdAt || Date.now(),
@@ -342,14 +351,22 @@ export class RecordingService {
                 genCypressCode(recording.actions),
               cypressTemplate:
                 recording.code?.cypressTemplate ||
-                genCypressCodeWithTemplate(recording.actions, {
-                  testName: title,
-                  url: recording.urlOriginal || recording.firstUrl || recording.url || 'unknown', // Usa URL original
-                  exportOptions: {
-                    viewportWidth: 1366,
-                    viewportHeight: 768
-                  }
-                }, true),
+                genCypressCodeWithTemplate(
+                  recording.actions,
+                  {
+                    testName: title,
+                    url:
+                      recording.urlOriginal ||
+                      recording.firstUrl ||
+                      recording.url ||
+                      'unknown', // Usa URL original
+                    exportOptions: {
+                      viewportWidth: 1366,
+                      viewportHeight: 768,
+                    },
+                  },
+                  true
+                ),
             },
           };
 

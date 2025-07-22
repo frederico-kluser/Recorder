@@ -650,6 +650,159 @@ export class RecordingStore implements IHistoryBackend {
       );
     }
   }
+
+  /**
+   * Obtém todas as gravações com suas execuções
+   */
+  async getAllWithExecutions(): Promise<
+    Array<{
+      recording: RecordingEntry;
+      executionLogs: ExecutionLogType[];
+    }>
+  > {
+    try {
+      const recordings = await this.list();
+      const result: Array<{
+        recording: RecordingEntry;
+        executionLogs: ExecutionLogType[];
+      }> = [];
+
+      for (const recording of recordings) {
+        const executionLogs = await this.getExecutionLogs(recording.id);
+        result.push({
+          recording,
+          executionLogs,
+        });
+      }
+
+      return result;
+    } catch (error) {
+      console.error(
+        '[RecordingStore] Error getting recordings with executions:',
+        error
+      );
+      return [];
+    }
+  }
+
+  /**
+   * Obtém os logs de execução de uma gravação
+   */
+  async getExecutionLogs(recordingId: string): Promise<ExecutionLogType[]> {
+    try {
+      const recording = await this.get(recordingId);
+      if (!recording || !recording.executionLogs) {
+        return [];
+      }
+
+      // Agrupa logs por sessão
+      const sessions: ExecutionLog[][] = [];
+      let currentSession: ExecutionLog[] = [];
+      let lastTs = 0;
+
+      for (const log of recording.executionLogs) {
+        if (lastTs > 0 && log.ts - lastTs > 5 * 60 * 1000) {
+          if (currentSession.length > 0) {
+            sessions.push(currentSession);
+            currentSession = [];
+          }
+        }
+        currentSession.push(log);
+        lastTs = log.ts;
+      }
+
+      if (currentSession.length > 0) {
+        sessions.push(currentSession);
+      }
+
+      // Converte sessões para ExecutionLogType
+      return sessions.map((session, index) => {
+        const startedAt = session[0].ts;
+        const endedAt = session[session.length - 1].ts;
+        const hasErrors = session.some(
+          (log) => log.screenshot && log.screenshot.startsWith('error:')
+        );
+
+        return {
+          id: `exec-${index}-${startedAt}`,
+          timestamp: startedAt,
+          startTime: startedAt,
+          endTime: endedAt,
+          meta: {
+            id: `exec-${index}-${startedAt}`,
+            startedAt,
+            endedAt,
+            stepCount: session.length,
+            hasErrors,
+            url: recording.urlOriginal || recording.url,
+            title: recording.title,
+          },
+          steps: session.map((log) => ({
+            action: log.action.type || 'unknown',
+            timestamp: log.ts,
+            selector: log.action.selectors?.generalSelector,
+            value: log.action.value,
+            screenshot: log.screenshot,
+            error: log.screenshot?.startsWith('error:')
+              ? log.screenshot
+              : undefined,
+          })),
+        };
+      });
+    } catch (error) {
+      console.error('[RecordingStore] Error getting execution logs:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Salva uma gravação com suas execuções
+   */
+  async saveWithExecutions(
+    recording: RecordingEntry,
+    executionLogs: ExecutionLogType[]
+  ): Promise<void> {
+    try {
+      // Converte ExecutionLogType para ExecutionLog interno
+      const internalLogs: ExecutionLog[] = [];
+
+      for (const execLog of executionLogs) {
+        for (const step of execLog.steps) {
+          internalLogs.push({
+            ts: step.timestamp,
+            action: {
+              type: step.action,
+              selectors: step.selector
+                ? { generalSelector: step.selector }
+                : undefined,
+              value: step.value,
+            },
+            screenshot: step.screenshot,
+            thumbStatus: step.screenshot
+              ? step.screenshot.startsWith('error:')
+                ? 'error'
+                : step.screenshot.startsWith('data:image/')
+                ? 'ok'
+                : 'loading'
+              : 'error',
+          });
+        }
+      }
+
+      // Adiciona executionLogs à gravação
+      recording.executionLogs = internalLogs;
+
+      // Salva usando o método save existente
+      await this.save(recording);
+    } catch (error) {
+      console.error('[RecordingStore] Error saving with executions:', error);
+      throw new Error(
+        `Falha ao salvar gravação com execuções: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+    }
+  }
 }
 
 // Exporta instância única
