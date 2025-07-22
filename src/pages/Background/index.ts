@@ -216,7 +216,7 @@ chrome.runtime.onMessage.addListener(async function (
           window.id,
           {
             width: request.width,
-            height: request.height,
+            height: request.height + 100, // Adiciona margem para barra de endereço
           },
           () => {
             sendResponse({ success: true });
