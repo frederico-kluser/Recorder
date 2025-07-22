@@ -27,6 +27,21 @@ export class ScreenshotService {
    */
   async capture(tabId: number): Promise<string> {
     try {
+      // Validate tab exists
+      const tab = await this.getTab(tabId);
+      if (!tab) {
+        return 'error:invalid_tab';
+      }
+
+      // Validate tab URL (cannot capture chrome:// pages)
+      if (
+        tab.url &&
+        (tab.url.startsWith('chrome://') ||
+          tab.url.startsWith('chrome-extension://'))
+      ) {
+        return 'error:restricted_url';
+      }
+
       // Throttle captures
       const now = Date.now();
       const timeSinceLastCapture = now - this.lastCaptureTime;
@@ -37,6 +52,12 @@ export class ScreenshotService {
 
       // Initial capture attempt with full quality
       let dataUrl = await this.captureWithQuality(tabId, 100);
+
+      // Validate captured image
+      if (!this.isValidDataUrl(dataUrl)) {
+        console.error('Invalid screenshot data URL');
+        return 'error:invalid_capture';
+      }
 
       // Check size and reduce quality if needed
       let quality = 100;
@@ -133,6 +154,33 @@ export class ScreenshotService {
    */
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Get tab information
+   */
+  private getTab(tabId: number): Promise<chrome.tabs.Tab | null> {
+    return new Promise((resolve) => {
+      chrome.tabs.get(tabId, (tab) => {
+        if (chrome.runtime.lastError || !tab) {
+          resolve(null);
+        } else {
+          resolve(tab);
+        }
+      });
+    });
+  }
+
+  /**
+   * Validate data URL format
+   */
+  private isValidDataUrl(dataUrl: string): boolean {
+    return (
+      dataUrl &&
+      dataUrl.startsWith('data:image/') &&
+      dataUrl.includes('base64,') &&
+      dataUrl.split(',')[1]?.length > 0
+    );
   }
 }
 

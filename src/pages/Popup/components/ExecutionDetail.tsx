@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ExecutionLog } from '../../../replay/types/session';
 import { ActionType } from '../../types';
 import { useExecutionConfig } from '../../../config/ui';
+import ExecutionThumbnail from './ExecutionThumbnail';
 import './execution-detail.css';
 
 interface ExecutionDetailProps {
@@ -37,8 +38,11 @@ export const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
     }
   };
 
-  const handleThumbnailClick = (e: React.MouseEvent, log: ExecutionLog) => {
-    e.stopPropagation();
+  const handleThumbnailClick = (
+    e: React.MouseEvent | null,
+    log: ExecutionLog
+  ) => {
+    if (e) e.stopPropagation();
     if (log.screenshot && !log.screenshot.startsWith('error:')) {
       // Abre a imagem em uma nova aba usando o base64 como URL
       window.open(log.screenshot, '_blank');
@@ -168,28 +172,13 @@ export const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
             >
               <div className="log-index">#{actualIndex + 1}</div>
 
-              <div
-                className="log-thumbnail"
-                onClick={(e) => handleThumbnailClick(e, log)}
-                style={{
-                  cursor: !screenshotStatus.isError ? 'pointer' : 'default',
-                }}
-              >
-                {!screenshotStatus.isError ? (
-                  <img
-                    src={log.screenshot}
-                    alt={`Screenshot ${actualIndex + 1}`}
-                    loading="lazy"
-                    style={{
-                      maxWidth: `${config.thumbnailMaxPx}px`,
-                      maxHeight: `${config.thumbnailMaxPx}px`,
-                    }}
-                  />
-                ) : (
-                  <div className="screenshot-error">
-                    <span>{screenshotStatus.message}</span>
-                  </div>
-                )}
+              <div className="log-thumbnail">
+                <ExecutionThumbnail
+                  src={!screenshotStatus.isError ? log.screenshot : undefined}
+                  alt={`Screenshot ${actualIndex + 1}`}
+                  onClick={() => handleThumbnailClick(null, log)}
+                  className="execution-detail-item"
+                />
               </div>
 
               <div className="log-details">

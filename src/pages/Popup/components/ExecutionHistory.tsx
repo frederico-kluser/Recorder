@@ -8,6 +8,7 @@ import { ExecutionLog } from '../../../replay/types/session';
 import { recordingStore } from '../../storage/recording-store';
 import { RecordingEntry } from '../../types/recording';
 import { ActionType } from '../../types';
+import ExecutionThumbnail from './ExecutionThumbnail';
 import './execution-history.css';
 
 interface ExecutionHistoryProps {
@@ -210,17 +211,12 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
               <div className="log-index">#{actualIndex + 1}</div>
 
               <div className="log-thumbnail">
-                {!screenshotStatus.isError ? (
-                  <img
-                    src={log.screenshot}
-                    alt={`Screenshot ${actualIndex + 1}`}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="screenshot-error">
-                    <span>{screenshotStatus.message}</span>
-                  </div>
-                )}
+                <ExecutionThumbnail
+                  src={!screenshotStatus.isError ? log.screenshot : undefined}
+                  alt={`Screenshot ${actualIndex + 1}`}
+                  onClick={() => handleLogClick(log)}
+                  className="execution-log-item"
+                />
               </div>
 
               <div className="log-details">

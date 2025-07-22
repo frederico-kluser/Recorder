@@ -12,6 +12,7 @@ import { recordingStore } from '../storage/recording-store';
 import { executeMigrationsIfNeeded } from '../storage/migration';
 import { ReplayEngine } from '../../replay/core/engine';
 import { ReplayMessageType, ReplayCmdMessage } from '../../replay/types/events';
+import { configManager } from '../../config/recording-config';
 
 const HOVER_CTX_MENU_ID = 'deploysentinel-menu-id';
 const AWAIT_TEXT_CTX_MENU_ID = 'deploysentinel-menu-await-text-id';
@@ -27,6 +28,11 @@ recordingStore.initialize();
 // Inicializa o ReplayEngine
 const replayEngine = ReplayEngine.getInstance();
 console.log('✅ Replay Engine inicializado');
+
+// Carrega configurações
+configManager.loadConfig().then(() => {
+  console.log('✅ Configurações carregadas');
+});
 
 async function recordNavigationEvent(
   url: string,
@@ -226,6 +232,42 @@ chrome.runtime.onMessage.addListener(async function (
         sendResponse({ error: chrome.runtime.lastError.message });
       } else {
         sendResponse({ success: true, dataUrl });
+      }
+    });
+    return true;
+  } else if (request.type === 'GET_VIEWPORT_CONFIG') {
+    // Retorna configuração de viewport
+    const config = configManager.getConfig();
+    const viewport = config.defaultViewport;
+    sendResponse({ viewport });
+    return true;
+  } else if (request.type === 'SET_VIEWPORT') {
+    // Define o viewport da janela
+    const { viewport } = request;
+    if (!viewport || !viewport.width || !viewport.height) {
+      sendResponse({ error: 'Invalid viewport dimensions' });
+      return true;
+    }
+
+    chrome.windows.getCurrent((window) => {
+      if (window.id) {
+        // Ajusta o tamanho da janela considerando as bordas
+        chrome.windows.update(
+          window.id,
+          {
+            width: viewport.width + 16, // Adiciona margem para bordas
+            height: viewport.height + 100, // Adiciona margem para barra de endereço
+          },
+          () => {
+            if (chrome.runtime.lastError) {
+              sendResponse({ error: chrome.runtime.lastError.message });
+            } else {
+              sendResponse({ success: true });
+            }
+          }
+        );
+      } else {
+        sendResponse({ error: 'Window not found' });
       }
     });
     return true;

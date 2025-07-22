@@ -1,0 +1,119 @@
+.execution-thumbnail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  min-width: 120px;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-darker, #1a1a1a);
+  border: 1px solid var(--border-color, #333);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.execution-thumbnail.loading {
+  background-color: var(--bg-darker, #1a1a1a);
+}
+
+.execution-thumbnail.error {
+  background-color: var(--bg-error, #2a1a1a);
+  border-color: var(--error-border, #553333);
+}
+
+.execution-thumbnail img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.execution-thumbnail img.clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.execution-thumbnail img.clickable:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.thumb-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.thumb-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--text-secondary, #666);
+  border-top-color: var(--primary, #4a90e2);
+  border-radius: 50%;
+  animation: thumb-spin 0.8s linear infinite;
+}
+
+@keyframes thumb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.thumb-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  color: var(--text-secondary, #888);
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+.thumb-error svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+}
+
+.thumb-error-text {
+  font-size: 12px;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+/* Estados específicos para diferentes contextos */
+.execution-log-item .execution-thumbnail {
+  min-height: 60px;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.execution-detail-item .execution-thumbnail {
+  min-height: 100px;
+  min-width: 150px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .execution-thumbnail {
+    min-height: 60px;
+    min-width: 80px;
+  }
+
+  .thumb-error svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .thumb-error-text {
+    font-size: 11px;
+  }
+}

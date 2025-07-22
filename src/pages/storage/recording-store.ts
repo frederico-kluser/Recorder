@@ -334,11 +334,28 @@ export class RecordingStore implements IHistoryBackend {
         result[STORAGE_KEY] || {};
 
       if (recordings[recordingId]) {
+        // Valida e adiciona thumbStatus aos logs
+        const processedLogs = newExecutionLogs.map((log) => {
+          if (!log.thumbStatus) {
+            // Determina o status baseado no screenshot
+            if (!log.screenshot) {
+              log.thumbStatus = 'error';
+            } else if (log.screenshot.startsWith('error:')) {
+              log.thumbStatus = 'error';
+            } else if (log.screenshot.startsWith('data:image/')) {
+              log.thumbStatus = 'ok';
+            } else {
+              log.thumbStatus = 'loading';
+            }
+          }
+          return log;
+        });
+
         // Adiciona novos logs aos existentes
         const existingLogs = recordings[recordingId].executionLogs || [];
         recordings[recordingId].executionLogs = [
           ...existingLogs,
-          ...newExecutionLogs,
+          ...processedLogs,
         ];
 
         // Check storage quota and prune if needed

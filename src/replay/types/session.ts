@@ -61,4 +61,5 @@ export interface ExecutionLog {
   ts: number; // timestamp
   action: Action;
   screenshot: string; // base64 encoded image or error message
+  thumbStatus?: 'ok' | 'error' | 'loading'; // status do thumbnail
 }
