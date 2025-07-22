@@ -34,6 +34,8 @@ export class ResizeExecutor extends ActionExecutor {
       chrome.runtime.sendMessage(message, (response) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
+        } else if (response?.error) {
+          reject(new Error(response.error));
         } else {
           resolve(response);
         }

@@ -15,7 +15,7 @@ import {
   ReplayMessage,
   ReplayMessageType,
 } from '../types/events';
-import { Action } from '../../pages/types/index';
+import { Action, ActionType, ResizeAction } from '../../pages/types/index';
 import { recordingStore } from '../../pages/storage/recording-store';
 import { EventBus } from '../utils/event-bus';
 import { ActionExecutorFactory } from './executors/factory';
@@ -97,6 +97,7 @@ export class ReplayEngine {
       // Executar ações
       this.executeActions(session.id, options);
 
+      console.log('[ReplayEngine] Replay iniciado:', session.id);
       return session;
     } catch (error) {
       console.error('[ReplayEngine] Error starting replay:', error);
@@ -212,8 +213,26 @@ export class ReplayEngine {
       ) {
         const action = session.actions[session.currentActionIndex];
 
-        // Executar ação via mensagem para o runner
-        await this.executeAction(session.tabId, action, options);
+        console.log(
+          `[ReplayEngine] Executando ação ${session.currentActionIndex + 1}/${
+            session.actions.length
+          }: ${action.type}`
+        );
+
+        try {
+          // Executar ação via mensagem para o runner
+          await this.executeAction(session.tabId, action, options);
+
+          console.log(
+            `[ReplayEngine] Ação executada com sucesso: ${action.type}`
+          );
+        } catch (actionError) {
+          console.error(
+            `[ReplayEngine] Erro ao executar ação ${action.type}:`,
+            actionError
+          );
+          throw actionError;
+        }
 
         session.currentActionIndex++;
 
@@ -256,6 +275,11 @@ export class ReplayEngine {
     action: Action,
     options: ReplayOptions
   ): Promise<void> {
+    // Tratar ação de resize diretamente no background
+    if (action.type === ActionType.Resize) {
+      return this.executeResizeAction(action as any);
+    }
+
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error(`Action timeout: ${action.type}`));
@@ -347,7 +371,7 @@ export class ReplayEngine {
       chrome.scripting.executeScript(
         {
           target: { tabId },
-          files: ['replay-runner.bundle.js'],
+          files: ['replayRunner.bundle.js'],
         },
         () => {
           if (chrome.runtime.lastError) {
@@ -473,6 +497,43 @@ export class ReplayEngine {
       retryDelay: this.config?.retryDelay || 1000,
       chunkSize: this.config?.chunkSize || 10,
     };
+  }
+
+  /**
+   * Executa ação de resize diretamente no background
+   */
+  private async executeResizeAction(action: ResizeAction): Promise<void> {
+    return new Promise((resolve, reject) => {
+      chrome.windows.getCurrent((window) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+          return;
+        }
+
+        if (!window.id) {
+          reject(new Error('No window ID available'));
+          return;
+        }
+
+        chrome.windows.update(
+          window.id,
+          {
+            width: action.width,
+            height: action.height,
+          },
+          () => {
+            if (chrome.runtime.lastError) {
+              reject(chrome.runtime.lastError);
+            } else {
+              console.log(
+                `[ReplayEngine] Window resized to: ${action.width}x${action.height}`
+              );
+              resolve();
+            }
+          }
+        );
+      });
+    });
   }
 
   /**
