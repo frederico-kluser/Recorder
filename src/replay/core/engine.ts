@@ -18,6 +18,7 @@ import {
 import { Action, ActionType, ResizeAction } from '../../pages/types/index';
 import { recordingStore } from '../../pages/storage/recording-store';
 import { EventBus } from '../utils/event-bus';
+import { EventEmitter } from 'events';
 import { ActionExecutorFactory } from './executors/factory';
 import { throttle } from 'lodash';
 import { configManager } from '../config';
@@ -25,7 +26,7 @@ import { ReplayConfig } from '../config/default';
 import { screenshotService } from './services/screenshot-service';
 import { ExecutionLog } from '../types/session';
 
-export class ReplayEngine {
+export class ReplayEngine extends EventEmitter {
   private static instance: ReplayEngine;
   private sessions: Map<string, ReplaySession> = new Map();
   private eventBus: EventBus = new EventBus();
@@ -34,6 +35,7 @@ export class ReplayEngine {
   private config: ReplayConfig | null = null;
 
   private constructor() {
+    super();
     this.throttledPersist = throttle(this.persistState.bind(this), 500);
     this.executorFactory = new ActionExecutorFactory();
     this.initEngine();
@@ -53,7 +55,7 @@ export class ReplayEngine {
   }
 
   /**
-   * Inicia uma nova sessão de replay
+   * Inicia uma nova sessão de replay (para manter compatibilidade)
    */
   public async startReplay(
     recordingId: string,
@@ -160,6 +162,90 @@ export class ReplayEngine {
       const options = this.getSessionOptions(sessionId);
       this.executeActions(sessionId, options);
     }
+  }
+
+  /**
+   * Inicia uma sessão simplificada para uso com BatchRunner
+   */
+  public async start(recordingId: string, tabId: number): Promise<void> {
+    console.log(
+      '[ReplayEngine] Starting simplified replay for recording:',
+      recordingId
+    );
+
+    try {
+      const recording = await recordingStore.get(recordingId);
+      if (!recording) {
+        throw new Error(`Recording ${recordingId} not found`);
+      }
+
+      const session: ReplaySession = {
+        id: `replay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        recordingId,
+        actions: recording.actions,
+        startedAt: Date.now(),
+        status: ReplayStatus.RUNNING,
+        currentActionIndex: 0,
+        executionLogs: [],
+        tabId,
+      };
+
+      this.sessions.set(session.id, session);
+
+      // Aguardar aba estar pronta
+      await this.waitForTabReady(tabId);
+
+      // Injetar script runner
+      await this.injectReplayRunner(tabId);
+
+      // Executar ações
+      await this.executeActions(
+        session.id,
+        this.getSessionOptions(session.id),
+        recordingId
+      );
+    } catch (error) {
+      console.error('[ReplayEngine] Error in simplified start:', error);
+      this.emit('error', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Para a execução atual
+   */
+  public stop(): void {
+    const activeSessions = this.getActiveSessions();
+    activeSessions.forEach((session) => {
+      if (session.status === ReplayStatus.RUNNING) {
+        session.status = ReplayStatus.COMPLETED;
+        this.stopReplay(session.id);
+      }
+    });
+  }
+
+  /**
+   * Pausa a execução atual
+   */
+  public pause(): void {
+    const activeSessions = this.getActiveSessions();
+    activeSessions.forEach((session) => {
+      if (session.status === ReplayStatus.RUNNING) {
+        this.pauseReplay(session.id);
+      }
+    });
+  }
+
+  /**
+   * Retoma a execução pausada
+   */
+  public resume(): void {
+    const activeSessions = this.getActiveSessions();
+    activeSessions.forEach((session) => {
+      if (session.status === ReplayStatus.PAUSED) {
+        this.resumeReplay(session.id);
+      }
+    });
   }
 
   /**
@@ -287,6 +373,12 @@ export class ReplayEngine {
             `[ReplayEngine] Erro ao executar ação ${action.type}:`,
             actionError
           );
+          this.emit('actionFailed', actionError, {
+            action,
+            sessionId,
+            tabId: session.tabId,
+            actionIndex: session.currentActionIndex,
+          });
           throw actionError;
         }
 
@@ -294,6 +386,11 @@ export class ReplayEngine {
 
         // Emitir progresso
         this.emitProgress(sessionId);
+        this.emit(
+          'progress',
+          session.currentActionIndex / session.actions.length,
+          session.currentActionIndex
+        );
 
         // Salvar estado conforme configuração
         if (
@@ -313,6 +410,7 @@ export class ReplayEngine {
 
       // Verificar se completou todas as ações
       if (session.currentActionIndex >= session.actions.length) {
+        this.emit('completed', sessionId);
         await this.stopReplay(sessionId);
       }
     } catch (error) {
@@ -320,6 +418,7 @@ export class ReplayEngine {
       session.status = ReplayStatus.ERROR;
       session.error = error instanceof Error ? error.message : String(error);
       this.emitEvent(ReplayEventType.SESSION_ERROR, sessionId, { error });
+      this.emit('error', error);
     }
   }
 

@@ -13,6 +13,8 @@ import { executeMigrationsIfNeeded } from '../storage/migration';
 import { ReplayEngine } from '../../replay/core/engine';
 import { ReplayMessageType, ReplayCmdMessage } from '../../replay/types/events';
 import { configManager } from '../../config/recording-config';
+import { BatchRunner } from '../../replay/batch/BatchRunner';
+import { loadBatchConfig } from '../../config/batch.config';
 
 const HOVER_CTX_MENU_ID = 'deploysentinel-menu-id';
 const AWAIT_TEXT_CTX_MENU_ID = 'deploysentinel-menu-await-text-id';
@@ -91,6 +93,61 @@ chrome.runtime.onMessage.addListener(async function (
   sender,
   sendResponse
 ) {
+  // Batch execution handling
+  if (request.type === 'RUN_ALL_TESTS') {
+    (async () => {
+      try {
+        console.log('[BatchRunner] Iniciando execução em lote...');
+        const config = await loadBatchConfig();
+        const runner = BatchRunner.getInstance(config);
+
+        // Restaurar sessão anterior se existir
+        await runner.restoreFromSession();
+
+        // Executar todos os testes
+        const summary = await runner.runAll();
+
+        sendResponse({ success: true, summary });
+      } catch (error) {
+        console.error('[BatchRunner] Erro:', error);
+        sendResponse({
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    })();
+    return true; // Keep channel open for async response
+  }
+
+  if (request.type === 'ABORT_BATCH') {
+    try {
+      const config = await loadBatchConfig();
+      const runner = BatchRunner.getInstance(config);
+      runner.abort();
+      sendResponse({ success: true });
+    } catch (error) {
+      sendResponse({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+    return true;
+  }
+
+  if (request.type === 'GET_BATCH_STATE') {
+    try {
+      const config = await loadBatchConfig();
+      const runner = BatchRunner.getInstance(config);
+      const state = runner.getState();
+      sendResponse({ success: true, state });
+    } catch (error) {
+      sendResponse({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+    return true;
+  }
   if (request.type === 'start-recording') {
     const testEditorTabId = sender.tab?.id;
 

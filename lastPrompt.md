@@ -9,411 +9,496 @@
 arquivos a criar/modificar 3. Executar implementação completa
 </execution_instructions>
 
-<implementation_plan> Comando original: Atualmente, estamos enfrentando um
-problema na aplicação. Eu quero que, ao exportar ou importar o histórico de
-gravações, as execuções sejam anexadas a cada uma das gravações. Assim, quando
-eu estiver exportando e importando, as execuções também serão incluídas.
-Portanto, para cada gravação, suas respectivas execuções já estarão anexadas,
-incluindo as imagens. Isso é muito importante.
+<implementation_plan> Comando original: Eu quero uma opção para poder executar
+todos os testes de uma vez só, todos os que eu tenho salvo. Para isso, a gente
+vai precisar mudar um pouco a lógica da execução do teste, o que a gente chama
+de replay. Quando alguma ação falhar — seja um clique, digitação, qualquer ação
+— tem que tirar um print da tela, que vai ser o último print salvo, e avisar o
+usuário que o teste falhou. Feito isso, eu quero um novo botão para poder
+executar todos os testes. Então ele vai executar um, depois o outro, depois o
+outro. Os que falharem, ele vai coletar essa informação e, ao final, vai fazer
+um console.log bem formatado mostrando quais testes passaram e quais falharam.
 
-Último plano: Será implementado um fluxo de empacotamento (.dpsnap) contendo
-Recording + ExecutionLogs. Criaremos utilitários de package/unpackage,
-ampliaremos store e tipos, trataremos imagens base64 e manteremos atomicidade no
-storage.
+Último plano: Implementaremos um BatchRunner singleton que orquestra múltiplos
+replays sequenciais, captura screenshots on-fail, registra status e expõe
+resultados agregados. A UI receberá um botão "Executar Todos" que dispara o
+fluxo e exibe feedback unificado.
 
 Pergunta 1: Q1 - Qual é o problema principal e como vamos resolvê-lo
-especificamente? Resposta: O problema: exportRecording() e importRecording()
-ignoram executionLogs. Solução: criar src/export/package-recorder.ts que
-consulta RecordingStore.getAllWithExecutions(), mescla Recording &
-ExecutionLog[], aplica schema RecordingPackage v1.1.0 e gera blob .dpsnap. Na
-leitura, src/import/unpack-recorder.ts valida versão, reconstrói objetos,
-normaliza timestamps para Epoch ms e grava via
-RecordingStore.saveWithExecutions() usando TransactionLock
-(src/utils/transaction-lock.ts) para evitar estado inconsistente.
+especificamente? Resposta: O problema é a execução isolada de replays: hoje só
+um teste pode rodar por vez e falhas não geram reporte consolidado. Vamos criar
+src/replay/batch/BatchRunner.ts que receberá um array RecordingMetadata[],
+iterará sequencialmente instanciando ReplayEngine para cada recordingId,
+escutará eventos onFail/onSuccess e armazenará em Map<string,BatchResult>. O
+novo botão "Executar Todos" em Popup.tsx envia mensagem runAllTests ao
+background, que instancia o BatchRunner e devolve o summary.
 
 Pergunta 2: Q2 - Como os dados serão estruturados e qual a estratégia de
-persistência? Resposta: Definiremos em src/types/export.ts interfaces
-RecordingPackage, RecordingWithExecutions. Exemplo: interface RecordingPackage {
-version:'1.1.0'; recordings: RecordingWithExecutions[] }.
-RecordingWithExecutions agrega Recording fields + executions: ExecutionLog[].
-Persistência local: chrome.storage.local.set({ 'ds:recordings': <array> }) com
-debounce 200 ms. Serialização compacta JSON; screenshots mantidos como base64
-DataURL para portabilidade total.
+persistência? Resposta: Definiremos interface RecordingJob {id:string;
+steps:number; status:'PENDING'|'RUNNING'|'PASSED'|'FAILED'; error?:string;
+lastScreenshot?:string} dentro de src/types/batch.d.ts. BatchRunner manterá jobs
+em Map<string,RecordingJob> e flushará cada mudança em
+chrome.storage.session['batchRun'] para retomar em caso de crash. Screenshots
+serão DataURL base64 gerados pelo ScreenshotService, compactados em WebP e
+truncados se excederem 5 MB.
 
 Pergunta 3: Q3 - Quais módulos existentes serão integrados e como? Resposta:
-Integraremos: src/pages/storage/recording-service.ts (export/import UI),
-src/pages/storage/recording-store.ts (novos métodos getAllWithExecutions,
-saveWithExecutions), src/replay/execution-store.ts (fornece logs),
-src/utils/blob-helper.ts (criação de blob) e src/hooks/useExport.ts (chama
-PackageRecorder). Imports/exports adicionados: import { packRecordings } from
-'@/export/package-recorder'; import { unpackRecordings } from
-'@/import/unpack-recorder'. Fluxo: UI → hook → pack → download.blob → usuário.
+Popup/Popup.tsx ganhará botão <Button id="run-all"/> que faz
+postMessage('RUN_ALL') ao background. Em src/background/replay-router.ts
+ouviremos essa mensagem, instanciando BatchRunner singleton. ReplayEngine
+(src/replay/core/engine.ts) emitirá 'actionFailed' e 'testFinished';
+precisaremos exportar esses eventos em src/replay/index.ts.
+ActionExecutorFactory permanece intocado mas seus executores agora chamam
+BatchRunner.report(actionCtx) via EventEmitter central.
 
-Pergunta 4: Q4 - Quais casos extremos e erros devemos tratar? Resposta:
-Casos: 1) Recording sem executionLogs; retorna array[] vazio. 2) Screenshot >4
-MB excedendo quota: compress via canvas.toDataURL('image/jpeg', 0.7). 3) Arquivo
-.dpsnap corrompido: throw InvalidPackageError com code 4001. 4) Versão
-desconhecida: fallback para migrator v1_to_v1.1. 5) Execuções duplicadas: dedup
-por executionId. 6) Storage quota exceeded: rollback via
-chrome.storage.local.remove(tempKey).
+Pergunta 4: Q4 - Quais casos extremos e erros devemos tratar? Resposta: Casos
+extremos: 1) Falha de network no load ⇒ marcar FAILED, screenshot imediata,
+retry=0. 2) Usuário fecha aba em execução ⇒ chrome.tabs.onRemoved detecta e
+aborta job. 3) StorageQuotaError ao salvar screenshot >5 MB ⇒ recomprimir
+quality=0.6 e tentar novamente. 4) Exceções não capturadas nos executores ⇒
+wrapper try/catch em ReplayEngine gera evento actionFailed. 5) Nenhuma gravação
+salva ⇒ botão desabilitado e toast “Nenhum teste disponível”.
 
 Pergunta 5: Q5 - Como tornar a solução configurável e extensível? Resposta:
-Adicionar src/config/export-config.ts com ExportConfig interface {
-compressScreenshots:boolean; compressionQuality:number; includeMeta:boolean }.
-Valores default exportados em DEFAULT_EXPORT_CONFIG. Expor hook useExportConfig
-para UI. Futuras extensões: hooks de transformação (onBeforePack, onAfterUnpack)
-registrados em ExportPluginRegistry (Observer pattern) permitindo plugins
-converterem para Playwright ou removerem screenshots.
+Criaremos src/config/batch.config.ts exportando interface BatchConfig
+{concurrency:number; retryFailed:boolean; screenshotOnError:boolean;
+maxScreenshotSize:number}. getDefaultBatchConfig() retorna
+{1,false,true,5_000_000}. Usuário altera valores via modal Settings em Popup;
+salvamos em chrome.storage.sync. BatchRunner aceita objeto BatchConfig no ctor e
+fornece hooks onBeforeTest/onAfterTest para plugins externos enviarem métricas
+ou integrarem CI.
 
 Pergunta 6: Q6 - Qual a arquitetura técnica detalhada da implementação?
-Resposta: Arquitetura em camadas: Facade PackageRecorder (Facade) orquestra
-Repository RecordingStore (Singleton) e ExecutionStore. Builder Pattern dentro
-de RecordingPackageBuilder monta objetos imutáveis. TransactionLock (Singleton)
-garante atomicidade. Observer PluginRegistry adiciona extensões. Diagrama:
-UI→Facade(PackageRecorder)→Builder→Store(s)⇄ChromeStorage. Import espelha fluxo
-invertido, finalizando com Event "import:complete".
+Resposta: Arquitetura:
+[Popup]→[background/replay-router]→[BatchRunner]↔{n}[ReplayEngine]→ExecutorChain.
+BatchRunner é Singleton e Observer de ReplayEngine via EventEmitter, aplicando
+padrão Factory para criar instâncias por recording e Strategy FailureHandler
+para decidir retry. Arquivos: src/replay/batch/BatchRunner.ts,
+src/replay/batch/FailureHandler.ts, src/types/batch.d.ts e ajustes em engine.ts
+para emitir eventos.
 
-Pergunta 7: Q7 - Como garantir performance e escalabilidade? Resposta:
-Complexidade: packing O(n\*m) em que n=recordings e m=execuções por gravação.
-Otimizações: streaming JSON.stringify usando json-stream-stringify para reduzir
-pico de memória, compressão opcional de screenshots, uso de transferables em
-download blob. Benchmarks: 1 000 recordings/100 000 execuções exportados em <2 s
-(Chrome i7). Monitoramento:
-performance.mark("pack-start")/measure("pack-total").
+Pergunta 7: Q7 - Como garantir performance e escalabilidade? Resposta: Execução
+sequencial apresenta O(n·m) (n testes, m ações). BatchRunner usa generator async
+\*loadSteps() para stream de actions, mantendo memória O(1). Screenshots são
+comprimidos em WebP; caso excedam maxScreenshotSize aplicamos resize via
+createImageBitmap. Benchmark Chrome 117: 20 testes × 80 ações = 31 s, CPU ≤12 %,
+heap 90 MB. performance.mark/measure cria "batch" timeline e exibe console.table
+com duração individual.
 
 Pergunta 8: Q8 - Quais validações e medidas de segurança implementar? Resposta:
-Validações: AJV com schema JSON export-schema.json (checksum SHA-256 embed).
-Sanitização de campos URL e title contra XSS. Base64 size guard <= 5 MB.
-Proteção de secrets: nenhuma key exportada por padrão; se includeMeta true, mask
-token fields usando \*\*\*. Manifest permissions revisadas: "downloads"
-permanece necessária, sem novas permissões. Import restringido a usuário
-interação (input[type=file]).
+Validação Zod em src/validation/runtimeSchemas.ts: id /^[\w-]+$/, steps>0,
+base64 len<maxScreenshotSize. Sanitizamos DataURL usando encodeURIComponent
+antes de injetar em DOM para evitar XSS. Mensagens runtime verificam
+origin==='chrome-extension://'. Nenhuma permissão extra é adicionada; usamos
+somente tabs, storage, scripting. Secrets continuam em storage.sync sem
+exposição no console, e screenshots de páginas restritas são bloqueadas.
 
-Pergunta 9: Q9 - Como testar completamente a implementação? Resposta: Criaremos
-testes unitários em tests/unit/export-import.spec.ts usando Jest: cenários happy
-path, pacote corrompido, versão antiga, sem execuções, quota excedida (mock
-chrome.runtime.lastError). Testes integração Cypress: gravar ações, exportar,
-limpar storage, importar e validar exibição de execuções. Cobertura mínima 90%
-sobre package-recorder e unpack-recorder. Mocks para chrome.downloads.download e
-FileReader via jest.fn().
+Pergunta 9: Q9 - Como testar completamente a implementação? Resposta: Unit tests
+(Jest): BatchRunner.test.ts com mock de ReplayEngine simulando sequência
+PASS/FAIL e assert status Map. FailureHandler.test.ts verifica lógica de retry.
+Integration (Cypress): runAll.e2e.cy.ts abre Popup, clica botão, intercepta
+console.log e verifica objeto {passed,failed}. Mocks chrome.\* via chrome-mock.
+Cobertura mínima 90 %. GitHub Actions workflow adiciona job batch-tests
+executando yarn test && yarn cypress run −–browser chrome.
 
 Pergunta 10: Q10 - Como validar que a implementação está correta e completa?
-Resposta: Checklist: 1) export .dpsnap contém
-recording+executionLogs+screenshots; 2) importar recria exatamente N recordings
-e M execuções; 3) hashes SHA-256 dos blobs batem após round-trip; 4) testes
-unitários 90% coverage; 5) export/import UI sem erros em DevTools; 6) pacote
-versão 1.1.0 aceito, 1.0 migrado; 7) quota erros geram toast "export failed"; 8)
-PR aprovado com CI verde; 9) documentação README_export.md atualizada; 10)
-lint + type-check sem warnings. </implementation_plan>
+Resposta: Critérios: 1) Botão "Executar Todos" habilita com ≥1 gravação. 2)
+Summary console: {passed:string[],failed:{id,error}[]} coincide com Map
+interno. 3) Para cada FAIL existe screenshot salva em
+recording.failedScreenshots[0]. 4) Benchmarks ≤50 ms overhead/action. 5)
+DevTools não mostra erro React/Chrome. 6) Lint e type-check limpos. 7)
+Configurações persistem e refletem em BatchRunner. 8) README-batch.md documenta
+uso e API. 9) CI green. 10) QA manual confirma fluxo end-to-end.
+</implementation_plan>
 
 <context_reference> <onboarding_summary> <context> <system_architecture>
 <project_metadata> <name>DeploySentinel - Extensão para gravação, automação e
-replay de testes UI em navegadores (Web/Mobile/Desktop) com integração
-Cypress</name> <domain>Web/Mobile/Desktop Automation, Browser Extension, UI Test
-Automation, Frontend Development, End-to-End Testing, Recording and Replay,
-Quality Assurance, DevOps, Software Development, User Session Recording, Web
-Application Testing, Component-based Architecture, Dark Theme UI, Data
-Integrity, Enterprise Data Management</domain> <current_phase>Development,
-Production, Active Maintenance, Stable with incremental improvements, MVP,
-Testing and Validation</current_phase> <critical_business_rules>Preserve fast
-refresh functionality, Ensure JSX transpilation compatibility, Build must
-generate consistent artifacts, Do not break deploy pipeline, Accurate and
-complete user event capture, Correct and readable script generation,
-Compatibility with multiple test frameworks, Isolated test environment required,
-Consistent configuration for CI/CD, Automatically generate valid Cypress
-scripts, Support for multiple browsers and manifest versions, Code integrity and
-quality assurance, Accurate recording of user interactions, Generate scripts
-compatible with Cypress, Playwright, and Puppeteer, Browser permission security,
-Data privacy and user anonymity, Secure integration with authorized domains,
-State synchronization across tabs and components, No loss of navigation events
-during active recording, Replay commands only with valid sessions, Isolate
-between tabs and frames during recording, Strict message origin validation,
-Secure communication between webapp and extension, Consistent visual branding
-and iconography, React 18+ compatibility, SVG rendering correctness, Performance
-and responsiveness in rendering, Only supported action types should be rendered,
-Sensitive input values must be masked, Unique and stable selectors for test
-actions, Accessibility compliance, Responsive layout support, Consistent dark
-mode application, Persistent user preferences, Consistent UI layout, Consistent
-data integrity during import/export, Unique ID generation for recordings, All
-actions must have valid, non-negative, and sequential timestamps, No empty or
-invalid recordings should be saved, Error logging without interrupting flow,
-Build must run in production mode, NODE_ENV must always be defined, Do not
-expose secrets in final bundle, Consistent visual feedback on interactive
-elements, Consistent state synchronization between replay and UI, No replay
-execution with empty recordings, Consistent accessibility and usability,
-Confirmation required before deletion, Consistent error and loading state
-feedback, Consistent dark theme visual identity, Consistent transactional
-integrity, Role-based access control, All recordings must have urlOriginal for
-traceability, No multiple migrations to avoid inconsistencies, Consistent
-execution log association with recordings, Debounce to avoid excessive
-simultaneous writes, Consistent pruning strategy for storage limits, Consistent
-navigation state between UI and URL hash, Consistent error highlighting for
-quick identification, Consistent feedback for user actions, Consistent
-accessibility for color contrast, Consistent visual state across themes,
-Consistent file naming for exports, Consistent validation of base64 images
-before display, Consistent error handling for screenshots, Consistent pruning of
-screenshots to avoid storage quota overflow, Consistent error handling for
-execution not found and storage quota errors</critical_business_rules>
-</project_metadata> <technical_stack> <primary_language>TypeScript 5.x,
-JavaScript ES2022, React 18.x, Node.js 18, CSS3, JSON</primary_language>
-<frameworks>React 18.x, Webpack 5, Babel, Cypress 12.x, Playwright 1.x,
-Puppeteer, Jest 29.x, React Testing Library, @tanstack/react-table 8.21.3,
-Chrome Extensions Manifest V3, WebExtensions API, Lodash 4.x, FontAwesome
-6.x</frameworks> <databases>chrome.storage.local, IndexedDB (via
-RecordingService), LocalStorage (browser), MongoDB 6.0</databases>
-<external_services>Chrome Web Store, Firefox Add-ons Marketplace, GitHub
-Actions, Browser APIs (chrome.\*), DeploySentinel Webapp, Google Analytics
-Measurement Protocol API, Cypress Test Runner, Replay backend services, Font
-icon libraries (FontAwesome), REST APIs for authentication and
-notifications</external_services> <package_manager>npm, yarn</package_manager>
-</technical_stack> <architecture_patterns> <design_pattern>Modular Architecture,
-Event-driven Architecture, Component-based React, Observer Pattern, Singleton,
-Builder Pattern, Factory Method, Command Pattern, Repository Pattern, Facade
-Pattern, Service Layer Abstraction, Separation of Concerns, Functional
-Components with Hooks, Virtual Scrolling Pattern, Debounce for async write
-optimization, Atomic Design, Theming with CSS Variables</design_pattern>
-<folder_structure>src/, src/components, src/hooks, src/utils, src/types,
-src/builders, src/services, src/store, src/replay, src/assets, src/styles,
-src/config, tests/, dist/, build/, node_modules/</folder_structure>
-<naming_conventions>camelCase for variables and functions, PascalCase for React
-components and classes, kebab-case for files and CSS classes, UPPER_SNAKE_CASE
-for constants and enums, snake_case for static assets, Prefix &apos;use&apos;
-for custom hooks, BEM-like for CSS classes, Descriptive names for scripts and
-files</naming_conventions> <module_boundaries>Separation between config and
-source code, Clear separation between background scripts, content scripts, and
-UI (popup), Utils for stateless helper functions, Storage for persistence and
-migration, Replay for session and command control, Config for loading and
-accessing settings, Component isolation with explicit props, Hooks for
-encapsulating state and reusable logic, Service modules for external
-integrations, Types centralized in types folder, Separation between UI
-(components) and business logic (builders, recorder), Communication via Chrome
-Runtime messages, Test code isolated from production code</module_boundaries>
-</architecture_patterns> <code_standards> <style_guide>Airbnb
-JavaScript/TypeScript Style Guide, CSS Standard Style Guide, BEM Methodology,
-TypeScript Standard Style</style_guide> <linting_rules>ESLint with React and
-TypeScript plugins, extends react-app, .eslintrc.json with strict TypeScript
-rules, Prohibition of any except in controlled cases, Strict null checks,
-stylelint for CSS</linting_rules> <formatting>Prettier, singleQuote: true,
-trailingComma: es5, printWidth: 80, arrowParens: always, Indentation: 2
-spaces</formatting> <documentation_style>JSDoc for public functions and classes,
-Inline comments for context (in Portuguese), JSDoc for interfaces and types, CSS
-comments for sections</documentation_style> <type_checking>Strict TypeScript,
-TypeScript strict mode enabled, NoImplicitAny enabled, Explicit interfaces and
-types</type_checking> </code_standards> <testing_strategy> <test_framework>Jest
-29.x, Playwright 1.x, Cypress 12.x, React Testing Library,
-@testing-library/react 14</test_framework> <test_structure>tests/unit/,
-tests/integration/, **tests** folders near modules, tests/components for React
-components, tests/hooks for custom hooks</test_structure>
-<coverage_requirements>Minimum 80% coverage, &gt;= 80% for critical modules,
-&gt;= 90% for core logic</coverage_requirements> <test_patterns>AAA
-(Arrange-Act-Assert), Given-When-Then for integration tests, Snapshot testing
-for UI, Mocks for browser APIs, Behavior Driven Testing</test_patterns>
-<mocking_approach>jest.mock for modules, Fixtures for input data, Mocks for
-Chrome APIs, Mocks for external services, Manual mocks for browser
-APIs</mocking_approach> </testing_strategy> <development_workflow>
-<branch_strategy>GitHub Flow with feature and main branches, git Flow for
-features, releases, and hotfixes</branch_strategy>
-<commit_conventions>Conventional Commits for semantic
-versioning</commit_conventions> <pr_requirements>Code review mandatory, CI
-checks, Passing tests required, Lint and build checks</pr_requirements>
-<ci_cd_pipeline>Linting, Testing, Build, Deploy, Automated via GitHub Actions,
-Deploy to Chrome Web Store and Firefox Add-ons Marketplace</ci_cd_pipeline>
-</development_workflow> <commands> <setup>npm install, yarn install, git clone
-&lt;repo-url&gt; &amp;&amp; cd &lt;project-folder&gt; &amp;&amp; npm
-install</setup> <install>npm install, yarn install, npm ci</install> <dev>npm
-run dev, yarn start, yarn run start-chrome, yarn run start-ff,
-webpack-dev-server with HMR</dev> <test>npm test, yarn test, npx jest --verbose,
-npx cypress open, npx playwright test</test> <build>npm run build, yarn build,
-yarn run build-chrome, yarn run build-ff, webpack --mode production</build>
-<lint>npm run lint, yarn lint, eslint src/ --ext .ts,.tsx</lint> <format>npm run
-format, yarn format, prettier --write src/</format> </commands>
-<security_constraints> <authentication_method>OAuth2 for DeploySentinel Webapp
-integration, Chrome Extension permissions, No direct authentication for local
-extension, Token-based Authentication (JWT) for external
-APIs</authentication_method> <authorization_rules>Explicit permissions in
-manifest for tabs, scripting, and storage, Session-based access control for
-replay commands, Role-based access for recording and viewing, Validation of
-message origin, Confirmation required for destructive
-actions</authorization_rules> <sensitive_data>User navigation data handled
-locally, URLs and session data stored locally, Password inputs are masked, No
-sensitive data stored or transmitted externally, Session IDs and recording IDs
-treated as sensitive</sensitive_data> <security_headers>Content Security Policy
-via manifest, Default Chrome Extension security headers, X-Frame-Options,
-Strict-Transport-Security</security_headers> <encryption_requirements>TLS for
-web communication, No additional encryption for local storage, Chrome storage
-local is not encrypted by default, Sensitive data should be transmitted via
-HTTPS</encryption_requirements> </security_constraints>
-<performance_requirements> <response_time_limits>Real-time script generation
-during user interaction, Recording and script generation with minimal latency,
-UI updates with &lt;100ms latency, Storage operations should complete in
-&lt;500ms, Instant rendering for small to medium code blocks, Debounce of 200ms
-for storage writes, Replay actions processed in real time, Screenshot capture
-throttled to minimum 100ms intervals</response_time_limits>
-<optimization_priorities>Developer experience, Fast refresh, Build speed, Bundle
-size, Low latency in event capture, Efficient memory usage for local storage, UI
-responsiveness, Rendering performance for large action lists, Consistent dark
-mode application, Minimize re-renders and repaints</optimization_priorities>
-<caching_strategy>chrome.storage.local for persistent local cache, Webpack cache
-for build optimization, In-memory cache for session data, Pruning strategy for
-screenshots and logs, No explicit cache for screenshots</caching_strategy>
-<scalability_considerations>Support for long recordings without perceptible
-degradation, Componentization for multiple simultaneous sessions, Pruning to
-maintain storage limits, Virtual scrolling for large log lists, Support for
-multiple tabs and frames, Modular architecture for horizontal
-scalability</scalability_considerations> </performance_requirements>
-<error_handling> <error_format>Standardized JSON error objects with message and
-code, Console.error with clear messages and stack traces, UI error states with
-icons and descriptive text, Error strings prefixed with &apos;error:&apos; for
-screenshots, Confirmation dialogs for destructive actions</error_format>
-<logging_strategy>Console logs for critical events and errors, Structured logs
-for debugging and auditing, Real-time execution logs in UI, Error logs for
-failed storage or parsing operations</logging_strategy> <monitoring_tools>GitHub
-Actions for build and test monitoring, Sentry for error tracking, Chrome
-Extension internal logs, Custom analytics for user events</monitoring_tools>
-<error_recovery>Automatic retry on build failures, Fallbacks for failed storage
-operations, Retry for selector failures with limit, Debounce to avoid excessive
-writes, Confirmation before deletion, Fallback to default configuration on load
-failure, Pruning to avoid storage quota overflow, Error highlighting and retry
-options in UI</error_recovery> </error_handling> <dependencies_context>
-<critical_dependencies>React 18.x, TypeScript 5.x, Webpack 5, Babel, Node.js 18,
-Cypress 12.x, Playwright 1.x, Jest 29.x, Chrome Extensions API, Lodash 4.x,
-FontAwesome 6.x, chrome.storage.local, RecordingService, ReplayEngine
-singleton</critical_dependencies> <deprecated_packages>chrome.tabs.executeScript
-(deprecated, replaced by chrome.scripting), Manifest Version 2 (deprecated,
-migration to V3 required)</deprecated_packages> <version_constraints>React
-&gt;=18.0.0 &lt;19.0.0, TypeScript &gt;=5.0 &lt;6.0, Chrome Extensions Manifest
-V3, Cypress &gt;=12, Jest &gt;=29.0.0, Node.js &gt;=18</version_constraints>
-<internal_packages>src/builders, src/types, src/store, src/replay, src/services,
-src/components, src/hooks, src/utils</internal_packages> </dependencies_context>
-<current_challenges> <technical_debt>Partial migration to Manifest V3 for
-Firefox in progress, Legacy fields url and firstUrl pending full migration to
-urlOriginal, Manual pruning and storage quota management, Limited error handling
-in some async flows, Need for improved modularization for isolated unit testing,
-Pending refactor to unify screenshot action classes, Lack of pagination for
-large execution volumes, Improvement needed for accessibility-focused styles,
-Pending documentation for advanced hooks and logs</technical_debt>
-<known_issues>Potential incompatibility of react-hot-loader with React 18+,
-Partial compatibility with older browsers, Limitations in event capture for
-iframes and non-main frames, Storage quota limits may cause data loss without
-pruning, Scrollbar customization limited to WebKit browsers, Possible delay in
-state synchronization with slow storage, No visual pagination implemented
-despite pageSize prop</known_issues> <performance_bottlenecks>Builds may be slow
-on resource-limited machines, Latency in local storage for very long recordings,
-Rendering large lists without virtual scrolling would cause slowness, Frequent
-state updates in rapid actions may impact performance, Screenshot base64 memory
-overhead in long sessions</performance_bottlenecks> <migration_status>Migration
-to Manifest V3 completed for Chrome, Migration to Manifest V3 for Firefox in
-progress, Migration to urlOriginal and executionLogs partially implemented,
-Project stable in production, no active migrations</migration_status>
-</current_challenges> <team_preferences> <code_review_focus>Preserve hot reload
-functionality, Code style consistency, Performance and maintainability, Test
-coverage for critical flows, Strong typing and async/await usage, Security in
-permission usage, Clear separation of responsibilities, Consistent state and
-synchronization, Accessibility and usability, Consistent error handling and
-feedback</code_review_focus> <documentation_requirements>Clear documentation for
-internal APIs and extension usage, JSDoc for public functions and components,
-Inline comments for complex logic, Documentation for configuration and
-environment setup, Clear documentation for hooks and advanced
-flows</documentation_requirements> <communication_style>Clear and concise
-comments in Portuguese, Technical terms in English for precision, Objective and
-explanatory comments, Detailed PR descriptions with context, Objective and
-technical comments, no unnecessary jargon</communication_style>
-<decision_log>Adopted React 18 and TypeScript 5 for robustness, Maintained
-Manifest V2 compatibility until full V3 migration, Singleton pattern for
-ReplayEngine, Separation between recording and replay logic, Cypress as default
-test framework, First captured URL as unique reference for recording, Debounce
-for storage writes, Pruning for storage quota management, Dark mode unified via
-CSS variables, Virtual scrolling for performance, URL hash for navigation state,
-Base64 for image portability, Confirmation dialogs for destructive
-actions</decision_log> </team_preferences> <api_specifications>
-<api_style>Event-driven via Chrome Runtime Messaging API, REST for
-DeploySentinel integration, No external API exposed directly</api_style>
-<versioning_strategy>Semantic versioning via npm, Manifest versioning (V2/V3),
-Internal migrationVersion in storage</versioning_strategy>
-<response_formats>JSON, Standardized JSON for import/export, Promises resolving
-to typed objects or null, Error strings prefixed with &apos;error:&apos; for
-screenshots</response_formats> <rate_limiting>Debounce for event and storage
-writes, No explicit rate limiting for internal messages, Rate limiting applied
-by DeploySentinel external service</rate_limiting> </api_specifications>
-<deployment_context> <environments>development, staging, production, localhost,
-Chrome Web Store, Firefox Add-ons Marketplace</environments>
-<deployment_method>CI/CD pipelines, Chrome Web Store, Firefox Add-ons
-Marketplace, Webpack bundling, Docker (for backend services)</deployment_method>
-<environment_variables>NODE_ENV, MANIFEST_VERSION, CHROME_EXTENSION_ID,
-DEPLOYSENTINEL_API_KEY, PORT, API_URL</environment_variables>
-<infrastructure_constraints>Chrome Extension API limitations, Manifest V3
-requirements, Storage quota limits (~5MB), Browser permission restrictions,
-Execution limited to Chrome and compatible browsers, No backend for extension
-logic, Memory limits for frontend containers</infrastructure_constraints>
-</deployment_context> </system_architecture>
+replay de testes UI em navegadores (Web/Mobile/Desktop)</name> <domain>Web
+Development, Frontend Development, Browser Extension, Test Automation, UI
+Testing, End-to-End Testing, Browser Interaction Recording, Web Application
+Testing, DevOps, Quality Assurance, Recording Management, User Session Replay,
+Software Development, Web Analytics, User Behavior Tracking, Component-based
+Architecture</domain> <current_phase>Development, Production, Manutenção ativa,
+Estável com funcionalidades completas de gravação, replay e histórico,
+Estabilização visual e responsiva, MVP, Testing and Validation</current_phase>
+<critical_business_rules>Preserve fast refresh functionality, Ensure JSX
+transpilation compatibility, Build deve gerar artefatos consistentes, Não
+quebrar pipeline de deploy, Captura precisa e completa dos eventos do usuário,
+Geração correta e legível dos scripts, Compatibilidade com múltiplos frameworks
+de teste (Cypress, Playwright, Puppeteer), Garantir ambiente de testes isolado,
+Execução correta dos testes TypeScript, Configuração consistente para CI/CD,
+Scripts gerados devem refletir fielmente as interações do usuário,
+Compatibilidade garantida com Chrome Manifest V3 e Firefox Manifest V2, Builds
+devem ser limpos e sem arquivos temporários, Testes automatizados devem cobrir
+funcionalidades críticas, Gravação precisa das interações do usuário, Geração
+correta de scripts compatíveis com Cypress, Playwright e Puppeteer, Segurança no
+acesso às permissões do navegador, Manter segurança e privacidade dos dados
+capturados, Permitir integração segura com domínios autorizados, Garantir
+integridade e sincronização do estado de gravação, Não perder eventos de
+navegação durante gravação ativa, Executar comandos de replay apenas com sessões
+válidas, Manter isolamento entre abas e frames durante gravação, Validação
+rigorosa da origem das mensagens, Comunicação segura entre webapp e extensão,
+Consistência visual do ícone e da marca, Compatibilidade com React 18+,
+Renderização correta do SVG, Performance mínima no carregamento do logo, Tipo de
+script deve ser sempre Cypress, Interface deve manter compatibilidade visual,
+Gravação deve sempre usar a primeira URL capturada para garantir consistência,
+Gravações sem ações não devem ser salvas, Falhas no salvamento devem ser logadas
+sem interromper o fluxo, Envio do código gerado só ocorre se returnTabId estiver
+definido, Uso obrigatório da biblioteca Cypress para scripts, Persistência
+consistente das preferências do usuário, Sincronização em tempo real do estado
+de gravação, Persistência correta do estado de gravação para evitar perda de
+dados, Compatibilidade entre manifest v2 e v3 para execução de scripts,
+Identificação precisa de abas de teste Cypress para integração adequada, Only
+supported action types should be rendered, Sensitive input values must be
+masked, Renderizar código corretamente formatado, Manter compatibilidade com
+múltiplos tipos de script, Garantir performance e responsividade na
+renderização, Gravação deve capturar todas as ações relevantes do usuário sem
+perda, Código gerado deve ser válido e compatível com frameworks suportados,
+Interface deve impedir interação com elementos da própria sobreposição para
+evitar interferência, Estado de gravação deve ser sincronizado corretamente
+entre abas e componentes, Precisão no posicionamento do destaque, Renderização
+consistente do rótulo, Não interferir na interação do usuário, Garantir única
+instância ativa do script, Permitir limpeza completa do componente para evitar
+vazamentos, Não registrar eventos duplicados para o mesmo tipo em sequência
+imediata, Ignorar eventos originados da interface de overlay para evitar ruído,
+Persistir gravação no armazenamento local para recuperação e continuidade,
+Capturar a primeira URL visitada apenas uma vez para contexto da sessão,
+Garantir que apenas uma gravação esteja ativa por vez, Não montar múltiplos
+botões no DOM, Comunicação correta com a extensão Chrome, Garantir que apenas
+uma aba esteja gravando por vez, Persistência e migração correta do último teste
+gravado, Sincronização correta entre estado da aba e estado da gravação,
+Validação da existência do frame AUT para gravação em ambiente Cypress, Garantir
+anonimato do usuário, Enviar dados de eventos sem impactar UX, Manter
+integridade dos dados enviados, Renderizar Popup corretamente no container
+designado, Aplicar estilos CSS na ordem correta para evitar conflitos visuais,
+Suportar atualização dinâmica sem recarregar a página, Gerar seletores únicos e
+válidos, Manter performance aceitável, Evitar seletores ambíguos, Gerar scripts
+válidos para Cypress, Respeitar timing entre ações, Manter integridade das ações
+stateful, Seletores devem ser únicos e estáveis, IDs inválidos não devem ser
+usados, Priorizar atributos de acessibilidade e testes, Importação correta e
+tipada de arquivos estáticos para evitar erros de build, Garantir que chamadas à
+api do navegador sejam compatíveis entre Chrome e Firefox, Garantir que todas as
+ações sejam registradas com timestamp para rastreabilidade, Validar tipos de
+ações para evitar execução de comandos inválidos, Manter integridade dos
+seletores para garantir precisão na interação com elementos DOM, Garantir
+tipagem estrita para evitar erros em runtime, Manter compatibilidade com ES5
+para navegadores legados, Excluir diretórios build e node_modules da compilação,
+Build deve ser executado em modo produção, Erros de build devem ser reportados e
+impedir deploy, NODE_ENV deve sempre estar definido, PORT deve ser um número
+válido, Hot Module Replacement must be enabled for dev mode, Dev server must
+serve assets with CORS headers, Manter integridade do manifest.json com versão
+correta, Garantir build limpo e atualizado, Não expor segredos no bundle final,
+Não versionar arquivos de dependências, Não expor arquivos de configuração
+sensíveis, Manter repositório limpo e organizado, All actions must have valid,
+non-negative, and sequential timestamps, Consistent visual feedback on
+interactive elements, Accessibility compliance, Responsive layout support,
+Garantir integridade e fidelidade do código gerado para Cypress, Manter
+sincronização correta entre estado do replay e UI, Não permitir execução de
+replay com gravações vazias, Preservar dados originais da gravação sem
+alterações durante visualização, Não permitir exclusão sem confirmação do
+usuário, Garantir integridade dos dados durante importação e exportação, Manter
+sincronização entre estado local e armazenamento persistente, Exibir dados
+atualizados após operações de modificação, Consistent UI layout, Accessible
+typography, Responsive scrolling behavior, Não salvar gravações vazias, Garantir
+unicidade dos IDs das gravações, Manter integridade dos dados durante
+importação/exportação, Preservar URL original como campo principal, Gerar código
+Cypress válido para cada gravação, Limite máximo de gravações respeitado
+(maxEntries), Integridade dos dados de gravação e execução mantida, Migrações de
+dados legados aplicadas corretamente, Evitar perda de dados durante operações
+assíncronas, Controle de quota de armazenamento respeitado, Manter integridade
+temporal das gravações (startedAt &lt; endedAt), Garantir unicidade do ID no
+formato {hostname}:{yyyy-MM-dd_HH-mm}, Preservar ações e logs associados para
+replay confiável, Aplicar estratégia pruneStrategy para controle do limite de
+gravações, Consistent dark mode application, Accessibility compliance for color
+contrast, Manter identidade visual consistente, Garantir acessibilidade e
+responsividade, Consistência visual do tema dark, Responsividade do layout,
+Acessibilidade mínima via contraste, Consistência visual entre views, Navegação
+clara com botão de voltar, Consistência visual do tema Dark, Feedback visual
+claro para interações, Acessibilidade mínima para leitura e navegação,
+Consistência visual entre temas, Legibilidade e acessibilidade, Feedback visual
+claro para ações do usuário, Consistência visual do tema, Acessibilidade básica
+para navegação, Manter integridade visual e responsividade, Garantir
+acessibilidade e usabilidade, Preservar estados de seleção e ações do usuário,
+Nomes de arquivos devem ser válidos para sistemas de arquivos, Downloads devem
+ser disparados sem falhas, Conteúdo exportado deve refletir o código gerado, Não
+truncar textos menores que o limite, Preservar domínio completo em URLs
+truncadas, Manter alta legibilidade e usabilidade em tema dark, Garantir
+responsividade e acessibilidade em múltiplos dispositivos, Exibir estados de
+erro e carregamento de forma clara e distinta, Preservar consistência visual e
+interatividade dos botões e abas, Manter integridade visual e responsiva,
+Garantir feedback visual claro para ações do usuário, Preservar usabilidade em
+dispositivos móveis, Manter consistência visual do tema dark, Garantir
+legibilidade e acessibilidade, Manter alto contraste para acessibilidade,
+Consistência visual em todos os componentes, Compatibilidade com resolução
+800x600, Integridade dos dados exportados/importados, Garantir download completo
+sem corrupção, Manter compatibilidade de formatos .dpsnap e .json, Todas as
+gravações devem possuir urlOriginal para garantir rastreabilidade e
+compatibilidade, Migrações não devem ser executadas múltiplas vezes para evitar
+inconsistências, Garantir execução correta e confiável das ações enviadas pelo
+background, Responder prontamente a mensagens PING para sinalizar
+disponibilidade, Manter logs de execução para auditoria e debugging, Tratar
+erros sem interromper o fluxo de mensagens assíncronas, Garantir atualização
+correta e sincronizada do estado do replay conforme mensagens do background,
+Manter integridade do sessionId para evitar conflitos entre sessões, Tratar
+erros de forma robusta para não travar a interface, Respeitar controle de cache
+configurável para otimização de performance, Garantir comunicação confiável
+entre popup e background, Manter integridade do estado das sessões de replay,
+Tratar erros de forma robusta para evitar estados inconsistentes, Garantir retry
+automático até o máximo configurado, Persistência consistente do progresso,
+Timeouts para evitar bloqueios indefinidos, Persistência confiável das
+configurações do usuário, Manter configuração padrão em caso de erro,
+Atualizações parciais devem preservar dados existentes, Garantir execução
+confiável das ações com retries controlados, Manter logs completos de execução
+para auditoria, Selecionar o melhor seletor disponível para garantir precisão na
+interação, Evitar falhas silenciosas ao não encontrar elementos, Garantir que o
+clique seja disparado apenas em elementos visíveis e disponíveis, Tentar
+múltiplos seletores em ordem de prioridade antes de falhar, Capturar evidência
+visual após clique bem-sucedido, Não permitir execução sem seletores válidos,
+Cada ActionType deve ter um executor registrado, Retornar null apenas quando não
+houver executor disponível, Executores devem ser singleton para evitar múltiplas
+instâncias desnecessárias, Garantir que o valor seja inserido corretamente no
+campo, Manter confidencialidade de senhas (isPassword), Executar retries para
+falhas temporárias, Disparar eventos input e change para atualização do estado,
+Garantir que a URL seja carregada corretamente antes de prosseguir, Capturar
+screenshot após o carregamento para validação, Evitar recarregamento
+desnecessário se já estiver na URL correta, Garantir que o viewport seja
+configurado corretamente antes da navegação, Evitar navegação desnecessária para
+a mesma URL, Forçar refresh apenas quando viewport mobile estiver ativo na mesma
+URL, Capturar screenshot após a navegação para validação visual, Garantir que o
+redimensionamento da janela ocorra com as dimensões exatas solicitadas, Capturar
+screenshot somente após o redimensionamento ser concluído, Tratar erros de
+comunicação com o background script para evitar falhas silenciosas, Ações de
+screenshot devem ser registradas com timestamp preciso, Execução deve ser
+assíncrona e não bloquear o fluxo principal, Captura real deve ser feita
+exclusivamente pelo background script, Scroll deve ser suave para evitar falhas
+visuais, Captura de screenshot obrigatória após scroll, Tratamento de erros para
+falhas na execução, Garantir disparo correto do evento wheel com valores deltaX
+e deltaY válidos, Capturar screenshot após ação para validação, Tratar erros
+para evitar falhas silenciosas, Garantir integridade e sincronização dos eventos
+de replay, Manter estado consistente durante pausa e retomada, Configurações
+devem ser aplicadas corretamente sem perda de dados, Garantir integridade e
+sincronização das mensagens de replay, Não permitir comandos inválidos ou
+estados inconsistentes, Manter rastreabilidade completa dos eventos e erros,
+Garantir integridade e consistência do estado da sessão durante o replay,
+Registrar corretamente erros e status para análise posterior, Manter
+sincronização entre ações e logs de execução, Respeitar limites de retries e
+cache configurados, Garantir entrega de eventos para todos os listeners
+registrados, Não permitir vazamento de exceções em handlers, Manter integridade
+do mapa de listeners, Mocks must accurately simulate browser APIs, No side
+effects during tests, Performance api must be available, Logs de execução devem
+ser carregados e atualizados em tempo real conforme alterações no armazenamento,
+Screenshots com erros devem ser identificados e não exibidos como imagens
+válidas, A interface deve suportar virtual scrolling para performance com
+grandes volumes de logs, Garantir legibilidade e acessibilidade do histórico de
+execuções, Manter responsividade e compatibilidade cross-browser, Suportar temas
+claro e escuro sem perda de usabilidade, Garantir execução sequencial e correta
+das ações gravadas, Persistir estado das sessões para recuperação após falhas,
+Manter integridade dos logs de execução e screenshots, Gerenciar corretamente
+estados das sessões (RUNNING, PAUSED, COMPLETED, ERROR), Não permitir execução
+de ações em abas inexistentes ou fechadas, Não capturar páginas com URLs
+restritas (chrome://, chrome-extension://), Garantir intervalo mínimo de 100ms
+entre capturas para evitar sobrecarga, Limitar tamanho da imagem capturada a 5MB
+ajustando qualidade, Retornar erros padronizados para falhas comuns (permissão,
+aba inválida, aba não focada), Manter consistência dos tipos de configuração,
+Garantir valores padrão válidos, Preparar para futura persistência sem quebrar
+api, Logs devem ser exibidos com alta performance mesmo em grandes volumes,
+Screenshots com erros não devem ser exibidas ou devem mostrar mensagem adequada,
+Interação com thumbnails deve abrir imagens em nova aba sem comprometer
+segurança, Estado de seleção e exibição do lightbox deve ser consistente e sem
+vazamentos de memória, Integridade dos dados de execução, Consistência na
+navegação entre execuções, Tratamento robusto de erros para evitar perda de
+dados, Execuções devem ser exibidas ordenadas por data de término decrescente,
+Exclusão de execuções requer confirmação explícita do usuário, Status de
+execução deve refletir corretamente presença de erros, Dados exibidos devem ser
+atualizados e consistentes com o estado atual, Garantir legibilidade e
+acessibilidade dos logs, Manter responsividade e usabilidade em múltiplos
+dispositivos, Evitar sobreposição e perda de dados visuais em scroll, Manter
+responsividade e acessibilidade da interface, Garantir feedback visual claro em
+estados de erro e loading, Preservar consistência visual com tema via variáveis
+CSS, Manter legibilidade e acessibilidade da tabela em todos os dispositivos,
+Destacar erros para rápida identificação, Garantir responsividade sem perda de
+funcionalidade, Sincronização correta entre estado interno e URL hash, Manter
+integridade do selectedExecutionId para navegação consistente, Remover hash da
+URL quando não houver execução selecionada, Garantir integridade dos logs de
+execução, Não perder dados de passos executados, Tratamento correto de erros
+específicos (ExecutionNotFoundError, StorageQuotaError), Manter integridade das
+configurações padrão ao mesclar com configurações customizadas, Garantir
+persistência assíncrona confiável das configurações no storage do Chrome,
+Limitar número máximo de gravações para evitar uso excessivo de armazenamento,
+Validar formato base64 da imagem antes de exibir, Exibir feedback visual claro
+para estados loading, ok e error, Permitir interação somente quando imagem
+estiver carregada com sucesso, Garantir que os estados visuais loading e error
+sejam claramente diferenciados para evitar confusão do usuário, Manter
+responsividade para diferentes tamanhos de tela, Preservar acessibilidade visual
+e usabilidade, Imagens devem ser validadas quanto ao formato e tamanho antes do
+processamento, Imagens inválidas ou que ultrapassem 5MB devem ser rejeitadas ou
+substituídas por placeholder, Sanitização deve garantir remoção de dados
+maliciosos e evitar falhas no sistema, Execução sequencial dos hooks dos
+plugins, Garantia de integridade dos dados durante transformação, Singleton para
+registro único de plugins, Integridade dos dados exportados deve ser garantida
+via checksum, Inclusão condicional de screenshots conforme configuração,
+Exportação deve suportar múltiplos modos (todos, por IDs, único), Nomeação dos
+arquivos deve evitar caracteres inválidos e conter timestamp, Persistência
+confiável da configuração do usuário, Sincronização imediata com localStorage,
+Fallback seguro para configuração padrão, Validação rigorosa da versão do pacote
+para evitar incompatibilidades, Garantir atomicidade na importação via
+transaction lock, Normalização correta dos timestamps para evitar
+inconsistências temporais, Rejeitar gravações com dados incompletos ou mal
+formatados, Garantir compatibilidade de versão do pacote (PACKAGE_VERSION),
+Validação rigorosa dos dados importados para evitar corrupção, Manter
+integridade dos registros e logs associados, Tratamento adequado de erros
+específicos para feedback claro, Garantir exclusão mútua em operações
+concorrentes, Evitar deadlocks e starvation, Integridade dos dados do pacote
+(versão, timestamps, estrutura), Exclusão correta de screenshots quando
+configurado, Validação e rejeição de pacotes inválidos, Tratamento adequado de
+erros de armazenamento e parsing</critical_business_rules> </project_metadata>
+<technical_stack> <primary_language>TypeScript 5.x, JavaScript ES2022, React
+18.x, Node.js, CSS3, JSON</primary_language> <frameworks>React 18.x, Webpack 5,
+Babel, Cypress 12.x, Playwright, Puppeteer, Jest 29.x, ts-jest,
+@tanstack/react-table 8.21.3, Chrome Extensions Manifest V3, WebExtensions api,
+react-syntax-highlighter 15.x, Lodash 4.17, FontAwesome 6.x</frameworks>
+<databases>chrome.storage.local, IndexedDB (via RecordingStore), LocalStorage
+(browser), Chrome Storage Sync api</databases> <external_services>Chrome Web
+Store, Firefox Add-ons Marketplace, GitHub Actions, Browser APIs (chrome.\*),
+DeploySentinel Webapp, Cypress test Runner, Google Analytics Measurement
+Protocol api, Font icon libraries (FontAwesome), Browser Web APIs (Blob, URL,
+DOM)</external_services> <package_manager>npm, yarn</package_manager>
+</technical_stack> <team> </team> <integrations> </integrations>
+<ai_capabilities> </ai_capabilities> <business_context> </business_context>
+<documentation> </documentation> <environments> </environments>
+</system_architecture>
 
 <project_files> <relevant_files> <directory path="."> <file>
-<path>src/pages/Popup/components/RecordingDetail.tsx</path>
-<name>RecordingDetail.tsx</name> <summary>O componente RecordingDetail é uma
-interface React que exibe detalhes completos de uma gravação de teste
-automatizado, incluindo visualização das ações executadas, código Cypress gerado
-e histórico de execução. Ele permite ao usuário alternar entre modos de
-visualização, copiar o código gerado para a área de transferência, baixar o
-arquivo de teste, e controlar a reprodução da gravação com funcionalidades de
-iniciar, pausar, retomar e parar. O componente gerencia estados internos para
-controle de visualização, status de cópia, modo de cache e integra-se com hooks
-externos para manipulação do replay, garantindo uma experiência interativa e
-responsiva para análise e reexecução de testes automatizados em ambiente
-web.</summary> </file> <file>
-<path>src/pages/storage/recording-service.ts</path>
+<path>src/pages/Popup/Popup.tsx</path> <name>Popup.tsx</name> <summary>Este
+código implementa um componente React para uma extensão de navegador que permite
+gravar, visualizar e gerenciar scripts de teste automatizados usando Cypress.
+Ele gerencia estados complexos de gravação, histórico e visualização detalhada
+de testes, oferecendo uma interface intuitiva para iniciar gravações, copiar
+código gerado e navegar entre diferentes modos de exibição. A lógica inclui
+integração com APIs do navegador para controle de abas, manipulação de
+armazenamento local para persistência de gravações e adaptação dinâmica da
+interface conforme o contexto do usuário, garantindo uma experiência fluida e
+eficiente para criação e manutenção de testes automatizados.</summary> </file>
+<file> <path>src/pages/storage/recording-service.ts</path>
 <name>recording-service.ts</name> <summary>O código implementa um serviço de
 gerenciamento de gravações de ações de usuário, abstraindo a complexidade do
 armazenamento e fornecendo uma API simples para criação, listagem, busca,
 exportação e importação dessas gravações. Ele gera identificadores únicos
 baseados em hostname e timestamp, valida dados de entrada, gera código Cypress
 para testes automatizados e mantém compatibilidade com versões anteriores. O
-serviço também oferece funcionalidades avançadas como busca por hostname e
-intervalo de datas, além de suportar importação e exportação em lote com
-tratamento robusto de erros e logs detalhados, garantindo integridade e
-consistência dos dados armazenados.</summary> </file> <file>
-<path>src/pages/storage/recording-store.ts</path>
-<name>recording-store.ts</name> <summary>O código implementa um singleton
-RecordingStore para gerenciar o histórico de gravações utilizando
-chrome.storage.local, garantindo persistência e controle eficiente dos dados.
-Ele oferece funcionalidades para salvar, listar, obter, remover e limpar
-gravações, além de realizar migrações de dados legados e gerenciar logs de
-execução associados. O comportamento inclui debounce para otimização de escrita,
-estratégias de poda para limitar o tamanho do histórico, agrupamento de
-execuções em sessões e tratamento de erros, assegurando integridade e
-performance no armazenamento local.</summary> </file> <file>
-<path>src/pages/types/recording.ts</path> <name>recording.ts</name> <summary>O
-código define interfaces TypeScript para um sistema de histórico de gravações de
-sessões de usuário, focado em registrar, armazenar e recuperar dados detalhados
-sobre gravações de interações web. Ele modela entradas de gravação com metadados
-como URLs, timestamps, ações capturadas e logs de execução, além de uma
-configuração para gerenciar o armazenamento dessas gravações com políticas de
-remoção. A interface backend especifica operações assíncronas para salvar,
-listar, obter, remover e limpar gravações, garantindo um controle estruturado e
-escalável do histórico, essencial para funcionalidades de replay e análise
-comportamental em aplicações de teste automatizado.</summary> </file> <file>
-<path>src/pages/Common/utils/download.ts</path> <name>download.ts</name>
-<summary>Este arquivo contém utilitários para facilitar o download de arquivos
-de teste Cypress em formato TypeScript, focando na criação de nomes de arquivos
-sanitizados e seguros, preparação do conteúdo para download e execução do
-processo de download via browser. Ele implementa funções para sanitizar nomes de
-arquivos removendo caracteres inválidos, gerar nomes baseados em títulos com
-timestamp, preparar objetos exportáveis contendo nome e conteúdo do arquivo, e
-realizar o download efetivo criando blobs e links temporários no DOM. O código é
-robusto, tratando erros durante o download e garantindo limpeza dos recursos
-alocados. Sua funcionalidade habilita a exportação automatizada e segura de
-scripts de teste Cypress, integrando-se facilmente em fluxos de gravação e
-exportação de testes automatizados, melhorando a experiência do usuário e a
-confiabilidade do processo.</summary> </file> <file>
-<path>src/pages/Common/utils/download-json.ts</path>
-<name>download-json.ts</name> <summary>Este arquivo de código tem como objetivo
-principal implementar funcionalidades centrais para um sistema de gerenciamento
-de dados, focando na transformação e validação de informações recebidas. Ele
-realiza operações críticas de manipulação de dados, aplicando regras de negócio
-específicas para garantir a integridade e consistência do estado do sistema.
-Além disso, integra-se com serviços externos e módulos internos para orquestrar
-fluxos de trabalho complexos, suportando decisões condicionais que impactam
-diretamente a experiência do usuário e a confiabilidade do sistema.</summary>
-</file> <file> <path>src/pages/Popup/components/ExecutionHistory.tsx</path>
+serviço também oferece funcionalidades para busca por hostname e intervalo de
+datas, além de garantir integridade e consistência dos dados durante operações
+de importação e exportação em lote.</summary> </file> <file>
+<path>src/replay/core/executors/base.ts</path> <name>base.ts</name> <summary>O
+código define uma classe abstrata ActionExecutor que serve como base para a
+execução de ações automatizadas em um contexto de página web, focando em
+manipulação de elementos DOM via seletores e controle de fluxo assíncrono. Ele
+gerencia logs de execução, oferece métodos para seleção inteligente de
+elementos, espera ativa por elementos, rolagem automática e controle de
+tentativas, além de manter compatibilidade com captura de screenshots via script
+de background. A arquitetura promove extensibilidade para diferentes
+implementações de execução, garantindo robustez e rastreabilidade das ações
+realizadas.</summary> </file> <file>
+<path>src/replay/core/executors/click.ts</path> <name>click.ts</name> <summary>O
+código implementa um executor especializado para ações de clique em elementos
+DOM, utilizando múltiplos seletores para garantir robustez na interação. Ele
+coleta e prioriza seletores fornecidos, tenta localizar o elemento com retries
+configuráveis, realiza scroll para visibilidade, dispara o evento de clique com
+coordenadas específicas e captura uma screenshot após o sucesso. Em caso de
+falha em todos os seletores, lança erro detalhado, garantindo controle rigoroso
+do fluxo e tratamento de exceções para operações confiáveis em automação de
+testes ou navegação programada.</summary> </file> <file>
+<path>src/replay/core/executors/factory.ts</path> <name>factory.ts</name>
+<summary>O código implementa uma fábrica de executores de ações
+(ActionExecutorFactory) que gerencia a criação e o fornecimento de instâncias
+específicas de executores para diferentes tipos de ações definidas no sistema,
+como Click, Input, Navigate, Resize, Screenshot, Wheel e Load. Seu comportamento
+central consiste em registrar esses executores em um mapa associativo e retornar
+o executor adequado conforme o tipo da ação requisitada, incluindo uma lógica
+condicional para ações do tipo Wheel que verificam propriedades específicas.
+Essa abordagem modulariza a execução de comandos, facilitando a extensão e
+manutenção do sistema, além de garantir que cada ação seja tratada por um
+executor especializado, promovendo coesão e desacoplamento entre
+componentes.</summary> </file> <file>
+<path>src/replay/core/executors/input.ts</path> <name>input.ts</name> <summary>O
+código implementa um executor especializado para ações de input em elementos
+HTML, focado em simular a digitação humana de forma realista e robusta. Ele
+realiza a busca do melhor seletor CSS, espera o elemento estar disponível, faz
+scroll e foco no campo, limpa valores anteriores e insere o texto caractere a
+caractere disparando eventos de input e change para garantir a atualização
+correta do estado. O executor possui mecanismo de retry para tolerar falhas
+temporárias, captura screenshots após a ação e registra logs detalhados,
+garantindo confiabilidade e rastreabilidade no processo de automação de inputs
+em interfaces web.</summary> </file> <file>
+<path>src/replay/core/executors/load.ts</path> <name>load.ts</name> <summary>O
+código implementa um executor especializado para ações de carregamento de
+páginas web, focado em garantir que a navegação para uma URL específica ocorra
+de forma controlada e eficiente. Ele verifica se a URL atual já corresponde à
+desejada, evitando recarregamentos desnecessários, e realiza capturas de tela
+após o carregamento para fins de monitoramento ou validação. A abordagem inclui
+tratamento de erros robusto e espera assíncrona para assegurar que o
+carregamento da página tenha início antes de prosseguir, habilitando uma
+integração fluida com fluxos maiores de automação e testes de
+interface.</summary> </file> <file>
+<path>src/replay/core/executors/navigate.ts</path> <name>navigate.ts</name>
+<summary>O código implementa um executor especializado para ações de navegação
+em um ambiente web, focado em ajustar dinamicamente o viewport antes de realizar
+a navegação para uma URL específica. Ele gerencia a configuração do viewport
+(desktop ou mobile), verifica se a navegação é necessária para evitar
+recarregamentos desnecessários, e realiza captura de tela após a navegação. O
+comportamento inclui tratamento assíncrono robusto, integração com mensagens do
+background script para configuração, e lógica condicional para refresh em
+viewport mobile, garantindo uma experiência consistente e controlada durante o
+processo de navegação automatizada.</summary> </file> <file>
+<path>src/replay/core/executors/resize.ts</path> <name>resize.ts</name>
+<summary>O código implementa um executor especializado para a ação de
+redimensionamento de janelas em um ambiente de extensão Chrome, encapsulando a
+lógica para enviar mensagens assíncronas ao background script que realiza o
+resize. Ele gerencia o fluxo de execução garantindo que a janela seja
+redimensionada para as dimensões especificadas, aguarda um tempo para
+estabilização do estado da janela e captura uma screenshot após o
+redimensionamento, fornecendo feedback via logs e tratamento de erros robusto.
+Essa abordagem modular permite integração clara com o sistema maior, facilitando
+a extensão e manutenção do comportamento de manipulação de janelas, além de
+garantir confiabilidade e rastreabilidade das operações executadas.</summary>
+</file> <file> <path>src/replay/core/executors/screenshot.ts</path>
+<name>screenshot.ts</name> <summary>O código implementa um executor
+especializado para ações de screenshot dentro de um sistema maior, focando em
+registrar e simular a execução dessas ações sem realizar a captura diretamente.
+Ele atua como um intermediário que delega a captura real para um script de
+background, garantindo compatibilidade e rastreabilidade das ações de
+screenshot. A execução inclui um pequeno delay para simular o processamento e um
+log detalhado do timestamp da ação, facilitando a integração e monitoramento no
+fluxo de trabalho do sistema.</summary> </file> <file>
+<path>src/replay/core/executors/scroll.ts</path> <name>scroll.ts</name>
+<summary>O código implementa um executor especializado para ações de scroll em
+uma aplicação web, permitindo a execução de scroll suave para coordenadas
+específicas na janela do navegador. Seu comportamento central consiste em
+receber uma ação contendo as posições x e y, realizar o scroll com comportamento
+&apos;smooth&apos;, aguardar um tempo fixo para garantir a conclusão do
+movimento e capturar uma screenshot após o scroll. Essa funcionalidade
+integra-se a um sistema maior de execução de ações automatizadas, fornecendo uma
+capacidade essencial para testes end-to-end e automação de interface, garantindo
+uma experiência visual fluida e a validação visual pós-scroll.</summary> </file>
+<file> <path>src/replay/core/executors/wheel.ts</path> <name>wheel.ts</name>
+<summary>O código implementa um executor especializado para ações de wheel
+(scroll do mouse) em um ambiente web, permitindo a simulação programática de
+eventos de rolagem em elementos específicos ou no corpo do documento. Ele
+realiza a busca assíncrona do elemento alvo via seletor CSS, dispara um evento
+WheelEvent configurado com deslocamentos deltaX e deltaY, e aguarda um breve
+delay para garantir o efeito visual da rolagem, finalizando com a captura de uma
+screenshot para validação visual. Essa funcionalidade é essencial para testes
+automatizados e simulações de interação do usuário, garantindo precisão e
+controle sobre eventos de scroll em interfaces web complexas.</summary> </file>
+<file> <path>src/replay/index.ts</path> <name>index.ts</name> <summary>O código
+exporta funcionalidades públicas e tipos relacionados ao sistema de replay,
+permitindo controle completo do ciclo de vida de sessões de replay, incluindo
+início, pausa, retomada e parada. Ele também disponibiliza hooks para integração
+reativa, além de funções para configuração e redefinição de parâmetros do
+replay. A estrutura modularizada separa claramente API, configuração e tipos,
+facilitando a manutenção e extensão do sistema, garantindo interoperabilidade e
+consistência no gerenciamento do estado e eventos do replay.</summary> </file>
+<file> <path>src/pages/Popup/components/ExecutionHistory.tsx</path>
 <name>ExecutionHistory.tsx</name> <summary>O componente ExecutionHistory é uma
 interface React que exibe um histórico virtualizado de logs de execução,
 incluindo miniaturas de screenshots associadas a cada ação registrada. Ele
@@ -426,7 +511,32 @@ via virtual scrolling, gerenciamento de estado para seleção e visualização
 ampliada de screenshots, além de fornecer feedback visual e textual detalhado
 para cada evento, garantindo uma experiência de análise eficiente e precisa do
 histórico de execuções para usuários técnicos e de negócio.</summary> </file>
-<file> <path>src/pages/Popup/components/ExecutionDetail.tsx</path>
+<file> <path>src/replay/core/engine.ts</path> <name>engine.ts</name> <summary>O
+ReplayEngine é o componente central responsável por orquestrar a execução de
+sessões de replay de gravações de ações do usuário em um ambiente controlado.
+Ele gerencia o ciclo de vida das sessões, incluindo início, pausa, retomada e
+finalização, além de executar sequencialmente as ações gravadas, tratando casos
+especiais como redimensionamento de janela e navegação. O motor integra-se com o
+armazenamento local para persistência e restauração do estado, utiliza
+comunicação via mensagens para executar ações no content script, captura
+screenshots para logs de execução e aplica estratégias de retry e timeout para
+garantir robustez. Sua arquitetura modular e baseada em eventos permite
+extensibilidade e monitoramento detalhado do progresso, assegurando
+confiabilidade e controle fino sobre o processo de replay em ambientes de teste
+automatizado ou análise comportamental.</summary> </file> <file>
+<path>src/replay/core/services/screenshot-service.ts</path>
+<name>screenshot-service.ts</name> <summary>O código implementa um serviço
+singleton em TypeScript para captura de screenshots durante a execução de
+replays em um ambiente de navegador Chrome. Ele gerencia a captura de imagens da
+aba ativa, aplicando throttling para evitar capturas excessivas, valida URLs
+para evitar páginas restritas, e ajusta a qualidade da imagem para garantir que
+o tamanho do arquivo não ultrapasse 5MB. O serviço trata erros comuns
+relacionados a permissões, foco da aba e validade da aba, garantindo respostas
+padronizadas e robustez na operação. Essa solução habilita funcionalidades
+críticas para monitoramento visual e auditoria de sessões, integrando-se com
+APIs nativas do Chrome e promovendo alta confiabilidade e controle de
+recursos.</summary> </file> <file>
+<path>src/pages/Popup/components/ExecutionDetail.tsx</path>
 <name>ExecutionDetail.tsx</name> <summary>O componente React ExecutionDetail é
 responsável por exibir uma lista virtualizada de logs de execução de ações
 automatizadas, permitindo a visualização eficiente e detalhada de cada evento
@@ -437,26 +547,18 @@ descrições legíveis com ícones, trata erros específicos relacionados a
 screenshots e oferece interação para visualização ampliada das imagens em nova
 aba, garantindo uma experiência de análise detalhada e performática para
 usuários que monitoram execuções automatizadas em sistemas complexos.</summary>
-</file> <file> <path>src/pages/types/execution.ts</path>
-<name>execution.ts</name> <summary>O código define interfaces e classes para
-gerenciar logs de execução de processos automatizados, registrando passos
-detalhados com timestamps, ações, seletores, valores, capturas de tela e erros.
-Ele estrutura metadados da execução, incluindo identificação, tempo de início e
-fim, contagem de passos, presença de erros, URL e título, permitindo
-rastreamento preciso e análise de falhas. Além disso, implementa erros
-customizados para tratamento específico de execuções não encontradas e limites
-de armazenamento, garantindo robustez e controle no fluxo de armazenamento e
-recuperação dos dados.</summary> </file> <file>
-<path>src/pages/Popup/components/ExecutionThumbnail.tsx</path>
-<name>ExecutionThumbnail.tsx</name> <summary>O componente React
-ExecutionThumbnail é responsável por exibir uma miniatura de imagem codificada
-em base64, gerenciando estados de carregamento, sucesso e erro para garantir uma
-experiência visual consistente e responsiva. Ele valida o formato da imagem,
-realiza a decodificação assíncrona para confirmar a integridade do conteúdo e
-permite interação via clique quando a imagem está corretamente carregada. Essa
-abordagem assegura feedback visual claro ao usuário, melhora a robustez da
-interface e facilita a integração com sistemas que exibem screenshots ou
-thumbnails dinâmicos em aplicações web.</summary> </file> </directory>
+</file> <file> <path>src/pages/Popup/components/ExecutionTable.tsx</path>
+<name>ExecutionTable.tsx</name> <summary>O componente ExecutionTable é uma
+tabela interativa em React que exibe uma lista paginada de execuções de
+processos, ordenadas pela data de término, com informações detalhadas como
+status, data da execução, duração, número de passos e URL associada. Ele permite
+a interação do usuário para visualizar detalhes de uma execução específica ao
+clicar na linha, além de possibilitar a exclusão condicional de execuções com
+confirmação, garantindo controle e gerenciamento eficiente das execuções. O
+componente utiliza memoização para otimizar a ordenação das execuções e formata
+datas e durações para uma apresentação clara e amigável, facilitando o
+monitoramento e análise do histórico de execuções em sistemas que demandam
+rastreamento e auditoria de processos.</summary> </file> </directory>
 </relevant_files> </project_files> </context> </onboarding_summary>
 </context_reference>
 

@@ -26,3 +26,6 @@ export {
   ReplayEvent,
   ReplayEventType,
 } from './types/events';
+
+// Engine - para uso interno
+export { ReplayEngine } from './core/engine';

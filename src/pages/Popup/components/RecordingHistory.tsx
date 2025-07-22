@@ -17,6 +17,7 @@ import {
   faCalendarAlt,
   faTasks,
   faSpinner,
+  faPlayCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { truncateText, truncateUrl } from '../../Common/utils/text';
 import '../themes/dark-core.css';
@@ -54,6 +55,7 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     type: 'success' | 'error';
     message: string;
   } | null>(null);
+  const [isRunningBatch, setIsRunningBatch] = useState(false);
 
   // Carrega as gravações ao montar o componente
   useEffect(() => {
@@ -207,6 +209,50 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
     });
   }, []);
 
+  // Handler para executar todos os testes
+  const handleRunAllTests = useCallback(async () => {
+    if (processedRecordings.length === 0) {
+      setNotification({
+        type: 'error',
+        message: 'Nenhuma gravação disponível para executar',
+      });
+      return;
+    }
+
+    setIsRunningBatch(true);
+    try {
+      console.log('🏃 [BatchRunner] Iniciando execução em lote...');
+
+      const response = await chrome.runtime.sendMessage({
+        type: 'RUN_ALL_TESTS',
+        recordingIds:
+          selectedIds.size > 0
+            ? Array.from(selectedIds)
+            : processedRecordings.map((r) => r.id),
+      });
+
+      if (response.success) {
+        console.log('✅ [BatchRunner] Execução concluída:', response.summary);
+        setNotification({
+          type: 'success',
+          message: `✅ Execução concluída! ${response.summary.passed.length} passou, ${response.summary.failed.length} falhou`,
+        });
+      } else {
+        throw new Error(response.error || 'Erro desconhecido');
+      }
+    } catch (error) {
+      console.error('❌ [BatchRunner] Erro:', error);
+      setNotification({
+        type: 'error',
+        message: `❌ Erro na execução: ${
+          error instanceof Error ? error.message : 'Erro desconhecido'
+        }`,
+      });
+    } finally {
+      setIsRunningBatch(false);
+    }
+  }, [processedRecordings, selectedIds]);
+
   const formatDuration = (start: number, end: number): string => {
     const duration = end - start;
     const seconds = Math.floor(duration / 1000);
@@ -266,6 +312,24 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
           {' '}
           {/* Export/Import buttons */}
           <div className="recording-history-bulk-actions">
+            {/* Run All Tests Button */}
+            <button
+              className="run-all-button"
+              onClick={handleRunAllTests}
+              disabled={isRunningBatch || processedRecordings.length === 0}
+              title={
+                selectedIds.size > 0
+                  ? `Executar ${selectedIds.size} teste(s) selecionado(s)`
+                  : 'Executar todos os testes'
+              }
+            >
+              <FontAwesomeIcon
+                icon={isRunningBatch ? faSpinner : faPlayCircle}
+                spin={isRunningBatch}
+              />
+              {isRunningBatch ? 'Executando...' : 'Executar Todos'}
+            </button>
+
             {/* Export Button */}
             <button
               className="download-json-button"
@@ -495,7 +559,10 @@ export const RecordingHistory: React.FC<RecordingHistoryProps> = ({
                           {truncateText(recording.title, 35)}
                         </div>
                         <div className="recording-url">
-                          {truncateUrl(recording.url || recording.urlOriginal, 40)}
+                          {truncateUrl(
+                            recording.url || recording.urlOriginal,
+                            40
+                          )}
                         </div>
                       </div>
                     </td>
