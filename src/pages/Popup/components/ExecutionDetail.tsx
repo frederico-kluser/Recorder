@@ -185,7 +185,7 @@ export const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
       <div
         className="execution-logs-list"
         onScroll={handleScroll}
-        style={{ height: '400px', overflowY: 'auto' }}
+        style={{ height: '400px', overflowY: 'auto', paddingBottom: '47px' }}
       >
         {/* Virtual scroll spacer */}
         <div style={{ height: `${visibleRange.start * itemHeight}px` }} />
