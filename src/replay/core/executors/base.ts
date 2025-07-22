@@ -21,12 +21,15 @@ export abstract class ActionExecutor {
   protected getBestSelector(selectors: {
     [key: string]: string | null;
   }): string {
-    // Ordem de preferência: data-testid, id, class, xpath
-    if (selectors['data-testid'])
-      return `[data-testid="${selectors['data-testid']}"]`;
+    // Ordem de preferência: testIdSelector, id, attrSelector, generalSelector
+    if (selectors.testIdSelector) return selectors.testIdSelector;
     if (selectors.id) return `#${selectors.id}`;
-    if (selectors.class) return `.${selectors.class.split(' ')[0]}`;
-    if (selectors.xpath) return selectors.xpath;
+    if (selectors.attrSelector) return selectors.attrSelector;
+    if (selectors.generalSelector) return selectors.generalSelector;
+
+    // Fallback: procurar qualquer seletor não nulo
+    const anySelector = Object.values(selectors).find((s) => s && s !== null);
+    if (anySelector) return anySelector as string;
 
     // Se nenhum seletor estiver disponível, lança erro
     throw new Error('No valid selector found');
