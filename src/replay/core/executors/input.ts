@@ -44,6 +44,10 @@ export class InputExecutor extends ActionExecutor {
             isPassword ? '[password]' : value || ''
           } in ${selector}`
         );
+
+        // Capture screenshot after successful input
+        await this.captureAfter(action);
+
         return;
       } catch (error) {
         retries--;

@@ -9,526 +9,787 @@
 arquivos a criar/modificar 3. Executar implementação completa
 </execution_instructions>
 
-<implementation_plan> Comando original: Quero que você delete todo o código que
-existe quando escolhemos o replay do modo com cache e sem cache. Deixe os
-seletores ainda no popup, tá? Mas delete toda a funcionalidade de implementação
-de background. Por quê? Porque eu quero que você siga a documentação que eu
-trouxe para o projeto, chamada de replay.md, que está na raiz do projeto agora.
-E vá implementando ela conforme o que está valendo na documentação. Implemente
-toda ela para a gente ter um modo replay efetivo. Claro, faça as conversões
-necessárias com base na nossa maneira de salvar informações durante o modo de
-recorder. Termine apenas quando tiver implementado toda a funcionalidade de
-replay.
+<implementation_plan> Comando original: Temos alguns pontos para evoluir. A
+nossa tela de execuções atualmente está com um layout ruim. Eu quero que você
+melhore esse layout, ok? Porque quando alguma das imagens em Base64 não é
+carregada, o layout quebra. E mesmo quando é carregada, o layout também quebra:
+as letras acabam entrando nas imagens, não há espaçamento, a separação entre as
+etapas não está clara e deveria estar melhor formatada. Isso é em relação às
+execuções.
 
-Último plano: Será criado um subsistema de replay totalmente novo, desacoplado
-do handler antigo, usando arquitetura message-driven simplificada. O plano
-detalha passo a passo a exclusão de código legado, criação de novos módulos
-TypeScript e validação completa.
+No caso da gravação da tela, verifique se todas as etapas de gravação estão
+funcionando, porque algumas imagens, quando gravadas, não são exibidas. É
+preciso analisar e descobrir o motivo disso.
+
+Quando vamos para o modo de reprodução, essa é outra tarefa também: eu quero
+que, no modo de reprodução, antes de iniciar o algoritmo, antes de colocar a
+URL, primeiro seja ajustado o tamanho do browser. Isso porque alguns sites
+carregam códigos diferentes para mobile e desktop. Se isso não for possível,
+quero que você carregue o site, ajuste para o modo mobile e depois faça um
+refresh antes de começar a executar a reprodução de alguma das gravações.
+
+Último plano: A solução envolve refatoração de CSS e componentes React,
+validação do pipeline de captura de imagens e modificação do engine de replay
+para setar o viewport antecipadamente. Abaixo seguem 10 Q&A técnicas cobrindo
+todas as etapas essenciais.
 
 Pergunta 1: Q1 - Qual é o problema principal e como vamos resolvê-lo
-especificamente? Resposta: Problema: o background contém dois flows de replay
-(cache/no-cache) redundantes e inconsistentes com replay.md. Solução: deletar
-src/modules/replay/\*\*, src/pages/Background/replay-controller.ts e hooks
-use-replay.ts. Em seguida, criar src/replay/core/replay-engine.ts responsível às
-mensagens REPLAY_START, REPLAY_PAUSE e REPLAY_STOP descritas em replay.md. O
-Popup continuará enviando seletores, mas o processamento ocorrerá unicamente no
-ReplayEngine, garantindo compliance total com a nova spec.
+especificamente? Resposta: Quebras de layout ocorrem porque thumbnails <img> não
+possuem contêiner flexível, alturas auto detectadas e fallback para erro.
+Criaremos ExecutionThumbnail.tsx em src/pages/Popup/components com wrapper
+<figure> display:flex; min-height:80px; e CSS .thumb-error que exibe ícone SVG
+quando onError dispara. Alteraremos ExecutionDetail.tsx para usar
+<ExecutionThumbnail src={b64} /> garantindo isolamento. Adotaremos Grid
+template-rows auto 1fr para evitar sobreposição de textos.
 
 Pergunta 2: Q2 - Como os dados serão estruturados e qual a estratégia de
-persistência? Resposta: Será criada interface ReplaySession em
-src/replay/types/session.ts com campos {id:string, actions:Action[],
-startedAt:number, status:ReplayStatus}. Sessions ficam em memória (Map<string,
-ReplaySession>) para performance; progresso incremental é salvo em
-chrome.storage.local key "ds_replay_state" a cada 20 ações via
-throttledPersist() (lodash.throttle 500 ms). Assim, se o browser recarregar,
-podemos restaurar status e ação corrente com mínimo overhead.
+persistência? Resposta: Expandiremos interfaces ExecutionLog em
+src/pages/types/execution.ts adicionando campo
+thumbStatus:"ok"|"error"|"loading". RecordingStore atualizará saveExecutionLog()
+para persistir status em chrome.storage.local. Persistência continua JSON porém
+agora com chave version:2 para migração. Ao abrir a tela, hook useExecutionLogs
+mapeia entradas carregadas e injeta estado default "loading" para itens legados,
+normalizando leitura.
 
 Pergunta 3: Q3 - Quais módulos existentes serão integrados e como? Resposta:
-Popup mantém RecordingDetail.tsx; ele importará startReplay, pauseReplay e
-stopReplay de src/replay/api.ts. Esse arquivo realiza
-chrome.runtime.sendMessage({type:'REPLAY_CMD',cmd,...}). No background,
-service-worker.ts adiciona listener chrome.runtime.onMessage e delega ao
-ReplayEngine. recording-store.ts continua fornecendo actions mas agora exporta
-getFlatActions(id) para alimentar o engine. Nenhum outro módulo é afetado.
+Afetaremos: src/pages/Popup/components/ExecutionDetail.tsx,
+ExecutionHistory.tsx, execution-detail.css, execution-history.css, além de criar
+execution-thumbnail.css. Importações: import ExecutionThumbnail from
+"./ExecutionThumbnail" nas duas telas. Recording-store.ts será ajustado para
+setThumbStatus. ReplayEngine em src/replay/core/index.ts terá novo método
+setViewportBeforeNavigate que será chamado por ActionExecutorFactory dentro de
+NavigateExecutor.
 
-Pergunta 4: Q4 - Quais casos extremos e erros devemos tratar? Resposta: Casos:
-aba alvo fechada inesperadamente, elemento não encontrado, navegação SPA
-trocando URL, excesso de ações (>10 000), perda de permissão scripting.
-Estratégias: onRemoved listener recria aba e reanexa runner;
-retrySelector(maxRetries 5, backoff 200 ms) para elementos dinâmicos;
-watchHistory() verifica hashes de URL para relançar scripts; chunkExecutor
-executa em blocos de 100 ações para controlar memória; erros fatais geram
-REPLAY_ERROR com code e stack.
+Pergunta 4: Q4 - Quais casos extremos e erros devemos tratar? Resposta: Edge
+cases: Base64 inválido → onError dispara e status=error; ausência de screenshot
+→ src undefined; imagens >5 MB bloqueadas pelo Chrome; StorageQuotaError ao
+salvar logs; viewport menor que 320×480. Tratamos criando validateBase64(b64)
+util em utils/image.ts, fallback a SVG placeholder, try/catch em
+chrome.storage.set com retry exponencial, e clampViewport() que força limites
+válidos antes de chamar chrome.windows.update.
 
 Pergunta 5: Q5 - Como tornar a solução configurável e extensível? Resposta:
-Criar replay.config.ts exportando interface ReplayConfig {maxRetries:number,
-delay:number, chunkSize:number, autoScroll:boolean}. Arquivo default salvo em
-src/replay/config/default.ts. Usuário pode sobrepor via chrome.storage.sync
-(chave ds_replay_cfg). Engine lê mergeDeep(default, userCfg) em bootstrap. Hooks
-públicos setReplayConfig e getReplayConfig permitem futuras UIs de ajustes sem
-alterar core.
+Adicionaremos recordingConfig.json com
+{"thumbMaxPx":96,"errorIcon":"/assets/img-broken.svg","defaultViewport":{"width":1280,"height":800}}.
+ConfigManager singleton em src/config/index.ts lerá preferências de
+chrome.storage.sync. Hooks useExecutionConfig retorna valores reativos. Novos
+valores aplicáveis via UI futura usando <SettingsModal>. Extensões futuras podem
+adicionar sizePreset ou customPlaceholder via mesma interface.
 
 Pergunta 6: Q6 - Qual a arquitetura técnica detalhada da implementação?
-Resposta: Padrões: Singleton (ReplayEngine), Factory (ActionExecutorFactory),
-Observer (EventBus interno). Estrutura: src/replay/core/ ├─ engine.ts ├─
-executors/ (click.ts, input.ts, navigate.ts) ├─ types/ (session.ts, events.ts)
-├─ utils/selector.ts. engine orchestrates → executors via dispatch(Action).
-EventBus emite PROGRESS, COMPLETE, ERROR; listener no Popup traduz em UI state.
-Diagrama: Popup ⇄ (Message) ⇄ ServiceWorker → ReplayEngine → ActionExecutor\* →
-DOM.
+Resposta: Aplicaremos Pattern Facade: ExecutionThumbnail encapsula lógica de
+fallback; Observer: hook useStorageListener re-renderiza detalhes ao mudar
+status; Factory: ViewportFactory decide entre MOBILE_375x667 ou DESKTOP_1280x800
+baseado em flag isMobile. Mapa textual:
+UI→ExecutionHistory→ExecutionThumbnail→onError→RecordingStore.update →
+EventBus(storage) → UI rehydrate. Replay path:
+ReplayEngine→NavigateExecutor→ViewportFactory.set→chrome.tabs.update→page
+reload→Action executors.
 
 Pergunta 7: Q7 - Como garantir performance e escalabilidade? Resposta:
-Complexidade: lookup de ação O(1) graças a Map; execução sequencial O(n).
-Otimizações: batching de DOM queries (querySelectorAll em loop único por chunk),
-cache de selector→node em WeakMap, reuse de event objects. Benchmarks esperados:
-1 000 actions < 2 s execução, memória < 20 MB. Monitoramento:
-PerformanceObserver reúne longTask >50 ms e envia métricas ao console.dev
-somente em NODE_ENV==='development'.
+Complexidade: render O(n) com virtualização já existente; novo componente
+adiciona memo() para evitar re-renders. Imagem onLoad adiciona decode() async
+para não bloquear main thread. Cache de thumbnails via URL.createObjectURL
+removido usando revokeObjectURL after 5 s. Debounce de 300 ms em
+RecordingStore.flushWrite reduz I/O. Benchmarks: lista 1 000 logs render &lt;180
+ms, memória adicional 3 MB. Monitoring via Performance.mark em mount/unmount.
 
 Pergunta 8: Q8 - Quais validações e medidas de segurança implementar? Resposta:
-Sanitização: verificar que cada action.selector não contém scripts ou
-javascript:. Input values mascaram campos type='password' antes de logar.
-PermissionsGuard confirma scripting origin match hostname gravado. Secrets
-permanecem no Popup; nenhuma key é enviada ao engine. Todas as mensagens exigem
-token gerado em startRecording e validado via constant-time comparison para
-evitar spoofing.
+ValidateBase64 usa regex /^data:image\/(png|jpeg);base64,/; rejeita scripts
+embutidos. Sanitizamos alt text via DOMPurify. chrome.windows.update recebe
+somente dimensões whitelisted para evitar abuso. Secrets nunca gravados em logs.
+CSP img-src permitimos 'self' blob:. Input lengths limitados: titulo ≤120, url
+≤2048. Thumbnails armazenadas apenas em memória, não enviadas externamente.
 
-Pergunta 9: Q9 - Como testar completamente a implementação? Resposta: Testes
-unitários em **tests**/replay-engine.test.ts simulam 50 ações variadas e
-asseguram estados EXPECTED_PROGRESS, COMPLETE, ERROR. Mock de chrome.\* via
-jest-mock-chrome. Testes de integração Playwright: script replay.spec.ts abre
-extensão, inicia replay real em página demo, verifica conclusão. Cobertura alvo
-≥ 85 %. GitHub Action executa yarn test && yarn pw:test headless em matriz
-Chrome|Firefox.
+Pergunta 9: Q9 - Como testar completamente a implementação? Resposta: Unit:
+ExecutionThumbnail.test.tsx usa @testing-library/react para cenários load,
+error, fallback; mocks de Image.prototype.decode. Integration:
+replay-viewport.spec.ts com Playwright carrega página dummy, verifica
+window.innerWidth antes do primeiro network request. Coverage ≥90%. Mocks
+chrome.storage usando jest-chrome. E2E Cypress grava sessão real, força erro
+base64 e assegura placeholder visível (#thumb-error). CI executa yarn test &&
+npx playwright test.
 
 Pergunta 10: Q10 - Como validar que a implementação está correta e completa?
-Resposta: Checklist: 1) antigo código deletado 2) novos arquivos compilam sem TS
-errors 3) Popup inicia replay e barra de progresso atualiza 4) aba destino
-executa ações corretas (snapshot diff DOM) 5) recuperação após reload mantém
-índice atual 6) erros simulados geram toast no Popup 7) testes unitários e E2E
-verdes 8) lighthouse performance não degrada 9) cobertura >85 % 10) revisão de
-código aprovada. </implementation_plan>
+Resposta: Checklist: 1) Todas as execuções listam texto fora da área da
+imagem. 2) Imagem ausente mostra ícone de falha. 3) Storage quota não excede 5
+MB após 1 000 logs. 4) Replay seta viewport antes de firstNavigation (evaluate
+Performance.timing). 5) ConfigManager altera thumbMaxPx e UI reflete sem
+reload. 6) Todos testes CI passam. 7) Lighthouse não aponta Layout Shift. 8)
+Code review confirma aderência ESLint/Prettier. </implementation_plan>
 
 <context*reference> <onboarding_summary> <context> <system_architecture>
 <project_metadata> <name>React Application Setup, build, processo de construção
 do projeto, Fleury Cypress Recorder, Extensão para geração automática de scripts
-de teste, Projeto TypeScript com Jest para testes automatizados,
-deploysentinel-recorder, Extensão para geração automática de scripts Cypress,
-Extensão para gravação de interações e geração de scripts de teste, Fleury
-Cypress Recorder - Extensão para gravação automática de scripts de teste,
-DeploySentinel - Sistema de gravação e replay de interações para automação de
-testes, DeploySentinel Test Recorder, Automação de testes Playwright, React Icon
-Component, Componente de ícone SVG para interface web, DeploySentinel, Interface
-para monitoramento e deploy de aplicações, Projeto de automação de testes com
-Cypress, Web Recording Automation Tool, Ferramenta para gravação e automação de
-interações web, Automação de Testes UI com Cypress, DeploySentinel - Extensão
-para gravação e automação de testes em navegadores, Automated UI Testing Script
-Visualizer, Code Generation UI, Visualização e geração dinâmica de código,
-Recorder ControlBar - Interface para gravação e geração de scripts de automação
-de testes, Highlighter Component, Visualização e destaque de seletores CSS em UI
+de teste, Configuração Jest para testes TypeScript, deploysentinel-recorder,
+Extensão para geração automática de scripts Cypress a partir de interações no
+navegador, Extensão para gravação de interações e geração de scripts de teste,
+Fleury Cypress Recorder - Extensão para gravação automática de scripts de teste,
+DeploySentinel - Sistema de gravação e replay de interações web, DeploySentinel
+Test Recorder, Automação de testes Playwright, React Icon Component, Componente
+de ícone SVG para interface web, DeploySentinel, Interface para monitoramento e
+deploy de aplicações, Projeto de automação de testes com Cypress, Web Recording
+Automation Tool, Ferramenta para gravação e automação de interações web,
+Automação de Testes UI com Cypress, DeploySentinel - Extensão para gravação e
+automação de testes em navegadores, Automated UI Testing Script Visualizer,
+CodeGen Component, Renderização de código JavaScript estilizado, UI Test
+Recorder, Ferramenta para gravação e geração automática de scripts de teste de
+interface, Highlighter Component, Visualização e destaque de seletores CSS em UI
 React, Interface de controle para monitoramento e testes, User Interaction
 Recorder, Captura e gravação detalhada de eventos de usuário para análise
 comportamental e automação, DeploySentinel Cypress Test Recorder, Ferramenta
-para gravação de testes automatizados com Cypress, Cypress Test Recorder
-Extension, Analytics Event Tracker, Monitoramento de eventos para análise de
-uso, Popup UI Renderer, Interface para exibição de popups com temas dinâmicos,
-@medv/finder, CSS Selector Generator, Gerador de scripts de teste automatizado,
-UI Test Selector Generator, Automação de Seletores para Testes de Interface,
-Projeto Front-end com suporte a importação de assets estáticos, Browser
-Extension Compatibility Layer, Projeto React com TypeScript para front-end
-moderno, Webpack Production Build Script, Configuração de ambiente para
-aplicação Node.js, Chrome Extension Boilerplate, Development Environment Setup,
-Configuração de build para extensão Chrome, Projeto Node.js com controle de
-versionamento otimizado, Timestamp Migration and Validation Utility, Cypress
-Script Automation, Automação de scripts de teste end-to-end com Cypress,
-Extensão para gravação de testes Cypress, UI Component Library, Button and
-Layout Styling, Replay Test Automation, Interface para visualização e reprodução
-de gravações de testes automatizados, Recording History Manager, Interface para
-gerenciamento de histórico de gravações de sessões, Web UI Base Styling,
-Recording Management Service - Gerenciamento de gravações de ações para testes
-automatizados, Gerenciamento eficiente do histórico de gravações para extensões
-Chrome, Sistema de Histórico de Gravações para Automação de Testes, Dark Theme
-UI Styling, Unified dark mode theme for web application, Fleury Brand Identity
-Component, Layout Dark Mode Unificado, Interface Web Responsiva, Popup UI
-Consistency Wrapper, Popup Recording History UI, Interface para visualização e
-interação com histórico de gravações, RecordingDetail Dark Theme, Interface para
-visualização detalhada de gravações, RecordingHistory UI Theme, Interface para
-histórico de gravações, Recording History UI, Interface para gerenciamento e
-visualização de gravações, Cypress Test Exporter, Ferramenta para exportação
-automatizada de testes Cypress, Text Utilities Module, Manipulação e truncamento
-de textos para UI, RecordingDetail Component - Visualização detalhada de
-gravações, RecordingHistory Component, Interface para gerenciamento de histórico
-de gravações, Extensão com popup estilizado para interface dark mode, Tema Dark
-Unificado Fleury, Sistema de Gerenciamento de Dados Empresariais, Replay Manager
-React Hook, Gerenciamento de replays de gravações em extensão Chrome, Replay
-Module, Centralização de funcionalidades de replay de gravações, Replay
-Automation Manager, Gerenciamento de execução automatizada de replays de
-gravações, ReplayRunner - Automação e reprodução de interações de usuário em
-navegador, Replay System para automação de gravações e execuções, Recording
-Migration Service, Garantia de integridade de dados de gravações,
-ReplayController, Gerenciamento de execução de replays de gravações de ações em
-navegador</name> <domain>Web Development, Frontend, React, desenvolvimento de
-software, automação de build, Automação de testes, QA, Test Automation, Browser
-Testing, Desenvolvimento de software, Testes automatizados, TypeScript, Browser
-Extensions, Browser Interaction Recording, Cypress, Playwright, Puppeteer,
-Browser Extension, Test Recording, Replay Orchestration, Frontend Development,
-UI Components, DevOps, Branding, Quality Assurance, Test Scripts, Web
-applications, Recording actions, UI Testing, Automação de testes, extensões de
-navegador, gravação de sessões, Cypress integration, UI Interaction, Web
-Application Testing, Automação de geração de código, Developer Tools, End-to-End
-Testing, UI Debugging, CSS Selector Highlighting, Web UI Testing, Shadow DOM,
-Web Analytics, User Behavior Tracking, Terminologia técnica: DOM events,
-selectors, debounce, SPA navigation, Automated Testing, Digital Product
-Monitoring, Google Analytics, Frontend Web Application, UI/UX Components,
-Theming and Styling, DOM Manipulation, CSS Selectors, Testes end-to-end, Web
-testing, Automação de Testes, Testes End-to-End, Seletores CSS, Desenvolvimento
+para gravação de testes automatizados com Cypress, Cypress Test Recorder,
+Extensão para gravação e geração automática de scripts de teste, Analytics Event
+Tracker, Monitoramento de eventos para análise de uso, Popup UI Renderer,
+Interface para exibição de popups com temas dinâmicos, @medv/finder, CSS
+Selector Generator, Gerador de scripts de teste automatizado, UI Test Selector
+Generator, Automação de Seletores para Testes de Interface, Projeto Front-end
+com suporte a importação de assets estáticos, Browser Extension Compatibility
+Layer, Automated UI Testing Framework, Framework para automação de testes
+end-to-end focado em interações de interface, Configuração TypeScript para
+projeto React com Jest, Webpack Production Build Script, Configuração de
+ambiente para aplicação Node.js, Chrome Extension Boilerplate, Development
+Environment Setup, Configuração para build e empacotamento de extensão Chrome,
+Projeto Node.js com controle de versionamento otimizado, Timestamp Migration and
+Validation Utility, Cypress Script Automation, Automação de scripts de teste
+end-to-end com Cypress, Extensão para gravação de testes Cypress, UI Component
+Library, Button and Layout Styling, Replay Test Automation Platform - Interface
+para visualização e controle de gravações de testes automatizados, Recording
+History Manager, Interface para gerenciamento de histórico de gravações de
+sessões, Web UI Base Styling, Recording Management Service - Gerenciamento de
+gravações de ações para testes automatizados, Gerenciamento eficiente e
+persistente de histórico de gravações para automação de testes, Sistema de
+Histórico de Gravações - Registro e Replay de Sessões, Dark Theme UI Styling,
+Unified dark mode theme for web application, Fleury Brand Identity Component,
+Layout Dark Mode Unificado, Interface Web Responsiva, Popup UI Consistency
+Wrapper, Popup Recording History UI, Interface para visualização e interação com
+histórico de gravações, RecordingDetail Dark Theme, Interface para visualização
+detalhada de gravações, RecordingHistory UI Theme, Interface para histórico de
+gravações, Recording History UI, Interface para gerenciamento e visualização de
+gravações, Cypress Test Exporter, Ferramenta para exportação automatizada de
+testes Cypress, Text Utilities Module, Manipulação e truncamento de textos para
+UI, RecordingDetail Component - Visualização detalhada de gravações,
+RecordingHistory Component, Interface para gerenciamento de histórico de
+gravações, Extensão com popup estilizado para interface dark mode, Tema Dark
+Unificado Fleury, Sistema de Gerenciamento de Dados Empresariais, Recording
+Migration Service, Garantia de integridade de dados de gravações, Replay
+Runner - Execução automatizada de ações em páginas web, TemplateRenderer -
+geração de templates de testes automatizados para Cypress, Replay Session
+Manager - Controle e monitoramento de sessões de replay de interação, Replay
+Controller API, Controle de sessões de replay para extensões Chrome, Replay
+System, Sistema de repetição automatizada de ações para testes e monitoramento,
+Replay Configuration Manager, Gerenciamento de configurações para sistema de
+replay, Executor de Ações Automatizadas para Interação Web, Executor de Ações de
+Clique para Automação de UI, Executor Factory para gerenciamento de ações
+automatizadas, Input Automation Executor, Executor para ações de input em
+interfaces web, Executor de Ações de Load para Automação Web, Executor de
+Navegação para Automação Web, Window Resize Executor, Executor para ações de
+redimensionamento de janelas em extensão Chrome, Screenshot Executor, Módulo
+para execução e registro de ações de captura de tela, Executor de Scroll para
+automação de UI, WheelExecutor, Executor para ações de scroll via mouse wheel em
+testes automatizados, Sistema de replay para captura e reprodução de sessões,
+Sistema para controle e reprodução de sessões gravadas, Replay Manager - Sistema
+para gerenciamento e execução de sessões de replay de ações de usuário,
+ReplayEngine EventBus, Módulo de comunicação interna para eventos, Test
+Environment Setup for Chrome Extension, Execution History Viewer, Interface para
+visualização detalhada de logs de execução com screenshots, Replay Session
+Analyzer - Visualização e análise de logs de execução, ExecutionHistory
+Component - Histórico visual de execuções para monitoramento e análise,
+RecordingStore - Gerenciamento e migração de gravações de sessões, ReplayEngine,
+Motor principal para execução e gerenciamento de sessões de replay de gravações
+de ações do usuário, ScreenshotService - Captura de screenshots em abas do
+navegador, ScreenshotService - Captura de telas para replay em navegador,
+Extensão Chrome para captura e replay de ações de usuário, Extensão UI
+Configurator, Gerenciamento de configurações de interface para extensão,
+Execution Detail Viewer, Visualização detalhada de logs de execução
+automatizada, Execution History Navigator, Interface para gerenciamento e
+visualização de execuções de gravações, Execution Monitoring Dashboard,
+Interface para visualização e gerenciamento de execuções de processos,
+Componente para visualização detalhada de logs e execuções, Execution History
+Navigator - Componente de navegação e visualização de histórico de execuções,
+Execution Table UI, Execution Navigation Hook, Gerenciamento de estado de
+navegação entre execuções em React, Execution Log Manager, Sistema para registro
+e análise de execuções automatizadas, Componente para navegação e visualização
+do histórico de execuções de gravações, ExecutionTable Component Testing,
+Validação funcional do componente de exibição de execuções, Gerenciamento de
+navegação entre execuções em SPA React</name> <domain>Web Development, Frontend,
+React, desenvolvimento de software, automação de build, Automação de testes, QA,
+Test Automation, Browser Testing, Desenvolvimento de software, Testes
+automatizados, TypeScript, Node.js, Testes end-to-end, Browser extension,
+Cypress scripting, Browser Interaction Recording, Cypress, Playwright,
+Puppeteer, Automação de testes web, gravação de sessões de navegação, replay de
+interações, integração com Cypress e Playwright, Frontend Development, UI
+Components, DevOps, Branding, Quality Assurance, Test Scripts, Web applications,
+Recording actions, UI Testing, Automação de testes, extensões de navegador,
+gravação de sessões, Cypress integration, UI Interaction, Web Application
+Testing, Code Visualization, Developer Tools, Automação de Testes, Web UI
+Testing, Test Script Generation, UI Debugging, CSS Selector Highlighting,
+Browser Extensions, Shadow DOM, Web Analytics, User Behavior Tracking,
+Terminologia técnica: DOM events, selectors, debounce, SPA navigation, Browser
+Extension, Digital Product Monitoring, Google Analytics, Frontend Web
+Application, UI/UX Components, Theming and Styling, DOM Manipulation, CSS
+Selectors, Web testing, Testes End-to-End, Seletores CSS, Desenvolvimento
 front-end, Assets estáticos, CSS Modules, SVG inline, browser extensions,
-cross-browser compatibility, Interação com UI web, Desenvolvimento Frontend,
-Build Automation, JavaScript, Configuração de software, Node.js environment
-management, Chrome Extensions, Frontend Tooling, Desenvolvimento de extensões
-para navegadores, JavaScript/TypeScript, Webpack, Node.js, Controle de versão,
-Software Development, Event Processing, Action Logging, Frontend Styling, UI/UX,
-Automação de testes de software, Replay Testing, Web Application, User Session
-Recording, Frontend React, Recording Management, Automação de testes, gravação
-de ações de usuário, geração de código Cypress, armazenamento e manipulação de
-dados de gravação, Extensões de navegador, Gerenciamento de histórico de
-gravações, chrome.storage.local API, Automação de testes, gravação de sessões,
-Cypress, QA, UI/UX Design, Healthcare, Web Application UI, Dark Theme Design,
+cross-browser compatibility, End-to-End Testing, Testes unitários com Jest,
+Desenvolvimento Frontend, Build Automation, JavaScript, Configuração de
+software, Node.js environment management, Chrome Extensions, Frontend Tooling,
+Desenvolvimento de extensões para navegadores, JavaScript/TypeScript, Webpack,
+Controle de versão, Software Development, Event Processing, Action Logging,
+Frontend Styling, UI/UX, Automação de testes de software, QA, Cypress, replay
+testing, web testing, Web Application, User Session Recording, Frontend React,
+Recording Management, Automação de testes, gravação de ações de usuário, geração
+de código Cypress, armazenamento e manipulação de dados de gravação, Test
+Recording, Execution Logs, chrome.storage.local, Automação de testes, gravação e
+replay de sessões web, terminologia técnica em inglês (Action, ExecutionLog,
+Cypress), UI/UX Design, Healthcare, Web Application UI, Dark Theme Design,
 Frontend UI, Popup Interface, Software de gravação, UX/UI para análise de
 gravações, Dark theme styling, Software de monitoramento, Recording analysis,
 UI/UX design, User Interface, Media Management, User Interaction, Recording
 Analytics, Text Processing, Interface de usuário para análise de gravações em
 sistemas de monitoramento e replay, terminologia técnica em inglês para precisão
-(ex: replay, toolbar, tabs), Recording History, Dark mode theming, Front-end
-Development, Theming, Dark Mode, Enterprise Data Management, Data Integrity,
-Business Rules, Replay System, Chrome API, Replay de gravações, Monitoramento,
-Análise de sessões, Web Testing, Browser Automation, Replay Execution, Automação
-de testes web, Replay de ações de usuário, Automação de UI, Browser extension,
-Web Extensions, Data Migration, Storage Management, Replay de sessões</domain>
+(ex: replay, toolbar, tabs), Recording History, Extensões de navegador, Dark
+mode theming, Front-end Development, Theming, Dark Mode, Enterprise Data
+Management, Data Integrity, Business Rules, Web Extensions, Data Migration,
+Storage Management, Automação de testes e replay de ações em navegadores
+(browser automation, web replay), RecordingExportContext, User Experience
+Analytics, Session Replay, Frontend Monitoring, User Session Replay, Chrome API,
+Monitoramento de sessões, Replay de ações, Cache management, Configuração
+persistente, Chrome Storage API, Automação de testes e execução de ações em
+aplicações web, manipulação DOM, browser automation, Automação de Testes, UI
+Testing, Web Automation, Automação de testes e interação com UI, Termos técnicos
+em inglês como Action, Executor, Click, Scroll, Automação de UI, Web Testing,
+Simulação de usuário, Web Automation, Web Navigation, Automação UI, Chrome
+Extension API, Monitoramento de UI, Web UI, Simulação de eventos DOM, User
+Experience Analytics, Replay Sessions, Software de monitoramento e análise de
+sessões, Terminologia técnica: replay, session, recording, progress, event,
+Automação de testes, análise comportamental, monitoramento de UX, replay de
+sessões, ReplayEngine, Event-driven architecture, Comunicação interna, Testing
+Automation, Replay de sessões, Análise de comportamento de UI, Logs de execução,
+Screenshots, Web Analytics, User Session Replay, UX Monitoring, Web Application
+UI, Frontend Development, User Interaction Logs, Visual Debugging, Automação de
+testes, gravação e replay de sessões, armazenamento local em browser extensions,
+Replay de sessões de usuário, Automated UI Testing, Browser Automation,
+Desenvolvimento de extensões para navegadores, automação de captura de tela,
+integração com APIs Chrome, Replay Testing, Automação de testes, captura de
+tela, replay de interações, browser extension, Desenvolvimento de extensões
+browser, Configuração UI, Monitoramento de execução, Logs de ações UI, Software
+de gravação e replay de sessões, Análise comportamental, Debugging, QA
+automation, Process Automation, Monitoramento de execuções, status, logs e
+métricas de processos automatizados, UI/UX para monitoramento de processos
+técnicos, Sistemas de monitoramento e análise de processos, interface web, UX/UI
+para ferramentas de observabilidade, Dashboard de monitoramento, Terminologia
+técnica em inglês para status, erros e performance, Frontend Web Development,
+React Hooks, State Management, URL Hash Navigation, Monitoramento de processos,
+User Interaction Recording, Playback and Debugging, Testes unitários de
+componentes, Terminologia técnica em inglês para precisão, Single Page
+Application, URL hash navigation, User interface state management</domain>
 <current_phase>Development, produção, deploy, Produção, Manutenção ativa,
-Manutenção, Versão 0.7.1 estável, Estável, Produção com funcionalidades em
-desenvolvimento (ex: histórico de gravações), Estabilização, Produção com
-suporte a múltiplas versões de manifest (v2 e v3), Production, Estável com
-monitoramento ativo e suporte a múltiplos eventos, Estável com suporte a hot
-reload para desenvolvimento, MVP, Desenvolvimento ativo, Desenvolvimento
-inicial, Local Testing, Otimização de build, Desenvolvimento, Testes unitários
-implementados, Testes automatizados integrados, Estável com funcionalidades
-completas de visualização e replay, Estável com funcionalidades completas de
-CRUD e import/export, Produção com suporte a importação/exportação e
-compatibilidade retroativa, Estável com funcionalidades de migração e
-manutenção, Stable UI Theme, Estabilização de UI, Estabilização visual e
+Configuração inicial para testes, Produção estável, versão 1.3.2, Estável,
+Produção com funcionalidades em desenvolvimento incremental, Estabilização,
+Produção com suporte a múltiplas versões de manifest (v2 e v3), Production,
+Estável para uso em ambiente real, Estável com monitoramento ativo e suporte a
+múltiplos eventos, Estável com funcionalidades completas de gravação e
+histórico, Estável com suporte a hot reload para desenvolvimento, Manutenção,
+MVP, Estável e em uso para testes automatizados em pipelines CI/CD,
+Desenvolvimento inicial, Local Testing, Desenvolvimento, Testes unitários
+implementados, Testes automatizados integrados, Produção com funcionalidades
+maduras para visualização e replay de gravações, Estável com funcionalidades
+completas de CRUD e import/export, Produção com suporte a importação/exportação
+e compatibilidade retroativa, Manutenção e evolução incremental, Produção com
+migração gradual de campos legados para novos (urlOriginal substituindo url e
+firstUrl), Stable UI Theme, Estabilização de UI, Estabilização visual e
 usabilidade, Estabilização do tema visual, Estabilização visual, Estabilização
-UI, Stable Utility Functions, Estabilização visual e responsiva, Estabilização
-do sistema de replay, Estabilização pós-MVP, Manutenção evolutiva, Estável com
-monitoramento ativo</current_phase> <critical_business_rules>Preserve fast
-refresh functionality, Ensure JSX transpilation compatibility, build deve gerar
+UI, Stable Utility Functions, Estabilização visual e responsiva, Manutenção
+evolutiva, Estável com suporte a retries e logging, Estável e em uso com
+monitoramento ativo, Testing and Validation, Produção com cobertura de testes
+automatizados, Refatoração e estabilização com foco em migração de dados e
+otimização de armazenamento, Estável com monitoramento ativo e suporte a
+múltiplas sessões simultâneas, Produção com testes unitários robustos, MVP com
+testes de integração para validação funcional, Estágio inicial com configuração
+padrão e hook básico, Estabilização e manutenção, Componente estável e utilizado
+em ambiente produtivo para controle operacional, Estável e em uso em ambiente de
+frontend, Testes automatizados implementados para garantir estabilidade, Testes
+unitários integrados, Garantia de qualidade, Estável com testes
+automatizados</current_phase> <critical_business_rules>Preserve fast refresh
+functionality, Ensure JSX transpilation compatibility, build deve gerar
 artefatos consistentes, não quebrar pipeline de deploy, Captura precisa e
 completa dos eventos do usuário, Geração correta e legível dos scripts,
-Compatibilidade com múltiplos frameworks de teste, Execução consistente dos
-testes, Suporte a TypeScript via ts-jest, Ambiente Node.js para testes,
-Compatibilidade com manifest v2 e v3, Geração precisa e confiável de scripts
-Cypress, Manutenção da integridade dos scripts gerados, Gravação precisa das
-interações do usuário, Geração correta de scripts compatíveis com Cypress,
-Playwright e Puppeteer, Segurança no acesso às permissões do navegador, Garantir
-gravação fiel das interações do usuário, Manter segurança e privacidade dos
-dados capturados, Permitir integração segura com domínios autorizados, Garantir
-que gravações só ocorram no tab e frame corretos, Manter integridade do estado
-de gravação (active, finished), Executar migrações de dados antes da
-inicialização, Sincronizar corretamente início e fim da gravação com fechamento
-de abas, Validação rigorosa da origem das mensagens, Comunicação segura entre
-webapp e extensão, Consistência visual do ícone, Compatibilidade com React 18+,
-Renderização correta do SVG, Consistência visual da marca, Performance mínima no
-carregamento do logo, Tipo de script deve ser sempre Cypress, Interface deve
-manter compatibilidade visual, Gravação deve sempre usar a primeira URL
-capturada para garantir consistência, Gravações sem ações não devem ser salvas,
-Falhas no salvamento devem ser logadas sem interromper o fluxo, Envio do código
-gerado só ocorre se returnTabId estiver definido, Uso obrigatório da biblioteca
-Cypress para scripts, Persistência consistente das preferências do usuário,
-Sincronização em tempo real do estado de gravação, Persistência correta do
-estado de gravação para evitar perda de dados, Compatibilidade entre manifest v2
-e v3 para execução de scripts, Identificação precisa de abas de teste Cypress
-para integração adequada, Only supported action types should be rendered,
-Sensitive input values must be masked, Geração correta e precisa do código,
-Manter integridade do código gerado, Renderização fiel do código para análise,
-Integridade das ações gravadas, Sincronização do estado de gravação, Precisão na
-geração de seletores e código, Precisão no posicionamento do destaque,
-Renderização consistente do rótulo, Não interferir na interação do usuário,
-Garantir única instância ativa do script, Permitir limpeza completa do
-componente para evitar vazamentos, Não registrar eventos duplicados para o mesmo
-tipo em sequência imediata, Ignorar eventos originados da interface de overlay
-para evitar ruído, Persistir gravação no armazenamento local para recuperação e
-continuidade, Capturar a primeira URL visitada apenas uma vez para contexto da
-sessão, Garantir que apenas uma gravação esteja ativa por vez, Não montar
-múltiplos botões no DOM, Comunicação correta com a extensão Chrome, Preservar
-integridade das gravações, Garantir sincronização correta entre abas e
-gravações, Não permitir gravação sem aba ativa, Garantir anonimato do usuário,
-Enviar dados de eventos sem impactar UX, Manter integridade dos dados enviados,
-Renderizar Popup no container correto, Aplicar estilos globais e temáticos sem
-conflito, Gerar seletores únicos e válidos, Manter performance aceitável, Evitar
-seletores ambíguos, Gerar scripts válidos para Cypress, Respeitar timing entre
-ações, Manter integridade das ações stateful, Seletores devem ser únicos e
-estáveis, IDs inválidos não devem ser usados, Priorizar atributos de
-acessibilidade e testes, Importação correta e tipada de arquivos estáticos para
-evitar erros de build, Garantir que chamadas à API do navegador sejam
-compatíveis entre Chrome e Firefox, Integridade dos dados de ações, Validação de
-tipos de ações suportadas, Captura precisa de eventos temporais, Garantir
+Compatibilidade com múltiplos frameworks de teste, Garantir ambiente de testes
+isolado, Execução correta dos testes TypeScript, Configuração consistente para
+CI/CD, Garantir scripts Cypress gerados com precisão e fidelidade às interações
+do usuário, Compatibilidade com múltiplos browsers (Chrome e Firefox), Manter
+integridade dos builds e testes automatizados, Gravação precisa das interações
+do usuário, Geração correta de scripts compatíveis com Cypress, Playwright e
+Puppeteer, Segurança no acesso às permissões do navegador, Garantir gravação
+fiel das interações do usuário, Manter segurança e privacidade dos dados
+capturados, Permitir integração segura com domínios autorizados, Garantir
+integridade e sincronização do estado de gravação entre abas e frames, Não
+permitir gravação em abas ou frames não autorizados, Manter consistência dos
+dados de replay para evitar falhas na reprodução, Gerenciar corretamente o ciclo
+de vida das sessões de gravação e replay, Validação rigorosa da origem das
+mensagens, Comunicação segura entre webapp e extensão, Consistência visual do
+ícone, Compatibilidade com React 18+, Renderização correta do SVG, Consistência
+visual da marca, Performance mínima no carregamento do logo, Tipo de script deve
+ser sempre Cypress, Interface deve manter compatibilidade visual, Gravação deve
+sempre usar a primeira URL capturada para garantir consistência, Gravações sem
+ações não devem ser salvas, Falhas no salvamento devem ser logadas sem
+interromper o fluxo, Envio do código gerado só ocorre se returnTabId estiver
+definido, Uso obrigatório da biblioteca Cypress para scripts, Persistência
+consistente das preferências do usuário, Sincronização em tempo real do estado
+de gravação, Persistência correta do estado de gravação para evitar perda de
+dados, Compatibilidade entre manifest v2 e v3 para execução de scripts,
+Identificação precisa de abas de teste Cypress para integração adequada, Only
+supported action types should be rendered, Sensitive input values must be
+masked, Renderizar código corretamente formatado, Manter compatibilidade com
+múltiplos tipos de script, Garantir performance e responsividade na
+renderização, Gravação deve capturar todas as ações relevantes do usuário sem
+perda, Código gerado deve ser válido e compatível com frameworks suportados,
+Interface deve impedir interação com elementos da própria sobreposição para
+evitar interferência, Estado de gravação deve ser sincronizado corretamente
+entre abas e componentes, Precisão no posicionamento do destaque, Renderização
+consistente do rótulo, Não interferir na interação do usuário, Garantir única
+instância ativa do script, Permitir limpeza completa do componente para evitar
+vazamentos, Não registrar eventos duplicados para o mesmo tipo em sequência
+imediata, Ignorar eventos originados da interface de overlay para evitar ruído,
+Persistir gravação no armazenamento local para recuperação e continuidade,
+Capturar a primeira URL visitada apenas uma vez para contexto da sessão,
+Garantir que apenas uma gravação esteja ativa por vez, Não montar múltiplos
+botões no DOM, Comunicação correta com a extensão Chrome, Garantir que apenas
+uma aba esteja gravando por vez, Persistência e migração correta do último teste
+gravado, Sincronização correta entre estado da aba e estado da gravação,
+Validação da existência do frame AUT para gravação em ambiente Cypress, Garantir
+anonimato do usuário, Enviar dados de eventos sem impactar UX, Manter
+integridade dos dados enviados, Renderizar Popup no container correto, Aplicar
+estilos globais e temáticos sem conflito, Gerar seletores únicos e válidos,
+Manter performance aceitável, Evitar seletores ambíguos, Gerar scripts válidos
+para Cypress, Respeitar timing entre ações, Manter integridade das ações
+stateful, Seletores devem ser únicos e estáveis, IDs inválidos não devem ser
+usados, Priorizar atributos de acessibilidade e testes, Importação correta e
+tipada de arquivos estáticos para evitar erros de build, Garantir que chamadas à
+API do navegador sejam compatíveis entre Chrome e Firefox, Garantir que todas as
+ações sejam registradas com timestamp para rastreabilidade, Validar tipos de
+ações para evitar execução de comandos inválidos, Manter integridade dos
+seletores para garantir precisão na interação com elementos DOM, Garantir
 tipagem estrita para evitar erros em runtime, Manter compatibilidade com ES5
-para browsers legados, Build deve ser executado em modo produção, Erros de build
-devem ser reportados e impedir deploy, NODE_ENV deve sempre estar definido, PORT
-deve ser um número válido, Hot Module Replacement must be enabled for dev mode,
-Dev server must serve assets with CORS headers, Manter integridade dos
-manifests, Garantir compatibilidade com múltiplos ambientes (dev/prod), Não
-expor segredos em bundles públicos, Não versionar arquivos de dependências, Não
-expor arquivos de configuração sensíveis, Manter repositório limpo e organizado,
-All actions must have valid, non-negative, and sequential timestamps, Scripts
-gerados devem refletir fielmente ações do usuário, Comandos Cypress devem ser
-válidos e executáveis, Gravação precisa das ações do usuário, Geração correta do
-código Cypress, Isolamento do contexto do navegador, Consistent visual feedback
-on interactive elements, Accessibility compliance, Responsive layout support,
-Replay deve reproduzir fielmente as ações gravadas, Código gerado deve ser
-válido e executável no Cypress, Estado do replay deve ser consistente e refletir
-o status real, Ações não podem ser perdidas ou corrompidas durante a geração do
-código, Não permitir exclusão sem confirmação do usuário, Garantir integridade
-dos dados durante importação e exportação, Manter sincronização entre estado
-local e armazenamento persistente, Exibir dados atualizados após operações de
-modificação, Consistent UI layout, Accessible typography, Responsive scrolling
-behavior, Não permitir gravações vazias, Gerar IDs únicos para evitar colisões,
-Manter integridade dos dados durante importação/exportação, Preservar URL
-original como campo principal, Garantir geração correta de código Cypress para
-testes, Limitar o número máximo de gravações armazenadas conforme configuração,
-Garantir integridade e consistência dos dados durante salvamentos concorrentes,
-Manter compatibilidade e migrar dados antigos para novo formato sem perda,
-Manter integridade temporal das gravações (startedAt &lt; endedAt), Garantir
-unicidade do ID no formato {hostname}:{yyyy-MM-dd_HH-mm}, Preservar ações
-gravadas e código gerado para reprodutibilidade, Respeitar limite máximo de
-entradas e aplicar pruneStrategy corretamente, Consistent dark mode application,
-Accessibility compliance for color contrast, Manter identidade visual
-consistente, Garantir acessibilidade e responsividade, Consistência visual do
-tema dark, Responsividade do layout, Acessibilidade mínima via contraste,
-Consistência visual entre views, Navegação clara com botão de voltar,
-Consistência visual do tema Dark, Feedback visual claro para interações,
-Acessibilidade mínima para leitura e navegação, Consistência visual entre temas,
-Legibilidade e acessibilidade, Feedback visual claro para ações do usuário,
-Consistência visual do tema, Acessibilidade básica para navegação, Manter
-integridade visual e responsividade, Garantir acessibilidade e usabilidade,
-Preservar estados de seleção e ações do usuário, Nomes de arquivos devem ser
-válidos para sistemas de arquivos, Downloads devem ser disparados sem falhas,
-Conteúdo exportado deve refletir o código gerado, Não truncar textos menores que
-o limite, Preservar domínio completo em URLs truncadas, Manter alta legibilidade
-e usabilidade em tema dark, Garantir responsividade e acessibilidade em
-múltiplos dispositivos, Exibir estados de erro e carregamento de forma clara e
-distinta, Preservar consistência visual e interatividade dos botões e abas,
-Manter integridade visual e responsiva, Garantir feedback visual claro para
-ações do usuário, Preservar usabilidade em dispositivos móveis, Manter
-consistência visual do tema dark, Garantir legibilidade e acessibilidade, Manter
-alto contraste para acessibilidade, Consistência visual em todos os componentes,
-Compatibilidade com resolução 800x600, Validação rigorosa de dados, Consistência
-transacional, Controle de acesso baseado em roles, Garantir sincronização
-correta entre estado do replay e aba ativa, Não permitir iniciar múltiplos
-replays simultâneos na mesma aba, Tratar erros de comunicação com background sem
-travar UI, Fechar abas associadas ao replay ao parar para liberar recursos,
-Replay deve ser consistente e sincronizado, Tipos devem garantir integridade dos
-dados, Garantir que o replay só execute em abas válidas com URLs corretas,
-Manter sincronização precisa do estado do replay entre popup e runner, Remover
-estados de replays finalizados para evitar vazamento de memória, Tratar erros de
-injeção de script e falhas na criação de abas de forma robusta, Execução
-sequencial e confiável das ações gravadas, Comunicação precisa do status e
-resultados ao background, Manutenção do estado correto entre reloads e limpeza
-de cache, Tratamento robusto de erros para evitar falhas silenciosas, Garantir
-integridade e sequência correta dos passos do replay, Manter estado consistente
-entre mensagens de status e execução, Tratar erros de forma clara para evitar
-falhas silenciosas, Todas as gravações devem possuir urlOriginal para garantir
-rastreabilidade e compatibilidade, Migrações não devem ser executadas múltiplas
-vezes para evitar inconsistências, Garantir continuidade do replay mesmo após
-navegação ou mudança de aba, Manter integridade e consistência dos logs de
-execução, Não perder estado dos replays ativos em caso de falhas ou
-reinicializações, Validar URLs iniciais para evitar falhas na criação de
-abas</critical_business_rules> </project_metadata> <technical_stack>
-<primary_language>JavaScript ES6+, JSX, JavaScript, Node.js, TypeScript 5.0,
-TypeScript 5.x, TypeScript 4.1.5, Manifest Version 2, JavaScript ES2021, JSON,
-TypeScript 4.x, React 18, JavaScript (Node.js 16+), JavaScript (Node.js 18+),
+para navegadores legados, Excluir diretórios build e node_modules da compilação,
+Build deve ser executado em modo produção, Erros de build devem ser reportados e
+impedir deploy, NODE_ENV deve sempre estar definido, PORT deve ser um número
+válido, Hot Module Replacement must be enabled for dev mode, Dev server must
+serve assets with CORS headers, Manter integridade do manifest.json com versão
+correta, Garantir build limpo e atualizado, Não expor segredos no bundle final,
+Não versionar arquivos de dependências, Não expor arquivos de configuração
+sensíveis, Manter repositório limpo e organizado, All actions must have valid,
+non-negative, and sequential timestamps, Scripts gerados devem refletir
+fielmente ações do usuário, Comandos Cypress devem ser válidos e executáveis,
+Gravação precisa das ações do usuário, Geração correta do código Cypress,
+Isolamento do contexto do navegador, Consistent visual feedback on interactive
+elements, Accessibility compliance, Responsive layout support, Garantir
+integridade e fidelidade do código gerado para Cypress, Manter sincronização
+correta entre estado do replay e UI, Não permitir execução de replay com
+gravações vazias, Preservar dados originais da gravação sem alterações durante
+visualização, Não permitir exclusão sem confirmação do usuário, Garantir
+integridade dos dados durante importação e exportação, Manter sincronização
+entre estado local e armazenamento persistente, Exibir dados atualizados após
+operações de modificação, Consistent UI layout, Accessible typography,
+Responsive scrolling behavior, Não permitir gravações vazias, Gerar IDs únicos
+para evitar colisões, Manter integridade dos dados durante
+importação/exportação, Preservar URL original como campo principal, Garantir
+geração correta de código Cypress para testes, Limitar o número máximo de
+gravações armazenadas conforme configuração, Garantir integridade dos dados
+durante migrações, Não perder gravações pendentes durante operações de debounce,
+Manter logs de execução associados corretamente às gravações, Prune automático
+para evitar ultrapassar quota de armazenamento, Manter integridade temporal das
+gravações (startedAt &lt; endedAt), Garantir unicidade do ID no formato
+{hostname}:{yyyy-MM-dd_HH-mm}, Preservar ações e logs associados para replay
+confiável, Aplicar estratégia pruneStrategy para controle do limite de
+gravações, Consistent dark mode application, Accessibility compliance for color
+contrast, Manter identidade visual consistente, Garantir acessibilidade e
+responsividade, Consistência visual do tema dark, Responsividade do layout,
+Acessibilidade mínima via contraste, Consistência visual entre views, Navegação
+clara com botão de voltar, Consistência visual do tema Dark, Feedback visual
+claro para interações, Acessibilidade mínima para leitura e navegação,
+Consistência visual entre temas, Legibilidade e acessibilidade, Feedback visual
+claro para ações do usuário, Consistência visual do tema, Acessibilidade básica
+para navegação, Manter integridade visual e responsividade, Garantir
+acessibilidade e usabilidade, Preservar estados de seleção e ações do usuário,
+Nomes de arquivos devem ser válidos para sistemas de arquivos, Downloads devem
+ser disparados sem falhas, Conteúdo exportado deve refletir o código gerado, Não
+truncar textos menores que o limite, Preservar domínio completo em URLs
+truncadas, Manter alta legibilidade e usabilidade em tema dark, Garantir
+responsividade e acessibilidade em múltiplos dispositivos, Exibir estados de
+erro e carregamento de forma clara e distinta, Preservar consistência visual e
+interatividade dos botões e abas, Manter integridade visual e responsiva,
+Garantir feedback visual claro para ações do usuário, Preservar usabilidade em
+dispositivos móveis, Manter consistência visual do tema dark, Garantir
+legibilidade e acessibilidade, Manter alto contraste para acessibilidade,
+Consistência visual em todos os componentes, Compatibilidade com resolução
+800x600, Validação rigorosa de dados, Consistência transacional, Controle de
+acesso baseado em roles, Todas as gravações devem possuir urlOriginal para
+garantir rastreabilidade e compatibilidade, Migrações não devem ser executadas
+múltiplas vezes para evitar inconsistências, Garantir execução correta e
+confiável das ações enviadas pelo background, Responder prontamente a mensagens
+PING para sinalizar disponibilidade, Manter logs de execução para auditoria e
+debugging, Tratar erros sem interromper o fluxo de mensagens assíncronas,
+Viewport width deve estar dentro de limites válidos para evitar erros, URLs
+devem ser sanitizadas para prevenir XSS, Comandos para exportação não podem
+estar vazios, Nomes de testes devem escapar caracteres especiais para evitar
+falhas de parsing, Garantir atualização correta e sincronizada do estado do
+replay conforme mensagens do background, Manter integridade do sessionId para
+evitar conflitos entre sessões, Tratar erros de forma robusta para não travar a
+interface, Respeitar controle de cache configurável para otimização de
+performance, Garantir comunicação confiável entre popup e background, Manter
+integridade do estado das sessões de replay, Tratar erros de forma robusta para
+evitar estados inconsistentes, Garantir retry automático até o máximo
+configurado, Persistência consistente do progresso, Timeouts para evitar
+bloqueios indefinidos, Persistência confiável das configurações do usuário,
+Manter configuração padrão em caso de erro, Atualizações parciais devem
+preservar dados existentes, Garantir execução confiável das ações com retries
+controlados, Manter logs completos de execução para auditoria, Selecionar o
+melhor seletor disponível para garantir precisão na interação, Evitar falhas
+silenciosas ao não encontrar elementos, Garantir que o clique seja disparado
+apenas em elementos visíveis e disponíveis, Tentar múltiplos seletores em ordem
+de prioridade antes de falhar, Capturar evidência visual após clique
+bem-sucedido, Não permitir execução sem seletores válidos, Cada ActionType deve
+ter um executor registrado, Retornar null apenas quando não houver executor
+disponível, Executores devem ser singleton para evitar múltiplas instâncias
+desnecessárias, Garantir que o valor seja inserido corretamente no campo, Manter
+confidencialidade de senhas (isPassword), Executar retries para falhas
+temporárias, Disparar eventos input e change para atualização do estado,
+Garantir que a URL seja carregada corretamente antes de prosseguir, Capturar
+screenshot após o carregamento para validação, Evitar recarregamento
+desnecessário se já estiver na URL correta, Garantir navegação correta para URLs
+especificadas, Captura de screenshot após navegação, Tratamento robusto de erros
+para falhas de navegação, Garantir que o redimensionamento da janela ocorra com
+as dimensões exatas solicitadas, Capturar screenshot somente após o
+redimensionamento ser concluído, Tratar erros de comunicação com o background
+script para evitar falhas silenciosas, Ações de screenshot devem ser registradas
+com timestamp preciso, Execução deve ser assíncrona e não bloquear o fluxo
+principal, Captura real deve ser feita exclusivamente pelo background script,
+Scroll deve ser suave para evitar falhas visuais, Captura de screenshot
+obrigatória após scroll, Tratamento de erros para falhas na execução, Garantir
+disparo correto do evento wheel com valores deltaX e deltaY válidos, Capturar
+screenshot após ação para validação, Tratar erros para evitar falhas
+silenciosas, Garantir integridade e sincronização dos eventos de replay, Manter
+estado consistente durante pausa e retomada, Configurações devem ser aplicadas
+corretamente sem perda de dados, Garantir integridade e sincronização das
+mensagens de replay, Não permitir comandos inválidos ou estados inconsistentes,
+Manter rastreabilidade completa dos eventos e erros, Garantir integridade do
+estado da sessão (status coerentes), Persistência correta dos logs de execução,
+Controle preciso do índice da ação atual, Tratamento adequado de erros para
+evitar falhas silenciosas, Garantir entrega de eventos para todos os listeners
+registrados, Não permitir vazamento de exceções em handlers, Manter integridade
+do mapa de listeners, Mocks must accurately simulate browser APIs, No side
+effects during tests, Performance API must be available, Logs devem ser
+carregados e atualizados em tempo real conforme alterações no armazenamento,
+Screenshots inválidas ou com erros devem ser indicadas claramente sem quebrar a
+interface, Virtualização do scroll deve garantir performance mesmo com grandes
+volumes de logs, A visualização detalhada (lightbox) só deve abrir para
+screenshots válidas, Logs de execução devem ser exibidos com timestamps precisos
+e descrições claras, Screenshots só podem ser exibidos se válidos, erros devem
+ser tratados e indicados, Atualização reativa dos logs ao detectar mudanças no
+armazenamento local, Virtual scrolling deve garantir performance sem perda de
+dados visíveis, Garantir legibilidade e acessibilidade dos logs em todos os
+temas e dispositivos, Manter integridade visual das thumbnails e lightbox para
+evitar confusão do usuário, Preservar responsividade e usabilidade em múltiplas
+resoluções, Não sobrescrever urlOriginal se já existir, Garantir que gravações
+tenham urlOriginal válido (firstUrl, url ou fallback &apos;unknown&apos;),
+Manter integridade dos executionLogs e aplicar pruning para evitar estouro de
+quota, Debounce para evitar múltiplas escritas simultâneas no storage, Garantir
+execução sequencial e correta das ações gravadas, Persistir estado das sessões
+para recuperação após falhas, Manter integridade dos logs de execução e
+screenshots, Gerenciar corretamente estados das sessões (RUNNING, PAUSED,
+COMPLETED, ERROR), Não permitir execução de ações em abas inexistentes ou
+fechadas, Garantir captura apenas de abas ativas e focadas, Tratar erros de
+permissão e aba inexistente sem falhas críticas, Limitar frequência de capturas
+para evitar sobrecarga, Reduzir qualidade da imagem para manter tamanho
+aceitável, Captura de screenshots deve respeitar limite de 5MB para evitar
+sobrecarga de memória, Capturas devem ser feitas com intervalo mínimo de 100ms
+para evitar sobrecarga, A aba deve estar ativa e focada para captura válida,
+Erros de permissão devem ser tratados e reportados corretamente, Captura de
+screenshots deve ocorrer para todas as ações durante replay, Erros de captura
+devem ser tratados sem interromper o fluxo, Logs de execução devem atualizar em
+tempo real, Dados de gravação devem ser armazenados e recuperados corretamente,
+Manter consistência dos tipos de configuração, Garantir valores padrão válidos,
+Preparar para futura persistência sem quebrar API, Logs devem ser exibidos em
+ordem cronológica correta, Screenshots inválidas ou com erro não devem quebrar a
+interface, Virtual scrolling deve garantir performance sem perda de dados, Ações
+devem ser descritas com precisão para análise, Integridade dos dados de
+execução, Consistência na navegação entre execuções, Tratamento robusto de erros
+para evitar perda de dados, Execuções devem ser exibidas ordenadas por data de
+término decrescente, Exclusão de execuções requer confirmação explícita do
+usuário, Status de execução deve refletir corretamente presença de erros, Dados
+exibidos devem ser atualizados e consistentes com o estado atual, Manter alta
+legibilidade e responsividade em múltiplos dispositivos, Garantir feedback
+visual claro para estados de erro e interações, Preservar consistência visual
+com tema escuro e cores definidas, Garantir responsividade e acessibilidade da
+interface, Manter consistência visual e usabilidade em estados de erro e
+carregamento, Preservar integridade da navegação entre histórico e detalhes,
+Manter legibilidade e acessibilidade da tabela em todos os dispositivos,
+Destacar erros para rápida identificação, Garantir responsividade sem perda de
+funcionalidade, Sincronização correta entre estado interno e URL hash, Manter
+integridade do selectedExecutionId para navegação consistente, Remover hash da
+URL quando não houver execução selecionada, Garantir integridade dos logs de
+execução, Não perder dados de passos executados, Tratamento correto de erros
+específicos (ExecutionNotFoundError, StorageQuotaError), Exibir histórico
+completo e correto das execuções, Tratar falhas de carregamento com mensagens
+claras, Garantir navegação correta entre execuções, Execuções devem ser exibidas
+em ordem decrescente por data, Status de erro deve refletir visualmente, Eventos
+de clique devem disparar callbacks corretos, Formato de duração deve ser legível
+e preciso, Manter selectedExecutionId consistente com URL, Não permitir estado
+inconsistente entre UI e URL</critical_business_rules> </project_metadata>
+<technical_stack> <primary_language>JavaScript ES6+, JSX, JavaScript, Node.js,
+TypeScript 5.0, TypeScript 5.x, JavaScript ES2020, TypeScript 4.1.5, React
+17.0.1, Manifest Version 2, JavaScript ES2021, JSON, TypeScript 4.x, React 18,
+JavaScript ES2022, JavaScript (Node.js 16+), JavaScript (Node.js 18+),
 JavaScript ES2020+, CSS3, JavaScript (React integration), CSS Variables, CSS
-Custom Properties (CSS Variables), JavaScript ES2022, Node.js 18, JavaScript ES
-Modules, TypeScript (tipos)</primary_language> <frameworks>React (via react-app
-preset), Webpack, Babel, Webpack 5, Yarn, Cypress, Playwright, Puppeteer, Jest
-29.x, ts-jest, React 17.0.1, Jest 27.3.1, Webpack 5.23.0, Babel 7.12.17, Chrome
-Extensions Manifest V3, Chrome Extensions API, Playwright (para geração de
-testes), Cypress (integração), Nenhum framework frontend explícito, React 18.2,
-React 18, Cypress (para geração de código de teste), React 18.x, WebExtensions
-API (compatibilidade com Firefox), Lodash 4.x, FontAwesome 6.x, ReactDOM, Nenhum
-framework front-end explícito (vanilla JS/TS), Uso de biblioteca lodash.debounce
-para otimização de eventos, FontAwesome SVG Core, Nenhum framework específico
-detectado, Nenhum (biblioteca standalone), Cypress 12.x, React 18.2 (implícito),
-Cypress (para automação de testes), Webpack 5.x, WebpackDevServer 4, Jest 29,
-Playwright 1.x, None (Vanilla CSS), FontAwesome 6 (free-solid-svg-icons),
-react-syntax-highlighter v15+, Node.js runtime, Possível uso de Cypress para
-testes (geração de código), Nenhum framework frontend/backend explícito, API
-chrome.storage.local para persistência, Node.js 20.x, Nenhum framework CSS
-explícito, Possível integração com React ou similar, Possível integração com
-React ou similar para componentes, React (suposição pelo padrão de classes e
-estrutura), Possível integração com React ou Vue para JS, Nenhum framework CSS
-explícito, uso de variáveis CSS customizadas, Cypress (para testes e geração de
-código), Possível integração com React 18.x (baseado em classes e nomenclatura
-CSS modular), React (presumido), CSS Modules or Styled Components (possível
-integração), Nenhum framework específico declarado, Express 4.18.2, Mongoose
-6.7.0, Chrome Scripting API, Nenhum framework explícito no código fornecido,
-Chrome Extensions API (Manifest V3)</frameworks> <databases>chrome.storage.local
+Custom Properties (CSS Variables), Node.js 18</primary_language>
+<frameworks>React (via react-app preset), Webpack, Babel, Webpack 5, Yarn,
+Cypress, Playwright, Puppeteer, Jest 29.x, ts-jest, React 17.0.1,
+@tanstack/react-table 8.21.3, Jest 27.3.1, Playwright 1.54.1, Webpack 5.23.0,
+Chrome Extensions Manifest V3, Chrome Extensions API, Playwright (integração
+para replay), Cypress (integração para gravação), Nenhum framework frontend
+explícito, React 18.2, React 18, Cypress (para geração de código de teste),
+React 18.x, WebExtensions API (compatibilidade com Firefox),
+react-syntax-highlighter 15.x, Lodash 4.17 (throttle), FontAwesome 6 (icons),
+ReactDOM, Nenhum framework front-end explícito (vanilla JS/TS), Uso de
+biblioteca lodash.debounce para otimização de eventos, FontAwesome SVG Core,
+FontAwesome 6 (free solid icons), Nenhum framework específico detectado, Nenhum
+(biblioteca standalone), Cypress 12.x, React 18.2 (implícito), Node.js 20,
+Cypress (para testes e automação), Webpack 5.x, WebpackDevServer 4, Jest 29,
+Playwright 1.x, None (Vanilla CSS), React Syntax Highlighter (Prism) v1.x,
+FontAwesome Free Solid Icons, Cypress (para testes gerados), FontAwesome 6.x,
+Node.js runtime, Possível uso de Cypress para testes (geração de código), Nenhum
+framework front-end específico, Uso de lodash para debounce, Nenhum framework
+explícito no código fornecido, mas integração provável com Cypress para testes
+end-to-end, Nenhum framework CSS explícito, Possível integração com React ou
+similar, Possível integração com React ou similar para componentes, React
+(suposição pelo padrão de classes e estrutura), Possível integração com React ou
+Vue para JS, Nenhum framework CSS explícito, uso de variáveis CSS customizadas,
+Cypress (para testes e geração de código), Possível integração com React 18.x
+(baseado em classes e nomenclatura CSS modular), React (presumido), CSS Modules
+or Styled Components (possível integração), Nenhum framework específico
+declarado, Express 4.18.2, Mongoose 6.7.0, Cypress (para testes end-to-end),
+Jest (para testes unitários), Nenhum framework específico, Nenhum framework
+frontend específico indicado, código base para execução em ambiente browser,
+Custom Automation Framework, Possível uso em frontend React (não explícito no
+código), Possível integração com Puppeteer ou Playwright, Node.js 18, Browser
+APIs, Custom Automation Framework (interno), Browser Extension APIs, Custom
+ActionExecutor Framework, Node.js, Possível integração com Puppeteer ou
+Playwright para captura de tela, React 18.2 (para hooks), Nenhum framework
+explícito no código fornecido, Possível uso em ambiente Node.js ou frontend
+moderno, React 18.2 (presumido pelo contexto de front-end), Node.js 20
+(presumido para backend e scripts), Testing Library DOM, React Testing Library,
+React 18.x (implícito pelo contexto do componente ExecutionHistory), Jest 29
+para testes, Lodash 4.x, Jest 29.x para testes, Chrome Extensions API (Manifest
+V3), Playwright Test 1.x, React 18.2 (implícito pelo uso de hooks), Nenhum
+framework CSS específico, código customizado, Nenhum framework CSS explícito,
+uso de variáveis CSS customizadas para temas, @testing-library/react 14,
+@testing-library/react 14.0</frameworks> <databases>chrome.storage.local
 (armazenamento local do browser), Não aplicável, IndexedDB (implícito via
 RecordingService), chrome.storage.local (armazenamento local do navegador),
-Armazenamento local do navegador (chrome.storage.local), LocalStorage (via
-recordingStore), Não aplicável (frontend React), Não aplicável (armazenamento
-local ou backend externo via RecordingService), Armazenamento customizado via
-recordingStore (provavelmente armazenamento local ou em memória), Nenhum banco
-de dados relacional explícito (persistência via backend customizado), MongoDB
-6.0, IndexedDB (via recordingStore abstraction), chrome.storage.local,
-chrome.storage.sync</databases> <external_services>Chrome Web Store, Firefox
-Add-ons Marketplace, GitHub Actions, Browser APIs (chrome.\*), Test Automation
-Frameworks (Cypress, Playwright, Puppeteer), DeploySentinel (para comunicação
-externa via matches), Nenhum serviço externo direto, integração com ferramentas
-de teste Playwright e Cypress, Chrome Extension API, DeploySentinel Webapp,
-Chrome Runtime Messaging API, chrome.storage API, APIs do navegador Chrome e
-Firefox para tabs, scripting e webNavigation, Chrome Storage API, API
-chrome.runtime para comunicação com background scripts, Chrome Extension
-Messaging API, Chrome Extension APIs (tabs, scripting), FontAwesome Icons,
-Google Analytics Measurement Protocol API, @fortawesome/fontawesome-svg-core,
-TemplateRenderer (módulo interno para geração de templates), Firefox
-WebExtension API, Cypress Test Runner, Environment variables via process.env,
-Possível integração com Cypress para testes, Chrome Extensions API, Chromium
-Browser, Hooks customizados para replay (useReplay), Clipboard API via
-react-copy-to-clipboard, RecordingService (API para listagem, remoção,
-importação e exportação de gravações), Google Fonts (Roboto), Nenhum serviço
-externo explícito, mas integração com Cypress para geração de código, API
-chrome.storage.local do Chrome, Serviços de armazenamento backend customizados
-(ex: filesystem, cloud storage), Font icon libraries (ex: FontAwesome), Browser
-Web APIs (Blob, URL, DOM), File system APIs para import/export JSON (via
-browser), REST APIs externas para autenticação e notificações, Chrome Extensions
-API (runtime, tabs), replay-runner (script injetado externamente), Chrome
-Runtime Messaging, Chrome Tabs API, Integração com sistema de gravação e runner
-externo para execução de ações, Chrome WebNavigation API</external_services>
-<package_manager>npm, yarn, Yarn, yarn 1.22.22, npm ou yarn (comum em projetos
-front-end React), npm 9.6.7</package_manager> </technical_stack>
-<architecture_patterns> <design_pattern>Modular Build Configuration, Pipeline,
-Modular Build Scripts, Observer Pattern, Event-driven Architecture, Modular
-Architecture, Configuration Object Pattern, Modular, Component-based UI, Build
-Pipeline Orchestration via npm scripts, Extension Architecture (Background
-Script, Content Script, Browser Action), Event-driven architecture, Modular
-architecture com service workers, Observer pattern (listeners para mensagens e
-eventos), Modularização por responsabilidades (utils, storage, orchestrator),
-Message Passing, Component-Based Architecture, Presentational Component,
-Modularização por serviços, Event-driven communication via messaging, Hooks
-Pattern, Modularização funcional com separação clara entre manipulação de estado
-e execução de scripts, Presentational and Container Components, Separation of
-Concerns, Observer Pattern (event listeners), State Management via React Hooks,
-Functional Components, Singleton, Shadow DOM encapsulation, Observer pattern
-para escuta e reação a eventos DOM, Singleton-like pattern para instância única
-do Recorder, Event-driven architecture para captura e processamento de ações,
-Hook Pattern, Hooks for State Management, Container/Presenter Pattern,
-Modularização funcional, Hot Module Replacement, Modular Functional, Generator
-Pattern, Bottom-up Search, Builder Pattern (ScriptBuilder abstrato e
-implementações concretas), Factory Method (createTemplateRenderer),
+Nenhum banco de dados local - armazenamento via chrome.storage API,
+Armazenamento local do navegador (chrome.storage.local), LocalStorage (browser),
+Nenhum banco de dados diretamente utilizado neste módulo, Não aplicável
+diretamente neste componente, Não aplicável (armazenamento local ou backend
+externo via RecordingService), Armazenamento customizado via recordingStore
+(provavelmente armazenamento local ou em memória), Não especificado,
+armazenamento pode ser em memória, arquivo ou banco externo, MongoDB 6.0,
+chrome.storage.local, Chrome Storage Sync API, Não aplicável diretamente neste
+módulo, Não especificado no código fornecido, Chrome Storage API (armazenamento
+local), Chrome Storage API (local storage), Chrome Storage Local API
+(armazenamento local do navegador), chrome.storage.local (armazenamento local da
+extensão), Armazenamento local customizado (recordingStore) - possivelmente
+IndexedDB ou similar, Não aplicável diretamente no componente, Não especificado,
+armazenamento presumido local ou em memória</databases>
+<external_services>Chrome Web Store, Firefox Add-ons Marketplace, GitHub
+Actions, Browser APIs (chrome.\*), Test Automation Frameworks (Cypress,
+Playwright, Puppeteer), DeploySentinel (para comunicação externa via matches),
+Chrome Runtime Messaging, Chrome Tabs API, Chrome WebNavigation API, Chrome
+Extension API, DeploySentinel Webapp, Chrome Runtime Messaging API,
+chrome.storage API, APIs do navegador Chrome e Firefox para tabs, scripting e
+webNavigation, Chrome Storage API para sincronização de estado, Clipboard API
+via react-copy-to-clipboard, API chrome.runtime para comunicação com background
+scripts, Chrome Extension Messaging API, Chrome Extension APIs (tabs, storage,
+scripting), Analytics custom (onPageView, onNewRecording), Google Analytics
+Measurement Protocol API, @fortawesome/fontawesome-svg-core, TemplateRenderer
+(módulo interno para geração de templates), Firefox WebExtension API, Cypress
+Test Runner, Possível integração com CI/CD (GitHub Actions, Jenkins), Chrome
+Extensions API, Chromium Browser, Replay API hooks para controle de execução,
+RecordingService (API para listagem, remoção, importação e exportação de
+gravações), Google Fonts (Roboto), Nenhum serviço externo explícito, mas
+integração com Cypress para geração de código, API chrome.storage.local, Cypress
+para geração de código de teste, Possível integração com sistema de replay para
+execução dos logs, Font icon libraries (ex: FontAwesome), Browser Web APIs
+(Blob, URL, DOM), File system APIs para import/export JSON (via browser), REST
+APIs externas para autenticação e notificações, Chrome Extensions API
+(chrome.runtime.onMessage), Replay backend services via startReplay,
+pauseReplay, resumeReplay, stopReplay, chrome.storage.sync, Serviço de captura
+de screenshots via background script, Browser APIs (DOM, MouseEvent), Logging
+System, Serviços de captura de screenshot integrados ao executor,
+chrome.runtime.sendMessage, Background Script do Browser Extension, Nenhum
+serviço externo diretamente referenciado, Integração com sistema de captura de
+ações (Action), Possível integração com armazenamento de imagens base64, Chrome
+Extensions API (chrome.storage), Não aplicável, API chrome.storage do browser,
+Chrome Scripting API, Chrome BrowsingData API, Chrome Extensions API
+(chrome.tabs, chrome.runtime), Chrome Runtime API, chrome.storage (planejado
+para futuro), Configuração via hook useExecutionConfig (provavelmente contexto
+interno), Nenhum serviço externo explícito, integração interna com módulos de
+replay e armazenamento, Não há integrações externas explícitas neste componente,
+Nenhum serviço externo integrado diretamente, Nenhum serviço externo diretamente
+utilizado no componente</external_services> <package_manager>npm, yarn, Yarn,
+yarn 1.22.22, npm ou yarn (comum em projetos front-end React), npm 9.6.7, npm
+9</package_manager> </technical_stack> <architecture_patterns>
+<design_pattern>Modular Build Configuration, Pipeline, Modular Build Scripts,
+Observer Pattern, Event-driven Architecture, Modular Architecture, Configuração
+modular de testes, Modular Frontend Architecture, Component-based UI, Build
+scripts para múltiplos targets (Chrome, Firefox), Extension Architecture
+(Background Script, Content Script, Browser Action), Event-driven architecture,
+Modular architecture com service workers, Singleton (ReplayEngine),
+Modularização por responsabilidades, Message Passing, Component-Based
+Architecture, Presentational Component, Modularização por serviços, Event-driven
+communication via messaging, Hooks Pattern, Modularização funcional com
+separação clara entre manipulação de estado e execução de scripts,
+Presentational and Container Components, Observer Pattern (event listeners para
+mouse e storage), State Management via React Hooks, Functional Components,
+Singleton, Shadow DOM encapsulation, Observer pattern para escuta e reação a
+eventos DOM, Singleton-like pattern para instância única do Recorder,
+Event-driven architecture para captura e processamento de ações, Hook Pattern,
+Flux/Hook State Management, Modular Separation (UI, Storage, Utils),
+Modularização funcional, Separation of Concerns, Hot Module Replacement, Modular
+Functional, Generator Pattern, Bottom-up Search, Builder Pattern (ScriptBuilder
+abstrato e implementações concretas), Factory Method (createTemplateRenderer),
 Modularização Funcional, Defensive Programming, Modularização via declaração de
-módulos TypeScript, Alias Pattern, Inheritance, Discriminated Union Types,
-Component-based, Build Pipeline Script, Configuration Module Pattern, Modular
-Configuration, Middleware Pattern, Modularização via múltiplos entry points,
-Plugin-based extensibility, Alias para resolução de módulos, .gitignore pattern
-segmentation, Functional Programming, Modular Design, Builder Pattern, Fluent
-Interface, Test Automation Pattern, Page Object Pattern (implicit), Atomic
-Design (Component-based CSS), Hooks para lógica de estado e efeitos, Separation
-of Concerns entre UI e lógica de replay, Service Layer Abstraction, Modular CSS,
-Theming with CSS Variables, Facade Service Pattern para abstração do
-armazenamento e operações de gravação, Debounce para otimização de escrita,
-Padrão Repository para abstração de armazenamento, Interface Segregation,
-Repository Pattern (via IHistoryBackend), Component-based UI Styling, Theming
-via CSS Variables, Component-Based UI, Container/Presenter, Component
-Composition, Component-based styling, BEM-like naming, Component-based UI
-styling, Component-Based UI Styling, Responsive Design, Interface para tipagem
-clara, Utility Module, CSS Modular / BEM-like naming conventions, BEM CSS
-Naming, Global Style Reset, MVC, Repository Pattern, Command Pattern (message
-passing), Modularização, Barrel Module, Dependency Injection, Observer (event
-listeners), Pub-Sub (message passing), Observer pattern (MutationObserver),
-Command pattern (actions execution), Message-driven architecture, State machine
-pattern, Modularização Assíncrona, Singleton para recordingStore, Command
-Pattern (replay actions)</design_pattern> <folder_structure>Config files in root
-or config folder, Source code in src/, src/, build/, dist/, src/ - código fonte,
-assets/ - imagens e ícones, tests/ - testes E2E, dist/ - builds para Chrome e
-Firefox, Configurações centralizadas em pasta de configuração (ex: /config ou
-raiz), build - arquivos empacotados, utils - scripts utilitários para build e
-servidor, node_modules - dependências, src - código fonte React e lógica,
-background/ - scripts de background, content_scripts/ - scripts injetados nas
-páginas, popup/ - interface do usuário da extensão, assets/ - ícones e recursos
-estáticos, background/ - service worker scripts, popup/ - UI popup da extensão,
-content_scripts/ - scripts injetados em páginas, assets/ - ícones e imagens,
-Common/utils - funções utilitárias compartilhadas, storage - gerenciamento de
-estado e migrações, background - lógica central de replay e orquestração,
-migrations - scripts para atualização de dados, src/: código fonte, background/:
-scripts da extensão, content-scripts/: scripts injetados, src/components/Icon -
-componente isolado para reutilização visual, pages: componentes de tela, Popup:
-componentes modais ou popups, assets: arquivos estáticos como imagens e SVGs,
-src/components - componentes React reutilizáveis, src/types - definições de
-tipos TypeScript, utils/: funções utilitárias para manipulação de storage,
-builders/: geração de código Cypress, storage/: serviços de persistência de
-gravações, types/: definições de tipos e interfaces, src/hooks - custom React
-hooks, src/utils - funções utilitárias para armazenamento, src/types -
-definições de tipos e constantes, src/ - código fonte principal, src/storage/ -
-funções de manipulação de armazenamento local, src/scripts/ - scripts executados
-nas abas, src/utils/ - utilitários e helpers, types/ - definição de tipos e
-enums, builders/ - funções auxiliares para construção de seletores,
-components/ - componentes React reutilizáveis, styles/ - arquivos CSS,
-src/components - UI components, src/builders - lógica de geração de código,
-src/types - definições de tipos, /components - UI components, /builders - lógica
-de geração de seletores e código, /Common - hooks e utilitários compartilhados,
-/types - definições de tipos, src/components/Highlighter - componente visual e
-estilização associada, ./ControlBar - componente React principal, ../Common -
-estilos compartilhados, root - script de bootstrap e injeção,
-builders/selector - geração de seletores CSS para elementos, Common/utils -
-funções utilitárias como acesso ao localStorage, types - definições de tipos e
-enums para ações e eventos, main recorder module - captura e gerenciamento dos
-eventos, Common: componentes e hooks reutilizáveis, types: definições de tipos
-TypeScript, styles: CSS modularizados, Common (shared components/utilities),
-Content (content scripts and UI parts), storage (state persistence), builders
-(code generation), types (TypeScript types), Common/utils para funções
-utilitárias, Módulo de analytics separado para eventos, src/: código fonte
-principal, src/components/: componentes React reutilizáveis, src/themes/:
-estilos temáticos, src/global.css: estilos globais, test/ - testes unitários,
-dist/ - build final, types/ - definições de tipos e enums,
-generators/template/ - renderização de templates, core/ - lógica principal de
-geração de scripts, src/types - Tipos e enums, src/utils - Funções utilitárias
-como finder, src/selectors - Geração e seleção de seletores, src/assets para
-arquivos estáticos, src/types para declarações de tipos, types/: definições de
-tipos, dist/: build final, src/actions - definição das ações e tipos,
-src/utils - funções utilitárias (planejado), src (código fonte), build
-(artefatos compilados), node_modules (dependências externas), config/ -
+módulos TypeScript, Alias Pattern, Object-Oriented Programming, Enum-based Type
+Safety, Domain-Driven Design (DDD) para modelagem de ações, Modular,
+Component-based architecture, Build Pipeline Script, Configuration Module
+Pattern, Modular Configuration, Middleware Pattern, Plugin-based, Multi-entry
+point, .gitignore pattern segmentation, Functional Programming, Modular Design,
+Configuration Object Pattern, Builder Pattern, Fluent Interface, Test Automation
+Pattern, Page Object Pattern (implicit), Atomic Design (Component-based CSS),
+Component-Based Architecture (React Functional Components com hooks), Separation
+of Concerns via hooks e componentes filhos, Service Layer Abstraction, Modular
+CSS, Theming with CSS Variables, Facade Service Pattern para abstração do
+armazenamento e operações de gravação, Repository Pattern para abstração do
+armazenamento, Debounce para otimização de escrita, Interface Segregation e
+Repository Pattern para abstração do backend de histórico, Component-based UI
+Styling, Theming via CSS Variables, Component-Based UI, Container/Presenter,
+Component Composition, Component-based styling, BEM-like naming, Component-based
+UI styling, Component-Based UI Styling, Responsive Design, Interface para
+tipagem clara, Utility Module, CSS Modular / BEM-like naming conventions, BEM
+CSS Naming, Global Style Reset, MVC, Repository Pattern, Modularização
+Assíncrona, Singleton para recordingStore, Factory Method
+(ActionExecutorFactory), Observer (chrome.runtime.onMessage listener), Factory
+(createTemplateRenderer), Modularização por responsabilidade, Hook Pattern
+(React Hooks), Observer Pattern (event listener para mensagens do background),
+Promise-based Asynchronous API, Config Object Pattern, Typed Interface for
+configuration, Encapsulamento, Gerenciamento de estado, Template Method (classe
+abstrata com métodos a serem implementados), Strategy (seleção dinâmica do
+melhor seletor), Observer (logs de execução acumulados para auditoria), Command
+Pattern, Template Method (via classe base ActionExecutor), Factory Pattern,
+Polimorfismo via classes executoras, Retry Pattern, Template Method (via herança
+de ActionExecutor), Template Method, Executor Pattern, Asynchronous Messaging,
+Facade Pattern (exposição de API simplificada), Observer Pattern (EventBus para
+eventos internos), Union Types para modelagem discriminada de mensagens,
+Enumeração para estados (State Pattern simplificado), Interfaces para definição
+clara de contratos (Interface Segregation), Possível uso de Clean Architecture
+para separação de domínios, Mocking, Dependency Injection, Hook-based functional
+components, Virtualized list rendering, Observer pattern via
+chrome.storage.onChanged, Hook Pattern para gerenciamento de estado, Mocking
+para isolamento em testes, Component-Based Architecture (React Components),
+Singleton (RecordingStore), Debounce para controle de escrita assíncrona,
+Singleton (ReplayEngine instancia única), Event Bus (para comunicação interna de
+eventos), Factory (ActionExecutorFactory para criação de executores de ações),
+Observer (listeners para eventos de sessão), Singleton (para instância única do
+ScreenshotService), Testes de integração baseados em Page Object Model
+implícito, Modularização, Hook Pattern (React), Virtual Scrolling, Hook-based
+state management, Component-based Architecture, Hook-based State Management,
+Separation of Concerns via modular components, Functional Components com hooks
+(useMemo), Component-based UI styling com separação clara de responsabilidades
+visuais, Component-based styling para UI, Separation of concerns entre container
+e tabela, State Synchronization via URL Hash, Data Transfer Object (DTO), Custom
+Error Handling, Hooks para estado e lógica, Test-Driven Development
+(TDD)</design_pattern> <folder_structure>Config files in root or config folder,
+Source code in src/, src/, build/, dist/, src/ - código fonte, assets/ - imagens
+e ícones, tests/ - testes E2E, dist/ - builds para Chrome e Firefox,
+&lt;rootDir&gt;/ jest.setup.js para setup global de testes, src: código fonte
+React, utils: scripts utilitários para build e servidor web, build: saída dos
+builds, tests: testes unitários e integração, background/ - scripts de
+background, content_scripts/ - scripts injetados nas páginas, popup/ - interface
+do usuário da extensão, assets/ - ícones e recursos estáticos, background/ -
+service worker scripts, popup/ - UI popup da extensão, content_scripts/ -
+scripts injetados em páginas, assets/ - ícones e imagens, Common/utils - funções
+utilitárias compartilhadas, storage - gerenciamento de estado e migrações,
+replay/core - lógica central de replay, replay/types - definições de tipos e
+eventos, src/: código fonte, background/: scripts da extensão, content-scripts/:
+scripts injetados, src/components/Icon - componente isolado para reutilização
+visual, pages: componentes de tela, Popup: componentes modais ou popups, assets:
+arquivos estáticos como imagens e SVGs, src/components - componentes React
+reutilizáveis, src/types - definições de tipos TypeScript, utils/: funções
+utilitárias para manipulação de storage, builders/: geração de código Cypress,
+storage/: serviços de persistência de gravações, types/: definições de tipos e
+interfaces, src/hooks - custom React hooks, src/utils - funções utilitárias para
+armazenamento, src/types - definições de tipos e constantes, src/ - código fonte
+principal, src/storage/ - funções de manipulação de armazenamento local,
+src/scripts/ - scripts executados nas abas, src/utils/ - utilitários e helpers,
+types/ - definição de tipos e enums, builders/ - funções auxiliares para
+construção de seletores, components/ - componentes React reutilizáveis,
+styles/ - arquivos CSS, src/components: componentes React reutilizáveis,
+src/builders: funções auxiliares para geração de código, src/types: definições
+de tipos TypeScript, src/components - componentes React reutilizáveis
+(ControlBar, Highlighter, ActionList, CodeGen), src/builders - lógica para
+geração de seletores e código, src/Common - hooks e utilitários compartilhados,
+src/components/Highlighter - componente visual e estilização associada,
+./ControlBar - componente React principal, ../Common - estilos compartilhados,
+root - script de bootstrap e injeção, builders/selector - geração de seletores
+CSS para elementos, Common/utils - funções utilitárias como acesso ao
+localStorage, types - definições de tipos e enums para ações e eventos, main
+recorder module - captura e gerenciamento dos eventos, Common: componentes e
+hooks reutilizáveis, types: definições de tipos TypeScript, styles: CSS
+modularizados, Common: componentes e utilitários compartilhados, Content: lógica
+de geração de código e listas de ações, Popup: componente principal e
+subcomponentes da UI da extensão, Storage: gerenciamento de estado persistente,
+Common/utils para funções utilitárias, Módulo de analytics separado para
+eventos, src/: código fonte principal, src/components/: componentes React
+reutilizáveis, src/themes/: estilos temáticos, src/global.css: estilos globais,
+test/ - testes unitários, dist/ - build final, types/ - definições de tipos e
+enums, generators/template/ - renderização de templates, core/ - lógica
+principal de geração de scripts, src/types - Tipos e enums, src/utils - Funções
+utilitárias como finder, src/selectors - Geração e seleção de seletores,
+src/assets para arquivos estáticos, src/types para declarações de tipos, types/:
+definições de tipos, dist/: build final, src/actions - Contém definições de
+classes e enums para ações, src/utils - Funções utilitárias como validação de
+tipos, tests/ - Testes unitários e de integração, src: código fonte, build:
+saída da compilação (excluída), node_modules: dependências (excluída), config/ -
 configurações do Webpack, scripts/ - scripts de build e automação, config/ -
 arquivos de configuração centralizados, config/ - configurações do Webpack e
 ambiente, build/ - saída dos arquivos compilados, src/ - código fonte da
-aplicação, src/pages - Contém páginas específicas da extensão (Popup,
-Background, Content, Bridge, CypressTrigger), src/modules - Módulos
-reutilizáveis (ex: replay), src/content - Scripts injetados no conteúdo,
-src/assets - Recursos estáticos como imagens, build - Pasta de saída do build,
-/node_modules para dependências, /coverage para relatórios de teste, /build para
-artefatos de produção, .prompts, .logs, .audios para dados auxiliares,
-src/types - definição de tipos, src/utils - funções utilitárias para manipulação
-de dados, src/pages/builders - Contém construtores de scripts Cypress, tests/ -
-Contém testes unitários, /tests - testes automatizados, /build - extensão
-compilada, /tmp - dados temporários para contexto do navegador,
-styles/components - componentes reutilizáveis, styles/utilities - classes
-utilitárias para layout e espaçamento, src/components/RecordingDetail -
-componente UI principal, src/hooks/use-replay - lógica de replay encapsulada,
-src/builders - geração de código Cypress, src/Common/utils - utilitários
-compartilhados, src/storage - serviços de persistência e manipulação de dados,
-src/Common/utils - funções utilitárias, styles/ - arquivos CSS base e
-componentes, assets/ - fontes e imagens, src/services - lógica de negócio e
-serviços, src/builders - geração de código, src/store - abstração de
-armazenamento, src/types - definições de tipos e interfaces, src/store -
-implementação do RecordingStore, src/actions - definição de ações para
-gravações, src/types/ - definições de tipos e interfaces, src/backend/ -
-implementações do IHistoryBackend, src/actions/ - definição e manipulação de
-ações gravadas, styles/: arquivos CSS globais e temáticos, components/:
-componentes React com estilos associados, src/components - componentes
-reutilizáveis de UI, themes/ - arquivos de tema, layout/ - componentes de
-layout, src/assets - arquivos estáticos como imagens e SVGs, src/styles -
-arquivos CSS globais e modulares, Estilos organizados por componente (ex:
-recording-history-table, action-buttons, tabs),
+aplicação, src/pages - Contém os diferentes pontos de entrada da extensão
+(Popup, Background, Content, Bridge, CypressTrigger), src/content - Scripts de
+conteúdo específicos, src/assets - Arquivos estáticos como imagens, build -
+Diretório de saída do build, /node_modules para dependências, /coverage para
+relatórios de teste, /build para artefatos de produção, .prompts, .logs, .audios
+para dados auxiliares, src/types - definição de tipos, src/utils - funções
+utilitárias para manipulação de dados, src/pages/builders - Contém construtores
+de scripts Cypress, tests/ - Contém testes unitários, /tests - testes
+automatizados, /build - extensão compilada, /tmp - dados temporários para
+contexto do navegador, styles/components - componentes reutilizáveis,
+styles/utilities - classes utilitárias para layout e espaçamento,
+src/components/RecordingDetail - componente principal de UI,
+src/replay/api/hooks - hooks para controle de replay, src/Common/utils -
+utilitários para download e manipulação de texto, src/storage - serviços de
+persistência e manipulação de dados, src/Common/utils - funções utilitárias,
+styles/ - arquivos CSS base e componentes, assets/ - fontes e imagens,
+src/types - definições de tipos, src/services - lógica de negócio e serviços,
+src/builders - geração de código, src/store - abstração de armazenamento,
+src/types - definições de tipos e interfaces, src/store - implementação do
+RecordingStore, src/replay - tipos relacionados a sessões de replay,
+src/replay/types - tipos relacionados a sessões e execuções, src/history -
+gerenciamento do histórico de gravações, styles/: arquivos CSS globais e
+temáticos, components/: componentes React com estilos associados,
+src/components - componentes reutilizáveis de UI, themes/ - arquivos de tema,
+layout/ - componentes de layout, src/assets - arquivos estáticos como imagens e
+SVGs, src/styles - arquivos CSS globais e modulares, Estilos organizados por
+componente (ex: recording-history-table, action-buttons, tabs),
 styles/components/recordingDetail - CSS modular para componentes específicos,
 Estilos organizados por componente UI, Separação clara entre header, toolbar,
 content e tabela, Estilos organizados por contexto: history, detail, modern
@@ -541,786 +802,1301 @@ variáveis CSS e temas, src/utils - helpers para animações e responsividade,
 globais e variáveis CSS, Estilos globais em pasta /styles, Componentes UI em
 /components, Não aplicável - arquivo CSS único para tema, controllers para
 lógica de entrada, models para definição de dados, services para regras de
-negócio, routes para endpoints, src/hooks - custom React hooks como useReplay,
-src/shared/types - tipos TypeScript compartilhados, src/background - scripts do
-background orchestrator, Módulos organizados por funcionalidade, Separação entre
-handlers e tipos, pages/ - funcionalidades específicas da UI e armazenamento,
-types/ - definições de tipos TypeScript, storage/ - abstrações para persistência
-local, handlers/ - lógica central de controle e coordenação, src/pages/types -
-tipos e interfaces, src/types/replay - tipos específicos do replay,
-src/modules/replayRunner - lógica principal do runner, pages/types - definição
-de tipos e interfaces para mensagens e estados, runner - execução das ações de
-replay, background - controle do estado global do replay, recording-store:
-módulo responsável pelo armazenamento e migração das gravações, scripts: scripts
-utilitários e de migração, storage/ - armazenamento e recuperação de gravações,
-background/ - lógica de background scripts e controle de replays, scripts/ -
-scripts injetados nas abas para execução dos replays</folder_structure>
-<naming_conventions>camelCase for variables and functions, PascalCase for React
-components, camelCase para funções, kebab-case para arquivos, CamelCase para
-classes e funções, prefixos claros para eventos e handlers, camelCase para
-variáveis e propriedades, PascalCase para tipos e interfaces, camelCase para
-variáveis e funções, PascalCase para componentes React, snake-case para scripts
-e arquivos zip, PascalCase para classes, nomes descritivos para scripts e
-arquivos, CamelCase para nomes de arquivos JS, lowercase com underscores para
-assets, manifest.json para configuração principal, camelCase para funções e
-variáveis, PascalCase para classes e stores, Constantes em UPPER_SNAKE_CASE, IDs
-de context menu com sufixos claros, camelCase para props e variáveis, snake-case
-para arquivos estáticos, PascalCase para componentes, camelCase para props e
-funções, CamelCase para funções e classes, snake_case para arquivos utilitários,
-PascalCase para tipos e componentes, prefixo use para hooks, Funções em
-camelCase, Constantes em camelCase, Arquivos em kebab-case, UPPER_SNAKE_CASE
-para enums, Arquivos com extensão .tsx para componentes, CamelCase para
-componentes e funções, PascalCase para tipos e enums, kebab-case para arquivos
-CSS, kebab-case para IDs CSS, snake_case para variáveis globais no window,
-snake_case para variáveis locais e parâmetros, Prefixo * para propriedades
-privadas, Enums e tipos com PascalCase, CamelCase para funções e componentes,
-kebab-case para classes CSS, PascalCase for Components, camelCase for functions
-and variables, Uppercase enums (ActionsMode, ScriptType), Constantes em
-maiúsculas com underscore, CamelCase para componentes React, CamelCase para
-classes, UPPER_SNAKE_CASE para constantes, prefixo gen para funções geradoras,
-Extensões de arquivos mantidas (.css, .svg), Declarações em arquivos .d.ts,
-PascalCase para classes e interfaces, PascalCase para classes e enums, camelCase
-para propriedades e funções, PascalCase para componentes React e classes,
-Variáveis em UPPER_SNAKE_CASE para env vars, Módulos em camelCase ou kebab-case,
-PascalCase para classes e plugins, kebab-case para arquivos e pastas, Arquivos
-de entrada nomeados conforme a funcionalidade (ex: index.tsx, index.jsx),
-Aliases para módulos específicos (ex: react-dom para @hot-loader/react-dom), Uso
-de camelCase para variáveis e PascalCase para componentes React, Arquivos .env
-para configurações locais, secrets._.js para arquivos sensíveis, PascalCase para
-tipos e classes, testes nomeados com descrições claras, BEM-like for components
-(.btn-primary), Utility-first for helpers (.p-1, .d-flex), snake_case para
-arquivos CSS, Prefixo &apos;recording-&apos; para classes CSS específicas,
-PascalCase para componentes React e interfaces, BEM (Block Element Modifier)
-recomendado para classes adicionais, Classes em PascalCase (RecordingService),
-Métodos em camelCase (createRecording, listRecordings), Variáveis em camelCase,
-IDs formatados como hostname:data_hora_sufixo, CamelCase para classes e
-interfaces, Interfaces prefixadas com I (ex: IHistoryBackend), CamelCase para
-tipos e interfaces, camelCase para propriedades e variáveis, BEM-like CSS
-classes, camelCase para variáveis JS, BEM-like para classes CSS, prefixo layout-
-para containers principais, BEM-like class names, Uso de prefixos para
-componentes (ex: recording-detail, action-list), BEM-like:
-.modern-recording-detail, .modern-detail-header, .modern-tab, Classes com
-prefixo &apos;modern-&apos; para escopo, Uso de nomes descritivos e BEM-like,
-BEM-like classes, Prefixos para contexto (.recording-, .modern-), PascalCase
-para interfaces, snake_case para nomes sanitizados de arquivos, Prefixo
-&apos;recording-detail&apos; para classes CSS, Uso de kebab-case para classes,
-Variáveis CSS customizadas com prefixo &apos;--&apos;, BEM para classes CSS,
-camelCase para variáveis JS/TS, IDs para containers principais (#app-container),
-Variáveis CSS com prefixo --, BEM-like classes (.btn-primary, .ds-dark), CSS
-variables com prefixo -- para organização, snake_case para arquivos, CamelCase
-para funções e variáveis, PascalCase para interfaces e tipos, snake_case
-evitado, prefixo &apos;use&apos; para hooks, Classes em PascalCase
-(ReplayHandler), Métodos e variáveis em camelCase, Arquivos em kebab-case ou
-camelCase, Enums em PascalCase com sufixo Mode ou Type, Interfaces prefixadas
-com I ou nome descritivo (ex: ReplayState), Constantes e tipos em
-UPPER_SNAKE_CASE para enums, PascalCase para classes e tipos, prefixo async para
-funções assíncronas não utilizado explicitamente, Classes em PascalCase
-(ReplayController), Interfaces prefixadas com I ou sem prefixo
-(InternalReplayLog)</naming_conventions> <module_boundaries>Separation between
-config and source code, Plugins isolated from presets, separação clara entre
-código fonte e artefatos gerados, Separação clara entre captura de eventos,
-geração de scripts e UI da extensão, Módulos independentes para Chrome e
-Firefox, Configuração isolada e exportada para uso pelo Jest, Separação clara
-entre código fonte e scripts de build, Dependências isoladas entre
-devDependencies e dependencies, Separação clara entre background scripts,
-content scripts e UI (popup), Comunicação via mensagens entre scripts, Separação
-clara entre background scripts, content scripts e UI popup, Comunicação via
-mensagens e permissões explícitas, Separa lógica de armazenamento, orquestração
-e utilitários, Comunicação via mensagens assíncronas entre background e content
-scripts, Isolamento de funcionalidades específicas (ex: Cypress integration),
-Separação clara entre código da extensão e código do webapp, Comunicação via
-mensagens, Componentes isolados sem dependências externas além do React,
-Separação clara entre componentes visuais e assets estáticos, Importação
-relativa para recursos locais, Separação clara entre tipos e componentes,
-Componentes isolados sem estado global, Separa lógica de persistência
-(RecordingService) da geração de código (genCypressCode), Comunicação entre
-módulos via mensagens do Chrome Runtime, Separação clara entre hooks,
-utilitários e tipos, Dependência unidirecional dos hooks para utils e types,
-Módulos separados por responsabilidade: armazenamento, execução de scripts,
-manipulação de abas, Separação clara entre tipos, builders e componentes,
-Dependência unidirecional de tipos para componentes, Separação clara entre UI
-(components) e lógica de negócio (builders), Tipos compartilhados via pasta
-types, UI components isolados de lógica de geração de código, Hooks e
-utilitários em Common, Builders para lógica de seleção e código, Isolamento do
-componente Highlighter com importação explícita de estilos, Separação clara
-entre UI (ControlBar) e bootstrap script, Isolamento via shadow DOM para evitar
-poluição global, Recorder encapsula toda lógica de captura e armazenamento,
-Utils e builders são módulos auxiliares desacoplados, Comunicação com background
-via chrome.runtime é isolada, Separação clara entre UI (TriggerButton) e lógica
-de gravação (hooks, endRecording), UI components separated por funcionalidade,
-Hooks encapsulam lógica de estado, Builders isolam geração de código, Storage
-abstrai persistência, Módulo analytics isolado, dependente apenas de utils
-externos, Separação clara entre componentes e estilos, Importação explícita de
-estilos por componente, Separação clara entre funções utilitárias, lógica de
-busca e otimização, Separação clara entre tipos, geração de scripts e
-renderização de templates, Dependência unidirecional do builder para o renderer,
-Separação clara entre tipos, utilitários e lógica de seleção, Dependência
-unidirecional para evitar acoplamento, Separação clara entre código TypeScript e
-assets estáticos via módulos declarados, Separação clara entre módulos de
-compatibilidade e lógica de negócio, Separação clara entre tipos (enums,
-classes) e lógica utilitária, Separação clara entre código fonte e build,
-Resolução de módulos via Node.js, Separação clara entre configuração
-(webpack.config.js) e execução (build script), Módulo isolado para configuração,
-sem dependências externas, Separação clara entre configuração (config) e
-execução (server), Dependência unidirecional do servidor para configuração,
-Separação clara entre scripts de background, popup e content scripts, Módulos
-isolados para funcionalidades específicas (ex: replay-runner, replay-agent),
-Exclusão de node_modules em loaders para performance, Separação clara entre
-código fonte e artefatos gerados, Separação clara entre tipos e funções
-utilitárias, Dependência unidirecional de tipos para funções, Separação clara
-entre lógica de construção de scripts e testes, Mocks usados para isolar
-dependências, Separação clara entre testes e código da extensão, Uso de imports
-explícitos para Playwright e Jest, Separação clara entre componentes visuais e
-utilitários CSS, UI separado da lógica de replay via hooks, Builders isolados
-para geração de código, Utils para funções auxiliares reutilizáveis, Componentes
-isolados com props para comunicação, Serviços externos encapsulados em módulos
-específicos, Utilitários desacoplados para reutilização, Separação clara entre
-estilos globais e componentes específicos, Separação clara entre tipos,
-serviços, armazenamento e geração de código, RecordingService depende de
-recordingStore e builders para persistência e geração, Separação clara entre
-tipos, store e ações, Dependência unidirecional do store para tipos e ações,
-Separação clara entre tipos, backend e lógica de gravação, Dependência
-unidirecional do backend para tipos, Separação clara entre lógica React e
-estilos CSS, Importação de temas via index.jsx, Componentes isolados sem
-dependências internas complexas, Separação clara entre tema e layout, Estilos
-específicos para views distintas, Componentes isolados com props explícitas,
-Separação clara entre lógica e apresentação, Estilos isolados por componente
-para evitar vazamento de CSS, Separação clara entre containers, cabeçalhos,
-conteúdo e ações, Estilos isolados para RecordingHistory, Dependência de
-variáveis CSS globais, Separação clara entre estilos de histórico e detalhes,
-Modularidade visual para componentes reutilizáveis, Separação clara entre
-preparação de dados (createTestFilename, prepareTestDownload) e execução do
-download (downloadTestFile), Módulo isolado sem dependências externas, exporta
-funções puras, Estilos isolados para o componente RecordingDetail, Separação
-clara entre header, content, toolbar e views, Separação clara entre estilos e
-lógica funcional, Isolamento do componente RecordingHistory, Separação clara
-entre estilos globais e específicos do popup, Isolamento do tema via classe raiz
-.ds-dark, Separação clara entre camada de dados, lógica de negócio e interface,
-Hooks isolam lógica de estado e efeitos, Background script gerencia lógica
-central e comunicação, UI consome hooks para renderização e interação, Replay
-handler isolado, Tipos compartilhados via exportação central, Separação clara
-entre armazenamento (recordingStore) e lógica de replay, Comunicação via
-mensagens entre background, popup e content scripts, Isolamento do handler como
-singleton para estado centralizado, Separação clara entre tipos, execução e
-comunicação com background, Módulo replayRunner isolado para execução de ações,
-Separação clara entre mensagens de controle e estado, Interfaces para
-comunicação entre runner e background, Dependência unidirecional das mensagens
-para o runner, recordingStore encapsula lógica de armazenamento e migração,
-script de migração orquestra chamadas ao recordingStore e manipula estado de
-migração, ReplayController atua como orquestrador central, Interage com storage
-para persistência, Comunica-se via mensagens com scripts injetados, Listeners
-para eventos do navegador e runtime</module_boundaries> </architecture_patterns>
+negócio, routes para endpoints, recording-store: módulo responsável pelo
+armazenamento e migração das gravações, scripts: scripts utilitários e de
+migração, pages/types - definição de tipos e interfaces, replay/core/executors -
+implementação dos executores de ações, background - scripts de background da
+extensão, src/TemplateRenderer - componente principal de geração de templates,
+src/types - definições de tipos e enums, tests/ - testes unitários organizados
+por componente, src/hooks - Contém hooks reutilizáveis como useReplay,
+src/types - Definições de tipos TypeScript para sessões e eventos, src/api -
+Funções para comunicação com backend de replay, types/: definições de tipos
+TypeScript, api/: funções públicas para comunicação com background, background/:
+lógica central do background script, src/config - configurações padrão e
+constantes, src/config - Gerenciamento de configurações, src/default -
+Configurações padrão e tipos, pages/types - definição de tipos de ações,
+types/session - tipos relacionados a sessão e logs, executors - implementação
+dos executores de ações, pages/types - Definições de tipos e interfaces,
+executors - Implementações de executores de ações, base - Classes base e
+utilitários, src/pages/types para tipos e enums, src/executors para classes
+executoras específicas, src/factory para fábrica de executores,
+src/pages/types - tipos e interfaces, src/executors - classes executoras de
+ações, src/utils - utilitários e helpers, base - classes base para herança e
+abstração, src/pages/types - definição de tipos e interfaces, src/executors -
+implementação dos executores de ações, src/base - classes base e utilitários,
+actions/executors - implementação dos executores de ações, src/pages/types -
+Tipos e interfaces, src/executors - Implementação dos executores de ações,
+src/background - Scripts de background para execução real, executors -
+implementação de ações específicas, base - classes base para executores,
+src/utils - utilitários gerais, api: funções públicas e hooks, config:
+gerenciamento de configurações, types: definições de tipos e interfaces,
+src/session - tipos e interfaces de sessão e replay, src/events - definição de
+eventos e mensagens, Separação clara entre comandos, status e eventos, replay -
+módulo específico para lógica de replay, src/eventbus - Contém a implementação
+do EventBus para comunicação interna, src/modules - Módulos consumidores dos
+eventos, setupTests.js in /tests or root for global test setup,
+src/components/execution-history - componente UI principal, src/storage -
+abstração do armazenamento local, src/components/ExecutionHistory - componente
+principal e testes, src/hooks/useExecutionLogs - hook customizado para lógica de
+dados, src/storage/recording-store - abstração do armazenamento local,
+src/components/ExecutionHistory - Contém o componente e seus estilos,
+src/assets - Imagens e ícones usados nas thumbnails e lightbox,
+src/recording-store - lógica principal de gravação e migração, tests/ - testes
+unitários e de integração, src/pages - componentes de UI e armazenamento local,
+src/core - lógica principal do replay (ReplayEngine, executors, services),
+src/utils - utilitários gerais (event-bus, throttle), assets/scripts - scripts
+injetados no content script (replayRunner.bundle.js), tests/ - testes unitários,
+mocks/ - mocks para APIs externas, src/services - Contém serviços singleton como
+ScreenshotService, src/utils - Funções utilitárias como delay e manipulação de
+dados, src/api - Integração com APIs do Chrome, src/ - código fonte da extensão,
+tests/integration/ - testes de integração com Playwright, dist/ - build da
+extensão, src/config - configurações e tipos, src/hooks - hooks reutilizáveis,
+src/components/execution-detail - componente UI principal, src/config - hooks e
+configurações globais, components/: componentes React reutilizáveis, hooks/:
+hooks customizados para lógica de navegação, storage/: abstração para
+persistência de dados, styles/: arquivos CSS específicos,
+src/components/execution-table - componente e estilos relacionados, styles/ -
+arquivos CSS organizados por componente, components/ - componentes React ou
+similares consumindo este CSS, Estilos organizados por componente, com arquivos
+CSS dedicados para cada módulo visual, styles/ - arquivos CSS para componentes
+visuais, components/ - componentes React ou similares que usam este CSS,
+src/hooks - Contém hooks customizados para gerenciamento de estado e lógica
+reutilizável, interfaces/ - definição de tipos e interfaces, errors/ - classes
+de erro customizadas, services/ - lógica de armazenamento e manipulação (não
+presente no snippet), src/pages/Popup/components - componentes UI,
+src/pages/storage - armazenamento local, src/pages/types - definições de tipos,
+src/pages/Popup/components - componentes UI específicos, src/pages/types -
+definições de tipos TypeScript, tests/ - arquivos de teste unitário,
+src/pages/Popup/hooks - hooks específicos para popup UI, test - testes unitários
+e de integração</folder_structure> <naming_conventions>camelCase for variables
+and functions, PascalCase for React components, camelCase para funções,
+kebab-case para arquivos, CamelCase para classes e funções, prefixos claros para
+eventos e handlers, Arquivos de configuração com extensão .js ou .ts,
+setupFilesAfterEnv para scripts de setup, CamelCase para componentes React,
+kebab-case para scripts e arquivos de configuração, Prefixo &apos;build-&apos;
+para scripts de build, camelCase para variáveis e funções, PascalCase para
+classes, nomes descritivos para scripts e arquivos, CamelCase para nomes de
+arquivos JS, lowercase com underscores para assets, manifest.json para
+configuração principal, CamelCase para funções e variáveis, Constantes em
+UPPER_SNAKE_CASE, IDs de contexto com prefixos descritivos, camelCase para
+funções e variáveis, PascalCase para componentes React, camelCase para props e
+variáveis, snake-case para arquivos estáticos, PascalCase para componentes,
+camelCase para props e funções, CamelCase para funções e classes, snake_case
+para arquivos utilitários, PascalCase para tipos e interfaces, PascalCase para
+tipos e componentes, prefixo use para hooks, Funções em camelCase, Constantes em
+camelCase, Arquivos em kebab-case, UPPER_SNAKE_CASE para enums, Arquivos com
+extensão .tsx para componentes React, PascalCase para componentes React e
+classes, camelCase para funções, variáveis e hooks, UPPER_SNAKE_CASE para enums
+e constantes, kebab-case para IDs CSS, CamelCase para componentes e funções,
+snake_case para variáveis globais no window, snake_case para variáveis locais e
+parâmetros, Prefixo * para propriedades privadas, Enums e tipos com PascalCase,
+CamelCase para funções e componentes, kebab-case para classes CSS, CamelCase
+para componentes React e funções, snake_case para arquivos e pastas, Prefixo
+&apos;use&apos; para hooks customizados, Enums em PascalCase, Constantes em
+maiúsculas com underscore, kebab-case para arquivos CSS, PascalCase para tipos e
+enums, CamelCase para classes, UPPER_SNAKE_CASE para constantes, prefixo gen
+para funções geradoras, Extensões de arquivos mantidas (.css, .svg), Declarações
+em arquivos .d.ts, PascalCase para classes e interfaces, PascalCase para classes
+e enums, camelCase para propriedades e métodos, CamelCase para classes e
+componentes, Variáveis em UPPER_SNAKE_CASE para env vars, Módulos em camelCase
+ou kebab-case, PascalCase para classes e plugins, kebab-case para arquivos e
+pastas, Arquivos de entrada nomeados conforme a funcionalidade (ex: index.jsx,
+index.ts), Aliases para módulos específicos (ex: react-dom para
+@hot-loader/react-dom), Extensões explícitas para arquivos suportados, Arquivos
+.env para configurações locais, secrets._.js para arquivos sensíveis, PascalCase
+para tipos e classes, testes nomeados com descrições claras, BEM-like for
+components (.btn-primary), Utility-first for helpers (.p-1, .d-flex), snake_case
+para arquivos CSS, PascalCase para interfaces e tipos, prefixo
+&apos;handle&apos; para funções de eventos, PascalCase para componentes React e
+interfaces, BEM (Block Element Modifier) recomendado para classes adicionais,
+Classes em PascalCase (RecordingService), Métodos em camelCase (createRecording,
+listRecordings), Variáveis em camelCase, IDs formatados como
+hostname:data_hora_sufixo, CamelCase para classes e interfaces, CamelCase para
+interfaces e tipos (RecordingEntry, HistoryConfig), snake_case não utilizado,
+Comentários JSDoc para documentação, BEM-like CSS classes, camelCase para
+variáveis JS, BEM-like para classes CSS, prefixo layout- para containers
+principais, BEM-like class names, Uso de prefixos para componentes (ex:
+recording-detail, action-list), BEM-like: .modern-recording-detail,
+.modern-detail-header, .modern-tab, Classes com prefixo &apos;modern-&apos; para
+escopo, Uso de nomes descritivos e BEM-like, BEM-like classes, Prefixos para
+contexto (.recording-, .modern-), PascalCase para interfaces, snake_case para
+nomes sanitizados de arquivos, Prefixo &apos;recording-detail&apos; para classes
+CSS, Uso de kebab-case para classes, Variáveis CSS customizadas com prefixo
+&apos;--&apos;, BEM para classes CSS, camelCase para variáveis JS/TS, IDs para
+containers principais (#app-container), Variáveis CSS com prefixo --, BEM-like
+classes (.btn-primary, .ds-dark), CSS variables com prefixo -- para organização,
+snake_case para arquivos, PascalCase para classes e tipos, prefixo async para
+funções assíncronas não utilizado explicitamente, Prefixo &apos;I&apos; para
+interfaces não utilizado (ex: ExecuteActionMessage é interface sem prefixo),
+CamelCase para classes e tipos (TemplateRenderer, RecordingExportContext),
+camelCase para variáveis e funções (createTemplateRenderer, render), PascalCase
+para enums (ActionType), CamelCase para tipos e interfaces, Prefixo
+&apos;Replay&apos; para tipos relacionados a replay, CamelCase para interfaces e
+tipos, CamelCase para classes e métodos, Funções e variáveis em camelCase,
+camelCase para métodos e variáveis, Prefixo &apos;I&apos; não utilizado para
+interfaces, Classes em PascalCase (ClickExecutor), Métodos em camelCase
+(execute, waitForElement), Classes em PascalCase (ActionExecutorFactory,
+ClickExecutor), Enums em PascalCase (ActionType), Métodos em camelCase, Classes
+PascalCase, Métodos camelCase, Constantes UPPER_SNAKE_CASE, Classes em
+PascalCase, Classes em PascalCase (ex: ResizeExecutor), Métodos em camelCase
+(ex: sendMessageToBackground), Constantes e variáveis em camelCase, PascalCase
+para enums, Enums em PascalCase com prefixo Replay, Interfaces com sufixo
+Message, Constantes e tipos em UPPER_SNAKE_CASE, PascalCase para interfaces e
+enums, camelCase para propriedades e variáveis, Eventos em string literals
+kebab-case, camelCase for functions and variables, PascalCase for classes,
+snake_case evitado, prefixo use para hooks customizados, UPPER_SNAKE_CASE para
+enums (ActionType), BEM-like CSS classes (.execution-history-container,
+.log-thumbnail), prefixo &apos;mock&apos; para mocks em testes, Classes em
+PascalCase (ReplayEngine, ActionExecutorFactory), Eventos e tipos em PascalCase
+com prefixos (ReplayEventType, ReplayStatus), Mocks prefixados com
+&apos;mock&apos;, Classes em PascalCase (ex: ScreenshotService), Métodos e
+variáveis em camelCase, Prefixo &apos;test&apos; para arquivos de teste,
+CamelCase para interfaces e constantes, PascalCase para componentes e
+interfaces, BEM-like para classes CSS (.execution-detail-container,
+.log-header), BEM-like para classes CSS (ex: .execution-history-navigator,
+.navigation-header, .back-button), BEM-like para classes CSS (.execution-table,
+.status-cell, .delete-button), Prefixo use para hooks customizados, Interfaces
+com prefixo I ou sufixo State, Interfaces iniciam com letra maiúscula e
+PascalCase, Classes de erro terminam com &apos;Error&apos;, Propriedades
+camelCase, snake-case para arquivos, prefixo &apos;use&apos; para hooks,
+PascalCase para componentes e hooks, prefixo use para hooks
+personalizados</naming_conventions> <module_boundaries>Separation between config
+and source code, Plugins isolated from presets, separação clara entre código
+fonte e artefatos gerados, Separação clara entre captura de eventos, geração de
+scripts e UI da extensão, Módulos independentes para Chrome e Firefox, Separação
+clara entre configuração de testes e código de produção, Separação clara entre
+UI, utilitários de build e scripts de servidor web, Dependências gerenciadas via
+package.json, Separação clara entre background scripts, content scripts e UI
+(popup), Comunicação via mensagens entre scripts, Separação clara entre
+background scripts, content scripts e UI popup, Comunicação via mensagens e
+permissões explícitas, Separação clara entre utilitários, armazenamento, replay
+e integração com APIs do Chrome, Comunicação via mensagens assíncronas e
+eventos, Separação clara entre código da extensão e código do webapp,
+Comunicação via mensagens, Componentes isolados sem dependências externas além
+do React, Separação clara entre componentes visuais e assets estáticos,
+Importação relativa para recursos locais, Separação clara entre tipos e
+componentes, Componentes isolados sem estado global, Separa lógica de
+persistência (RecordingService) da geração de código (genCypressCode),
+Comunicação entre módulos via mensagens do Chrome Runtime, Separação clara entre
+hooks, utilitários e tipos, Dependência unidirecional dos hooks para utils e
+types, Módulos separados por responsabilidade: armazenamento, execução de
+scripts, manipulação de abas, Separação clara entre tipos, builders e
+componentes, Dependência unidirecional de tipos para componentes, Separação
+clara entre UI (components) e lógica de geração (builders), Tipos centralizados
+em pasta types para consistência, Separação clara entre UI (components) e lógica
+de negócio (builders, recorder), Comunicação via props e callbacks, Uso de hooks
+para estado e efeitos colaterais, Isolamento do componente Highlighter com
+importação explícita de estilos, Separação clara entre UI (ControlBar) e
+bootstrap script, Isolamento via shadow DOM para evitar poluição global,
+Recorder encapsula toda lógica de captura e armazenamento, Utils e builders são
+módulos auxiliares desacoplados, Comunicação com background via chrome.runtime é
+isolada, Separação clara entre UI (TriggerButton) e lógica de gravação (hooks,
+endRecording), Separação clara entre UI (Popup) e lógica de negócio (builders,
+storage), Hooks para encapsular estado e lógica reutilizável, Componentes
+isolados para cada funcionalidade (LastStepPanel, RecordingHistory), Módulo
+analytics isolado, dependente apenas de utils externos, Separação clara entre
+componentes e estilos, Importação explícita de estilos por componente, Separação
+clara entre funções utilitárias, lógica de busca e otimização, Separação clara
+entre tipos, geração de scripts e renderização de templates, Dependência
+unidirecional do builder para o renderer, Separação clara entre tipos,
+utilitários e lógica de seleção, Dependência unidirecional para evitar
+acoplamento, Separação clara entre código TypeScript e assets estáticos via
+módulos declarados, Separação clara entre módulos de compatibilidade e lógica de
+negócio, Módulo de ações isolado para fácil extensão, Utilitários separados para
+validação e helpers, Dependência unidirecional das ações para utils, Separação
+clara entre src e build, Isolamento de tipos e módulos via esModuleInterop,
+Separação clara entre configuração (webpack.config.js) e execução (build
+script), Módulo isolado para configuração, sem dependências externas, Separação
+clara entre configuração (config) e execução (server), Dependência unidirecional
+do servidor para configuração, Separação clara entre scripts de background,
+popup e content scripts, Uso de aliases para segredos e hot reload, Exclusão de
+node_modules em loaders, Separação clara entre código fonte e artefatos gerados,
+Separação clara entre tipos e funções utilitárias, Dependência unidirecional de
+tipos para funções, Separação clara entre lógica de construção de scripts e
+testes, Mocks usados para isolar dependências, Separação clara entre testes e
+código da extensão, Uso de imports explícitos para Playwright e Jest, Separação
+clara entre componentes visuais e utilitários CSS, Componentes UI isolados de
+lógica de negócio via hooks, Utilitários separados em pasta Common, Tipos
+centralizados em pasta types, Componentes isolados com props para comunicação,
+Serviços externos encapsulados em módulos específicos, Utilitários desacoplados
+para reutilização, Separação clara entre estilos globais e componentes
+específicos, Separação clara entre tipos, serviços, armazenamento e geração de
+código, RecordingService depende de recordingStore e builders para persistência
+e geração, Separação clara entre tipos, store e replay, Dependência
+unidirecional do store para tipos e utilitários, Separação clara entre tipos,
+backend e lógica de gravação, Dependência unidirecional do backend para tipos,
+Separação clara entre lógica React e estilos CSS, Importação de temas via
+index.jsx, Componentes isolados sem dependências internas complexas, Separação
+clara entre tema e layout, Estilos específicos para views distintas, Componentes
+isolados com props explícitas, Separação clara entre lógica e apresentação,
+Estilos isolados por componente para evitar vazamento de CSS, Separação clara
+entre containers, cabeçalhos, conteúdo e ações, Estilos isolados para
+RecordingHistory, Dependência de variáveis CSS globais, Separação clara entre
+estilos de histórico e detalhes, Modularidade visual para componentes
+reutilizáveis, Separação clara entre preparação de dados (createTestFilename,
+prepareTestDownload) e execução do download (downloadTestFile), Módulo isolado
+sem dependências externas, exporta funções puras, Estilos isolados para o
+componente RecordingDetail, Separação clara entre header, content, toolbar e
+views, Separação clara entre estilos e lógica funcional, Isolamento do
+componente RecordingHistory, Separação clara entre estilos globais e específicos
+do popup, Isolamento do tema via classe raiz .ds-dark, Separação clara entre
+camada de dados, lógica de negócio e interface, recordingStore encapsula lógica
+de armazenamento e migração, script de migração orquestra chamadas ao
+recordingStore e manipula estado de migração, Separação clara entre tipos,
+executores e listeners, Comunicação via mensagens assíncronas entre background e
+content script, TemplateRenderer isolado para geração de código, Tipos e enums
+importados de módulos específicos, Testes separados do código de produção,
+Separação clara entre tipos, hooks e API de replay, Comunicação via mensagens
+assíncronas entre frontend e background, api/ comunica com background/ via
+mensagens, types/ contém definições compartilhadas, background/ gerencia estado
+e lógica de replay, Separação clara entre tipos, configurações e lógica de
+negócio, ConfigManager encapsula lógica de configuração, Exporta funções
+públicas para acesso externo, Separação clara entre tipos, executores e serviços
+auxiliares, Dependência unidirecional dos executores para tipos e serviços,
+Executors isolam lógica de ações específicas, Tipos centralizados em
+pages/types, Base executor define contrato e utilitários comuns, Separação clara
+entre tipos, executores e fábrica, Fábrica depende de executores e tipos, mas
+executores são independentes, Executors isolados por tipo de ação, Dependências
+unidirecionais para evitar acoplamento, Separação clara entre tipos, executores
+e lógica base, Dependência unidirecional dos executores para tipos, Base
+executor compartilhado para funcionalidades comuns, Executores isolam lógica de
+ações específicas, Comunicação via mensagens assíncronas com background script,
+Separação clara entre tipos, executores e base, Executors isolam lógica de
+execução de ações, Background script gerencia execução real e side effects,
+Tipos compartilhados em módulo comum, Dependência unidirecional do executor para
+tipos, Separação clara entre API, configuração e tipos, API depende de config e
+types, Config e types independentes entre si, Módulo de replay isolado com tipos
+e eventos próprios, Dependência explícita apenas de tipos importados de session,
+ReplaySession e tipos relacionados isolados no módulo replay, Dependência clara
+do tipo Action importado de outro módulo, EventBus isolado como módulo
+independente, Módulos consumidores dependem apenas da interface do EventBus,
+Test setup isolated from production code, Mocks encapsulated in setup file,
+Separação clara entre UI (components) e lógica de dados (storage, types), Hooks
+isolam acesso a dados e efeitos colaterais, Componentes recebem props para maior
+reutilização, Separação clara entre UI (ExecutionHistory) e lógica de dados
+(useExecutionLogs), Mocks isolados para dependências externas em testes, Estilos
+isolados para o componente ExecutionHistory, sem vazamento global, Separação
+clara entre UI e lógica de negócio (CSS separado do JS/TS), RecordingStore
+encapsula lógica de gravação e persistência, Tipos separados para domain models
+e ações, Testes isolados com mocks para dependências externas, Módulos separados
+por responsabilidade (execução, armazenamento, comunicação), Dependências
+unidirecionais para evitar acoplamento circular, Interfaces e tipos
+compartilhados via pasta types, Separação clara entre serviço
+(ScreenshotService) e mocks de API, Dependência externa isolada via mocks para
+testes, Serviços isolados em módulos próprios, Dependência unidirecional: UI
+-&gt; Serviços -&gt; APIs do Chrome, Sem acoplamento direto entre serviços,
+Separação clara entre código da extensão e testes, Testes isolados que interagem
+via API pública da extensão, Separação clara entre configuração e lógica de UI,
+Hook isolado para acesso à configuração, Separação clara entre UI (componentes)
+e lógica de configuração (hooks), Tipos compartilhados importados de módulos
+centrais, Separação clara entre UI (ExecutionTable, ExecutionDetail) e lógica de
+navegação (useExecutionNav), Armazenamento isolado em recordingStore, Tipos
+compartilhados via pasta types, Separação clara entre tipos, componentes e
+estilos, Props definem interface clara para comunicação entre componentes, CSS
+isolado para componente específico, sem estilos globais, Estilos isolados por
+componente para evitar vazamento e facilitar manutenção, CSS modularizado para
+evitar vazamento de estilos, Classes específicas para cada parte da tabela,
+Isolamento do hook para uso em componentes React, Sem dependências externas além
+do React, Separação clara entre dados (interfaces) e erros (classes), Possível
+extensão para serviços de armazenamento e manipulação, Separação clara entre UI,
+hooks e armazenamento, Mocks isolam dependências externas nos testes, Separação
+clara entre UI components e tipos, Testes isolados para cada componente,
+Dependências unidirecionais, Hooks isolados para lógica de navegação, Separação
+clara entre UI e lógica de estado</module_boundaries> </architecture_patterns>
 <code_standards> <style_guide>Airbnb JavaScript Style Guide, Airbnb JavaScript
-Style Guide adaptado para TypeScript, Airbnb TypeScript Style Guide, Airbnb
-JavaScript Style Guide (implícito via eslint-config-react-app), Airbnb
-JavaScript/TypeScript Style Guide, Airbnb TypeScript Style Guide (implícito),
-Airbnb JavaScript Style Guide (implícito pelo uso de Babel e ESLint comuns),
-Airbnb JavaScript Style Guide (implícito), CSS standard conventions, CSS
+Style Guide adaptado para TypeScript, Airbnb JavaScript Style Guide adaptado
+para React, Airbnb JavaScript/TypeScript Style Guide, Airbnb TypeScript Style
+Guide, Airbnb JavaScript Style Guide (implícito), CSS standard conventions, CSS
 Standard Style Guide, Guia de estilo TypeScript padrão, possivelmente Airbnb ou
-similar, Airbnb JavaScript Style Guide para React, CSS Standard, Uso consistente
-de variáveis CSS, CSS padrão com variáveis CSS para temas, CSS3 com uso de
+similar, Padrão TypeScript com JSDoc, possivelmente Airbnb ou padrão interno,
+Airbnb JavaScript Style Guide para React, CSS Standard, Uso consistente de
+variáveis CSS, CSS padrão com variáveis CSS para temas, CSS3 com uso de
 variáveis CSS, CSS padrão, uso consistente de variáveis CSS, CSS moderno com
 variáveis e flexbox/grid, Uso consistente de nomenclatura e organização, Guia de
 estilo CSS moderno com variáveis e flexbox, Uso consistente de espaçamentos e
 cores via variáveis, CSS Standard Practices, BEM Methodology, CSS3 standard, CSS
-moderno com variáveis, comentários claros, TypeScript Standard
-Style</style_guide> <linting_rules>ESLint with React plugin, extends react-app,
-globals chrome readonly, .eslintrc.json, ESLint com regras para TypeScript,
-Regras para evitar any e garantir tipagem forte, eslint com plugins para React,
-JSX Accessibility, import e hooks, .eslintrc.json com regras para ES6, browser,
-node, ESLint com regras para ES2021 e ambiente browser/extension, ESLint com
-regras para TypeScript, incluindo checagem de tipos e uso de async/await,
-.eslintrc.json com regras para TypeScript e JS, ESLint com regras padrão React,
-.eslintrc.js com regras para React e JSX, ESLint com regras padrão Airbnb,
-ESLint com regras para React e TypeScript, ESLint com regras para evitar uso de
-any, garantir async/await correto e evitar callbacks aninhados, .eslintrc.json
-com regras para React e TypeScript, ESLint com regras para evitar duplicidade e
-garantir tipagem, ESLint com regras padrão para TypeScript, Proibição de any
+moderno com variáveis, comentários claros, TypeScript Standard Style, Uso
+consistente de interfaces e enums, Airbnb TypeScript Style Guide (presumido),
+CSS padrão com organização modular e comentários explicativos, CSS moderno com
+variáveis customizadas para cores e espaçamentos, Padrões modernos de CSS com
+uso de variáveis e flexbox, CSS moderno com variáveis customizadas e
+pseudo-classes</style_guide> <linting_rules>ESLint with React plugin, extends
+react-app, globals chrome readonly, .eslintrc.json, ESLint com regras para
+TypeScript, Regras para evitar any e garantir tipagem forte, ESLint com plugins
+para React, JSX Accessibility, Import e Hooks, .eslintrc.json com regras para
+ES6, browser, node, ESLint com regras para ES2021 e ambiente browser/extension,
+ESLint com regras para TypeScript e ambiente browser, .eslintrc.json com regras
+para TypeScript e JS, ESLint com regras padrão React, .eslintrc.js com regras
+para React e JSX, ESLint com regras padrão Airbnb, ESLint com regras para
+TypeScript, incluindo checagem de tipos e uso de async/await, ESLint com regras
+para React e TypeScript, ESLint com regras para evitar uso de any, garantir
+async/await correto e evitar callbacks aninhados, .eslintrc.json com regras para
+React, TypeScript e JSX, ESLint com regras para React, TypeScript e hooks,
+Proibição de uso de any exceto em casos controlados, ESLint com regras para
+evitar duplicidade e garantir tipagem, Proibição de any exceto em casos
+controlados, ESLint com regras padrão para TypeScript, Proibição de any
 explícito, Proibição de any implícito, Uso de strict null checks, Proibição de
 catch vazio sem tratamento, ESLint com regras para importação de módulos
 estáticos, .eslintrc.json com regras para TypeScript e compatibilidade ES6,
-skipLibCheck:true para ignorar checagem de libs externas, strict:true para
-checagem rigorosa, .eslintrc.json com regras para ES6+, .eslintrc.json com
-regras para ES6+, node environment, Configuração padrão ESLint para React e
-TypeScript (não explicitado no código), Sem uso de any exceto em mocks, Possível
-uso de stylelint com regras para propriedades e ordem, .eslintrc.json com regras
-para React, TypeScript e hooks, ESLint com regras para React e TypeScript,
-incluindo hooks e acessibilidade, stylelint com regras padrão para CSS3, Regras
-típicas para TypeScript, incluindo verificação de tipos e uso de async/await,
-Regras para evitar any implícito e garantir tipagem forte, ESLint com regras
-para TypeScript estrito, Regras para evitar código morto e imports não usados,
-stylelint para CSS, eslint para JS/React, Possível uso de stylelint com regras
-para variáveis e propriedades, Não especificado no código, Regras para evitar
-side effects em funções puras, stylelint com regras para evitar !important e
-garantir consistência, stylelint com regras para CSS moderno e variáveis, Não
-especificado, .eslintrc.json com regras para evitar any, uso de const, e
-indentação de 2 espaços, ESLint com regras para TypeScript, sem uso de any
-explícito, Regras para async/await e promises, ESLint com regras para
+Regras para evitar código morto e imports não usados, skipLibCheck: true para
+ignorar checagem de libs externas, strict: true para tipagem rigorosa,
+noFallthroughCasesInSwitch: true para evitar erros em switch, .eslintrc.json com
+regras para ES6+, .eslintrc.json com regras para ES6+, node environment, eslint
+com regras padrão Airbnb, exclusão de node_modules, Sem uso de any exceto em
+mocks, Possível uso de stylelint com regras para propriedades e ordem,
+.eslintrc.json com regras para React, TypeScript, hooks, ESLint com regras para
+React e TypeScript, incluindo hooks e acessibilidade, stylelint com regras
+padrão para CSS3, Regras típicas para TypeScript, incluindo verificação de tipos
+e uso de async/await, Regras para evitar uso de var, Não especificado,
+presumivelmente ESLint com regras para TypeScript, stylelint para CSS, eslint
+para JS/React, .eslintrc.json com regras para React e TypeScript, Possível uso
+de stylelint com regras para variáveis e propriedades, Não especificado no
+código, Regras para evitar side effects em funções puras, stylelint com regras
+para evitar !important e garantir consistência, stylelint com regras para CSS
+moderno e variáveis, Não especificado, .eslintrc.json com regras para evitar
+any, uso de const, e indentação de 2 espaços, ESLint com regras para
 async/await, uso de promises e tratamento de erros, ESLint com regras para
-TypeScript, incluindo no-unused-vars, strict typing</linting_rules>
-<formatting>Prettier, singleQuote: true, trailingComma: es5, printWidth: 80,
-proseWrap: always, arrowParens: always, Prettier com configuração padrão para
-TypeScript, Prettier com configuração padrão, Prettier com configuração padrão
-via lint-staged, Prettier com configuração padrão para JS, Prettier com
-configuração padrão para React, Prettier com configuração padrão para 2 espaços
-e aspas simples, Prettier com configuração padrão para React/TypeScript,
-Prettier para formatação automática com padrão de 2 espaços, Prettier com
-configuração padrão para projetos React, Prettier com configuração padrão para
-TypeScript e React, Prettier (assumido pela popularidade no ecossistema),
-Consistent indentation and spacing, Prettier com configuração padrão para
-espaçamento e aspas simples, Prettier para CSS, Prettier configurado para
-espaçamento e indentação padrão, Prettier com configuração padrão para CSS e JS,
-Indentação de 2 espaços, Quebra de linha após blocos, Indentação consistente,
-Uso de comentários para seções, Uso de espaços para alinhamento, Uso de espaços
-para separação, Prettier configurado para CSS com indentação de 2 espaços,
-Indentação consistente, uso de comentários para seções, Prettier com
-configuração padrão, max-len 100</formatting> <documentation_style>JSDoc, JSDoc
-para funções e classes principais, JSDoc para funções e tipos, JSDoc para
-funções e componentes React, JSDoc para funções e módulos, Comentários inline
-explicativos, sem uso extensivo de JSDoc, Comentários inline simples, sem JSDoc
+TypeScript, incluindo regras para evitar any e garantir tipagem forte, ESLint
+com regras para TypeScript e Chrome Extensions, ESLint com regras para evitar
+erros comuns e manter consistência, ESLint com regras para async/await,
+no-console warnings, prefer-const, ESLint com regras para async/await,
+no-explicit-any, consistent-return, ESLint com regras para TypeScript, sem uso
+de any, ESLint com regras para TypeScript, incluindo no-unused-vars,
+no-explicit-any, ESLint com regras para async/await, promises e tratamento de
+erros, .eslintrc.json com regras para TypeScript e browser environment,
+.eslintrc.json com regras para TypeScript, incluindo no-unused-vars,
+strict-null-checks, .eslintrc.json com regras para TypeScript, incluindo
+no-unused-vars, strict typing, Regras para imports ordenados, Provável uso de
+ESLint com regras para TypeScript, Sem regras explícitas no código fornecido,
+ESLint com regras para evitar any implícito e garantir tipagem forte,
+.eslintrc.json with Jest plugin enabled, Regras para evitar side effects em
+render, stylelint com regras para evitar propriedades duplicadas e garantir
+consistência, ESLint com regras para TypeScript estrito, Regras para evitar any
+implícito, uso de async/await, e tratamento de erros, ESLint com regras para
+TypeScript, incluindo no-unused-vars, strict typing, ESLint com regras para
+TypeScript e Playwright, .eslintrc com regras para TypeScript e React, ESLint
+com regras para React e TypeScript, incluindo regras de acessibilidade e hooks,
+Uso consistente de indentação e espaçamento, Nomes de classes descritivos e sem
+abreviações, Regras para hooks e dependências de useEffect, .eslintrc.json com
+regras para React, TypeScript e Jest, .eslintrc.json com regras para React,
+TypeScript e hooks</linting_rules> <formatting>Prettier, singleQuote: true,
+trailingComma: es5, printWidth: 80, proseWrap: always, arrowParens: always,
+Prettier com configuração padrão para TypeScript, Prettier configurado para
+formatação automática via lint-staged, Prettier com configuração padrão,
+Prettier com configuração padrão para JS, Prettier com configuração padrão para
+React, Prettier com configuração padrão para 2 espaços e aspas simples, Prettier
+com configuração padrão para React e TypeScript, Prettier com configuração
+padrão para espaçamento e aspas simples, Prettier para formatação automática com
+padrão de 2 espaços, Prettier com configuração padrão para projetos React,
+Prettier com configuração padrão para JS/TS, Consistent indentation and spacing,
+Prettier para CSS, Prettier configurado para espaçamento e indentação padrão,
+Quebra de linha em 80-100 caracteres, Prettier para formatação automática,
+Prettier com configuração padrão para CSS e JS, Indentação de 2 espaços, Quebra
+de linha após blocos, Indentação consistente, Uso de comentários para seções,
+Uso de espaços para alinhamento, Uso de espaços para separação, Prettier
+configurado para CSS com indentação de 2 espaços, Indentação consistente, uso de
+comentários para seções, Prettier com configuração padrão, max-len 100, Prettier
+com configuração padrão para TypeScript e React, Prettier para formatação
+automática com regras padrão, Prettier com configuração padrão (2 espaços, aspas
+simples), Prettier com configuração padrão para 2 espaços, Prettier with default
+config, Quebra automática de linhas em 80-100 caracteres, Prettier com
+configuração padrão para espaçamento e aspas, Prettier com configuração padrão
+para React/TypeScript, Prettier com configuração padrão para projetos
+React/TypeScript, Indentação de 2 espaços, organização semântica das regras,
+Formato CSS padrão, sem minificação</formatting> <documentation_style>JSDoc,
+JSDoc para funções e classes principais, JSDoc para funções e componentes
+principais, JSDoc para funções e módulos, JSDoc para funções e módulos
+principais, JSDoc para funções e tipos, Comentários inline simples, sem JSDoc
 explícito, JSDoc para funções e componentes, JSDoc para comentários de funções e
 componentes, JSDoc para funções e métodos públicos, JSDoc para funções e hooks,
-JSDoc para funções públicas e complexas, JSDoc para funções e interfaces, JSDoc
-para documentação inline de funções e classes, Comentários inline e JSDoc para
-funções principais, JSDoc para documentação de funções e componentes, JSDoc para
+JSDoc para funções públicas e complexas, JSDoc para funções e componentes
+públicos, JSDoc para funções e interfaces, JSDoc para documentação inline de
+funções e classes, Comentários inline e JSDoc para funções principais,
+Comentários inline explicativos em português, JSDoc para funções públicas e
+componentes, JSDoc para documentação de funções e componentes, JSDoc para
 funções públicas, JSDoc para funções públicas e classes, JSDoc para declarações
-de tipos, Comentários JSDoc (a serem implementados), JSDoc para documentação
-inline, Comentários inline e JSDoc para funções e configurações, Inline comments
-para propriedades específicas, Comentários CSS padrão, JSDoc para documentação
-de métodos e classes, JSDoc para documentação de interfaces e funções,
-Comentários CSS inline, JSDoc para componentes React, JSDoc para comentários de
-componentes, Comentários em português explicativos, Comentários CSS simples para
-seções, Comentários simples para seções, Comentários mínimos, apenas cabeçalho
-do arquivo, Comentários em português explicando blocos principais, Comentários
-CSS explicativos para seções e blocos, Comentários em português para contexto,
-JSDoc para funções e classes, JSDoc para métodos públicos e complexos, JSDoc
-para funções públicas e tipos, JSDoc para comentários de tipos e enums, JSDoc
-para funções públicas e comentários explicativos</documentation_style>
-<type_checking>TypeScript optional, not explicit here, TypeScript strict mode,
-Strict TypeScript, TypeScript com tipagens estritas para React e APIs de
-browser, Nenhum type checking explícito (JavaScript puro), Nenhum type checking
-estrito (JavaScript puro), Strict TypeScript com tipagem explícita em funções
-assíncronas e objetos, JavaScript sem tipagem estática, Possível uso futuro de
-TypeScript, PropTypes ou TypeScript (não aplicável neste arquivo), Strict
-TypeScript com checagem completa de tipos, Strict TypeScript com tipagem
-explícita para funções assíncronas e objetos, Strict TypeScript typings, Strict
-TypeScript com tipagem explícita para eventos e ações, Strict TypeScript com
-checagem completa, Strict TypeScript enabled, PropTypes para validação de props
-React, Sem TypeScript, Strict TypeScript (noImplicitAny, strictNullChecks), Uso
-extensivo de tipos e interfaces, strict TypeScript com exceção para
-strictPropertyInitialization:false, Nenhum (JavaScript puro), Strict TypeScript
-via ts-loader, Strict TypeScript com tipagem explícita em props e hooks, Strict
-TypeScript com checagem completa de tipos e interfaces, Strict TypeScript com
-tipos explícitos para entradas e saídas, Strict TypeScript com interfaces e
-tipos explícitos, Strict TypeScript (strict mode habilitado), TypeScript strict
+de tipos, JSDoc para classes e métodos públicos, JSDoc para funções e
+componentes React, Inline comments para propriedades específicas, Comentários
+CSS padrão, JSDoc para documentação de métodos e classes, JSDoc para
+documentação inline, Comentários CSS inline, JSDoc para componentes React, JSDoc
+para comentários de componentes, Comentários em português explicativos,
+Comentários CSS simples para seções, Comentários simples para seções,
+Comentários mínimos, apenas cabeçalho do arquivo, Comentários em português
+explicando blocos principais, Comentários CSS explicativos para seções e blocos,
+Comentários em português para contexto, JSDoc para funções e classes, JSDoc para
+funções públicas e comentários explicativos, JSDoc para comentários de funções e
+interfaces, JSDoc para documentação de funções e interfaces, JSDoc para
+comentários de métodos e classes, JSDoc para métodos públicos e classes, JSDoc
+para documentação de classes e métodos, JSDoc para documentação de classes e
+métodos públicos, JSDoc para funções e tipos exportados, Comentários sucintos e
+técnicos, JSDoc for functions and mocks, Comentários CSS simples para seções e
+blocos, JSDoc para funções e helpers, JSDoc para interfaces e funções,
+Comentários inline e JSDoc para funções públicas, Comentários inline mínimos,
+foco em nomes autoexplicativos, Comentários CSS para seções e estados,
+Comentários mínimos, foco em autoexplicação via nomes, Comentários JSDoc para
+interfaces e classes, Comentários JSDoc para funções e
+componentes</documentation_style> <type_checking>TypeScript optional, not
+explicit here, TypeScript strict mode, Strict TypeScript, Strict TypeScript via
+ts-jest, TypeScript com tipagem estrita para componentes e utilitários, Nenhum
+type checking explícito (JavaScript puro), Nenhum type checking estrito
+(JavaScript puro), Strict TypeScript com tipagem explícita e interfaces,
+JavaScript sem tipagem estática, Possível uso futuro de TypeScript, PropTypes ou
+TypeScript (não aplicável neste arquivo), Strict TypeScript com checagem
+completa de tipos, Strict TypeScript com tipagem explícita para funções
+assíncronas e objetos, Strict TypeScript typings, Strict TypeScript com checagem
+completa, Strict TypeScript com tipagem explícita para props e estados, Strict
+TypeScript com tipagem explícita para eventos e ações, Strict TypeScript
+enabled, PropTypes para validação de props React, Sem TypeScript, Strict
+TypeScript (noImplicitAny, strictNullChecks), Uso extensivo de tipos e
+interfaces, Strict TypeScript (strict mode habilitado), Strict TypeScript com
+forceConsistentCasingInFileNames habilitado, Nenhum (JavaScript puro),
+TypeScript com transpileOnly true para build rápido, Strict TypeScript com
+tipagem explícita em props e estados, Strict TypeScript com checagem completa de
+tipos e interfaces, Strict TypeScript com tipos explícitos para entradas e
+saídas, Strict TypeScript com interfaces fortemente tipadas, TypeScript strict
 mode para React, Strict TypeScript (strict mode ativado), Não aplicável para
 CSS, TypeScript strict mode desativado, uso parcial de tipagem, Strict
-TypeScript com tipagem explícita para funções e variáveis, Strict TypeScript com
-checagem completa de tipos e promessas, Strict TypeScript com tipagem explícita
-e interfaces</type_checking> </code_standards> <testing_strategy>
-<test_framework>Jest, Playwright Test Runner, Jest 29.x, Jest 27.3.1, Jest 29,
-Não explicitamente presente, mas integração com Playwright e Cypress para testes
-e gravação, React Testing Library, Não detectado no código fornecido, Cypress
-(para testes end-to-end), Jest 29 (implícito para front-end), Jest 29
-(provável), Cypress para testes end-to-end (indicado pelo entry cypressTrigger),
-Possível uso de Jest para testes unitários (não explícito no código), Jest 29
-para testes unitários de componentes React associados, Jest (para lógica JS/TS
-associada)</test_framework> <test_structure>**tests** folders or _.test.js
-files, tests/ unitários e integração, tests/e2e/ para testes end-to-end,
-tests/unit/ para testes unitários, Testes localizados em pasta **tests** ou
-arquivos _.test.ts, Testes localizados em pastas **tests** e arquivos
-_.test.js/ts, tests/unit para testes unitários, tests/integration para testes de
-integração, Testes provavelmente localizados em pastas separadas, não visíveis
-neste código, tests/unit/, tests/integration/, Testes localizados em **tests**
-ou pasta components/**tests**, Testes localizados em **tests** ou pasta
-**specs** ao lado do componente, tests/components para testes de componentes
-React, Testes localizados em **tests** próximos aos módulos correspondentes,
-tests/hooks - testes unitários para hooks, **tests** folders próximos aos
-componentes, Testes unitários para renderização e lógica condicional, Testes
-unitários para builders e componentes, Testes localizados próximos aos
-componentes, Mocks para APIs e eventos DOM, **tests** folder ao lado do
-componente, Testes localizados em **tests** próximos aos componentes, Testes
-unitários localizados em **tests** próximos aos módulos, Testes de integração
-para simulação de eventos DOM, Testes localizados em pasta **tests** ao lado dos
-componentes, **tests** folders next to components, Unit and integration tests,
-tests/ unitários e de integração próximos aos componentes, test/unit para testes
+TypeScript com checagem completa de tipos e promessas, Strict TypeScript com
+checagem rigorosa, Strict TypeScript com tipagem explícita para estados e ações,
+Strict TypeScript com tipagem explícita e uso de interfaces, Strict TypeScript
+com tipos explícitos e interfaces, Strict TypeScript (strict mode enabled),
+Strict TypeScript checking habilitado, Strict TypeScript com configuração no
+tsconfig.json para strict mode, Strict TypeScript com tipos discriminados, Uso
+de union types para segurança de tipos, NoImplicitAny enabled, Strict TypeScript
+settings enabled, Interfaces e tipos explícitos para props e estados, TypeScript
+com tipagem estrita e uso de enums para ações, Strict TypeScript com tipagem
+explícita para funções e propriedades, Strict TypeScript com tipagem explícita,
+Strict TypeScript com interfaces explícitas, Strict TypeScript com interfaces
+definidas para props e dados, Strict TypeScript com tipagem explícita para props
+e funções, Strict TypeScript settings</type_checking> </code_standards>
+<testing_strategy> <test_framework>Jest, Playwright Test Runner, Jest 29.x, Jest
+27.3.1, @testing-library/react 12.1.5, @playwright/test 1.54.1, Jest 29, Jest 29
+para testes unitários e integração, React Testing Library, Não detectado no
+código fornecido, Cypress (para testes end-to-end), Jest 29 (implícito para
+front-end), Possível uso de Jest para testes unitários (não explícito no
+código), Não especificado, provável Jest para testes unitários, Jest 29 para
+testes unitários de componentes React associados, Jest (para lógica JS/TS
+associada), Jest e React Testing Library para testes de componentes, Playwright
+Test 1.x, Jest 29 com React Testing Library, @testing-library/react 14,
+@testing-library/react 14.0</test_framework> <test_structure>**tests** folders
+or _.test.js files, tests/ unitários e integração, tests/e2e/ para testes
+end-to-end, tests/unit/ para testes unitários, Testes executados em ambiente
+Node.js, Setup global via jest.setup.js, Testes unitários localizados em pastas
+**tests** e arquivos _.test.tsx, Testes end-to-end via Playwright integrados ao
+pipeline, tests/unit para testes unitários, tests/integration para testes de
+integração, Testes localizados em pastas **tests** próximas aos módulos,
+tests/unit/, tests/integration/, Testes localizados em **tests** ou pasta
+components/**tests**, Testes localizados em **tests** ou pasta **specs** ao lado
+do componente, tests/components para testes de componentes React, Testes
+localizados em **tests** próximos aos módulos correspondentes, tests/hooks -
+testes unitários para hooks, **tests** folders próximos aos componentes, Testes
+unitários para renderização e lógica condicional, Testes localizados em
+**tests** dentro de cada pasta de componente, Testes unitários localizados em
+**tests** próximos aos componentes, Testes de integração para fluxo de gravação
+e geração de código, **tests** folder ao lado do componente, Testes localizados
+em **tests** próximos aos componentes, Testes unitários localizados em **tests**
+próximos aos módulos, Testes de integração para simulação de eventos DOM, Testes
+localizados em pasta **tests** ao lado dos componentes, Testes unitários para
+hooks e componentes, Testes de integração para fluxo de gravação, tests/
+unitários e de integração próximos aos componentes, test/unit para testes
 unitários, test/integration para testes de integração, Testes organizados em
 arquivos separados por feature, Uso de describe/it para estruturação, Testes
 unitários em pasta **tests** ao lado dos módulos, Testes localizados em
-**tests** ou pasta tests, tests/unit para testes de classes e funções, tests/
-localizados paralelamente ao código fonte, Testes localizados em
-src/pages/CypressTrigger, /coverage para relatórios de teste, tests/utils -
-testes unitários para funções utilitárias, Testes organizados por describe e
-test, Mocks e spies para isolamento, Testes organizados em blocos beforeAll,
-afterAll e test, Uso de async/await para controle assíncrono, Testes unitários
-para hooks e componentes, Testes unitários e de integração, Testes localizados
-em pasta separada, cobrindo serviços e integração com store, Testes localizados
-em **tests** dentro do diretório src/store, Testes unitários para métodos do
-RecordingStore, Testes unitários em **tests**/ para cada módulo, Mocks para
-backend e ações, Testes localizados em **tests** dentro da pasta components,
-Testes unitários para funções utilitárias em src/utils/**tests**, Testes
-localizados em src/components/RecordingDetail/**tests**, /tests/unit para testes
-de componentes e estilos, Testes localizados em **tests** próximos aos hooks e
-background scripts, Testes localizados próximos aos módulos, Testes localizados
-em **tests** próximos aos módulos, Testes unitários e de integração para
-handlers e storage, Testes localizados em **tests** dentro do módulo
-replayRunner, Testes unitários para recordingStore e scripts de migração, Testes
-localizados em **tests** no mesmo nível dos módulos, Testes unitários e de
-integração para controller e storage</test_structure>
-<coverage_requirements>Minimum 80% coverage, &gt;= 80%, Cobertura mínima de 80%,
-Cobertura mínima não especificada, mas jest --coverage configurado, Não
-especificado, &gt;= 80% cobertura, Cobertura mínima de 80% para componentes
-visuais, Cobertura mínima de 80% para módulos críticos, Cobertura mínima de 80%
-para funções críticas de armazenamento e execução, Cobertura mínima de 85% para
-lógica crítica, Cobertura mínima de 80% para componentes UI e hooks, &gt;80%
-coverage, Cobertura mínima de 90%, Cobertura focada em fluxos críticos de UI,
-&gt;= 90% cobertura para funções críticas, Cobertura focada em funcionalidades
-críticas da extensão, Cobertura mínima de 80% para componentes críticos,
-Cobertura alta para métodos críticos como createRecording e importMany,
-Cobertura mínima de 80% para store e migrações, Cobertura mínima de 85%, &gt;=
-80% coverage, Cobertura mínima de 90% para funções críticas, Cobertura mínima de
-90% para funções utilitárias, Cobertura mínima de 80% para componentes visuais e
-interações, Cobertura mínima de 80% para hooks críticos, Cobertura mínima de 80%
-para lógica crítica, Cobertura mínima de 80% para funções críticas, Cobertura
-mínima de 80% para código crítico</coverage_requirements> <test_patterns>AAA
-(Arrange-Act-Assert), AAA, Given-When-Then, AAA (Arrange, Act, Assert), Uso de
-gravação e replay para validação comportamental, Arrange-Act-Assert (AAA),
-Snapshot testing para componentes visuais, Snapshot Testing, Renderização e
-acessibilidade, Given-When-Then para testes comportamentais, Given-When-Then
-para clareza em cenários de eventos, Mocking de hooks e APIs do Chrome, Uso de
-comentários para descrever ações, Behavior Driven Development (BDD) style,
-Given-When-Then para testes de integração, Mocking de serviços externos, AAA
-(Arrange-Act-Assert) para clareza e manutenção, Snapshot Testing para
-componentes visuais, Behavior Driven Testing, Mocking de APIs Chrome, Mocks para
-APIs do Chrome, Mock de APIs Chrome Runtime, Given-When-Then para cenários de
-migração e inicialização</test_patterns> <mocking_approach>jest.mock for
-modules, jest.mock, fixtures, Mocks para APIs de navegador, Fixtures para dados
-de entrada, Mocks com Jest e ts-jest, Mocks via Jest para dependências externas
-e APIs de browser, Mocks para APIs externas e mensagens entre scripts, Não
-especificado, Mocks para chrome.runtime e window.postMessage, Mocks para
-dependências externas se houver, Mock de assets estáticos para testes, Mocks
-para props e funções callback, Mocks para serviços externos e APIs do Chrome
-Runtime, Mock de localStorage e chrome.storage APIs, Mock de APIs chrome.storage
-e chrome.tabs usando jest-mock, Mock de funções auxiliares e tipos externos,
-Mock de funções genCode para isolar testes UI, Mock de eventos DOM e APIs do
-navegador, Fixtures para ações simuladas, Mocks para props e estilos, Mocks para
-APIs do navegador e funções globais, Mocks para chrome.storage e eventos DOM,
-Fixtures para simular diferentes tipos de eventos, Mocks para
-chrome.runtime.sendMessage e document.querySelector, Mocks for browser APIs and
-storage, Mocks para dependências externas e estilos, Mocks para DOM APIs e
+**tests** ou pasta tests, Testes localizados em /tests/actions, Testes unitários
+para validação de enums e classes, Testes localizados em pasta **tests** dentro
+de src, tests/ localizados paralelamente ao código fonte, Testes localizados em
+pastas **tests** próximas ao código fonte, /coverage para relatórios de teste,
+tests/utils - testes unitários para funções utilitárias, Testes organizados por
+describe e test, Mocks e spies para isolamento, Testes organizados em blocos
+beforeAll, afterAll e test, Uso de async/await para controle assíncrono, Testes
+unitários e de integração, Testes localizados em pasta separada, cobrindo
+serviços e integração com store, Testes localizados em **tests** próximos ao
+código fonte, Testes unitários para métodos do RecordingStore, Testes
+localizados próximos aos módulos de histórico e replay, Testes localizados em
+**tests** dentro da pasta components, Testes unitários para funções utilitárias
+em src/utils/**tests**, Testes localizados em
+src/components/RecordingDetail/**tests**, /tests/unit para testes de componentes
+e estilos, Testes localizados em **tests** próximos aos módulos, Testes
+unitários para recordingStore e scripts de migração, Testes unitários para
+executores e listeners, Testes organizados em describe e it, localizados
+próximos ao código fonte, Testes localizados em **tests** próximos aos hooks e
+APIs, tests/api/ para testes das funções de API, Testes localizados em **tests**
+dentro do diretório src/config, Testes localizados na pasta **tests** próxima
+aos executores, Testes localizados em **tests** próximos aos executors, Testes
+unitários e de integração para ações, Testes localizados em **tests** próximos
+aos executores e fábrica, Testes unitários em **tests** próximos aos executors,
+Mocks para DOM e eventos, Testes localizados em **tests** próximos aos
+executores, Testes unitários localizados em **tests** próximos aos executores,
+Testes localizados em **tests** dentro de cada módulo, Cobertura para mensagens
+e eventos, Testes localizados em **tests** ou pasta tests no módulo replay,
+tests/unit/eventbus.test.ts, Testes focados em registro, emissão e remoção de
+eventos, Tests located in /tests folder, setupTests.js for global mocks, Testes
+unitários para hooks e componentes em **tests**, Testes de integração para
+interações UI, Testes localizados próximos aos componentes e hooks, Mocks para
+dependências externas e APIs, Testes localizados em
+src/components/ExecutionHistory/**tests**, Testes organizados por método e
+cenário dentro de describe/it, Mocks para chrome.storage e timers, Testes
+unitários para métodos públicos e privados críticos, Testes de integração para
+fluxo completo de replay, Testes localizados em pasta de testes paralela ao
+código, Uso de describe e it para organização, tests/services - testes unitários
+para ScreenshotService, Testes organizados em describe e test blocks, Setup e
+teardown via hooks beforeAll, beforeEach, afterEach, afterAll, Testes
+localizados em **tests** dentro do diretório do componente, Testes localizados
+em **tests** próximos ao hook, Testes unitários para estados e efeitos, Testes
+localizados em **tests** ou pasta tests, organizados por módulo, Testes
+localizados em src/pages/Popup/components/**tests**, Uso de mocks para
+dependências externas, Arquivos de teste localizados próximos aos componentes,
+Testes localizados próximos ao código fonte em pastas **tests** ou com extensão
+.test.tsx</test_structure> <coverage_requirements>Minimum 80% coverage, &gt;=
+80%, Cobertura mínima de 80%, Cobertura mínima de 80% para código crítico,
+Cobertura mínima de 80% para módulos críticos, &gt;= 80% cobertura, Cobertura
+mínima de 80% para componentes visuais, Cobertura mínima de 80% para funções
+críticas de armazenamento e execução, Cobertura mínima de 80% para componentes
+críticos, Cobertura mínima de 85% para lógica crítica, Cobertura mínima de 80%
+para componentes UI e hooks, Cobertura mínima de 90%, Cobertura focada em fluxos
+críticos de UI, Cobertura mínima de 90% para módulos críticos, &gt;= 90%
+cobertura para funções críticas, Cobertura focada em funcionalidades críticas da
+extensão, Cobertura alta para métodos críticos como createRecording e
+importMany, Cobertura mínima de 80% para garantir confiabilidade, &gt;= 80%
+coverage, Cobertura mínima de 90% para funções críticas, Cobertura mínima de 90%
+para funções utilitárias, Cobertura mínima de 80% para componentes visuais e
+interações, Cobertura mínima não explicitada, mas testes cobrem casos críticos
+de comportamento, Cobertura mínima de 80% para hooks e lógica crítica, Cobertura
+mínima de 80% para funções críticas, Cobertura mínima de 80% para executores,
+Cobertura mínima de 85%, Cobertura mínima de 85% para executors, Cobertura
+mínima de 80% para executors, Cobertura mínima de 90% para o módulo EventBus,
+Cobertura abrangente para renderização, interações, estados de erro e
+performance, Cobertura mínima de 80% para UI e interações, Cobertura alta
+(&gt;90%) para métodos críticos de migração e atualização, Cobertura mínima de
+80% para código core, Cobertura alta (&gt;90%) para métodos críticos, Cobertura
+mínima de 85% para serviços críticos, Cobertura focada em fluxos críticos de
+replay e captura, Cobertura mínima de 80% para componentes e hooks, Cobertura
+mínima de 80% para componentes e funções críticas, Cobertura mínima de 90% para
+o hook, Cobertura mínima de 90% para componentes críticos, Cobertura mínima de
+80% para hooks críticos</coverage_requirements> <test_patterns>AAA
+(Arrange-Act-Assert), AAA, Given-When-Then, Given-When-Then para testes e2e,
+Given-When-Then para testes comportamentais, Arrange-Act-Assert (AAA), Snapshot
+testing para componentes visuais, Snapshot Testing, Renderização e
+acessibilidade, AAA (Arrange, Act, Assert), Mocks para eventos DOM e APIs
+externas, Given-When-Then para clareza em cenários de eventos, Mocking de hooks
+e APIs do Chrome, Given-When-Then para testes de fluxo, Uso de comentários para
+descrever ações, Behavior Driven Development (BDD) style, Mocking de serviços
+externos, AAA (Arrange-Act-Assert) para clareza e manutenção, Mocks para
+chrome.storage.local, AAA (Arrange-Act-Assert) para testes unitários, Snapshot
+Testing para componentes visuais, Behavior Driven Testing, Given-When-Then para
+cenários de migração e inicialização, Testes unitários focados em comportamento
+e validação de erros, Mocking de chamadas assíncronas e listeners,
+Given-When-Then para clareza de cenários, Given-When-Then para cenários de
+integração, Arrange-Act-Assert, Testes de retry e falhas simuladas, Mocking de
+chrome.runtime.sendMessage, Mock de dependências externas, Mocking external
+APIs, Given-When-Then para testes de comportamento, Given-When-Then para
+cenários de interação, Mocks para APIs do Chrome e serviços externos, Testes de
+casos positivos e negativos, Uso de mocks para armazenamento local, Testes
+unitários e de integração UI, Testes de integração para navegação e estado,
+Testes de interação e renderização condicional, Mock de window.location.hash
+para simular navegação, Uso de waitFor para operações assíncronas, Testes de
+comportamento e UI, Mocking de window.location para simular URL
+hash</test_patterns> <mocking_approach>jest.mock for modules, jest.mock,
+fixtures, Mocks para APIs de navegador, Fixtures para dados de entrada, Mocks e
+setups globais configurados em jest.setup.js, Mocks para APIs e eventos do
+browser usando Jest e Testing Library, Mocks para APIs externas e mensagens
+entre scripts, Mocks para APIs do Chrome e dependências externas, Mocks para
+chrome.runtime e window.postMessage, Mocks para dependências externas se houver,
+Mock de assets estáticos para testes, Mocks para props e funções callback, Mocks
+para serviços externos e APIs do Chrome Runtime, Mock de localStorage e
+chrome.storage APIs, Mock de APIs chrome.storage e chrome.tabs usando jest-mock,
+Mock de funções auxiliares e tipos externos, Mocks para funções auxiliares e
+dependências externas, Mock de chrome.storage e Clipboard API, Mock de timers
+para confirmações visuais, Mocks para props e estilos, Mocks para APIs do
+navegador e funções globais, Mocks para chrome.storage e eventos DOM, Fixtures
+para simular diferentes tipos de eventos, Mocks para chrome.runtime.sendMessage
+e document.querySelector, Mocks para APIs do Chrome, Fixtures para dados de
+gravação, Mocks para dependências externas e estilos, Mocks para DOM APIs e
 querySelectorAll, Mocks para APIs externas não presentes no código analisado,
 Mocks para finder e elementos DOM, Mocking de módulos estáticos via Jest mocks,
-Mocks para APIs do navegador, Mocks para simular eventos e ações, Mocks para
-Webpack e WebpackDevServer APIs, Mocks para Date.now() para controle de tempo em
-testes, Jest spies para interceptar chamadas de métodos, Uso mínimo de mocks,
-testes end-to-end reais com navegador, Mocks para hooks useReplay e APIs
-externas, Fixtures para dados de gravação, Mock de RecordingService para simular
-respostas e erros, Mock do recordingStore para isolar testes de serviço, Mock da
-API chrome.storage.local, Fixtures para entradas de gravação e ações, Mocking de
-IHistoryBackend para simular persistência, Mocks para APIs e serviços externos,
-Mocks para callbacks e props, Mock de APIs Web (Blob, URL) para testes isolados,
-Não aplicável - funções puras sem dependências externas, Mocks para APIs de
-dados e eventos de usuário, Fixtures para estados de gravação e erro, Mocks para
-APIs de arquivos e eventos DOM, Uso de jest.mock para dependências externas,
-Mocks para chrome.runtime e chrome.tabs, Mock de dependências externas e injeção
-de mocks, Mock de chrome.runtime e chrome.tabs via jest-mock-chrome, Mocks para
-chrome.runtime.sendMessage e listeners, Simulação de DOM para waitForElement,
-Mocks para ações e estados do replay, Mocks para chrome.storage.local e
-recordingStore, Mock de chrome.runtime, chrome.tabs, chrome.storage para testes
-isolados</mocking_approach> </testing_strategy> <development_workflow>
-<branch_strategy>GitHub Flow, Não especificado explicitamente, Não especificado,
-GitHub Flow com branches feature, main e hotfix, GitHub Flow com branches
-feature, main protegida, Git Flow, Git Flow ou GitHub Flow (não explicitado,
-padrão mercado), Git Flow com branches feature, develop e main</branch_strategy>
-<commit_conventions>Conventional Commits, Não especificado explicitamente, Não
-especificado, Conventional Commits para padronização e automação, Conventional
-Commits (assumido por padrão moderno), Conventional Commits para mensagens
-padronizadas</commit_conventions> <pr_requirements>Code review mandatory, CI
-checks, code review obrigatório, checks automáticos, Revisão obrigatória, Checks
-de CI passando, Code review obrigatório, Checks de CI, Husky para hooks de
-pré-commit e lint-staged para formatação automática, Revisão obrigatória por
-pelo menos um revisor, Checks automáticos de lint e testes, Não especificado,
-Checks de lint e testes, Revisão obrigatória por pelo menos um membro do time,
-Revisão obrigatória e testes passando antes do merge, Revisão obrigatória e
-testes automatizados, Revisão obrigatória por pelo menos um peer, Checks
-automáticos de lint, build e testes, Revisão obrigatória e testes automatizados
-aprovados, CI checks passing, Revisão obrigatória e testes aprovados, Testes
-passando, Checks automáticos, Build deve passar sem erros, Checks de build e
-lint, Testes automatizados passando, Revisão obrigatória e testes automatizados
-passando, Checks de lint e testes automatizados, Code review obrigatório e
-testes aprovados, Revisão obrigatória por pelo menos 2 desenvolvedores, Revisão
-obrigatória por pelo menos 2 membros, Revisão obrigatória, testes automáticos e
-lint passing, Revisão obrigatória por pelo menos um membro, Checks de lint e
-testes obrigatórios</pr_requirements> <ci_cd_pipeline>Linting, Testing, Build,
-build, test, deploy, Testes unitários e E2E, Lint, Deploy para Chrome e Firefox,
-Execução de testes automatizados, Testes automatizados com Jest, Linting e
-formatação via Prettier e ESLint, Build, lint, test e deploy automatizados via
-GitHub Actions, Não especificado, Build, Test, Lint, Deploy, Build, lint, test e
-deploy automatizados, Build, Test, Lint, Deploy stages, Pipeline com etapas de
-build, lint, test e deploy automatizado, Deployment to Chrome Web Store, Build,
-Test, Lint, Deploy automáticos, Testes, Deploy automático, Build automatizado
-via CI, Deploy condicionado a build sem erros, Build, Test, Lint, Deploy
-Staging, Build automatizado com Webpack, Deploy para ambiente de produção via
-pipeline externo, Test, Deploy automático em staging, Build da extensão, Deploy
-automatizado, Build, lint, test e deploy automatizados via GitHub Actions ou
-similar, Deploy automático para staging, Testes unitários, Build, Test, Lint,
-Deploy automatizados via GitHub Actions, Build, Test, Lint, Deploy para ambiente
-staging e produção, GitHub Actions com etapas de build, lint, test e
-deploy</ci_cd_pipeline> </development_workflow> <commands> <setup>npm install,
-yarn, yarn install &amp;&amp; yarn prepare, npm install ou yarn install, npm
-install &amp;&amp; npm run setup, npm install &amp;&amp; npm run
-setup-db</setup> <install>npm install, yarn install, npm ci</install> <dev>npm
-start, npm run dev, yarn run start-chrome, yarn run start-ff, yarn start-chrome
-(para Chrome), yarn start-ff (para Firefox), yarn start, npm run watch, npm run
-start, node scripts/start.js, webpack --mode development --watch, npm run
-start:extension</dev> <test>npm test, yarn test, npm run test, npx cypress open,
-cypress open</test> <build>npm run build, yarn run build-chrome, yarn run
-build-ff, yarn build-chrome, yarn build-ff, yarn build, node scripts/build.js,
-webpack --mode production</build> <lint>npm run lint, eslint src/ --ext
-.ts,.tsx, eslint ., yarn lint, eslint src --ext .js,.jsx,.ts,.tsx</lint>
-<format>npm run format, prettier --write src/, prettier --write ., yarn format,
-prettier --write
-&quot;src/\*_/_.{js,jsx,ts,tsx,json,css,scss,html}&quot;</format> </commands>
-<security_constraints> <authentication_method>OAuth2 para comunicação externa
-com DeploySentinel, Não aplicável diretamente no código analisado, OAuth2 via
-DeploySentinel Webapp, OAuth2 (externo, presumido para acesso ao sistema),
-Nenhum método de autenticação implementado diretamente neste módulo, Não
-aplicável (componente UI local), Não aplicável diretamente (foco em captura
-local de eventos), OAuth2 via Chrome Extension permissions, Nenhum método
-explícito no código (depende do navegador), Nenhum método de autenticação
-implementado, Não aplicável (biblioteca client-side), Nenhum método de
-autenticação implementado neste arquivo, Nenhum método de autenticação
-implementado no código de teste, Não aplicável diretamente neste componente
-(frontend autenticado via token JWT no app), Não aplicável diretamente no
-componente (depende do backend), Não aplicável diretamente no serviço de
-gravação, Não aplicável (extensão local), Autenticação via token JWT para acesso
-ao backend, N/A (funcionalidade client-side sem autenticação), JWT com expiração
-curta, OAuth2 via Chrome Identity API (externo ao hook), OAuth2 via Chrome
-Identity API (externo ao handler), Autenticação via token no background (fora do
-escopo do runner), Token-based authentication (ex: JWT) presumido, Não aplicável
-(script local de migração), OAuth2 via Chrome Identity API (externo ao
-controller)</authentication_method> <authorization_rules>Permissões explícitas
-no manifest para acesso a abas, scripting e armazenamento, Validação de tabId e
-frameId para garantir gravação apenas no contexto correto, Validação de origem
-das mensagens, Permissões restritas na extensão, Controle de acesso baseado em
-roles para gravação e visualização, Controle de acesso baseado em permissões do
-navegador para execução de scripts, Não aplicável, Acesso restrito ao
-armazenamento local do navegador, Eventos filtrados para evitar captura de dados
-sensíveis de overlays, Permissões restritas para comunicação entre extensão e
-UI, Controle de acesso via permissões da extensão no manifest, Nenhuma regra de
-autorização aplicada, Controle de acesso via contexto do navegador isolado,
-Acesso restrito a usuários autenticados com permissão para visualizar gravações,
-Confirmação explícita para exclusão de gravações, Controle de acesso via
-backend, Controle de acesso deve ser aplicado externamente ao serviço, Controle
-local, sem múltiplos níveis de acesso, Controle de acesso baseado em roles para
-operações de gravação e leitura, N/A, Controle baseado em roles e permissões
-granulares, Permissões restritas para acesso a abas e mensagens, Controle de
-acesso via permissões do manifest.json, Validação de URLs para evitar execução
-em domínios não autorizados, Controle de execução via mensagens autorizadas do
-background, Controle de acesso para iniciar e monitorar replays, Controle de
-acesso via permissões do Chrome Extension, Controle de acesso via permissões do
-Chrome Extension manifest</authorization_rules> <sensitive_data>Dados de
-navegação do usuário tratados localmente, sem envio externo não autorizado,
-Nenhum dado sensível manipulado diretamente, URLs de teste, Códigos de gravação,
-URLs e timestamps são tratados como dados sensíveis e armazenados localmente,
-URLs capturadas durante gravação são armazenadas localmente sem criptografia,
-Password inputs are masked with asterisks, Senhas mascaradas em ações de input,
-Campos password detectados e marcados para tratamento especial, Dados de
-gravação de testes armazenados localmente, sem exposição externa, Client ID
-anonimamente gerado, sem dados pessoais, Não manipula dados sensíveis, Campos de
-senha marcados com isPassword para tratamento especial, Segredos carregados via
-arquivo secrets.{env}.js e não expostos no bundle, Arquivos .env locais,
-secrets._.js, Dados do usuário armazenados temporariamente em /tmp, Dados de
-gravação podem conter URLs e títulos, tratados com cuidado para não expor dados
-sensíveis, Dados de gravação de sessões, URLs e ações do usuário, tratados com
-cuidado na exportação/importação, URLs e ações de usuário são dados sensíveis e
-devem ser protegidos, URLs e ações de gravação devem ser armazenadas localmente
-e não expostas, URLs e tokens devem ser armazenados criptografados, Dados
-pessoais criptografados em repouso e em trânsito, IDs de gravação e tabId
-tratados com cuidado para evitar vazamento, IDs de gravação e URLs tratadas com
-cuidado para evitar exposição, Valores de input com password mascarados nos
-logs, IDs de gravação e erros devem ser tratados com confidencialidade, URLs
-originais das gravações devem ser protegidas contra exposição indevida,
-Gravações e logs armazenados localmente, sem exposição externa</sensitive_data>
-<security_headers>Content Security Policy configurada via manifest, Não
-aplicável, Content-Security-Policy para mensagens, CSP configurado para
+Mocks para APIs do navegador, Mocks para simular interações DOM e
+temporizadores, Mocks com Jest e fixtures para dados de teste, Mocks para
+Webpack e WebpackDevServer APIs, Mocks com Jest e fixtures para APIs externas,
+Mocks para Date.now() para controle de tempo em testes, Jest spies para
+interceptar chamadas de métodos, Uso mínimo de mocks, testes end-to-end reais
+com navegador, Mocks para hooks externos e APIs, Mock de RecordingService para
+simular respostas e erros, Mock do recordingStore para isolar testes de serviço,
+Mock de API chrome.storage.local, Uso de jest.fn() para debounce e timers, Mocks
+para backend e logs de execução, Mocks para APIs e serviços externos, Mocks para
+callbacks e props, Mock de APIs Web (Blob, URL) para testes isolados, Não
+aplicável - funções puras sem dependências externas, Mocks para APIs de dados e
+eventos de usuário, Fixtures para estados de gravação e erro, Mocks para APIs de
+arquivos e eventos DOM, Uso de jest.mock para dependências externas, Mocks para
+chrome.storage.local e recordingStore, Mock de mensagens chrome.runtime e
+executores, Mocks mínimos, foco em dados reais para contexto de renderização,
+Mock de chrome.runtime.onMessage e funções de replay, Mock de
+chrome.runtime.sendMessage para simular respostas, Mocks para dependências
+externas e timers, Mock de chrome.storage com jest-mock, Mocks para DOM e timers
+assíncronos, Mocks para DOM e eventos, Fixtures para ações e seletores, Mocks
+para dependências externas e ações, Mocks para elementos DOM e eventos, Fixtures
+para ações InputAction, Mocks para APIs de browser e timers, Mocks para
+window.location e timers, Mocks para APIs Chrome e delays assíncronos, Mocks
+para background script e timers, Mocks para window.scrollTo e timers com
+jest.useFakeTimers, Mocks para DOM e eventos WheelEvent, Fixtures para ações
+simuladas, Mocks para APIs e hooks, Fixtures para estados de replay, Mocks para
+ReplayOptions, ReplayProgress, ReplayResult, Fixtures para simular sessões e
+eventos, Mock de Actions e ExecutionLog para simular sessões, Mocks para
+handlers de eventos usando Jest mocks, Manual mocks for chrome API, jest.fn()
+for spying and stubbing, Mock de chrome.storage e recordingStore, Fixtures para
+logs de execução simulados, Mock de armazenamento local e API Chrome Storage,
+Mock de funções do recordingStore, Mocks para imagens e eventos de clique na
+lightbox, Mocks manuais para chrome.storage.local, Uso de jest.fn() para funções
+assíncronas e timers, Mock de chrome.tabs, chrome.storage e chrome.scripting,
+Fixtures para sessões e ações simuladas, Mocks manuais para APIs chrome.tabs e
+chrome.runtime, Reset de mocks antes de cada teste, Mock de APIs do Chrome
+usando jest-mock e fixtures, Mock de chrome.storage.local via page.evaluate,
+Simulação de erros para cenários negativos, Mocks para chrome.storage e timers,
+Mocks para hooks de configuração e dados de logs, Mocks para recordingStore e
+hooks de navegação, Mocks para props e callbacks, Simulação de eventos DOM para
+testes de clique e confirmação, Mocks para window.location e useEffect, Mocks
+para simular armazenamento e erros, Mock de módulos com jest.mock, Mocks para
+hooks e armazenamento, Mocks para callbacks e dados estáticos, Limpeza de mocks
+antes de cada teste, Mock window.location para controlar hash, Uso de act() para
+simular interações e atualizações de estado</mocking_approach>
+</testing_strategy> <development_workflow> <branch_strategy>GitHub Flow, GitHub
+Flow com branches feature, main e hotfix, Git Flow com branches feature, develop
+e main, GitHub Flow com branches feature, main protegida, Git Flow, GitHub Flow
+com branches feature, main protegido, GitFlow, GitHub Flow com branches feature
+e PRs, GitHub Flow com branches feature e pull requests, GitHub Flow com
+branches feature e main protegida, GitHub Flow com branches feature e
+main</branch_strategy> <commit_conventions>Conventional Commits, Conventional
+Commits para mensagens padronizadas, Conventional Commits para padronização e
+automação, Conventional Commits para padronização</commit_conventions>
+<pr_requirements>Code review mandatory, CI checks, code review obrigatório,
+checks automáticos, Revisão obrigatória, Checks de CI passando, Revisão
+obrigatória por pelo menos um revisor, Checks automáticos de lint, build e
+testes, Checks automáticos de lint e testes, Revisão obrigatória com pelo menos
+2 aprovadores, Code review obrigatório, Checks de lint e testes, Revisão
+obrigatória por pelo menos um membro do time, Revisão obrigatória e testes
+passando antes do merge, Revisão obrigatória por pelo menos um membro, Revisão
+obrigatória e testes automatizados, Revisão obrigatória por pelo menos um peer,
+Revisão obrigatória e testes automatizados aprovados, Revisão obrigatória e
+testes aprovados, Testes passando, Checks automáticos, Revisão obrigatória por
+pelo menos 2 desenvolvedores, Revisão obrigatória e checks de lint e testes,
+Build deve passar sem erros, Checks automáticos no CI, Testes automatizados
+passando, Revisão obrigatória e testes automatizados passando, Revisão
+obrigatória e testes aprovados antes do merge, Code review obrigatório e testes
+aprovados, Revisão obrigatória por pelo menos 2 membros, Revisão obrigatória,
+testes automatizados passando, Checks de lint e testes automatizados, Passing
+tests required, Revisão obrigatória com aprovação e testes passando, Revisão
+obrigatória, testes automatizados aprovados, Revisão obrigatória, testes
+automáticos e lint passing, Revisão obrigatória por pelo menos um desenvolvedor,
+Revisão obrigatória, testes aprovados, Checks de testes e lint</pr_requirements>
+<ci_cd_pipeline>Linting, Testing, Build, build, test, deploy, Testes unitários e
+E2E, Lint, Deploy para Chrome e Firefox, Execução automatizada de testes via
+Jest, Pipeline executa lint, testes unitários, build e testes e2e antes do
+merge, Build, lint, test e deploy automatizados via GitHub Actions, Build, Test,
+Lint, Deploy, Build, lint, test e deploy automatizados, Build, Test, Lint,
+Deploy stages, Pipeline CI executando lint, testes e build, Deploy manual para
+produção após aprovação, Pipeline com etapas de build, lint, test e deploy
+automatizado, Build, Test, Lint, Deploy automáticos, Testes, Deploy automático,
+Build automatizado via CI, Deploy condicionado a build sem erros, Build, Test,
+Lint, Deploy Staging, Build, Test, Lint, Deploy automatizados via GitHub
+Actions, Test, Deploy automático em staging, Execução de testes automatizados,
+Build da extensão, Deploy automatizado, Build, lint, test e deploy automatizados
+via GitHub Actions ou similar, Build e testes automatizados no GitHub Actions,
+Deploy manual para produção, Deploy automático para staging, Testes unitários,
+Build, lint, test stages automatizados, Build, lint, test, deploy automatizados
+via GitHub Actions, Build, Test, Lint, Deploy automatizados, Unit tests, Build
+verification, Pipeline com etapas de build, lint, test e deploy automático,
+Execução de testes automatizados e linting antes do merge, Execução de testes
+automatizados e linting em pipeline CI, Deploy automático para ambiente de
+staging após merge em develop, Execução automática de testes Playwright em
+pipeline CI, Build e deploy da extensão após aprovação, Build, lint, test,
+deploy automatizados, Execução automática de testes e lint em PRs, Deploy
+automático após merge em main, Deploy automático para ambiente staging após
+merge</ci_cd_pipeline> </development_workflow> <commands> <setup>npm install,
+yarn, yarn install, npm install ou yarn install, npm install &amp;&amp; npm run
+setup, npm install &amp;&amp; npm run setup-db, git clone &lt;repo-url&gt;
+&amp;&amp; cd &lt;project-folder&gt; &amp;&amp; npm install, npm install ou yarn
+install para configurar ambiente</setup> <install>npm install, yarn install, npm
+ci</install> <dev>npm start, npm run dev, yarn run start-chrome, yarn run
+start-ff, yarn start-chrome, yarn start-ff, yarn start, npm run watch, npm run
+start, node scripts/start.js, webpack --mode development --watch, yarn dev</dev>
+<test>npm test, yarn test, npx jest --verbose, npm run test, npx cypress open,
+jest --coverage, npx playwright test</test> <build>npm run build, yarn run
+build-chrome, yarn run build-ff, yarn build-chrome, yarn build-ff, yarn build,
+node scripts/build.js, webpack --mode production</build> <lint>npm run lint,
+eslint src/ --ext .ts,.tsx, eslint . --ext .js,.jsx,.ts,.tsx, yarn lint, eslint
+src --ext .js,.jsx,.ts,.tsx, npx eslint . --ext .ts,.tsx</lint> <format>npm run
+format, prettier --write src/, prettier --write ., yarn format, prettier --write
+&quot;src/\*\*/_.{js,jsx,ts,tsx,json,css,scss}&quot;, npx prettier --write
+.</format> </commands> <security_constraints> <authentication_method>OAuth2 para
+comunicação externa com DeploySentinel, Autenticação via tokens gerenciados
+externamente (não visível no código), OAuth2 via DeploySentinel Webapp, OAuth2
+(externo, presumido para acesso ao sistema), Nenhum método de autenticação
+implementado diretamente neste módulo, Nenhum método de autenticação
+implementado neste componente, Não aplicável diretamente (foco em captura local
+de eventos), OAuth2 via Chrome Extension permissions, Nenhum método de
+autenticação implementado no código analisado, Nenhum método de autenticação
+implementado, Não aplicável (biblioteca client-side), Não aplicável diretamente
+neste módulo, Nenhum método de autenticação implementado neste arquivo, Nenhum
+método de autenticação implementado no código de teste, Token-based
+Authentication (JWT) via API externa, Não aplicável diretamente no componente
+(depende do backend), Não aplicável diretamente no serviço de gravação, Não
+aplicável (armazenamento local no navegador), Não especificado no código,
+presumivelmente JWT para APIs, N/A (funcionalidade client-side sem
+autenticação), JWT com expiração curta, Não aplicável (script local de
+migração), OAuth2 via background script (não diretamente no content script),
+Token-based Authentication (JWT) para backend de replay, Chrome Identity API
+(implícito), Não aplicável (configuração local), Não aplicável diretamente no
+executor, Não aplicável (execução local de ações), OAuth2 para APIs externas
+(não aplicável diretamente ao executor), OAuth2 para acesso ao sistema
+principal, Não especificado no módulo, presumivelmente JWT ou OAuth2 no sistema
+maior, Não especificado no código fornecido, Não aplicável - módulo interno sem
+autenticação, N/A - test environment, OAuth2 via Chrome Identity API (externo ao
+componente), OAuth2 via Chrome Identity API (implícito no contexto de extensão),
+Não aplicável para CSS, Não aplicável diretamente (contexto de extensão local),
+OAuth2 via token para APIs externas (não detalhado no código), Permissões
+declaradas no manifesto da extensão Chrome, OAuth2 (para permissões de extensão
+Chrome), Autenticação via permissões do Chrome Extension Manifest, Não aplicável
+diretamente no componente, Não aplicável diretamente neste componente, Não
+gerenciado diretamente pelo componente, Não aplicável diretamente no hook, Não
+aplicável no código fornecido</authentication_method>
+<authorization_rules>Permissões explícitas no manifest para acesso a abas,
+scripting e armazenamento, Gravação restrita à aba e frame autorizados,
+Validação de permissões antes de executar comandos, Validação de origem das
+mensagens, Permissões restritas na extensão, Controle de acesso baseado em roles
+para gravação e visualização, Controle de acesso baseado em permissões do
+navegador para execução de scripts, Controle de acesso não aplicável
+diretamente, Acesso restrito ao armazenamento local do navegador, Eventos
+filtrados para evitar captura de dados sensíveis de overlays, Permissões
+restritas para comunicação entre extensão e UI, Controle de acesso baseado em
+contexto da aba ativa e permissões do navegador, Não aplicável, Não aplicável
+diretamente neste módulo, Nenhuma regra de autorização aplicada, Controle de
+acesso via contexto do navegador isolado, Controle de acesso baseado em roles
+para iniciar replay e baixar código, Confirmação explícita para exclusão de
+gravações, Controle de acesso via backend, Controle de acesso deve ser aplicado
+externamente ao serviço, Não aplicável no contexto do armazenamento local,
+Controle de acesso para operações de gravação e remoção, N/A, Controle baseado
+em roles e permissões granulares, Controle de acesso via permissões do Chrome
+Extension, Validação de tipos de ação para evitar execução de comandos não
+suportados, Controle de acesso baseado em sessão para manipulação de replays,
+Controle de acesso via permissões da extensão, Controle de acesso via permissões
+da extensão Chrome, Controle de acesso externo ao executor, Controle de acesso
+externo via sistema que chama o executor, Permissões Chrome declaradas no
+manifest para acesso a janelas, Somente usuários autenticados podem disparar
+screenshots, Controle de acesso para comandos de replay baseado em sessão,
+Controle de acesso baseado em status da sessão e permissões externas, Não
+aplicável - controle interno de eventos, N/A - test environment, Acesso restrito
+a usuários autenticados para visualização dos logs, Acesso restrito a dados de
+gravação conforme permissões da extensão, Não aplicável para CSS, Controle de
+acesso via permissões do browser extension, Controle de acesso via permissões do
+Chrome Extension manifest, Validação de existência de sessões e tabs antes de
+executar ações, Acesso restrito a abas ativas e focadas, Permissões explícitas
+para tabs e captura de tela definidas no manifest, Permissões restritas para
+acesso a URLs e armazenamento local, Não aplicável diretamente no componente,
+Controle de acesso externo ao componente, não tratado internamente, Permissão
+para deletar execuções controlada externamente, Não aplicável diretamente no
+hook, Não aplicável no código fornecido, Controle de acesso externo ao
+componente</authorization_rules> <sensitive_data>Dados de navegação do usuário
+tratados localmente, sem envio externo não autorizado, URLs e dados de navegação
+armazenados localmente sem exposição externa, URLs de teste, Códigos de
+gravação, URLs e timestamps são tratados como dados sensíveis e armazenados
+localmente, URLs capturadas durante gravação são armazenadas localmente sem
+criptografia, Password inputs are masked with asterisks, Senhas mascaradas na
+exibição de ações de input, Dados sensíveis não armazenados persistentemente,
+Campos password detectados e marcados para tratamento especial, Nenhum dado
+sensível manipulado diretamente, URLs e dados de gravação armazenados localmente
+sem criptografia explícita, Client ID anonimamente gerado, sem dados pessoais,
+Não manipula dados sensíveis, Campos isPassword indicam tratamento especial para
+dados sensíveis, Segredos carregados via arquivo secrets.{env}.js e não expostos
+no bundle final, Arquivos .env locais, secrets._.js, Dados do usuário
+armazenados temporariamente em /tmp, Tokens de autenticação e dados de sessão
+não expostos no frontend, Dados de gravação de sessões, URLs e ações do usuário,
+tratados com cuidado na exportação/importação, URLs e ações de usuário são dados
+sensíveis e devem ser protegidos, URLs e ações de gravação - armazenados
+localmente sem criptografia, URLs e logs de execução devem ser tratados com
+confidencialidade, Dados pessoais criptografados em repouso e em trânsito, URLs
+originais das gravações devem ser protegidas contra exposição indevida, Nenhum
+dado sensível manipulado diretamente neste script, Sanitização de URLs para
+evitar XSS, Session IDs e tokens devem ser tratados com confidencialidade,
+Session IDs e recording IDs tratados com cuidado, Nenhum dado sensível
+armazenado, Logs não armazenam dados sensíveis, Campos de senha tratados com
+isPassword para ocultação em logs, Timestamps e logs devem ser protegidos contra
+acesso não autorizado, IDs de sessão e gravação tratados como dados sensíveis,
+Screenshots codificados em base64 devem ser protegidos, Não manipula dados
+sensíveis diretamente, No sensitive data handled in mocks, Screenshots podem
+conter dados sensíveis, devem ser armazenadas localmente e não expostas
+externamente, Dados de input do usuário, especialmente senhas, não são exibidos
+ou são mascarados, Não aplicável para CSS, URLs e dados de gravação tratados
+localmente, sem exposição externa, Dados de gravação e logs armazenados
+localmente sem exposição externa, Imagens capturadas em base64 devem ser
+tratadas com cuidado para evitar vazamento, Imagens capturadas tratadas em
+memória, não armazenadas localmente, Dados de gravação contendo URLs e inputs do
+usuário, tratados localmente, Screenshots base64 devem ser tratadas com cuidado
+para evitar exposição, Dados de execuções podem conter informações sensíveis,
+tratados via armazenamento seguro, URLs exibidas podem conter dados sensíveis,
+exibidos com título para tooltip, Nenhum dado sensível manipulado, Dados de
+execução podem conter informações sensíveis, devem ser
+protegidos</sensitive_data> <security_headers>Content Security Policy
+configurada via manifest, Gerenciados pelo browser, não configurados diretamente
+no código, Content-Security-Policy para mensagens, CSP configurado para
 extensões Chrome, Gerenciados pelo navegador, não aplicados diretamente no
-código, Não aplicável no contexto do código cliente, Cabeçalhos padrão do Chrome
-Extension, Gerenciados pelo navegador e manifest da extensão,
-Access-Control-Allow-Origin: _, Não aplicável diretamente no código de teste,
-Cabeçalhos padrão de segurança aplicados no servidor (CSP, XSS Protection),
+código, Gerenciados pelo ambiente host (browser extension), Não aplicável no
+contexto do código cliente, Cabeçalhos padrão do Chrome Extension, Não aplicável
+diretamente no código da extensão, Não aplicável, Não aplicável diretamente
+neste módulo, Access-Control-Allow-Origin: _, Não aplicável diretamente no
+código de teste, CSP, X-Frame-Options, XSS-Protection configurados no backend,
 Gerenciados pelo servidor, não aplicável no frontend, Não aplicável diretamente
-no código analisado, Não aplicável (extensão local), CORS configurado para
-domínios autorizados, Headers CSP para proteção contra XSS, N/A (funcionalidade
-client-side), Content-Security-Policy, X-Frame-Options,
-Strict-Transport-Security, Cabeçalhos CSP configurados no manifesto da extensão,
-CORS, CSP e headers padrão para segurança web, Não aplicável para script local,
-Cabeçalhos CSP configurados no manifest para scripts
-injetados</security_headers> <encryption_requirements>Criptografia padrão do
-navegador para armazenamento local, Não aplicável, TLS para comunicação web,
-Dados armazenados localmente não são criptografados, mas comunicação via
-messaging é segura, Nenhuma criptografia aplicada no armazenamento local,
+no código analisado, Não especificado, N/A (funcionalidade client-side),
+Content-Security-Policy, X-Frame-Options, Strict-Transport-Security, Não
+aplicável para script local, Cabeçalhos gerenciados pelo navegador e extensão,
+CORS, CSP e headers padrão para proteção contra ataques comuns, Gerenciados pelo
+ambiente de execução do browser, Headers padrão do Chrome Extension manifest,
+X-Content-Type-Options, Não aplicável diretamente neste código, N/A, Content
+Security Policy aplicado no contexto da extensão, Cabeçalhos padrão de segurança
+aplicados via extensão e servidor, Não aplicável para CSS, Não aplicável
+(armazenamento local), Dependente do ambiente da página carregada, não
+controlado diretamente, Content Security Policy configurada no manifest,
+Cabeçalhos padrão do Chrome Extension para CSP, Não aplicável diretamente no
+componente, Gerenciados pela aplicação host, não pelo componente, Não aplicável
+no componente frontend isolado, Não aplicável diretamente no hook, Não aplicável
+no código fornecido, Gerenciados pela aplicação principal</security_headers>
+<encryption_requirements>Criptografia padrão do navegador para armazenamento
+local, Dados armazenados no chrome.storage.local sem criptografia explícita, TLS
+para comunicação web, Dados armazenados localmente não são criptografados, mas
+comunicação via messaging é segura, Nenhuma criptografia aplicada no
+armazenamento local, Nenhuma criptografia implementada neste módulo,
 Persistência local sem criptografia explícita, depende do ambiente do navegador,
 Comunicação segura via mensagens internas do Chrome, Nenhuma criptografia
-explícita no código, Nenhuma criptografia aplicada, Comunicação via HTTPS
-obrigatória, Dados sensíveis devem ser transmitidos via HTTPS, Dados em trânsito
-e em repouso devem ser criptografados conforme política da empresa, Criptografia
-AES-256 para dados sensíveis em repouso, N/A, TLS 1.3 para comunicação, AES-256
-para dados armazenados, Dados armazenados localmente não criptografados, mas
-isolados pelo contexto da extensão, Criptografia TLS para comunicação entre
-componentes, Dados armazenados no chrome.storage.local não são criptografados
-por padrão, Dados armazenados no chrome.storage não criptografados, dependem da
-segurança do navegador</encryption_requirements> </security_constraints>
-<performance_requirements> <response_time_limits>Gravação e geração de scripts
-em tempo real com latência mínima, Não especificado, mas operações assíncronas
-otimizadas para não bloquear UI, Mensagens processadas em &lt; 100ms,
-Renderização instantânea do componente, Renderização instantânea do logo,
-Persistência da gravação deve ocorrer em menos de 500ms para boa UX, Operações
-de armazenamento e execução de scripts devem ser rápidas para não impactar UX,
-Atualização da UI em tempo real com throttling para mousemove (100ms), Eventos
-processados em tempo real com debounce para resize (300ms), Interação do botão
-deve ser instantânea (&lt;100ms), Interação UI responsiva, sem bloqueios
-perceptíveis, Renderização inicial rápida (&lt; 200ms), Resposta em
-milissegundos para seletores simples, Limite configurável para tentativas, Baixa
-latência para hot reload e rebuild incremental, Timeouts configurados para
+implementada para dados locais, Não aplicável, Não aplicável diretamente neste
+módulo, Nenhuma criptografia aplicada, Comunicação via HTTPS obrigatória, Dados
+sensíveis devem ser transmitidos via HTTPS, Dados em trânsito e em repouso devem
+ser criptografados conforme política da empresa, Criptografia em trânsito e em
+repouso recomendada para dados sensíveis, N/A, TLS 1.3 para comunicação, AES-256
+para dados armazenados, Dados armazenados no chrome.storage.local não são
+criptografados por padrão, Comunicação segura via HTTPS e políticas da extensão,
+Comunicação via HTTPS e criptografia de dados sensíveis em trânsito, Comunicação
+interna via mensagens Chrome segura por design, Dados em trânsito via HTTPS,
+Logs armazenados com criptografia AES-256, Dados de gravação e comunicação devem
+ser criptografados em trânsito e repouso, Proteção dos dados sensíveis em
+trânsito e armazenamento, Dados armazenados localmente não criptografados, mas
+acesso restrito via permissões do Chrome, Armazenamento local criptografado via
+Chrome Storage API (implícito), Não aplicável para CSS, Persistência local sem
+criptografia explícita (depende do ambiente Chrome), Nenhuma criptografia
+aplicada diretamente no serviço, Nenhuma criptografia explícita no código de
+teste, armazenamento local padrão, Não aplicável diretamente no componente,
+Persistência segura dos dados no recordingStore, presumivelmente criptografada,
+Não aplicável diretamente, Não especificado, recomendada criptografia em
+armazenamento, Não aplicável diretamente no hook</encryption_requirements>
+</security_constraints> <performance_requirements>
+<response_time_limits>Gravação e geração de scripts em tempo real com latência
+mínima, Respostas assíncronas rápidas para mensagens e eventos do browser,
+Mensagens processadas em &lt; 100ms, Renderização instantânea do componente,
+Renderização instantânea do logo, Persistência da gravação deve ocorrer em menos
+de 500ms para boa UX, Operações de armazenamento e execução de scripts devem ser
+rápidas para não impactar UX, Renderização instantânea para blocos de código
+pequenos a médios, Atualização da UI com throttle de 100ms para eventos de
+mouse, Eventos processados em tempo real com debounce para resize (300ms),
+Interação do botão deve ser instantânea (&lt;100ms), Interação UI responsiva com
+atualizações de estado em tempo real, Renderização inicial rápida (&lt; 200ms),
+Resposta em milissegundos para seletores simples, Limite configurável para
+tentativas, Ações devem ser processadas em tempo real para simulação precisa,
+Baixa latência para hot reload e rebuild incremental, Timeouts configurados para
 espera de service workers (15s no Jest, 5s na espera explícita), Renderização da
-interface em menos de 200ms para gravações com até 100 ações, Carregamento e
-filtragem devem ser responsivos, idealmente &lt; 200ms para datasets moderados,
-Operações de listagem e busca devem responder em milissegundos para boa
-experiência, Operações de leitura e escrita devem ser rápidas para não impactar
-UX, Listagem de gravações em menos de 200ms, Salvamento de gravação em menos de
-300ms, Download deve ser disparado imediatamente após chamada, Funções síncronas
-com tempo de execução constante e baixo, Renderização rápida para manter fluidez
-na navegação e troca de abas, API responses &lt; 300ms em média, Operações de
-start/stop devem ocorrer em menos de 1 segundo, Resposta imediata para criação
-de abas e injeção de scripts, Atualizações de status em tempo real para UI,
-Delay máximo de 3 segundos entre ações para simular comportamento humano,
-Atualizações de status em tempo real com latência mínima, Migração deve ser
-rápida para não impactar UX, idealmente &lt; 1s, Timeouts configuráveis para
-carregamento de abas (default 15s) e injeção de scripts
-(5s)</response_time_limits> <optimization_priorities>Developer experience, Fast
-refresh, build speed, bundle size, Baixa latência na captura de eventos, Uso
-eficiente de memória durante gravação, Performance na captura e geração de
-scripts, Minimização do bundle final, Prioridade para velocidade de captura e
-geração de scripts, Baixa latência na gravação e replay, uso eficiente do
-armazenamento local, Baixa latência na comunicação, Baixa complexidade, foco em
-renderização rápida, Minimizar bundle size, Carregamento rápido, Prioridade em
-velocidade de resposta e baixa latência na comunicação entre abas, Consistência
-e sincronização em tempo real priorizadas, Baixa latência na manipulação de
-estado e execução assíncrona eficiente, Rendering performance to handle large
-action lists, Renderização rápida, Baixa latência na geração de código,
-Responsividade da interface, Minimizar impacto no DOM, Baixa complexidade
+UI em menos de 200ms para gravações até 1000 ações, Carregamento e filtragem
+devem ser responsivos, idealmente &lt; 200ms para datasets moderados, Operações
+de listagem e busca devem responder em milissegundos para boa experiência,
+Operações de leitura e escrita devem ser rápidas para não impactar UX, Operações
+CRUD devem responder em menos de 200ms em média, Download deve ser disparado
+imediatamente após chamada, Funções síncronas com tempo de execução constante e
+baixo, Renderização rápida para manter fluidez na navegação e troca de abas, API
+responses &lt; 300ms em média, Migração deve ser rápida para não impactar UX,
+idealmente &lt; 1s, Resposta imediata para mensagens PING, Execução eficiente
+das ações para não bloquear UI, Atualização do estado do replay em menos de
+200ms após evento, Respostas assíncronas rápidas para UX fluido, Timeouts
+configurados em 30 segundos para carregamento e ações, Operações assíncronas
+rápidas (&lt;100ms em média), Timeout padrão de 5000ms para espera de elementos,
+Retries com delay de 1s, timeout implícito via waitForElement, Retries com delay
+de 1s entre tentativas para tolerância a falhas temporárias, Aguardar 1000ms
+para início do carregamento, Navegação deve iniciar em até 1 segundo após
+comando, Redimensionamento e captura devem ocorrer em até 1 segundo, Execução do
+executor deve ocorrer em menos de 500ms, Scroll deve completar em até 500ms,
+Delay de 300ms após evento wheel para garantir efeito visual, Operações de
+controle de replay devem responder em menos de 100ms, Baixa latência para
+comandos de controle replay (start, pause, stop, resume), Execução de ações em
+tempo real com baixa latência, Emissão de eventos deve ser síncrona e rápida,
+idealmente &lt; 1ms por handler, Mocks respond synchronously or near-instant,
+Renderização da lista virtualizada deve manter 60fps durante scroll,
+Renderização da lista de logs deve ser responsiva mesmo com 100+ itens, Estilos
+aplicados via CSS puro para máxima performance e baixa latência, Atualizações
+debounced para evitar múltiplas escritas em menos de 250ms, Timeouts
+configuráveis para carregamento de abas (default 30s), Timeout para execução de
+ações (default 30s), Captura de screenshot deve respeitar throttling mínimo de
+100ms entre chamadas, Captura de screenshot deve respeitar delay mínimo de 100ms
+entre chamadas, Replay deve completar em até 30 segundos por gravação,
+Configurações devem ser acessadas com latência mínima para UI responsiva,
+Renderização de logs deve ser instantânea para até milhares de itens,
+Carregamento rápido da lista e detalhes, idealmente &lt; 1s para UX fluida,
+Renderização deve ser rápida para até centenas de execuções, Atualização do
+estado e URL hash deve ser instantânea para UX fluida, Carregamento da lista de
+execuções em menos de 2 segundos, Renderização rápida para listas pequenas a
+médias, Feedback imediato em cliques, Atualizações de estado e URL hash devem
+ser instantâneas para UX fluida</response_time_limits>
+<optimization_priorities>Developer experience, Fast refresh, build speed, bundle
+size, Baixa latência na captura de eventos, Uso eficiente de memória durante
+gravação, Build otimizado para tamanho e compatibilidade, Performance focada em
+responsividade da UI, Prioridade para velocidade de captura e geração de
+scripts, Baixa latência na gravação e replay, uso eficiente de armazenamento
+local, Baixa latência na comunicação, Baixa complexidade, foco em renderização
+rápida, Minimizar bundle size, Carregamento rápido, Prioridade em velocidade de
+resposta e baixa latência na comunicação entre abas, Consistência e
+sincronização em tempo real priorizadas, Baixa latência na manipulação de estado
+e execução assíncrona eficiente, Rendering performance to handle large action
+lists, Velocidade de renderização e responsividade UI, Responsividade da
+interface e baixo impacto no uso de CPU, Renderização rápida, Baixa complexidade
 computacional, Minimizar impacto no DOM principal, Isolamento via shadow DOM
 para performance UI, Minimizar overhead no thread principal do navegador, Evitar
 gravação excessiva e duplicada de eventos, Baixa latência e mínimo impacto na
-UI, Velocidade e fluidez na UI, baixo overhead na gravação, Baixa latência na
-coleta de eventos, mínimo impacto no UX, Velocidade de renderização e
-carregamento CSS, Balancear velocidade e seletor curto/legível, Equilíbrio entre
-legibilidade do código e performance na geração, Precisão e estabilidade dos
-seletores, Minimizar overhead na geração, Build time efficiency, Minimal runtime
-overhead, Baixa latência na captura e reprodução de ações, Build rápido e
-eficiente, Compatibilidade com browsers legados, Build otimizado para produção
-com minificação e tree shaking, Velocidade de feedback em desenvolvimento,
-Minimização do bundle em produção, Desabilitar mangling para facilitar
-debugging, Minimizar latência na validação e migração de timestamps,
-Estabilidade e confiabilidade dos testes priorizadas sobre velocidade, Fast
-rendering, Minimal repaint on hover, Prioridade em velocidade de renderização e
-responsividade da UI, Prioridade em responsividade e experiência do usuário,
-Font loading performance, Rendering smoothness, Prioridade em velocidade de
-acesso e integridade dos dados, Minimizar número de escritas no storage via
-debounce, Balancear uso de memória e persistência, Priorizar velocidade de
-acesso e baixa latência, UI responsiveness, Low memory footprint, Renderização
-rápida e leve, Baixo consumo de memória, Smooth scrolling, Renderização rápida e
-leve para UI, Performance visual e responsividade, Transições suaves para melhor
-UX, Responsividade visual, Transições suaves, Responsividade, Suavidade nas
-animações, Baixo impacto visual, Baixa latência na criação e disparo do
-download, Velocidade e simplicidade, Prioridade em velocidade e responsividade
-sobre uso de memória, Responsividade e fluidez visual, Minimizar repaints e
-reflows, Visual consistency, Responsividade em resolução 800x600, Prioridade em
-velocidade de resposta sobre uso de memória, Baixa latência na comunicação com
-background, uso eficiente de memória, Minimizar impacto na carga inicial,
-Separação de responsabilidades para otimização, Baixa latência na comunicação
-entre background e content scripts, Minimizar uso de memória mantendo estados
-apenas para abas ativas, Equilíbrio entre robustez e responsividade na execução
-das ações, Baixa latência e uso eficiente de memória, Prioridade para
-confiabilidade e integridade dos dados sobre velocidade, Baixa latência na
-comunicação entre background e scripts, Uso eficiente de buffers para
-logs</optimization_priorities> <caching_strategy>cache intermediário de build,
-Cache local para scripts gerados e configurações, Uso de chrome.storage.local
-para persistência local, Não aplicável, Cache do navegador para assets
-estáticos, Uso de localStorage para cache temporário das gravações, Uso de
-localStorage e chrome.storage para persistência local, Uso do
-chrome.storage.local como cache persistente local, Uso de chrome.storage.local
-para persistência e sincronização, Nenhuma estratégia de cache implementada, Uso
-de armazenamento local para persistência de gravações, Cache de CSS via webpack
-e browser, Nenhum cache persistente implementado, Uso de cache via Webpack para
-builds incrementais, Webpack caching padrão para builds incrementais, Uso de
-userDataDir para persistência temporária do contexto do navegador, Replay com
-opções para manter ou limpar cache para otimizar performance, Cache local via
-estado React, recarregamento sob demanda, Nenhuma estratégia explícita de cache
-implementada, Cache local em memória para pendências de salvamento, Cache em
-memória para listagem recente com TTL de 5 minutos, URLs temporárias revogadas
+UI, Prioridade para fluidez da interface e baixa latência na gravação, Baixa
+latência na coleta de eventos, mínimo impacto no UX, Velocidade de renderização
+e carregamento CSS, Balancear velocidade e seletor curto/legível, Equilíbrio
+entre legibilidade do código e performance na geração, Precisão e estabilidade
+dos seletores, Minimizar overhead na geração, Build time efficiency, Minimal
+runtime overhead, Prioridade para baixa latência e baixo overhead de memória,
+Equilíbrio entre velocidade de build e qualidade do código, Build otimizado para
+produção com minificação e tree shaking, Velocidade de feedback em
+desenvolvimento, Minimização do bundle em produção, Source maps em
+desenvolvimento para debugging, Minimizar latência na validação e migração de
+timestamps, Estabilidade e confiabilidade dos testes priorizadas sobre
+velocidade, Fast rendering, Minimal repaint on hover, Prioridade em velocidade
+de renderização e responsividade da UI, Prioridade em responsividade e
+experiência do usuário, Font loading performance, Rendering smoothness,
+Prioridade em velocidade de acesso e integridade dos dados, Minimizar escritas
+no storage via debounce, Prune automático para evitar estouro de quota,
+Prioridade em velocidade para listagem e recuperação de gravações, UI
+responsiveness, Low memory footprint, Renderização rápida e leve, Baixo consumo
+de memória, Smooth scrolling, Renderização rápida e leve para UI, Performance
+visual e responsividade, Transições suaves para melhor UX, Responsividade
+visual, Transições suaves, Responsividade, Suavidade nas animações, Baixo
+impacto visual, Baixa latência na criação e disparo do download, Velocidade e
+simplicidade, Prioridade em velocidade e responsividade sobre uso de memória,
+Responsividade e fluidez visual, Minimizar repaints e reflows, Visual
+consistency, Responsividade em resolução 800x600, Prioridade em velocidade de
+resposta sobre uso de memória, Prioridade para confiabilidade e integridade dos
+dados sobre velocidade, Baixa latência na execução das ações, Minimizar uso de
+memória no content script, Validação rápida e geração eficiente de templates,
+Baixa latência e responsividade em UI, uso moderado de memória, Baixa latência
+na comunicação entre popup e background, Equilíbrio entre velocidade de replay e
+uso de memória via chunkSize e cache, Consistência e confiabilidade sobre
+velocidade extrema, Equilíbrio entre robustez e responsividade, Robustez e
+confiabilidade sobre velocidade pura, Baixa latência na recuperação do executor,
+Minimizar instâncias para economia de memória, Equilíbrio entre confiabilidade e
+simulação realista de digitação, Minimizar recarregamentos desnecessários,
+Velocidade de navegação e baixa latência, Priorizar confiabilidade e
+estabilidade sobre micro-otimizações, Baixa latência e mínimo impacto no thread
+principal, Suavidade visual priorizada sobre velocidade bruta, Equilíbrio entre
+precisão da simulação e performance de execução, Baixa latência e uso moderado
+de memória, Velocidade e confiabilidade na entrega de eventos e mensagens,
+Equilíbrio entre velocidade de replay e uso de memória para logs, Baixa latência
+na emissão de eventos, Baixo overhead de memória para listeners, Test speed
+prioritized over memory, Prioridade em velocidade e responsividade da UI, Uso
+eficiente de memória via virtualização, Prioridade em responsividade e suavidade
+das transições visuais, Equilíbrio entre uso de memória e velocidade de
+gravação, Throttle para persistência de estado a cada 500ms, Redução da
+qualidade da imagem para evitar arquivos muito grandes, Balancear qualidade da
+imagem e tamanho do arquivo para performance e memória, Prioridade em
+confiabilidade e atualização em tempo real sobre velocidade extrema, Velocidade
+de acesso e baixo consumo de memória, Prioridade em velocidade e uso eficiente
+de memória via virtual scrolling, Velocidade de renderização e responsividade da
+UI, Uso de useMemo para evitar reordenação desnecessária, Minimização de
+repaints e reflows via flexbox, Baixa latência na sincronização de estado e URL,
+Minimizar re-renderizações desnecessárias, Baixa latência na navegação entre
+execuções</optimization_priorities> <caching_strategy>cache intermediário de
+build, Cache local para scripts gerados e configurações, Uso de armazenamento
+local para persistência temporária de gravações, Não aplicável, Cache do
+navegador para assets estáticos, Uso de localStorage para cache temporário das
+gravações, Uso de localStorage e chrome.storage para persistência local, Uso do
+chrome.storage.local como cache persistente local, Nenhuma estratégia explícita
+de cache, Uso de chrome.storage.local para persistência e sincronização, Nenhuma
+estratégia de cache implementada, Uso de armazenamento local para persistência
+de gravações, Cache de CSS via webpack e browser, Nenhum cache persistente
+implementado, Não aplicável diretamente neste módulo, Uso de cache via Webpack
+para builds incrementais, Webpack caching padrão para builds incrementais, Uso
+de userDataDir para persistência temporária do contexto do navegador, Cache
+local para dados de gravação com opção de limpar via UI, Cache local via estado
+React, recarregamento sob demanda, Nenhuma estratégia explícita de cache
+implementada, Cache em memória temporário para pendências de salvamento, Cache
+local para gravações recentes para acelerar acesso, URLs temporárias revogadas
 após uso para liberar memória, Cache em memória com TTL de 5 minutos para dados
-estáticos, Cache local via recordingStore para gravações, Limpeza explícita de
-cache localStorage, sessionStorage e cookies no modo CLEAN_CACHE, Modo
-KEEP_CACHE para reutilização de cache do navegador, Uso do chrome.storage.local
-como cache persistente, Logs armazenados em buffer e enviados em batch a cada
-200ms para reduzir overhead</caching_strategy>
-<scalability_considerations>paralelização de tarefas, Suporte a gravações longas
-sem degradação perceptível, Escalabilidade limitada ao ambiente do navegador,
-Escalabilidade limitada ao contexto de browser extension, Componente leve e
-reutilizável para múltiplas instâncias, Arquitetura modular permite
-escalabilidade horizontal via serviços independentes, Escalabilidade limitada ao
-contexto de extensão de navegador, foco em eficiência local, Component designed
-to handle dynamic and potentially large arrays of actions, Gerenciamento
-eficiente de lista de ações para gravações longas, Evitar múltiplas instâncias
-para reduzir uso de memória, Suporte a múltiplos eventos simultâneos e navegação
-SPA, Escalabilidade limitada ao contexto da extensão e UI do Cypress,
-Escalabilidade limitada ao contexto de extensão de navegador, Suporte a
-múltiplos temas e componentes dinâmicos, Pode degradar em documentos muito
-grandes devido à combinatória, Suporte a grandes volumes de ações sequenciais,
-Escalabilidade limitada ao ambiente local de desenvolvimento, Operações em
-arrays grandes devem ser eficientes e imutáveis, Testes isolados para permitir
-execução paralela, Componentização para suportar gravações maiores e múltiplas
-instâncias, Componentização facilita escalabilidade, mas grandes volumes podem
-exigir paginação ou virtualização, Escalabilidade depende do backend de
-armazenamento (recordingStore), Limitação configurável do número máximo de
-gravações para evitar crescimento descontrolado, Backend escalável
-horizontalmente para suportar múltiplas gravações simultâneas, Suporte a tabelas
-com overflow e scroll vertical, Layouts adaptativos para múltiplos dispositivos,
-Scrolls otimizados para listas grandes, Escalabilidade não aplicável, operação
-local no browser, Funções puras facilmente escaláveis e reutilizáveis, Suporte a
-múltiplas gravações e estados sem perda de performance, Suporte a tabelas com
-grande volume via scroll e overflow, Arquitetura preparada para escalabilidade
-horizontal via containers, Suporte a múltiplos replays sequenciais, mas não
-simultâneos na mesma aba, Modularidade facilita escalabilidade e manutenção,
-Gerenciamento eficiente de múltiplos replays simultâneos via Map de estados,
-Execução sequencial, não paralela, para garantir ordem e consistência, Suporte a
-múltiplas abas e sessões simultâneas, Escalabilidade limitada ao contexto do
-armazenamento local do navegador, Gerenciamento de múltiplos replays simultâneos
-via Map de activeReplays</scalability_considerations>
-</performance_requirements> <error_handling> <error_format>logs padronizados,
-Formato JSON padronizado para erros internos, Uso de console.error para log de
-erros, respostas via sendResponse com objeto success e error, Não especificado
-no código atual, Logs de erro via console.error com mensagens claras e stack
-traces, Erros retornados via Promise reject com objetos Error padrão, Não
-explícito no código, Não há formato explícito, erros são tratados
-silenciosamente para não interromper captura, Erros lançados via throw new Error
-com mensagens claras, Erros lançados como Exceptions, sem tratamento global
-visível, Tratamento silencioso, sem propagação de erros, Erros lançados via
-throw com mensagens claras, Try-catch silencioso para evitar falhas na geração
-de seletores, Logs detalhados no console com stack trace e detalhes, Nenhum
-formato de erro customizado implementado, Erros lançados via exceptions padrão
-do JavaScript, Mensagens de erro exibidas na UI com ícones e texto claro, Logs
-de erro no console para debugging, Mensagens de erro exibidas via notificações
-visuais com tipo success/error, Erros lançados com mensagens claras e capturados
-para logs, Erros lançados com mensagens claras e capturados para logging, JSON
-padrão com campos code, message e details, Erro lançado com mensagem clara em
-caso de falha no download, Retorna string vazia ou texto original, sem lançar
-exceções, Estados visuais claros para erros com cores e ícones específicos, JSON
-padrão com código, mensagem e detalhes opcionais, Strings simples com mensagens
-claras, armazenadas no estado error, Objetos com propriedades success:boolean e
-error:string, Objeto com success:boolean, error:string opcional e
-duration:number, Strings descritivas em campos opcionais &apos;error&apos; nas
-mensagens, Logs de erro no console com mensagens claras e stack trace, Erros
-capturados e logados com mensagens detalhadas e status FAIL</error_format>
-<logging_strategy>console logs, arquivos de log, Logs locais para debug durante
-desenvolvimento, Relatórios de erros via CI, Logs locais via console e
-armazenamento para debugging, Logs informativos e de erro via console.log e
-console.error, Não implementado explicitamente, Logging local no console, sem
-sistema centralizado de logs, Não implementado explicitamente neste módulo, Sem
-logging explícito no código fornecido, Logs mínimos, foco em erros críticos, Sem
-logging explícito no código analisado, Não implementa logging interno,
-Console.error para erros, console.warn para avisos, Logs padrão do Webpack e
-WebpackDevServer, Webpack ProgressPlugin para feedback de build, Uso de
-console.warn para alertas de timestamps inválidos, Uso implícito de mensagens de
-erro via Jest, Console logs para eventos importantes e erros, Níveis de log
-diferenciados para sucesso, erro e informação, Logs no console para operações
-críticas (carregamento, exclusão, importação/exportação), Logs detalhados para
-operações de importação e exportação, incluindo sucessos e falhas, Console.warn
-para avisos, console.error para erros críticos, Logs estruturados com níveis
-info, warn, error, Logs no console para sucesso e erro, Console.error para erros
-críticos no hook, Logs básicos via console para erros de injeção e falhas de
-criação de abas, Logs estruturados no console com status e timestamps, Envio de
-mensagens de status para background, Logs de status e erros para auditoria e
-debugging, Logs informativos para início, sucesso e falha das migrações, Logs
-categorizados em OK, FAIL, INFO, WARN com exibição condicional no
-console</logging_strategy> <monitoring_tools>GitHub Actions para monitoramento
-de build e testes, Ferramentas de monitoramento do navegador e relatórios de
-erros, Não especificado, Possível integração com ferramentas externas, Não
-especificado no código, presumido uso de ferramentas externas, Dependência de
-ferramentas externas para monitoramento do ambiente, Monitoramento via
-ferramentas da extensão Chrome, Não aplicável, Nenhuma ferramenta de
-monitoramento integrada, Integração com ferramentas externas não explícita no
-código (ex: Sentry), Não especificado no código, presumivelmente integrável com
-Sentry ou similar, Não especificado, presumivelmente integrado a sistema
-externo, Não especificado, presumivelmente integração com ferramentas externas,
-Integração com Sentry para captura de erros, N/A, Sentry para erros, Prometheus
-para métricas, Monitoramento via mensagens de status para UI e possível
-integração externa, Monitoramento via mensagens e logs no background script,
-Integração com sistemas externos de monitoramento presumida, Não aplicável,
-monitoramento via logs locais, Envio de logs e status via
-chrome.runtime.sendMessage para popup/devtools</monitoring_tools>
-<error_recovery>retry automático em falhas de build, Recuperação de falhas na
-gravação com possibilidade de reinício, Retry automático para falhas de
-comunicação e fallback para gravação local, Tratamento de erros em promessas com
-catch e envio de resposta adequada, Nenhuma estratégia explícita, Falhas no
-salvamento não interrompem o fluxo, apenas logam erro, Tratamento básico de
-erros via rejeição de Promises e fallback para criação de IDs, Reinicialização
-da gravação via UI, Função cleanUp para desmontar e liberar recursos, Reset de
-flags de eventos para evitar bloqueios em caso de falhas, Retry para seleção de
-elementos DOM com limite de tentativas, Fallbacks básicos via estado UI, mas sem
-estratégias robustas, Try/catch para evitar falhas visíveis ao usuário,
-Fallbacks em busca de seletores alternativos, Fallback para null em seletores
-quando falha a geração, Abortar build em caso de erro crítico, Hot Module
-Replacement para recuperação rápida de erros em desenvolvimento, Correção
-automática de timestamps inválidos e negativos, Rejeição de promises em timeout
-para falha controlada, Fallback para código antigo caso geração de template
-falhe, Botões para parar replay e evitar estados inconsistentes, Recarregamento
-da lista após operações, notificações para feedback do usuário, Importação em
-lote continua mesmo com erros parciais, reportando falhas, Tratamento de erros
-com fallback para evitar falhas críticas, Migrações tentam preservar dados e
-logam problemas, Retry automático para falhas temporárias de persistência, Erro
-é lançado para ser tratado externamente, sem retry automático, Retorno seguro
-para entradas inválidas ou vazias, Interface permite re-tentativas e feedback
-visual imediato, Retries automáticos em falhas temporárias, fallback para
-operações críticas, Reset do estado local ao fechar abas ou falhas na criação,
-Remoção automática do estado de replay após conclusão ou erro, Tratamento de
-erros assíncronos com respostas claras, Retries configuráveis para ações de
-clique e digitação, Abortar replay e notificar erro em falha crítica, Retry
-automático configurável via ActionExecutorOptions, Tratamento de exceções para
-evitar falha total do processo de migração, Reinjeção do runner após navegação
-detectada, Timeouts e retries configuráveis</error_recovery> </error_handling>
-<dependencies_context> <critical_dependencies>react-app preset,
-react-hot-loader, Webpack, Babel, Node.js, APIs de extensão do Chrome e Firefox,
-Frameworks de teste suportados, @jest/types, ts-jest, React, Jest, Husky,
-Prettier, chrome._ APIs, background.bundle.js, bridge.bundle.js, Chrome
-Extensions API, DeploySentinel API, chrome.runtime e chrome.webNavigation APIs,
-Módulos internos: recordingStore, replayOrchestrator, utils, migrations,
-chrome.runtime API, window.postMessage, React 18, react, logo.svg, typescript,
-RecordingService, genCypressCode, Chrome Runtime Messaging API, chrome.storage
-API, localStorage utilities, chrome.storage.local, chrome.tabs,
-chrome.scripting, chrome.webNavigation, browser API para compatibilidade
-Firefox, ../types, ../builders/selector, react-syntax-highlighter, genCode
-function, Recorder module, Selector builders, Chrome Storage API,
-Highlighter.css, ReactDOM, FontAwesome, Shadow DOM API, lodash.debounce para
-otimização de eventos resize, chrome.storage.local para persistência,
+estáticos, Uso do chrome.storage.local como cache persistente, Nenhum cache
+implementado neste módulo, Cache configurável via parâmetro cleanCache para
+otimização, CacheMode.KEEP_CACHE como padrão para otimização de performance,
+Cache local em memória durante a sessão, Nenhum cache implementado, Uso de Map
+para cache interno dos executores, Não aplicável para redimensionamento, Nenhum
+cache aplicado para ações de screenshot, Cache local para configurações de
+replay, Não aplicável diretamente, Modos CLEAN_CACHE e KEEP_CACHE para controle
+de cache, No caching in mocks, Cache local via recordingStore para evitar
+múltiplas leituras do storage, Uso de armazenamento local para persistência e
+cache dos logs, Cache de CSS via browser para otimização de carregamento, Opções
+para limpar cache ou manter cache via CacheMode, Persistência local para estado
+das sessões, Sem cache explícito, captura sempre atualizada, Uso futuro de
+chrome.storage com debounce para evitar excessos, Cache local de thumbnails via
+browser padrão, Cache local via recordingStore para execuções já carregadas, Não
+implementado no componente, depende do estado externo, Não especificado, Cache
+local via recordingStore para execuções, Não aplicável diretamente no
+hook</caching_strategy> <scalability_considerations>paralelização de tarefas,
+Suporte a gravações longas sem degradação perceptível, Escalabilidade limitada
+ao ambiente do navegador, Suporte a múltiplas abas e frames com controle isolado
+de gravação, Componente leve e reutilizável para múltiplas instâncias,
+Arquitetura modular permite escalabilidade horizontal via serviços
+independentes, Escalabilidade limitada ao contexto de extensão de navegador,
+foco em eficiência local, Component designed to handle dynamic and potentially
+large arrays of actions, Componente reutilizável para múltiplos contextos e
+volumes de código, Suporte a gravação de múltiplas ações com gerenciamento
+eficiente de estado, Evitar múltiplas instâncias para reduzir uso de memória,
+Suporte a múltiplos eventos simultâneos e navegação SPA, Escalabilidade limitada
+ao contexto da extensão e UI do Cypress, Escalabilidade limitada ao contexto de
+extensão de navegador e volume de gravações locais, Suporte a múltiplos temas e
+componentes dinâmicos, Pode degradar em documentos muito grandes devido à
+combinatória, Suporte a grandes volumes de ações sequenciais, Arquitetura
+modular permite extensão para múltiplas sessões simultâneas, Escalabilidade
+limitada ao ambiente local de desenvolvimento, Operações em arrays grandes devem
+ser eficientes e imutáveis, Testes isolados para permitir execução paralela,
+Componentização para suportar múltiplas gravações simultâneas, Componentização
+facilita escalabilidade, mas grandes volumes podem exigir paginação ou
+virtualização, Escalabilidade depende do backend de armazenamento
+(recordingStore), Limitação do número máximo de gravações para evitar
+crescimento ilimitado, Suporte a grande volume de gravações com política
+pruneStrategy para controle, Suporte a tabelas com overflow e scroll vertical,
+Layouts adaptativos para múltiplos dispositivos, Scrolls otimizados para listas
+grandes, Escalabilidade não aplicável, operação local no browser, Funções puras
+facilmente escaláveis e reutilizáveis, Suporte a múltiplas gravações e estados
+sem perda de performance, Suporte a tabelas com grande volume via scroll e
+overflow, Arquitetura preparada para escalabilidade horizontal via containers,
+Escalabilidade limitada ao contexto do armazenamento local do navegador, Suporte
+a múltiplas tabs via tabId para execução paralela, Suporte a múltiplas sessões
+simultâneas com isolamento de estado, Configurações ajustáveis para suportar
+diferentes volumes de ações e sessões, Escalabilidade limitada ao contexto do
+usuário e extensão, Projetado para execução em múltiplas tabs com logs isolados,
+Execução sequencial, escalabilidade via paralelismo externo, Facilidade para
+adicionar novos executores sem impacto no sistema, Executor projetado para uso
+em múltiplas janelas e ações sequenciais, Executor deve suportar múltiplas
+execuções concorrentes sem bloqueio, Suporte a múltiplas sessões simultâneas de
+replay, Suporte a múltiplas sessões simultâneas e paralelismo, Suporta múltiplos
+listeners por evento, mas não distribuído, Scalable for large test suites,
+Virtualização para suportar milhares de logs sem degradação, Virtual scrolling
+para suportar grandes volumes de logs sem degradação, Estilos modulares
+facilitam manutenção e escalabilidade do componente, Pruning de screenshots
+antigos para evitar estouro de quota de armazenamento, Gerenciamento de
+múltiplas sessões simultâneas via Map, Execução assíncrona e paralela controlada
+por estado, Projeto para uso em ambiente local, sem escalabilidade distribuída,
+Escalabilidade limitada ao ambiente local do navegador, Arquitetura preparada
+para extensão com múltiplas configurações, Suporte a grandes volumes de
+execuções com paginação ou lazy loading (não implementado explicitamente),
+Paginação configurável para evitar sobrecarga na renderização, Suporte a listas
+longas com overflow-y scroll, Escalabilidade limitada ao contexto do frontend e
+estado local, Suporte a grande volume de logs e execuções simultâneas, Suporte a
+listas grandes de execuções com paginação futura, Componentização para facilitar
+escalabilidade e manutenção, Escalabilidade para múltiplas execuções e navegação
+rápida</scalability_considerations> </performance_requirements> <error_handling>
+<error_format>logs padronizados, Formato JSON padronizado para erros internos,
+Objetos JSON com campos error e success para respostas, Não especificado no
+código atual, Logs de erro via console.error com mensagens claras e stack
+traces, Erros retornados via Promise reject com objetos Error padrão, Mensagens
+de erro não explicitamente tratadas na UI, Não há formato explícito, erros são
+tratados silenciosamente para não interromper captura, Erros lançados via throw
+new Error com mensagens claras, Erros lançados via exceções JavaScript padrão,
+Mensagens de erro simples para ausência de abas ou frames, Tratamento
+silencioso, sem propagação de erros, Erros lançados via throw com mensagens
+claras, Try-catch silencioso para evitar falhas na geração de seletores, Erros
+devem ser lançados com mensagens claras e tipos específicos, Logs detalhados no
+console com stack trace e detalhes, Nenhum formato de erro customizado
+implementado, Erros lançados via exceptions padrão do JavaScript, Mensagens de
+erro exibidas na UI com ícones e texto claro, Mensagens de erro exibidas via
+notificações visuais com tipo success/error, Erros lançados com mensagens claras
+e capturados para logs, Erros lançados com mensagens claras e logs no console,
+Erros padronizados com mensagens claras e códigos HTTP apropriados, Erro lançado
+com mensagem clara em caso de falha no download, Retorna string vazia ou texto
+original, sem lançar exceções, Estados visuais claros para erros com cores e
+ícones específicos, JSON padrão com código, mensagem e detalhes opcionais, Logs
+de erro no console com mensagens claras e stack trace, Objeto JSON com campo
+&apos;error&apos; e logs de execução, Lançamento de exceções com mensagens
+claras (ex: &apos;Viewport width inválido&apos;, &apos;Não há ações para
+exportar&apos;), Mensagens de erro string simples armazenadas no estado para
+exibição, Erro retornado via rejeição de Promise com mensagem clara, Logs no
+console com mensagens claras, Erros lançados com mensagens claras para falha de
+seleção e timeout, Erros lançados com mensagens detalhadas incluindo seletor e
+causa, Retorno null para executor não encontrado, sem exceção lançada, Erro
+lançado com mensagem detalhada em caso de falha no carregamento, Erros lançados
+com mensagens detalhadas incluindo URL e causa, Erros lançados com mensagens
+claras e capturados para logging, Erros retornam objetos com código, mensagem e
+timestamp, Erro lançado com mensagem detalhada em caso de falha, Erros lançados
+com mensagens claras e contexto da falha, Erros padronizados com código,
+mensagem e contexto, Mensagens de erro com tipo REPLAY_ERROR contendo sessionId
+e descrição textual, Strings de erro opcionais em ReplaySession, ReplayProgress
+e ReplayResult, Logs de erros no console com mensagem e stack trace, Standard
+Jest error reporting, Mensagens de erro simples exibidas na UI para screenshots
+inválidas, Mensagens claras para erros de screenshot e ausência de dados,
+Estilos para estado vazio e erro na exibição de screenshots
+(.execution-history-empty, .screenshot-error), Não explícito, erros tratados via
+rejeições de promises, Mensagens de erro simples com string e stack quando
+aplicável, Strings no formato &apos;error:&lt;mensagem&gt;&apos; para indicar
+falhas, Strings prefixadas com &apos;error:&apos; seguidas de código específico,
+Mensagens de erro exibidas na UI com texto descritivo, Mensagens de erro
+específicas para screenshots exibidas no UI, Mensagens simples exibidas na UI
+com possibilidade de retry, Confirmação via window.confirm para ações críticas,
+Estilo visual para mensagens de erro (.screenshot-error) com cores e tipografia
+específicas, Visualização clara com ícones e mensagens textuais em estado de
+erro, Não há tratamento explícito de erros no hook, Erros customizados com
+mensagens claras e nomes específicos, Mensagens de erro simples e claras na UI,
+Exibição visual de erros via classe CSS .has-errors, Mensagens de estado vazio
+claras</error_format> <logging_strategy>console logs, arquivos de log, Logs
+locais para debug durante desenvolvimento, Relatórios de erros via CI, Logs
+locais via console e armazenamento para debugging, Logs no console para eventos
+principais e erros, Não implementado explicitamente, Logging local no console,
+sem sistema centralizado de logs, Não implementado explicitamente neste módulo,
+Logs limitados a console para desenvolvimento, Sem logging explícito no código
+fornecido, Logs mínimos, foco em erros críticos, Não há logging explícito no
+código analisado, Não implementa logging interno, Logs estruturados para
+rastreamento de ações e falhas, Console.error para erros, console.warn para
+avisos, Logs padrão do Webpack e WebpackDevServer, Logs de progresso via
+webpack.ProgressPlugin, Infraestrutura de logging configurada para nível info,
+Uso de console.warn para alertas de timestamps inválidos, Uso implícito de
+mensagens de erro via Jest, Logs de console para eventos críticos e erros, Logs
+no console para operações críticas (carregamento, exclusão,
+importação/exportação), Logs detalhados para operações de importação e
+exportação, incluindo sucessos e falhas, Uso de console.warn e console.error
+para alertas e erros, Logs informativos em migrações e operações críticas, Logs
+de execução detalhados para diagnóstico de falhas, Logs no console para sucesso
+e erro, Logs estruturados com níveis info, warn, error, Logs informativos para
+início, sucesso e falha das migrações, Logs detalhados no console e logs
+coletados pelo executor, Logs de erro capturados e exibidos no estado,
+integrados a sistema externo, Logs no background para erros de runtime,
+Console.error para erros críticos, Logs de execução acumulados em memória para
+auditoria, Logs via console com níveis info e warn, Logs informativos para cada
+tentativa e sucesso, warnings para retries, Logs informativos via console.log
+para rastreamento, Logs console para navegação iniciada, Logs informativos no
+console para sucesso e falhas, Logs de execução e erros com níveis info e error,
+Logs console para rastreamento de execução, Logs informativos no console para
+ações executadas, Logs de eventos críticos e erros com níveis INFO, WARN, ERROR,
+Eventos SESSION_ERROR e ACTION_ERROR para monitoramento, ExecutionLog com
+timestamp, ação e screenshot para auditoria, Console.error para erros em
+handlers, Console logs suppressed in tests, Console.error para falhas na leitura
+do storage, Logs de erro e estado são exibidos na UI para feedback ao usuário,
+Não aplicável para CSS, Não há logging explícito no código de testes, Logs
+detalhados via console.log, console.error e console.warn, Eventos emitidos para
+monitoramento externo, Console.error para erros inesperados, Logs de execução
+exibidos em tempo real na interface, Não implementado diretamente,
+presumivelmente logs externos, Console.error para erros capturados, Não
+implementado no componente, Não há logging implementado, Logs de erros e
+execuções para auditoria, Logs internos via jest mocks para testes, Não
+aplicável diretamente no hook</logging_strategy> <monitoring_tools>GitHub
+Actions para monitoramento de build e testes, Ferramentas de monitoramento do
+navegador e relatórios de erros, Não especificado no código, presumivelmente
+ferramentas externas, Possível integração com ferramentas externas, Não
+especificado no código, presumido uso de ferramentas externas, Não especificado,
+Nenhuma ferramenta de monitoramento integrada, Dependência de ferramentas
+externas para monitoramento do ambiente, Monitoramento via ferramentas da
+extensão Chrome, Analytics customizados para eventos de página e gravação, Não
+aplicável, Integração com Sentry para captura de exceções, Integração com Sentry
+para captura de erros em produção, Não especificado no código, presumivelmente
+integrável com Sentry ou similar, Não especificado, presumivelmente integrado a
+sistema externo, Não especificado no código, Integração com ferramentas como
+Sentry para monitoramento, N/A, Sentry para erros, Prometheus para métricas, Não
+aplicável, monitoramento via logs locais, Monitoramento via logs do console e
+ferramentas externas, Integração com ferramentas de monitoramento frontend (ex:
+Sentry), Integração externa para captura de screenshots e monitoramento,
+Integração com sistema externo de logs e alertas, Integração com ferramentas
+externas via background script (não detalhado), Sentry para monitoramento de
+erros em produção, Integração com Sentry para monitoramento de erros, EventBus
+interno para rastreamento de eventos e erros, Monitoramento via ferramentas
+externas (não implementado no componente), Monitoramento via ferramentas
+externas não especificado no código, Não aplicável para CSS, Não aplicável no
+contexto de testes unitários, Eventos internos via EventBus para integração com
+UI e monitoramento, Monitoramento manual via testes automatizados, Não
+especificado, presumivelmente integrado externamente, Não aplicável diretamente,
+Não aplicável diretamente no hook</monitoring_tools> <error_recovery>retry
+automático em falhas de build, Recuperação de falhas na gravação com
+possibilidade de reinício, Retry automático para falhas de comunicação e
+fallback para gravação local, Tratamento de erros com respostas assíncronas e
+mensagens claras, Nenhuma estratégia explícita, Falhas no salvamento não
+interrompem o fluxo, apenas logam erro, Tratamento básico de erros via rejeição
+de Promises e fallback para criação de IDs, Reinicialização da gravação e
+limpeza de estado em caso de falha, Função cleanUp para desmontar e liberar
+recursos, Reset de flags de eventos para evitar bloqueios em caso de falhas,
+Retry para seleção de elementos DOM com limite de tentativas, Fallbacks para
+ausência de aba ou frame, com mensagens de erro e bloqueio de fluxo, Try/catch
+para evitar falhas visíveis ao usuário, Fallbacks em busca de seletores
+alternativos, Fallback para null em seletores quando falha a geração, Fallbacks
+para ações não suportadas e validação prévia, Abortar build em caso de erro
+crítico, Hot Module Replacement para recuperação rápida de erros em
+desenvolvimento, Correção automática de timestamps inválidos e negativos,
+Rejeição de promises em timeout para falha controlada, Fallback para código
+antigo caso geração de template falhe, Recarregamento da lista após operações,
+notificações para feedback do usuário, Importação em lote continua mesmo com
+erros parciais, reportando falhas, Tratamento de exceções com fallback para
+evitar falhas críticas, Migrações tentam preservar dados e registrar falhas,
+Fallback para operações críticas e retry em falhas temporárias, Erro é lançado
+para ser tratado externamente, sem retry automático, Retorno seguro para
+entradas inválidas ou vazias, Interface permite re-tentativas e feedback visual
+imediato, Retries automáticos em falhas temporárias, fallback para operações
+críticas, Tratamento de exceções para evitar falha total do processo de
+migração, Tratamento de erros assíncrono para não travar o listener, Validação
+prévia para evitar geração de templates inválidos, Tentativas de retry
+configuradas no startReplay, tratamento de falhas com mensagens claras,
+Tratamento de erros para evitar estados inconsistentes, Retry automático até
+maxRetries com delay configurado, Fallback para configuração padrão em falhas,
+Retries configuráveis via maxRetries nas opções, Retries automáticos por
+seletor, tentativa com múltiplos seletores, Fallback para null e tratamento
+externo, Retry automático até 3 tentativas com delay progressivo, Tratamento de
+exceções com throw para controle externo, Erro propaga para camada superior para
+tratamento, Rejeição de promises para tratamento upstream, Retry automático em
+falhas temporárias até 3 tentativas, Tratamento de exceções para evitar falhas
+silenciosas, Tentativas automáticas de recuperação em falhas de replay, Permite
+recomeço e retomada de sessões via comandos REPLAY_RESUME, Retry automático
+configurável via maxRetries e retryDelay, Captura exceções em handlers para
+evitar falha da emissão, Tests fail fast on errors, Recarregamento automático
+dos logs ao detectar mudanças no storage, Fallback para mensagens de erro e não
+abertura de lightbox em screenshots inválidas, Fallback visual para imagens não
+carregadas e ausência de logs, Fallback para &apos;unknown&apos; em URLs
+ausentes, Pruning para evitar falhas por limite de armazenamento, Retry para
+envio de mensagens ao content script (até 3 tentativas), Reinjeção do content
+script em caso de falha de conexão, Persistência periódica para recuperação de
+estado, Tentativas de captura com qualidade reduzida em caso de imagens muito
+grandes, Tratamento específico para erros de permissão e aba inválida, Redução
+progressiva da qualidade da imagem para evitar falha por tamanho, Replay
+continua mesmo após falha na captura de screenshot, Fallback visual para
+screenshots com erro, evitando crash da UI, Reset de estado de erro e navegação
+para estados válidos, Prevenção via confirmação antes de deletar, Botão de retry
+para tentar nova ação após erro, Estado padrão com selectedExecutionId null para
+fallback, Tratamento específico para erros de execução não encontrada e limite
+de armazenamento, Exibição de mensagem de falha e possibilidade de retry
+externo, Estado vazio exibido quando não há execuções, Reset do estado para null
+em navegação back</error_recovery> </error_handling> <dependencies_context>
+<critical_dependencies>react-app preset, react-hot-loader, Webpack, Babel,
+Node.js, APIs de extensão do Chrome e Firefox, Frameworks de teste suportados,
+ts-jest, jest, React 17.0.1, TypeScript 4.1.5, Jest 27.3.1, Playwright 1.54.1,
+Webpack 5.23.0, chrome._ APIs, background.bundle.js, bridge.bundle.js, Chrome
+Extensions API, DeploySentinel API, ReplayEngine singleton,
+storage/recording-store e migration, chrome.runtime API, window.postMessage,
+React 18, react, logo.svg, typescript, RecordingService, genCypressCode, Chrome
+Runtime Messaging API, React, chrome.storage API, localStorage utilities,
+chrome.storage.local, chrome.tabs, chrome.scripting, chrome.webNavigation,
+browser API para compatibilidade Firefox, ../types, ../builders/selector,
+react-syntax-highlighter, TypeScript, React 18.2, Lodash.throttle, FontAwesome
+Icons, Highlighter.css, ReactDOM, FontAwesome, Shadow DOM API, lodash.debounce
+para otimização de eventos resize, chrome.storage.local para persistência,
 chrome.runtime para comunicação background, Chrome Extension Messaging API,
-Chrome Extension APIs, recordingStore, getRandomInstallId, Google Analytics API,
-react-dom, webpack css-loader, @fortawesome/fontawesome-svg-core, DOM API do
-navegador, Cypress, TemplateRenderer, Types e enums do projeto, finder,
-TypeScript compiler, Module bundler (Webpack, Vite), chrome API, TypeScript,
-webpack, webpack.config.js, process.env (Node.js), webpack-dev-server, path,
-env, clean-webpack-plugin, copy-webpack-plugin, html-webpack-plugin,
-terser-webpack-plugin, babel-loader, ts-loader, source-map-loader,
-@hot-loader/react-dom, node_modules, secrets._.js, Type definitions from
-&apos;../types&apos;, CypressScriptBuilder, truncateText, playwright, jest,
-chromium browser, useReplay hook para controle do replay,
-genCypressCodeWithTemplate para geração do código, react-syntax-highlighter para
-exibição do código, FontAwesome Icons, Roboto font, CSS variable --bg-dark,
-recordingStore para persistência, builders para geração de código Cypress,
-chrome.storage.local API, Typescript types para RecordingEntry, HistoryConfig,
-Action, TypeScript 5.0, Cypress 12.x, CSS variables defined globally, React
+Chrome Extension APIs, Cypress integration scripts, getRandomInstallId, Google
+Analytics API, react-dom, webpack css-loader, @fortawesome/fontawesome-svg-core,
+DOM API do navegador, Cypress, TemplateRenderer, Types e enums do projeto,
+finder, TypeScript compiler, Module bundler (Webpack, Vite), chrome API,
+TypeScript 5.0, Node.js 20, webpack, webpack.config.js, process.env (Node.js),
+webpack-dev-server, path, env, clean-webpack-plugin, copy-webpack-plugin,
+html-webpack-plugin, terser-webpack-plugin, node_modules, secrets._.js, Type
+definitions from &apos;../types&apos;, CypressScriptBuilder, truncateText, Jest,
+playwright, chromium browser, react, react-syntax-highlighter,
+@fortawesome/react-fontawesome, react-copy-to-clipboard, Roboto font, CSS
+variable --bg-dark, recordingStore para persistência, builders para geração de
+código Cypress, chrome.storage.local API, lodash debounce, Módulos Action e
+ExecutionLog importados para tipagem, CSS variables defined globally, React
 index.jsx import, ../themes/dark-core.css, font-awesome, LayoutWrapper.css,
 Variáveis CSS para tema, Font icons para elementos visuais, CSS variables
 definidas globalmente, SVG icons, Variáveis CSS globais, JavaScript para
@@ -1328,654 +2104,982 @@ manipulação de estado, Variáveis CSS customizadas (ex: --bg-dark, --bg-darker
 Browser Web APIs (Blob, URL, DOM), Variáveis CSS globais para cores e
 espaçamentos, React para renderização do componente, CSS Variables, React (para
 lógica associada), Nenhuma dependência externa explícita, Express, Mongoose,
-Joi, chrome.runtime, React 18.2, replay-handler.js, types/replay.js,
-replay-runner (injeção externa), recordingStore para acesso a gravações,
-MutationObserver para detecção DOM, Módulo &apos;../pages/types/index&apos; para
-definição de Action, chrome.storage</critical_dependencies>
-<deprecated_packages>Nenhum identificado, Uso de chrome.tabs.executeScript
-(deprecated no Manifest V3, substituído por chrome.scripting), Nenhum pacote
-deprecado identificado, Uso gradual de url e firstUrl como legado, migrando para
-urlOriginal, Nenhum pacote deprecado atualmente</deprecated_packages>
-<version_constraints>Compatibilidade com versões recentes do Chrome e Firefox,
-Compatibilidade entre Jest 29.x e ts-jest, React 17.x, TypeScript 4.1.x, Jest
-27.x, Webpack 5.x, Manifest Version 2 (deprecado em breve), Manifest V3
-obrigatório para compatibilidade com Chrome atual, TypeScript 5.0, Chrome
-Extensions API compatível, Compatibilidade com Chrome 90+, React &gt;=18.0.0,
-React 18.x, TypeScript 5.x, TypeScript &gt;=5.0, Chrome Extensions API
-compatível com Manifest V3, Compatibilidade com Manifest V2 e V3 do Chrome
-Extensions, TypeScript &gt;=4.0, TypeScript &gt;=4.9, TypeScript 4.x,
+Joi, recordingStore, ActionExecutorFactory e executores específicos,
+chrome.runtime API para comunicação com background, Funções startReplay,
+pauseReplay, resumeReplay, stopReplay, ../types/session para tipos ReplayOptions
+e CacheMode, chrome.storage.sync, DEFAULT_REPLAY_CONFIG, Types de Action e
+ExecutionLog, Serviço de captura de screenshots em background script, Classe
+base ActionExecutor, Tipos ClickAction e ExecutorOptions, Pacotes de executores
+específicos, Definição de ActionType, Base ActionExecutor, InputAction type
+definitions, ../../../pages/types/index, ./base, window.location API, Base
+ActionExecutor class, ActionExecutor base class, Background script para captura
+real, Módulo &apos;./session&apos; para tipos ReplayOptions, ReplayProgress,
+ReplayResult, ReplayStatus, Action (importado de pages/types), ReplayStatus
+enum, Nenhuma dependência externa, @testing-library/jest-dom, recordingStore
+para acesso aos dados, chrome.storage API para sincronização, Jest 29, React
+Testing Library, Chrome Storage API, Browser moderno com suporte a CSS3, Jest
+para testes, TypeScript para tipagem, Chrome Extensions APIs (tabs, scripting,
+storage, browsingData), Lodash throttle, recordingStore para acesso a gravações
+e logs, Chrome Tabs API, Chrome Runtime API, Playwright para testes,
+chrome.storage API (futuro), useExecutionConfig hook interno, useExecutionNav,
+ExecutionTable, ExecutionDetail, CSS Modules para estilos, Variáveis CSS
+customizadas para cores e espaçamentos, Variáveis CSS customizadas para temas e
+cores, Node.js runtime, useExecutionNav hook, @testing-library/react,
+window.location para sincronização de URL, React e React
+Hooks</critical_dependencies> <deprecated_packages>Nenhum pacote deprecado
+identificado, Nenhum identificado, Uso de chrome.tabs.executeScript (deprecated
+no Manifest V3, substituído por chrome.scripting), Campos url e firstUrl
+marcados para migração e desuso, Nenhum pacote deprecado atualmente,
+Nenhum</deprecated_packages> <version_constraints>Compatibilidade com versões
+recentes do Chrome e Firefox, ts-jest compatível com Jest 29.x, Dependências
+travadas em versões específicas para estabilidade, Manifest Version 2 (deprecado
+em breve), Manifest V3 obrigatório para compatibilidade com Chrome atual,
+TypeScript 5.x compatível com APIs do Chrome, Compatibilidade com Chrome 90+,
+React &gt;=18.0.0, React 18.x, TypeScript 5.x, TypeScript &gt;=5.0, Chrome
+Extensions API compatível com Manifest V3, Compatibilidade com Manifest V2 e V3
+do Chrome Extensions, TypeScript &gt;=5.0.0, react-syntax-highlighter compatible
+com Prism, React &gt;=18.0.0 &lt;19.0.0, TypeScript &gt;=4.9, TypeScript 4.x,
 Compatibilidade com versões recentes do Chrome e navegadores baseados em
 Chromium, Webpack &gt;=5.0.0, Compatível com navegadores modernos suportando
-querySelectorAll, Compatibilidade com Cypress 12.x e TypeScript 4.x, target ES5,
-module ESNext, webpack &gt;=5.0.0, Compatibilidade com Webpack 5 e Node.js 16+,
-TypeScript &gt;= 4.9, Jest &gt;=29, Cypress &gt;=12, Jest timeout configurado
-para 15000ms, React 18.2 compatível com hooks e TypeScript 5.0, TypeScript 5.0 e
-compatibilidade com Cypress atual, TypeScript 5.0 compatível, API
-chrome.storage.local estável, Node.js &gt;= 20.x, TypeScript &gt;= 5.0, React
-&gt;=18.0, TypeScript &gt;=5.0 para suporte a features usadas, Dependências
-travadas em versões específicas para estabilidade, TypeScript &gt;=5.0.0,
-Compatibilidade com Chrome 100+ APIs, Compatibilidade com Chrome Manifest V3,
-Versão 2.0.0 para controle de migração, Compatibilidade com Chrome Manifest V3
-APIs</version_constraints> <internal_packages>bridge.bundle.js para content
-scripts, background.bundle.js para service worker, ../Common/utils,
-../storage/recording-store, ../../background/replay-orchestrator,
-../storage/migration, ../../migrations/replay-migration, Módulos internos da
-extensão DeploySentinel, ../../pages/Popup/logo.svg, ../types (ScriptType),
-./utils, ../builders, ../storage, ../types, Módulos internos organizados por
-funcionalidade (storage, scripts, utils), types, builders, components,
-../Common, ./recorder, ./Highlighter, Highlighter.css (estilos locais),
-./ControlBar, ../Common/styles.css, builders/selector para geração de seletores
-CSS, Common/utils para abstração de localStorage, ../Common/Icon,
-../Common/hooks, ../Common/endRecording, Common, Content, storage, ./Popup,
-./components, ./themes, ../generators/template/TemplateRenderer, finder,
-config/webpack.config.js, ./env, ../webpack.config, ./utils/env,
-src/modules/replay, src/content/replay-agent.ts, ../src/pages/builders, Extensão
-localizada em ./build, src/hooks/use-replay,
-src/builders/genCypressCodeWithTemplate, src/Common/utils/download,
+querySelectorAll, Compatibilidade com Cypress 12.x e TypeScript 4.x, TypeScript
+&gt;=4.0, Node.js &gt;=20, typescript &gt;=4.0 &lt;5.0, react 18.x, jest 29.x,
+webpack &gt;=5.0.0, Compatibilidade com Webpack 5 e Node.js 16+, TypeScript
+&gt;= 4.9, Jest &gt;=29, Cypress &gt;=12, Jest timeout configurado para 15000ms,
+React &gt;=18.0.0, TypeScript &gt;=4.5, TypeScript 5.0 e compatibilidade com
+Cypress atual, TypeScript 4.x compatível, lodash versão estável recente,
+TypeScript 5.0 compatível com ES2022, React &gt;=18.0, TypeScript &gt;=5.0 para
+suporte a features usadas, Versão 2.0.0 para controle de migração, Chrome
+Extensions Manifest V3, React &gt;=18.0, TypeScript &gt;=5.0, TypeScript 5.0
+mínimo, TypeScript 5.0 compatível, Chrome API compatível com Manifest V3,
+TypeScript &gt;=5.0 &lt;6.0, React &gt;=18.0 &lt;19.0, TypeScript 5.0 compatível
+com sintaxe usada, jest &gt;= 29.0.0, @testing-library/jest-dom latest, React
+18.x compatível com hooks, TypeScript 4.x para tipagem estrita, React 18.x
+compatível com CSS moderno, TypeScript 5.0, Jest 29, TypeScript 5.0 compatível
+com APIs Chrome recentes, TypeScript 5.0 compatível com Playwright 1.x, React
+18.2, React 18.2, TypeScript 5.0, Jest &gt;=29.0.0, @testing-library/react
+14</version_constraints> <internal_packages>bridge.bundle.js para content
+scripts, background.bundle.js para service worker, Common/utils, storage,
+replay/core e replay/types, Módulos internos da extensão DeploySentinel,
+../../pages/Popup/logo.svg, ../types (ScriptType), ./utils, ../builders,
+../storage, ../types, Módulos internos organizados por funcionalidade (storage,
+scripts, utils), types, builders, components, ../builders (genCode), ../types
+(Action, ScriptType), src/builders - geração de seletores e código, src/Common -
+hooks e utilitários, src/types - tipos compartilhados, Highlighter.css (estilos
+locais), ./ControlBar, ../Common/styles.css, builders/selector para geração de
+seletores CSS, Common/utils para abstração de localStorage, ../Common/Icon,
+../Common/hooks, ../Common/endRecording, Common, Content, Popup, Storage módulos
+internos organizados, ../Common/utils, ./Popup, ./components, ./themes,
+../generators/template/TemplateRenderer, finder, src/utils para funções
+auxiliares, config/webpack.config.js, ./env, ../webpack.config, utils/env.js,
+secrets.{env}.js, ../src/pages/builders, Extensão localizada em ./build,
+replay/api/hooks para controle de replay, Common/utils para utilitários,
 ../../storage/recording-service, ../../types/recording, ../../Common/utils/text,
-src/types, src/builders, src/store, src/types para tipos compartilhados,
-src/actions para definição de ações, Módulo actions para definição de Action,
-Módulo backend para implementação de IHistoryBackend, themes/dark-core.css,
-Pacotes internos para utilitários e middlewares, ../shared/types/replay,
-../../types/replay.js, ../../types/replay, ../../pages/types/recording,
-../../pages/storage/recording-store, src/pages/types, src/types/replay, Módulos
-internos para runner e background, recording-store módulo interno para
-gerenciamento de gravações, recordingStore, types/replay,
-types/recording</internal_packages> </dependencies_context> <current_challenges>
-<technical_debt>scripts de build pouco modularizados, Suporte limitado para
-captura de upload de arquivos, Atualização para Manifest V3 necessária para
-compatibilidade futura, Atualização para suporte a novos browsers além do
-Chrome, Funcionalidade de histórico de gravações ainda em desenvolvimento, Falta
-de tratamento de erros robusto, Tratamento de erros pode ser melhorado com
-sistema centralizado, Fixação rígida da biblioteca Cypress pode limitar
-flexibilidade, Manutenção da compatibilidade entre Manifest V2 e V3, Refatoração
-para eliminar uso de APIs deprecated, Gerenciamento de estado complexo pode ser
-refatorado para usar context API ou state management externo, Ausência de
+src/types, src/builders, src/store, Módulos de tipos internos
+(../types/recording, ../types/execution, ../../replay/types/session),
+src/replay/types/session para ExecutionLog, src/history para gerenciamento de
+gravações, themes/dark-core.css, Pacotes internos para utilitários e
+middlewares, recording-store módulo interno para gerenciamento de gravações,
+replay/core/executors, pages/types, ../TemplateRenderer, ../../../types,
+src/types para tipagem compartilhada, src/api para funções de controle de
+replay, ../types/session, ../types/events, src/types/session, ./default, Módulos
+internos para tipos e serviços auxiliares, executors/base,
+../../../pages/types/index, ./base, ./click, ./input, ./navigate, ./resize,
+./screenshot, ./scroll, ./wheel, ./load, ActionExecutor base class, LoadAction
+type, actions/executors/base, ../../../pages/types, ScrollAction type,
+WheelAction type definitions, ./api, ./config, ./types, session - tipos e
+interfaces para replay, pages/types para tipos compartilhados, ReplayEngine core
+modules, replay/types/session para tipos ExecutionLog, storage/recording-store
+para persistência, recordingStore - abstração para armazenamento local,
+ExecutionHistory e useExecutionLogs - módulos principais, Componentes internos
+para ícones e imagens, Módulos internos para tipos e gravação
+(../recording-store, ../../types), Módulos internos para tipos, executores,
+serviços e utilitários, Pacotes internos da extensão localizados em src/,
+../../../replay/types/session, ../../types, ../../../config/ui, Módulos locais
+para hooks, tipos e armazenamento, Tipos definidos em ../../types/execution,
+Possível pacote interno para armazenamento e manipulação de logs,
+src/pages/storage, src/pages/Popup/hooks, src/pages/types,
+src/pages/Popup/components,
+../../../src/pages/Popup/hooks/useExecutionNav</internal_packages>
+</dependencies_context> <current_challenges> <technical_debt>scripts de build
+pouco modularizados, Suporte limitado para captura de upload de arquivos,
+Atualização de dependências para versões mais recentes planejada, Refatoração
+gradual para Manifest V3 no Firefox, Atualização para Manifest V3 necessária
+para compatibilidade futura, Atualização para suporte a novos browsers além do
+Chrome, Funcionalidade de histórico ainda em desenvolvimento, Falta de
+tratamento de erros robusto, Tratamento de erros pode ser melhorado com sistema
+centralizado, Fixação rígida da biblioteca Cypress pode limitar flexibilidade,
+Manutenção da compatibilidade entre Manifest V2 e V3, Refatoração para eliminar
+uso de APIs deprecated, Uso de any em CopyToClipboardFixed pode ser melhor
+tipado, Melhorar tratamento de erros e feedback ao usuário, Ausência de
 memoização para evitar re-renderizações desnecessárias, Melhorar tratamento de
 erros e fallback para browsers sem exportFunction, Gerenciamento de eventos
 duplicados pode ser aprimorado para casos extremos, Persistência local pode
 crescer indefinidamente sem limpeza, Correção de bug de múltipla montagem no
-Firefox, Tratamento de erros e logging insuficientes, Acoplamento forte com
-Cypress, Ausência de logging e feedback de erro, Ausência de tratamento de erros
-na renderização, Estilos inline podem dificultar manutenção, Otimização limitada
-para seletores muito complexos, Implementação pendente para dragAndDrop, Catch
-silencioso pode dificultar debugging, Refatorar função isSupportedActionType
-para tipagem mais segura, Configuração hardcoded para localhost e porta fixa,
-Melhorar hot reload para contentScript e replayAgent, Documentação de
-configuração incompleta, Uso incorreto de &apos;number.isFinite&apos; ao invés
-de &apos;Number.isFinite&apos;, Uso de setInterval para polling pode ser
-substituído por eventos mais eficientes, Necessidade de melhorar tratamento de
-erros no download, Refatoração para desacoplar lógica de geração de código do
-componente, Ausência de paginação para grandes volumes de gravações, Falta de
+Firefox, Uso de &apos;any&apos; em tipagem CopyToClipboardFixed pode impactar
+segurança de tipos, Ausência de logging e feedback de erro, Ausência de
+tratamento de erros na renderização, Estilos inline podem dificultar manutenção,
+Otimização limitada para seletores muito complexos, Implementação pendente para
+dragAndDrop, Catch silencioso pode dificultar debugging, Refatoração pendente
+para unificar classes ScreenshotAction e FullScreenshotAction, Manter
+compatibilidade com ES5 pode limitar uso de features modernas, Configuração
+hardcoded para localhost e porta fixa, Uso incorreto de
+&apos;number.isFinite&apos; ao invés de &apos;Number.isFinite&apos;, Uso de
+setInterval para polling pode ser substituído por eventos mais eficientes,
+Refatorar tratamento de erros para melhor UX, Melhorar tipagem em componentes
+utilitários, Ausência de paginação para grandes volumes de gravações, Falta de
 testes automatizados explícitos no código fornecido, Uso de dimensões fixas pode
 limitar responsividade, Manutenção da compatibilidade com versões antigas do
-código Cypress, Dependência da API chrome.storage.local com limitações de
-tamanho, Necessidade de migração contínua para formatos novos, Migração completa
-dos campos url e firstUrl para urlOriginal, Dependência de variáveis CSS
-externas pode dificultar manutenção, Dependência de variáveis CSS externas pode
-causar inconsistência, Dependência de variáveis CSS externas não documentadas,
-Melhorar mensagens de erro para diagnóstico mais detalhado, Necessidade de
-migração para CSS-in-JS para melhor manutenção, Dependência de variáveis CSS
-globais, Falta de estilos focados em acessibilidade, Refatoração de módulos com
-alta complexidade ciclomática, Melhorar tipagem das mensagens recebidas para
-evitar any, Melhorar tratamento de erros na injeção de scripts, Refatorar
-listeners para evitar vazamentos de memória, Melhorar tipagem para ações
-específicas (ex: NavigateAction), Refatorar tratamento de erros para maior
-granularidade, Documentação e testes adicionais para casos de erro, Dependência
-do chrome.storage.local limita portabilidade, Melhorar tratamento de erros
-assíncronos, Refatorar duplicação de logs em buffer e
-replay.logs</technical_debt> <known_issues>Potential incompatibility of
+código Cypress, Dependência de chrome.storage.local com limite de 5MB,
+Necessidade de migrações para formatos antigos, Migração de campos legados url e
+firstUrl para urlOriginal, Dependência de variáveis CSS externas pode dificultar
+manutenção, Dependência de variáveis CSS externas pode causar inconsistência,
+Dependência de variáveis CSS externas não documentadas, Melhorar mensagens de
+erro para diagnóstico mais detalhado, Necessidade de migração para CSS-in-JS
+para melhor manutenção, Dependência de variáveis CSS globais, Falta de estilos
+focados em acessibilidade, Refatoração de módulos com alta complexidade
+ciclomática, Dependência do chrome.storage.local limita portabilidade, Melhorar
+tratamento de erros para ações complexas, Documentação mais detalhada dos
+executores, Cobertura de testes pode ser ampliada para casos extremos, Melhorar
+tratamento de erros para casos raros de falha na comunicação, Melhorar tipagem
+das respostas do background, Implementação simples, possível melhoria no merge
+recursivo profundo, Remoção completa do serviço de screenshot local ainda
+pendente, Melhorar tratamento de erros para casos específicos de timeout,
+Necessidade de registrar manualmente novos executores na fábrica, Necessidade de
+melhorar tratamento de erros para casos de timeout, Necessidade de maior
+cobertura de testes para edge cases, Documentação incompleta para hooks
+avançados, Nenhum débito técnico explícito identificado, Documentação e testes
+podem ser expandidos, Implementação básica sem suporte a eventos assíncronos ou
+prioridades, Mocks require updates when Chrome API changes, Melhorar tratamento
+de erros para screenshots corrompidas, Refatorar para suportar múltiplos tipos
+de storage, Melhorar tipagem e tratamento de screenshots com erros, Refatorar
+mocks para maior reutilização, Necessidade de manter compatibilidade com temas
+escuros e responsividade complexa, Necessidade de migração de dados legados para
+novos campos (urlOriginal, executionLogs), Tratamento de erros pode ser
+aprimorado para falhas específicas, Melhorar modularização para facilitar testes
+unitários isolados, Configuração de contexto para carregar extensão no
+Playwright não detalhada, Implementar persistência em chrome.storage sem quebrar
+API, Nenhum identificado explicitamente no código fornecido, Ausência de
+paginação para execuções pode impactar performance em grandes volumes, Ausência
+de testes automatizados documentados no código fornecido, Nenhum débito técnico
+identificado, Implementação de persistência robusta e escalável, Cobertura de
+testes pode ser ampliada para casos de navegação, Nenhum débito técnico aparente
+no hook</technical_debt> <known_issues>Potential incompatibility of
 react-hot-loader with React 18+, Limitações na captura de eventos hover em
-alguns contextos, Limitações na captura de eventos em iframes externos, Nenhum
-explícito, mas dependência de sincronização correta do estado de gravação,
-Dependência exclusiva do Chrome, Possível loop de atualização se onChange não
-for estável, Dependência da existência da URL inicial pode causar falhas
-silenciosas, Ausência de tratamento explícito de erros em chamadas assíncronas,
-Possível inconsistência na execução de scripts em frames múltiplos, Limitações
-do armazenamento local em volume e performance, Eventos de mouse podem ser
-afetados por overlays externos, Dependência de estilos externos pode causar
-falhas visuais, Possível incompatibilidade com browsers não suportados, Tipagem
-TypeScript ignorada em shadowRoot, Possível perda de eventos em navegação rápida
-SPA se sincronização falhar, Possível falha na localização de elementos DOM em
-ambientes customizados, Possíveis condições de corrida em efeitos assíncronos,
-Modo no-cors limita detecção de falhas na requisição, Dependência forte do
-container &apos;#app-container&apos; estar presente, Performance pode cair em
-documentos com muitos elementos similares, FIXME expor action diretamente em
-ActionContext, DragAndDrop não implementado, Diferenças entre APIs Chrome e
-Firefox podem causar incompatibilidades, Desabilitação de host check pode causar
-riscos de segurança, Possível conflito de aliases em ambientes complexos,
-Dependência do relógio do sistema pode causar inconsistências, Timeouts podem
-causar falhas intermitentes em ambientes lentos, Possível lentidão em gravações
-muito grandes (&gt;200 ações), Erro genérico no replay pode não detalhar causa
-raiz, Potencial lentidão com muitos registros, Dependência de confirmação via
-window.confirm para exclusão, Fallback visual se variável --bg-dark não estiver
-definida, Possível colisão de IDs em importações simultâneas, Possível perda de
-dados se debounce for interrompido abruptamente, Limite fixo pode causar erros
-se estratégia &apos;error&apos; for usada, Possível inconsistência temporal se
-timestamps forem mal formatados, Scrollbar customization limited to WebKit
-browsers, Possível baixa acessibilidade se contraste não for suficiente,
+alguns contextos, Compatibilidade parcial com Firefox Manifest V3, Limitações na
+captura de eventos complexos do browser, Limitações na captura de eventos em
+iframes externos, Dependência de sincronização precisa entre abas e frames,
+Limitações na captura de eventos em ambientes Cypress, Dependência exclusiva do
+Chrome, Possível loop de atualização se onChange não for estável, Dependência da
+existência da URL inicial pode causar falhas silenciosas, Ausência de tratamento
+explícito de erros em chamadas assíncronas, Possível inconsistência na execução
+de scripts em frames múltiplos, Limitações do armazenamento local em volume e
+performance, Eventos de mouse podem ser afetados por sobreposições complexas,
+Sincronização entre abas depende do chrome.storage que pode ter latência,
+Dependência de estilos externos pode causar falhas visuais, Possível
+incompatibilidade com browsers não suportados, Tipagem TypeScript ignorada em
+shadowRoot, Possível perda de eventos em navegação rápida SPA se sincronização
+falhar, Possível falha na localização de elementos DOM em ambientes
+customizados, Dependência da existência do frame AUT para gravação Cypress pode
+causar erros se não encontrado, Modo no-cors limita detecção de falhas na
+requisição, Dependência forte do container &apos;#app-container&apos; estar
+presente, Performance pode cair em documentos com muitos elementos similares,
+FIXME expor action diretamente em ActionContext, DragAndDrop não implementado,
+Diferenças entre APIs Chrome e Firefox podem causar incompatibilidades,
+Duplicidade de classes para ações de screenshot pode causar confusão,
+Desabilitação de host check pode causar riscos de segurança, Dependência do
+relógio do sistema pode causar inconsistências, Timeouts podem causar falhas
+intermitentes em ambientes lentos, Possível atraso na geração de código para
+gravações muito grandes, Potencial lentidão com muitos registros, Dependência de
+confirmação via window.confirm para exclusão, Fallback visual se variável
+--bg-dark não estiver definida, Possível colisão de IDs em importações
+simultâneas, Possível perda de dados se debounce for interrompido abruptamente,
+Limitação de armazenamento pode causar poda agressiva, Possível inconsistência
+se campos legados e urlOriginal divergirem, Scrollbar customization limited to
+WebKit browsers, Possível baixa acessibilidade se contraste não for suficiente,
 Sanitização pode gerar nomes duplicados para títulos iguais no mesmo dia,
 Possível truncamento excessivo em URLs com domínios muito longos, Scrollbars
 customizadas podem apresentar inconsistências em alguns browsers, Scrollbar
 customizada pode não funcionar em todos os browsers, Intermitência em chamadas
-externas sob alta carga, Possível race condition ao fechar abas rapidamente,
-Dependência da injeção externa do replay-runner pode causar falhas se não
-gerenciada, Possível falha silenciosa se popup não estiver aberto ao enviar
-mensagens, Possível falha em elementos dinâmicos muito rápidos, Limitação na
-detecção de elementos com múltiplos seletores, Gerenciamento de estados
-complexos em múltiplas abas, Possível falha silenciosa se chrome.storage.local
-estiver indisponível, Timeouts podem causar falha em conexões lentas,
-Dependência forte do estado do navegador</known_issues>
+externas sob alta carga, Possível falha silenciosa se chrome.storage.local
+estiver indisponível, Possível falha silenciosa se executor não for encontrado,
+Validação de viewport restrita a largura mínima, sem validação de altura,
+Possível atraso na atualização do estado em sessões com alta latência, Possível
+latência na comunicação assíncrona, Merge não é recursivo para objetos
+aninhados, Possível falha se nenhum seletor válido for encontrado, Dependência
+de delays fixos pode impactar performance, Possível retorno null sem tratamento
+explícito pode causar erros downstream, Possível instabilidade em elementos
+dinâmicos com carregamento lento, Delay fixo de 500ms pode não ser suficiente em
+janelas lentas, Delay fixo pode impactar performance em execuções massivas,
+Delay fixo pode não cobrir todos os casos de scroll lento, Sincronização de
+estado em sessões com alta latência, Nenhum problema conhecido documentado,
+Nenhum conhecido explicitamente, Nenhum mecanismo para detectar listeners
+duplicados, Performance API mock may not cover all edge cases, Possível atraso
+na atualização dos logs em casos de alta frequência de mudanças, Screenshots com
+erro não abrem lightbox, mas UI pode ser aprimorada para feedback, Possível
+sobreposição de lightbox em dispositivos móveis pequenos, Limite de
+armazenamento do chrome.storage pode causar perda de dados sem pruning, Possível
+falha na reinjeção do content script em páginas com CSP restritiva, Timeouts
+podem causar perda de sincronização em conexões lentas, Possível latência na
+captura de imagens grandes, Dependência da API do Chrome que pode variar entre
+versões, Dependência da aba estar ativa pode causar falhas em capturas, Captura
+de screenshot falha em URLs restritas (ex: chrome://settings), Possível lentidão
+se itemHeight ou quantidade visível não forem ajustados corretamente, Tratamento
+de erros simples, pode ser melhorado para UX mais robusta, Confirmação via
+window.confirm pode impactar UX, Não há paginação visual implementada apesar do
+prop pageSize, Possível sincronização incorreta se URL for manipulada
+externamente, Nenhum conhecido no código fornecido, Nenhum problema crítico
+identificado nos testes atuais, Dependência de manipulação direta de
+window.location pode causar fragilidade em ambientes não browser</known_issues>
 <performance_bottlenecks>build lento em grandes projetos, Latência na geração de
 scripts para sessões longas, Potencial latência em armazenamento local para
-gravações muito grandes, Nenhum identificado, Persistência síncrona pode
-impactar UX em gravações muito longas, Latência na execução de scripts em abas
-com múltiplos frames, Throttling aplicado para evitar excesso de renderizações,
-Eventos de input e wheel podem gerar alta frequência de gravação, Polling para
-retrySelector pode impactar performance se maxRetries alto, Nenhum identificado
-explicitamente, Injeção de múltiplos estilos CSS pode impactar tempo de
-carregamento, Geração combinatória de seletores e múltiplas validações
-querySelectorAll, Uso de innerText pode impactar performance em elementos
-grandes, Nenhum gargalo crítico identificado em ambiente local, Build lento em
-modo desenvolvimento com múltiplos entry points, Espera ativa para service
-workers pode impactar tempo total dos testes, Re-renderizações desnecessárias ao
-alternar tabs, Geração de código síncrona pode travar UI em casos extremos,
-Filtragem e ordenação em memória podem degradar com grandes datasets,
-Carregamento da fonte externa pode impactar renderização inicial, Listagem e
-filtragem em memória podem ser lentas com grande volume de gravações, Operações
-síncronas no storage podem impactar performance em grandes volumes, Persistência
-síncrona pode impactar escalabilidade, Overflow em listas longas pode impactar
-performance, Possível lentidão em tabelas muito grandes devido a overflow e
-transições, Nenhum identificado, operação local e rápida, Renderização de
-tabelas muito grandes pode impactar performance, Consultas complexas ao banco de
-dados sem índices adequados, Dependência da velocidade de carregamento das abas
-para iniciar replay, Delays fixos podem impactar tempo total de replay, Latência
-na comunicação entre runner e background, Operações assíncronas dependem da
-latência do armazenamento local, Flush de logs pode impactar performance se
-muitos replays ativos</performance_bottlenecks> <migration_status>Migração
-completa para Manifest V3 finalizada, Migrações executadas no startup via
-executeMigrationsIfNeeded e checkAndRunReplayMigration, Nenhuma migração em
+gravações extensas, Nenhum identificado, Persistência síncrona pode impactar UX
+em gravações muito longas, Latência na execução de scripts em abas com múltiplos
+frames, Atualizações frequentes do estado em ações rápidas podem impactar
+performance, Eventos de input e wheel podem gerar alta frequência de gravação,
+Polling para retrySelector pode impactar performance se maxRetries alto, Nenhum
+gargalo crítico identificado, interface leve e reativa, Injeção de múltiplos
+estilos CSS pode impactar tempo de carregamento, Geração combinatória de
+seletores e múltiplas validações querySelectorAll, Uso de innerText pode
+impactar performance em elementos grandes, Nenhum gargalo identificado no código
+atual, Nenhum gargalo crítico identificado em ambiente local, Espera ativa para
+service workers pode impactar tempo total dos testes, Renderização do
+SyntaxHighlighter pode ser lenta para códigos extensos, Filtragem e ordenação em
+memória podem degradar com grandes datasets, Carregamento da fonte externa pode
+impactar renderização inicial, Listagem e filtragem em memória podem ser lentas
+com grande volume de gravações, Operações síncronas no armazenamento local podem
+impactar performance, Ordenação e poda podem ser custosas com muitos registros,
+Listagem e remoção podem ser custosas sem indexação adequada, Overflow em listas
+longas pode impactar performance, Possível lentidão em tabelas muito grandes
+devido a overflow e transições, Nenhum identificado, operação local e rápida,
+Renderização de tabelas muito grandes pode impactar performance, Consultas
+complexas ao banco de dados sem índices adequados, Operações assíncronas
+dependem da latência do armazenamento local, Execução sequencial pode impactar
+ações em tabs múltiplas, Listeners ativos podem impactar performance se não
+removidos corretamente, Espera ativa com polling pode impactar performance em
+páginas complexas, Retries sequenciais podem aumentar latência em páginas
+lentas, Delays artificiais para simular digitação podem impactar tempo total,
+Dependência de resposta do background script pode impactar latência, Dependência
+do background script pode causar latência, Gerenciamento de múltiplos eventos
+simultâneos pode causar lentidão, Potencial latência em alta concorrência de
+eventos, Armazenamento e manipulação de screenshots base64 pode impactar
+memória, Emissão síncrona pode bloquear se handlers forem lentos, None
+identified in mock setup, Renderização inicial pode ser lenta com milhares de
+logs sem virtualização, Renderização de grandes listas sem virtual scrolling
+pode causar lentidão, Transições CSS podem impactar performance em dispositivos
+de baixa capacidade, Múltiplas chamadas rápidas a updateExecutionLogs podem
+causar overhead sem debounce, Persistência frequente pode impactar performance
+em sessões longas, Execução sequencial pode ser lenta para grandes volumes de
+ações, Limitação de chamadas rápidas para evitar sobrecarga, Limitação de 100ms
+entre capturas pode impactar frequência máxima, Replay pode demorar até 30
+segundos dependendo do número de ações, Renderização de imagens base64 pode
+impactar memória em grandes volumes, Carregamento síncrono da lista e detalhes
+pode causar delays, Ordenação em memória pode ser custosa para listas muito
+grandes, Nenhum gargalo identificado, Potencial gargalo em armazenamento local
+para grandes volumes, Nenhum gargalo aparente em carregamento de execuções
+mockadas, Nenhum gargalo identificado, operação simples e
+rápida</performance_bottlenecks> <migration_status>Migração para Manifest V3 em
+andamento para Firefox, Migração completa para Manifest V3 finalizada, Migrações
+executadas no startup para manter compatibilidade de dados, Nenhuma migração em
 andamento, Migração para Manifest V3 do Chrome Extensions em andamento, Migração
-parcial para Manifest V3 com fallback para V2, Migração de dados antigos no
-armazenamento local implementada, Estável, sem migrações em andamento, Migração
-parcial para TypeScript em andamento, Função migrateActionsTimestamp
+parcial para Manifest V3 com fallback para V2, Migração de dados antigos
+implementada no armazenamento local, Estável, sem migrações em andamento,
+Migração para TypeScript 5 concluída, Função migrateActionsTimestamp
 implementada e em uso, Nenhuma migração em andamento detectada, Migração para
-React 18 concluída, Hook useReplay em processo de otimização, Nenhuma migração
-em andamento identificada, Migração para novo formato de exportação/importação
-com metadata em andamento, Migração de URLs e última gravação implementada e
-funcional, Campos url e firstUrl em processo de desuso gradual, Projeto está em
-produção estável, sem migrações em andamento, Migração para TypeScript em
-andamento, 60% concluída, Migração para Manifest V3 concluída, Migração para
-versão 2.0.0 implementada e controlada via flag no storage</migration_status>
+React 18 concluída, hooks atualizados, Nenhuma migração em andamento
+identificada, Migração para novo formato de exportação/importação com metadata
+em andamento, Migração para urlOriginal implementada e executada, Migração para
+adicionar executionLogs vazios implementada, Campos legados ainda suportados,
+mas em processo de descontinuação, Projeto está em produção estável, sem
+migrações em andamento, Migração para TypeScript em andamento, 60% concluída,
+Migração para versão 2.0.0 implementada e controlada via flag no storage,
+Migração para Manifest V3 concluída, Migração para React 18 concluída, uso de
+hooks atualizado, Migração para captura de screenshots via background script
+concluída, Compatível com Manifest V3, sem migrações pendentes, Migração para
+TypeScript 5.0 concluída, Migrating to Jest 29 from older versions, Componente
+estável, sem migrações em andamento, Migração de urlOriginal e executionLogs
+parcialmente implementada e testada, Projeto já migrado para Manifest V3 do
+Chrome, Não aplicável, Componente já migrado para React Functional Components e
+hooks, Projeto está em produção estável, sem migrações ativas</migration_status>
 </current_challenges> <team_preferences> <code_review_focus>Preserve hot reload
 functionality, Code style consistency, performance, manutenibilidade, Clareza e
 legibilidade do código, Cobertura de testes, Manutenção da tipagem forte,
-Conformidade com padrões de código, Qualidade do código, Conformidade com
-padrões de linting, Segurança no uso de permissões, Clareza na separação de
-responsabilidades entre scripts, Segurança das permissões, Qualidade do código
-assíncrono, Validação de estados assíncronos, tratamento de erros, consistência
-de gravação, Segurança na validação de origem, Clareza na comunicação entre
-módulos, Consistência visual, Performance de renderização, Simplicidade do
-componente, Performance, Acessibilidade, Consistência de props, Evitar efeitos
-colaterais desnecessários, Clareza no tratamento de erros, Consistência no uso
-de async/await, Modularidade, Consistência de estado e sincronização, Uso
-correto dos hooks, Persistência correta, Verificação de compatibilidade
-cross-browser e uso correto de APIs assíncronas, Verificação de tipos, cobertura
-de testes, clareza na renderização condicional, Consistência com padrões,
-Clareza na separação de responsabilidades, Uso correto de hooks, Manutenção da
-performance, Clareza na tipagem, Ausência de efeitos colaterais, Verificação de
-uso correto do cleanUp, Garantia de não múltiplas instâncias, Verificação de
+Qualidade do código e aderência ao padrão, Performance e segurança, Segurança no
+uso de permissões, Clareza na separação de responsabilidades entre scripts,
+Segurança das permissões, Qualidade do código assíncrono, Consistência de
+estado, tratamento de erros e cobertura de testes, Segurança na validação de
+origem, Clareza na comunicação entre módulos, Consistência visual, Performance
+de renderização, Simplicidade do componente, Performance, Acessibilidade,
+Consistência de props, Evitar efeitos colaterais desnecessários, Clareza no
+tratamento de erros, Consistência no uso de async/await, Modularidade,
+Consistência de estado e sincronização, Uso correto dos hooks, Persistência
+correta, Verificação de compatibilidade cross-browser e uso correto de APIs
+assíncronas, Verificação de tipos, cobertura de testes, clareza na renderização
+condicional, Consistência de estilo, Performance e acessibilidade, Consistência
+de tipagem e uso correto de hooks, Manutenção da responsividade e usabilidade da
+UI, Clareza na tipagem, Ausência de efeitos colaterais, Verificação de uso
+correto do cleanUp, Garantia de não múltiplas instâncias, Verificação de
 tratamento correto de eventos e prevenção de duplicidade, Garantia de tipagem e
 uso correto de APIs do navegador, Consistência de hooks, tratamento de estado e
-mensagens Chrome, Tratamento de estados assíncronos, Tratamento de erros
-silencioso, Uso correto de async/await, Manutenção da anonimidade, Consistência
-de estilos, Uso correto de hooks e componentes React, Clareza na lógica de
-busca, Clareza nos comentários, Uso correto de tipos, Manutenção da arquitetura
-builder, Tratamento de erros, Clareza na priorização de seletores, Consistência
-de tipagem, Importação correta de assets, Compatibilidade cross-browser, Clareza
-e simplicidade do código, Consistência de tipos, Clareza na modelagem de ações,
-Conformidade com padrões TS e React, Verificação de erros de build e warnings,
-Conformidade com padrão de código, Verificação de configuração correta do HMR e
-variáveis de ambiente, Consistência de aliases, Separação clara de
-responsabilidades entre entry points, Qualidade e performance do bundle,
-Validação de tipos e imutabilidade, Cobertura de testes para casos de timestamp,
-Clareza e legibilidade, Uso correto de mocks, Clareza nos testes, uso correto de
+mensagens Chrome, Consistência de tipagem TypeScript, Clareza na separação de
+responsabilidades, Tratamento de erros silencioso, Uso correto de async/await,
+Manutenção da anonimidade, Consistência de estilos, Uso correto de hooks e
+componentes React, Clareza na lógica de busca, Clareza nos comentários, Uso
+correto de tipos, Manutenção da arquitetura builder, Tratamento de erros,
+Clareza na priorização de seletores, Consistência de tipagem, Importação correta
+de assets, Compatibilidade cross-browser, Clareza e simplicidade do código,
+Consistência de tipos e validação de enums, Clareza na modelagem das ações,
+Qualidade do código, Verificação de erros de build e warnings, Conformidade com
+padrão de código, Verificação de configuração correta do HMR e variáveis de
+ambiente, Segurança, Conformidade com padrões, Validação de tipos e
+imutabilidade, Cobertura de testes para casos de timestamp, Clareza e
+legibilidade, Uso correto de mocks, Clareza nos testes, uso correto de
 async/await, cobertura de funcionalidades críticas, Performance CSS, Tratamento
-adequado de estados e erros, Uso correto de hooks e memoização, Clareza na
-manipulação de estado, Tratamento correto de efeitos colaterais, Acessibilidade
-e usabilidade, Uso correto de variáveis CSS, Performance de fontes, Validação de
-tratamento de erros, geração correta de IDs e integridade dos dados,
-Consistência de tipagem e tratamento de erros, Uso correto do padrão singleton e
-debounce, Validação de tipos e integridade temporal, Conformidade com padrões de
-nomenclatura e documentação, Aderência a padrões de código, Testes de snapshot,
-Uso correto de props, Estados interativos, Acessibilidade básica,
-Responsividade, Tratamento adequado de erros, Clareza e simplicidade das
+adequado de estados assíncronos, Consistência na nomenclatura e estilo, Clareza
+na manipulação de estado, Tratamento correto de efeitos colaterais,
+Acessibilidade e usabilidade, Uso correto de variáveis CSS, Performance de
+fontes, Validação de tratamento de erros, geração correta de IDs e integridade
+dos dados, Consistência de tipos e tratamento de erros, Performance e uso
+correto do debounce, Clareza e documentação dos métodos, Consistência de tipos,
+clareza de interfaces e cobertura de testes, Aderência a padrões de código,
+Testes de snapshot, Uso correto de props, Estados interativos, Acessibilidade
+básica, Responsividade, Tratamento adequado de erros, Clareza e simplicidade das
 funções, Consistência visual e responsividade, Clareza nos estados de erro e
 carregamento, Uso correto de BEM, Legibilidade, segurança, cobertura de testes,
-Tratamento de erros, clareza de estados, uso correto do hook, Consistência na
-tipagem, Tratamento robusto de erros, Clareza na comunicação assíncrona,
-Robustez no tratamento de erros, Clareza e consistência nos logs, Cobertura de
-testes para fluxos críticos, Consistência de tipos, tratamento de erros e
-clareza, Tratamento correto de promises e erros, Clareza nos logs e mensagens,
-Consistência de logs, Uso correto das APIs Chrome</code_review_focus>
+Tratamento correto de promises e erros, Clareza nos logs e mensagens, Validação
+de tipos e tratamento de erros, Clareza nos logs e mensagens de debug, Validação
+de tipos, tratamento de erros, cobertura de testes, Consistência de estado,
+tratamento de erros e performance, Tratamento de erros e clareza na API pública,
+Conformidade com padrões de configuração e tipagem, Validação de timeout e
+retry, Tratamento de erros e consistência de estado, Verificação de tratamento
+de erros e cobertura de logs, Clareza na lógica de retries e tratamento de
+erros, Consistência na nomenclatura, Tratamento correto de tipos e null,
+Tratamento correto de erros e retries, Verificação de tratamento de erros e
+cobertura de casos de URL, Conformidade com padrões de nomenclatura, Clareza e
+legibilidade do código assíncrono, Clareza na documentação, tratamento de erros
+e performance, Clareza de logs, Verificação de tratamento de erros, Consistência
+de tipos, Clareza na documentação, Consistência de tipos e mensagens, Cobertura
+de testes para todos os tipos de mensagens, Consistência de tipos, tratamento de
+erros e cobertura de testes, Consistência na tipagem, Correctness of mocks, Test
+isolation, No side effects, Clareza nas mensagens de commit, Consistência na
+tipagem e estilo, Consistência visual, acessibilidade e responsividade,
+Validação de migrações de dados e integridade do armazenamento, Cobertura e
+qualidade dos testes, Tratamento de erros e robustez, Consistência na tipagem e
+nomenclatura, Consistência de mocks, Tratamento de erros, uso correto da API
+Chrome, performance e legibilidade, Cobertura de testes, tratamento de erros e
+clareza do código, Clareza e simplicidade, Preparação para extensibilidade,
+Performance, legibilidade, tratamento de erros e acessibilidade, Clareza na
+gestão de estado, tratamento de erros, performance e legibilidade, Clareza na
+tipagem e uso correto de hooks, Acessibilidade e usabilidade da tabela,
+Consistência visual e uso correto das variáveis CSS, Responsividade e
+acessibilidade, Consistência visual, responsividade e acessibilidade,
+Verificação de sincronização de estado e URL, Conformidade com padrões de hooks
+React, Clareza na definição de tipos e tratamento de erros, Isolamento de
+dependências, Conformidade com padrões de estilo, Consistência de estado e URL,
+Uso correto de hooks e act()</code_review_focus>
 <documentation_requirements>Document config changes, documentar scripts de
 build, Documentação clara para APIs internas e uso da extensão, Documentação
-clara para configurações e testes, Documentação clara via JSDoc para componentes
-e funções, Documentação clara para APIs internas da extensão e uso dos scripts,
-Documentação clara para APIs internas e fluxos de mensagens, Comentários inline
-claros, documentação futura para histórico e replay, Documentação clara para
-APIs de mensagem, Documentação mínima para componentes simples, Documentação
-clara de props e comportamento, JSDoc para componentes e funções, Documentação
-clara para funções públicas e serviços, Documentação clara dos hooks e efeitos
-colaterais, Documentação clara para funções assíncronas e manipulação de estado,
-Documentar componentes e funções com JSDoc, Documentação clara para funções
-públicas e componentes, Documentação clara para componentes e funções complexas,
-Documentar funções globais e integração com Firefox, Documentação clara para
-funções públicas e fluxos de eventos, Documentação clara para hooks e
-componentes React, Documentação clara para componentes e hooks, Comentários
+clara para APIs internas e componentes React, Documentação clara para APIs
+internas da extensão e uso dos scripts, Documentação clara para APIs internas e
+fluxos de mensagens, Documentação clara para APIs internas e mensagens de
+runtime, Documentação clara para APIs de mensagem, Documentação mínima para
+componentes simples, Documentação clara de props e comportamento, JSDoc para
+componentes e funções, Documentação clara para funções públicas e serviços,
+Documentação clara dos hooks e efeitos colaterais, Documentação clara para
+funções assíncronas e manipulação de estado, Documentar componentes e funções
+com JSDoc, Documentação clara em JSDoc para componentes e funções, Documentação
+clara para componentes públicos e funções utilitárias, Documentar funções
+globais e integração com Firefox, Documentação clara para funções públicas e
+fluxos de eventos, Documentação clara para hooks e componentes React,
+Documentação inline clara e atualizada para componentes e hooks, Comentários
 simples e claros, Documentar componentes e props com JSDoc, Documentação clara
 para funções públicas e opções de configuração, JSDoc para métodos públicos,
 Comentários explicativos para lógica complexa, Documentar funções públicas com
 JSDoc, Documentação clara para tipos e módulos, Documentar alias e limitações de
-compatibilidade, Documentação clara para cada tipo de ação e suas propriedades,
-Documentação inline com JSDoc, Documentação mínima para scripts de build,
-Documentação clara para configuração do ambiente de desenvolvimento, Documentar
-configurações de plugins e loaders, Explicar convenções de nomenclatura, Uso
+compatibilidade, Documentação clara para cada classe e método público,
+Documentação clara via JSDoc para componentes e funções, Documentação mínima
+para scripts de build, Documentação clara para configuração do ambiente de
+desenvolvimento, Documentação clara para novos módulos e configurações, Uso
 consistente de JSDoc para funções públicas, Documentação JSDoc para APIs
 públicas, Documentação inline para funções complexas e testes, Comentários
-inline para propriedades específicas, Documentação JSDoc para componentes e
-funções públicas, Documentação via JSDoc para componentes e funções principais,
-Comentários claros sobre variáveis e propriedades usadas, Documentação clara via
-JSDoc para métodos públicos, Documentação clara via JSDoc para todas as
-interfaces públicas, Comentários claros em CSS e JS, Documentação de theming,
-Documentação clara via JSDoc, Comentários claros em português, Explicação de
-variáveis e blocos, Comentários claros para seções CSS, Comentários explicativos
-para variáveis CSS e estados, Comentários claros em português para blocos CSS,
-Documentação clara via JSDoc para todas as funções públicas, Documentação JSDoc
-para todas as funções públicas, Comentários CSS explicativos e documentação de
-componentes, Comentários claros em CSS e documentação de componentes,
-Comentários claros em português explicando variáveis e seções, Documentação
-clara para APIs e regras de negócio, JSDoc para funções públicas e interfaces,
-Documentação clara para injeção do replay-runner, Documentar métodos públicos e
-fluxos críticos com JSDoc, Documentação clara para funções públicas e tipos,
-JSDoc para todos os tipos e interfaces, Documentação clara para funções públicas
-e fluxo de migração, Documentar fluxos de replay e estados, Comentários JSDoc
-para métodos públicos</documentation_requirements> <communication_style>Clear
-and concise comments, comentários claros e objetivos, Comentários objetivos e
-explicativos, Uso de PRs para discussão, Comentários objetivos e informativos,
-Comentários objetivos e claros, Uso de PRs para revisão, Comentários objetivos e
-técnicos, uso de inglês para termos técnicos, Comentários objetivos e técnicos,
-sem jargões desnecessários, Clara e objetiva, uso de console logs para debug,
-Comentários objetivos e técnicos, Comentários claros e objetivos, Comentários
-objetivos e em português para contexto, termos técnicos em inglês, Comentários
-objetivos em português com termos técnicos em inglês, Comentários objetivos e
-claros, uso de inglês técnico para termos específicos, PRs com descrição
-detalhada, Comentários objetivos e em português para contexto, Comentários
-claros e objetivos, uso de português para contexto, Comentários objetivos e
-técnicos, evitando redundância, Comentários objetivos e uso de inglês técnico
-para termos específicos, PRs pequenos e focados, Comentários em português para
-contexto, Uso de termos técnicos em inglês, Uso de PRs para decisões
-arquiteturais, Comentários claros e objetivos em português, Clara e objetiva,
-foco em comportamento visual, Comentários objetivos e em português, Logs de
-console para eventos importantes, Comentários objetivos e uso de emojis para
-logs e notificações, Objetivo e técnico, foco em comportamento e impacto visual,
-Comentários objetivos e logs informativos para operações críticas, Comentários
-objetivos e técnicos, sem redundância, Comentários objetivos e técnicos,
-evitando ambiguidade, Objetivo e direto em comentários e PRs, Objetivo e direto,
-Comentários explicativos, Clara e objetiva, comentários explicativos,
-Comentários sucintos e objetivos, Objetivo e direto, com foco em usabilidade,
+inline para propriedades específicas, Documentação JSDoc para todos os
+componentes e funções públicas, Documentação via JSDoc para componentes e
+funções principais, Comentários claros sobre variáveis e propriedades usadas,
+Documentação clara via JSDoc para métodos públicos, Documentação JSDoc para
+métodos públicos, Comentários explicativos em migrações e lógica complexa,
+Documentação JSDoc para todas as interfaces públicas, Comentários claros em CSS
+e JS, Documentação de theming, Documentação clara via JSDoc, Comentários claros
+em português, Explicação de variáveis e blocos, Comentários claros para seções
+CSS, Comentários explicativos para variáveis CSS e estados, Comentários claros
+em português para blocos CSS, Documentação clara via JSDoc para todas as funções
+públicas, Documentação JSDoc para todas as funções públicas, Comentários CSS
+explicativos e documentação de componentes, Comentários claros em CSS e
+documentação de componentes, Comentários claros em português explicando
+variáveis e seções, Documentação clara para APIs e regras de negócio,
+Documentação clara para funções públicas e fluxo de migração, Documentar
+interfaces e fluxos assíncronos, Documentação clara para funções públicas e
+tipos, Documentação clara em JSDoc para hooks e APIs, JSDoc para todas as
+funções públicas, Documentação clara em JSDoc para interfaces e constantes,
+Comentários JSDoc para métodos públicos, Documentar métodos públicos com JSDoc,
+Documentação clara para cada executor e fábrica, Explicar lógica de retries e
+delays, Documentação clara para métodos públicos e fluxos assíncronos, JSDoc
+detalhado para classes e métodos públicos, Documentar todos os exports públicos
+com exemplos, Documentação clara para cada tipo de mensagem e evento, JSDoc para
+todas as interfaces e enums, JSDoc para todas as classes e métodos públicos,
+JSDoc comments on mocks and setup, Documentação clara para hooks e componentes
+reutilizáveis, Documentação clara para novos componentes e hooks, Comentários
+claros em CSS e documentação do componente React, Documentação clara para
+métodos públicos e fluxos críticos, Comentários explicativos para blocos
+complexos, Documentação JSDoc para todos os métodos públicos, Documentação clara
+para helpers e fluxos críticos, Documentação clara em JSDoc para interfaces e
+hooks, Documentação clara para props e funções públicas, Documentação clara para
+hooks e componentes principais, Documentação inline para funções utilitárias e
+props, Comentários mínimos, foco em nomes claros, Comentários claros para seções
+e estados CSS, Documentação clara para uso do hook e efeitos colaterais,
+Documentação clara para interfaces e erros, Documentação clara para componentes
+e hooks, Documentação clara para componentes e funções públicas, Documentação
+clara para hooks e testes</documentation_requirements>
+<communication_style>Clear and concise comments, comentários claros e objetivos,
+Comentários objetivos e explicativos, Uso de PRs para discussão, Comentários
+objetivos e educados, foco em clareza, Comentários objetivos e técnicos, uso de
+inglês para termos técnicos, Comentários objetivos e técnicos, sem jargões
+desnecessários, Comentários objetivos e uso de logs para rastreamento,
+Comentários objetivos e técnicos, Comentários objetivos e claros, Comentários
+claros e objetivos, Comentários objetivos e em português para contexto, termos
+técnicos em inglês, Comentários objetivos em português com termos técnicos em
+inglês, Comentários objetivos e claros, uso de inglês técnico para termos
+específicos, Comentários objetivos e educados, PRs com descrição clara e
+checklist, Comentários objetivos e explicativos para lógica complexa,
+Comentários claros e objetivos, uso de português para contexto, Comentários
+objetivos e técnicos, evitando redundância, Comentários objetivos e uso de
+inglês técnico para termos específicos, Comentários em português com termos
+técnicos em inglês para precisão, PRs pequenos e focados, Comentários em
+português para contexto, Uso de termos técnicos em inglês, Comentários objetivos
+e uso de JSDoc, PRs detalhados, Comentários claros e objetivos em português,
+Clara e objetiva, foco em comportamento visual, Comentários objetivos e em
+português claro, Uso de emojis para logs e mensagens de debug, Comentários
+objetivos e uso de emojis para logs e notificações, Objetivo e técnico, foco em
+comportamento e impacto visual, Comentários objetivos e logs informativos para
+operações críticas, Comentários objetivos e formais, Logs informativos para
+operações críticas, Comentários técnicos objetivos e uso de inglês para termos
+técnicos, Objetivo e direto em comentários e PRs, Objetivo e direto, Comentários
+explicativos, Clara e objetiva, comentários explicativos, Comentários sucintos e
+objetivos, Objetivo e direto, com foco em usabilidade, Comentários objetivos e
+técnicos, sem redundância, Comentários objetivos e em português para contexto,
 Comentários objetivos e uso de termos técnicos em inglês para precisão, Objetivo
 e direto, foco em comportamento e usabilidade, Comentários objetivos e educados,
-PRs pequenos e focados, Comentários objetivos e formais, Uso de inglês para
-termos técnicos, Comentários objetivos e técnicos, sem ambiguidade, Comentários
-claros e objetivos, uso de inglês técnico para termos
-específicos</communication_style> <decision_log>Opted for react-app preset for
-simplicity, Enabled react-hot-loader for dev experience, Escolha por TypeScript
-para segurança de tipos, Suporte multiplataforma (Chrome e Firefox), Adoção do
-ts-jest para testes TypeScript, Suporte a manifest v2 e v3 para compatibilidade
-cross-browser, Manter Manifest Version 2 até migração completa para V3, Adoção
-do Manifest V3 para maior segurança e performance, Separação clara entre
-gravação e replay, uso de mensagens para comunicação entre scripts, Uso de
-mensagens para integração entre webapp e extensão, Uso de SVG para ícones para
-garantir escalabilidade, Uso de componentes funcionais para UI, Importação
-estática de assets, Fixar ScriptType como Cypress para compatibilidade, Uso da
-primeira URL capturada como referência única para gravação, Decisão de fixar
-Cypress como biblioteca padrão, Decisão de manter compatibilidade com Manifest
-V2 e V3 para maior abrangência, Uso de componentes funcionais React para melhor
-performance e simplicidade, Separação clara entre geração e apresentação de
-código, Uso de react-syntax-highlighter para UI, Uso de throttle para otimizar
-eventos de mousemove, Separação entre visualização de ações e código, Uso de
-componente funcional para simplicidade e performance, Uso de shadow DOM para
-isolamento, Exposição global para controle externo, Uso de debounce para resize
-para balancear performance e precisão, Filtragem de eventos de overlay para
-evitar ruído, Uso de Shadow DOM para encapsulamento do botão na UI, Uso de
-Cypress como biblioteca padrão para geração de código, Uso do Google Analytics
-para coleta de eventos, Identificador anônimo para client ID, Adoção de HMR para
-acelerar desenvolvimento, Uso de CSS-in-JS via injeção para controle de temas,
-Uso de penalidades para ordenar seletores, Fallbacks para garantir unicidade,
-Adoção do Cypress como framework principal, Uso do padrão Builder para geração
-de scripts, Evitar uso de IDs inválidos para seletores, Priorizar atributos de
-teste e acessibilidade, Uso de declarações de módulos para assets estáticos, Uso
-de alias para compatibilidade entre Chrome e Firefox, Uso de enums para garantir
-valores constantes e evitar strings mágicas, Uso de strict mode para evitar
-erros em produção, Remoção de chromeExtensionBoilerplate para evitar conflito em
-builds de produção, Uso de HotModuleReplacementPlugin para acelerar
-desenvolvimento, Uso de CleanWebpackPlugin para limpeza automática, Separação de
-scripts para hot reload seletivo, Separação entre migração e validação de
-timestamps para clareza e manutenção, Adoção do Builder Pattern para geração de
-scripts Cypress, Uso de Playwright para testes end-to-end da extensão Chrome,
-Uso de utilitários CSS para acelerar desenvolvimento, Separação clara entre
-componentes e utilitários, Uso de react-copy-to-clipboard para copiar código,
-Separação da lógica de replay em hook customizado, Uso de hooks para estado e
-efeitos, Separação clara entre UI e serviço de dados, Escolha da fonte Roboto
-para legibilidade e padrão visual, Decisão de manter compatibilidade com versões
-antigas do código Cypress, Uso de IDs baseados em hostname e timestamp para
-unicidade, Escolha do padrão singleton para garantir instância única, Uso de
-debounce para otimizar escrita no storage, Decisão de usar interface
-IHistoryBackend para abstração de persistência, Adotado dark mode unificado via
-CSS variables, Scrollbar customizada para WebKit, Uso de SVG inline para
-performance e flexibilidade, Adoção de dark mode unificado via CSS Variables,
-Layout fixo para 800x600, Uso de componentes funcionais para melhor performance
-e simplicidade, Adoção de tema Dark com variáveis CSS para flexibilidade, Adoção
-de tema Dark via CSS variables, Uso de BEM-like naming para modularidade, Adoção
-de tema Dark para melhor experiência noturna, Separação entre estilos modernos e
-legacy, Uso de animações para feedback visual, Uso de nomes sanitizados para
-evitar erros em sistemas de arquivos, Download via Blob e URL temporária para
-compatibilidade cross-browser, Manter funções puras para facilitar testes e
-manutenção, Adoção de tema dark como padrão para melhor conforto visual, Uso de
-flexbox para layout flexível e responsivo, Adoção do tema dark para melhor
-experiência visual, Uso de CSS variables para facilitar customização, Uso de CSS
-variables para facilitar manutenção e customização do tema, Adoção do padrão
-MVC, uso de JWT para autenticação, Uso do hook para isolar lógica de replay e
-comunicação com background, Separação do replay-runner para injeção externa para
-otimizar carregamento, Uso do padrão singleton para gerenciar estado global do
-replay, Escolha por retries e delays para simular comportamento humano, Uso de
-mensagens chrome.runtime para comunicação entre contextos, Uso de enums para
-estados e tipos de mensagens, Uso de chrome.storage.local para persistência,
-Controle de versão da migração via chave migrationVersion, Uso do padrão
-Singleton para controle único do ReplayController</decision_log>
-</team_preferences> <api_specifications> <api_style>REST para comunicação
-externa com DeploySentinel, Event-driven via chrome.runtime.onMessage e
-listeners de webNavigation, Message Passing API via postMessage e
-chrome.runtime, Chrome Runtime Messaging API (event-driven), APIs do navegador
-baseadas em callbacks e Promises, Não aplicável - componente UI local,
-Comunicação via mensagens chrome.runtime (event-driven), Chrome Extension
-Messaging API, Nenhuma API REST ou similar exposta diretamente, HTTP POST via
-fetch para Google Analytics Measurement Protocol, Função exportada como default,
-API funcional simples, WebExtension API, Nenhuma API exposta diretamente, Chrome
-Extensions API, Não aplicável diretamente (frontend React), RESTful via
-RecordingService abstraído, API interna baseada em métodos assíncronos para
-manipulação de gravações, API local baseada em métodos assíncronos para
-manipulação do storage, RESTful API para operações de histórico, N/A (módulo
-utilitário client-side), RESTful, Message Passing via
-chrome.runtime.sendMessage, Message Passing via chrome.runtime.sendMessage e
-onMessage, Message-driven API via mensagens tipadas, Não aplicável (API local de
-chrome.storage), Event-driven via chrome.runtime messaging</api_style>
-<versioning_strategy>Versionamento semântico para APIs externas, Não aplicável
-diretamente, Sem versionamento explícito, Sem versionamento explícito,
-dependente da versão da extensão, Compatibilidade com versões de Manifest V2 e
-V3, Sem versionamento explícito para mensagens, Não aplicável, Sem versionamento
-interno, gerenciado via npm, Não especificado no código, Nenhuma versão
-explícita, compatibilidade mantida via campos opcionais, Não aplicável (API
-interna de extensão), Versionamento via URL (ex: /api/v1/history), N/A,
-Versionamento via URL (/v1/, /v2/), Sem versionamento explícito no messaging,
-Versionamento implícito via tipos e enums, Controle interno via migrationVersion
-no storage</versioning_strategy> <response_formats>JSON, Objetos JSON com campos
-success e error para respostas assíncronas, Objetos JSON simples com
-propriedades source, type, code, actions, Mensagens JSON com tipo e payload
-definidos, Objetos JSON simples e Promises para respostas assíncronas, Objetos
-JSON armazenados localmente com estrutura de ações, Mensagens simples sem
-payload complexo, Não aplicável, String contendo seletor CSS válido, JSON para
-importação e exportação, JSON formatado para exportação e comunicação interna,
-Promises retornando objetos tipados ou null, N/A, Objetos JSON com campos
-success e error, Objetos JSON com propriedades success, error, tabId, Objetos
-JSON com campos success, error, completedSteps, JSON com campos obrigatórios e
-opcionais, Promises resolvidas com void ou boolean, Mensagens JSON com tipos
-definidos (ex: REPLAY_STATUS, REPLAY_RESULT)</response_formats>
-<rate_limiting>Rate limiting aplicado pelo serviço externo DeploySentinel, Não
-implementado, Não aplicável para mensagens internas, Não aplicável diretamente,
-dependente das limitações do navegador, Controle interno via debounce e flags
-para evitar excesso de eventos, Nenhuma limitação explícita implementada, Não
-aplicável, Não especificado no código, Não implementado no serviço analisado,
-Debounce interno para limitar frequência de escrita, Limite de 100 requisições
-por minuto por usuário, N/A, Limite de 100 requisições por minuto por IP, Não
-aplicável diretamente, mas controle implícito via estado do replay, Não
-aplicável diretamente, mas controle via buffer de logs e
-intervalos</rate_limiting> </api_specifications> <deployment_context>
-<environments>development, production, dev, staging, prod, Development,
-Production, Localhost (http://localhost/_), DeploySentinel
-(https://_.deploysentinel.com/_), Development (localhost), Production (Chrome
-Web Store), Desenvolvimento local, staging e produção via Chrome Web Store,
-localhost, deploysentinel.com, _.deploysentinel.com, development (localhost),
-staging (test environment), production (Chrome Web Store), Desenvolvimento
-local, staging via builds automatizados, produção via Chrome Web Store, Ambiente
-browser extension para Chrome e navegadores compatíveis, Ambiente browser,
-qualquer DOM compatível, development (localhost:PORT), Local development, Test
-environment, dev - http://localhost:3000, staging -
-https://staging.replaytest.com, prod - https://app.replaytest.com,
+PRs pequenos e focados, Comentários objetivos e explicativos, PRs detalhados,
+Comentários objetivos e técnicos em português, Comentários técnicos em português
+com termos técnicos em inglês, Clareza e objetividade em comentários,
+Comentários objetivos e técnicos em português com termos técnicos em inglês,
+Logs em inglês para padronização, Comentários objetivos e uso de logs para
+rastreabilidade, Comentários objetivos e formais, foco em contexto técnico,
+Comentários técnicos e objetivos, Comentários claros e objetivos em português
+com termos técnicos em inglês, Clear, concise comments in Portuguese, Uso de PRs
+para discussão técnica, Comentários objetivos e PRs com descrições detalhadas,
+Objetivo e técnico, com foco em clareza e concisão, Logs detalhados para
+facilitar debugging, Comentários técnicos em português, termos técnicos em
+inglês, Comentários objetivos e uso de português para contexto, inglês para
+termos técnicos, Comentários objetivos e explicativos, uso de português para
+contexto e inglês para termos técnicos, Objetivo e direto, com foco em clareza
+técnica, Uso de inglês técnico para termos específicos</communication_style>
+<decision_log>Opted for react-app preset for simplicity, Enabled
+react-hot-loader for dev experience, Escolha por TypeScript para segurança de
+tipos, Suporte multiplataforma (Chrome e Firefox), Adoção de React 17 para
+compatibilidade, Uso de Jest e Playwright para testes integrados, Manter
+Manifest Version 2 até migração completa para V3, Adoção do Manifest V3 para
+maior segurança e performance, Uso do padrão singleton para ReplayEngine,
+Separação clara entre gravação e replay, Uso de mensagens para integração entre
+webapp e extensão, Uso de SVG para ícones para garantir escalabilidade, Uso de
+componentes funcionais para UI, Importação estática de assets, Fixar ScriptType
+como Cypress para compatibilidade, Uso da primeira URL capturada como referência
+única para gravação, Decisão de fixar Cypress como biblioteca padrão, Decisão de
+manter compatibilidade com Manifest V2 e V3 para maior abrangência, Uso de
+componentes funcionais React para melhor performance e simplicidade, Uso de
+react-syntax-highlighter para renderização de código, Separação clara entre UI e
+lógica de geração, Escolha de React Hooks para gerenciamento de estado, Uso de
+throttle para otimização de eventos de mouse, Uso de componente funcional para
+simplicidade e performance, Uso de shadow DOM para isolamento, Exposição global
+para controle externo, Uso de debounce para resize para balancear performance e
+precisão, Filtragem de eventos de overlay para evitar ruído, Uso de Shadow DOM
+para encapsulamento do botão na UI, Escolha do Cypress como biblioteca padrão
+para gravação em ambiente compatível, Uso de hooks customizados para estado
+compartilhado, Uso do Google Analytics para coleta de eventos, Identificador
+anônimo para client ID, Adoção de HMR para acelerar desenvolvimento, Uso de
+CSS-in-JS via injeção para controle de temas, Uso de penalidades para ordenar
+seletores, Fallbacks para garantir unicidade, Adoção do Cypress como framework
+principal, Uso do padrão Builder para geração de scripts, Evitar uso de IDs
+inválidos para seletores, Priorizar atributos de teste e acessibilidade, Uso de
+declarações de módulos para assets estáticos, Uso de alias para compatibilidade
+entre Chrome e Firefox, Decisão de usar enums para garantir tipos seguros nas
+ações, Separação clara entre tipos de ações para facilitar manutenção, Adoção de
+strict mode no TypeScript, Uso de esModuleInterop para compatibilidade, Remoção
+de chromeExtensionBoilerplate para evitar conflito em builds de produção, Uso de
+HotModuleReplacementPlugin para acelerar desenvolvimento, Uso de aliases para
+hot reload, Separação clara de scripts por funcionalidade, Separação entre
+migração e validação de timestamps para clareza e manutenção, Adoção do Builder
+Pattern para geração de scripts Cypress, Uso de Playwright para testes
+end-to-end da extensão Chrome, Uso de utilitários CSS para acelerar
+desenvolvimento, Separação clara entre componentes e utilitários, Optou-se por
+usar hooks para controle de replay para desacoplamento, Uso de
+react-copy-to-clipboard para compatibilidade cross-browser, Uso de hooks para
+estado e efeitos, Separação clara entre UI e serviço de dados, Escolha da fonte
+Roboto para legibilidade e padrão visual, Decisão de manter compatibilidade com
+versões antigas do código Cypress, Uso de IDs baseados em hostname e timestamp
+para unicidade, Uso do padrão Singleton para garantir instância única, Debounce
+para otimizar escritas no storage, Prune automático para respeitar limite de
+armazenamento, Decisão de migrar URLs legados para urlOriginal para
+simplificação, Adotado dark mode unificado via CSS variables, Scrollbar
+customizada para WebKit, Uso de SVG inline para performance e flexibilidade,
+Adoção de dark mode unificado via CSS Variables, Layout fixo para 800x600, Uso
+de componentes funcionais para melhor performance e simplicidade, Adoção de tema
+Dark com variáveis CSS para flexibilidade, Adoção de tema Dark via CSS
+variables, Uso de BEM-like naming para modularidade, Adoção de tema Dark para
+melhor experiência noturna, Separação entre estilos modernos e legacy, Uso de
+animações para feedback visual, Uso de nomes sanitizados para evitar erros em
+sistemas de arquivos, Download via Blob e URL temporária para compatibilidade
+cross-browser, Manter funções puras para facilitar testes e manutenção, Adoção
+de tema dark como padrão para melhor conforto visual, Uso de flexbox para layout
+flexível e responsivo, Adoção do tema dark para melhor experiência visual, Uso
+de CSS variables para facilitar customização, Uso de CSS variables para
+facilitar manutenção e customização do tema, Adoção do padrão MVC, uso de JWT
+para autenticação, Uso de chrome.storage.local para persistência, Controle de
+versão da migração via chave migrationVersion, Uso de Factory para desacoplar
+executores, Listener único para mensagens do background, Uso de factory para
+criação do renderer, Sanitização de URLs para segurança, Uso do padrão hook para
+gerenciamento de estado e side effects, Uso de Promise para controle assíncrono
+e mensagens via chrome.runtime, Uso de CacheMode padrão KEEP_CACHE para
+otimização, Timeouts fixos para evitar bloqueios, Uso de singleton para
+gerenciar estado global da configuração, Decisão de manter método captureAfter
+para compatibilidade, Uso de múltiplos seletores para aumentar robustez da ação
+de clique, Adoção do Factory Pattern para desacoplamento e extensibilidade,
+Escolha do retry pattern para robustez, Simulação de digitação para evitar
+detecção de bots, Decisão por uso de delay fixo para sincronização simples, Uso
+do padrão Executor para modularizar ações, Delay fixo para garantir início da
+navegação, Uso do padrão Command para encapsular ações, Delay fixo para garantir
+estado estável antes da captura, Uso do Executor Pattern para desacoplar
+execução de ações, Uso de delay fixo para simplificar sincronização do scroll,
+Uso do padrão Executor para modularizar ações de UI, Separação clara entre API,
+config e tipos para modularidade, Uso de union types para garantir segurança e
+extensibilidade das mensagens, Uso de enums para estados e interfaces para
+contratos claros, Escolha do padrão Observer para desacoplamento e
+flexibilidade, Use manual mocks for Chrome API due to lack of official support,
+Escolha por virtualização para performance, Uso de hooks para desacoplamento da
+lógica de dados, Uso de React Testing Library para testes de UI, Separação clara
+entre lógica de dados e apresentação, Adoção de temas escuros para melhor
+experiência do usuário, Uso de debounce para otimizar gravações no storage,
+Pruning para evitar estouro de quota, Uso do padrão Singleton para garantir
+instância única do ReplayEngine, Adoção de EventBus para desacoplamento e
+extensibilidade, Uso do padrão Singleton para garantir instância única do
+serviço, Uso de Playwright para testes de integração da extensão, Uso de hook
+para abstrair acesso à configuração, Configuração padrão hardcoded para MVP, Uso
+de virtual scrolling para performance, Manter termos técnicos em inglês, Uso de
+hooks customizados para navegação e abstração do armazenamento, Uso de useMemo
+para otimização de ordenação, Confirmação explícita para ações destrutivas,
+Adoção de tema escuro para melhor conforto visual, Uso de flexbox para layout
+flexível e variáveis CSS para temas, Decisão de usar URL hash para persistência
+de estado de navegação, Uso de erros customizados para controle de fluxo, Uso de
+mocks para garantir testes isolados e confiáveis, Uso de testes unitários para
+garantir comportamento esperado, Separação clara entre UI e lógica de negócio,
+Uso de URL hash para navegação entre execuções para manter estado
+navegável</decision_log> </team_preferences> <api_specifications>
+<api_style>REST para comunicação externa com DeploySentinel, Event-driven
+Messaging API via chrome.runtime.onMessage, Message Passing API via postMessage
+e chrome.runtime, Chrome Runtime Messaging API (event-driven), APIs do navegador
+baseadas em callbacks e Promises, Nenhuma API REST ou GraphQL exposta
+diretamente, Comunicação via mensagens chrome.runtime (event-driven), Chrome
+Extension Messaging API, APIs do Chrome Extension (callback e promise-based),
+HTTP POST via fetch para Google Analytics Measurement Protocol, Função exportada
+como default, API funcional simples, WebExtension API, Não aplicável diretamente
+neste módulo, Nenhuma API exposta diretamente, Chrome Extensions API, REST API
+para controle de replay e dados de gravação, RESTful via RecordingService
+abstraído, API interna baseada em métodos assíncronos para manipulação de
+gravações, API local baseada em métodos assíncronos para manipulação do storage,
+Provável REST para backend de histórico, N/A (módulo utilitário client-side),
+RESTful, Não aplicável (API local de chrome.storage), API interna baseada em
+funções assíncronas e mensagens via chrome.runtime, Message Passing API via
+chrome.runtime.sendMessage, Funções assíncronas para acesso à configuração, Não
+aplicável - código local para execução em browser, Não aplicável (módulo
+interno), REST para comunicação com background script, Modular exports via ES
+Modules, Event-driven API via mensagens e eventos, REST API presumida para
+controle de sessões, Internal EventBus API, não exposta externamente, Chrome
+Extensions API (callback-based), Não aplicável (integração via chrome.storage
+API), RESTful via Chrome Storage API, Não aplicável para CSS, API local baseada
+em chrome.storage, sem comunicação remota, Comunicação via mensagens assíncronas
+(chrome.runtime.sendMessage), Eventos internos via EventBus, API Chrome
+Extensions (callback-based), Chrome Extension API (callback-based), Chrome
+Extensions API (event-driven), Não aplicável diretamente, Não aplicável
+diretamente, comunicação via API interna do recordingStore, Não aplicável
+diretamente, componente frontend, Não aplicável - hook interno, Não aplicável no
+código fornecido, Nenhuma API externa diretamente consumida no componente, Não
+aplicável diretamente no hook</api_style> <versioning_strategy>Versionamento
+semântico para APIs externas, Não aplicável diretamente, controle via tipos e
+comandos, Sem versionamento explícito, Sem versionamento explícito, dependente
+da versão da extensão, Compatibilidade com versões de Manifest V2 e V3, Controle
+de versão via versionamento do pacote npm, Não aplicável diretamente, Sem
+versionamento explícito para mensagens, Não aplicável diretamente no código da
+extensão, Sem versionamento interno, gerenciado via npm, Não aplicável
+diretamente neste módulo, Não aplicável, Versionamento semântico via URL e
+headers, Não especificado no código, Nenhuma versão explícita, compatibilidade
+mantida via campos opcionais, Não especificado, N/A, Versionamento via URL
+(/v1/, /v2/), Controle interno via migrationVersion no storage, Versionamento
+semântico interno (exposto no objeto global), Versionamento semântico para
+funções de replay, Versionamento via controle de versão do pacote, Versionamento
+via manifest.json da extensão, Sem versionamento explícito, alinhado ao ciclo do
+browser extension, Versionamento semântico via tags git, Versionamento implícito
+via tipos e enums, Sem versão explícita no código fornecido, Sem versionamento
+explícito, parte do ReplayEngine, Versionamento implícito via versões do Chrome
+e dependências, Não aplicável para CSS, Sem versionamento explícito no código
+analisado, Compatível com Manifest V3 do Chrome, Versionamento semântico da
+extensão via manifest, Não aplicável diretamente no hook</versioning_strategy>
+<response_formats>JSON, JSON com campos success, error e dados específicos,
+Objetos JSON simples com propriedades source, type, code, actions, Mensagens
+JSON com tipo e payload definidos, Objetos JSON simples e Promises para
+respostas assíncronas, Nenhuma resposta API gerenciada, Objetos JSON armazenados
+localmente com estrutura de ações, Mensagens simples sem payload complexo,
+Promises e callbacks padrão do Chrome Extension API, String contendo seletor CSS
+válido, Não aplicável diretamente neste módulo, Não aplicável, JSON padrão para
+respostas, JSON para importação e exportação, JSON formatado para exportação e
+comunicação interna, Promises retornando objetos tipados ou null, JSON para
+todas as respostas, N/A, Promises resolvidas com void ou boolean, JSON com
+campos success, error e executionLogs, Promises resolvidas com sessionId ou
+erros em string, Objetos JSON com campos sessionId ou error, Objetos
+ReplayConfig, Promises resolvidas ou rejeitadas com erro, Objetos JSON com
+campos de erro opcionais, JSON com status e timestamp, Mensagens JSON com campos
+tipados e discriminadores, JSON com estruturas tipadas, Callbacks with
+error-first conventions, JSON para dados de logs e execução, JSON para dados de
+logs e ações, Não aplicável para CSS, Objetos JSON armazenados no
+chrome.storage.local, Objetos JSON com campos de status, erro e dados
+específicos, Base64 encoded image strings, Strings de erro prefixadas com
+&apos;error:&apos;, Base64 encoded JPEG data URLs ou strings de erro prefixadas,
+Dados armazenados em JSON no chrome.storage.local, Não aplicável diretamente,
+Objetos JSON tipados para execuções e steps, JSON para dados de execuções, Não
+aplicável diretamente no hook</response_formats> <rate_limiting>Rate limiting
+aplicado pelo serviço externo DeploySentinel, Não implementado explicitamente,
+Não implementado, Não aplicável para mensagens internas, Não aplicável
+diretamente, dependente das limitações do navegador, Não aplicável, Controle
+interno via debounce e flags para evitar excesso de eventos, Nenhuma limitação
+explícita implementada, Não aplicável diretamente neste módulo, Limite de
+requisições para endpoints de replay para evitar sobrecarga, Não especificado no
+código, Não implementado no serviço analisado, Debounce interno para limitar
+frequência de gravações, Não especificado, N/A, Limite de 100 requisições por
+minuto por IP, Controle interno para evitar múltiplas chamadas simultâneas
+conflitantes, Limite de 5 screenshots por minuto por usuário, Não aplicável no
+contexto local da extensão, Não aplicável para CSS, Controle via debounce para
+evitar chamadas excessivas, Throttle para persistência de estado a cada 500ms,
+Throttle mínimo de 100ms entre capturas, Throttle interno de 100ms entre
+capturas para evitar sobrecarga, Nenhuma limitação explícita no código de teste,
+Não aplicável diretamente, Não aplicável diretamente no hook</rate_limiting>
+</api_specifications> <deployment_context> <environments>development,
+production, dev, staging, prod, Development, Production, Development
+(localhost), Production (Chrome Web Store, Firefox Add-ons), Localhost
+(http://localhost/_), DeploySentinel (https://_.deploysentinel.com/_),
+Production (Chrome Web Store), Desenvolvimento local, staging e produção via
+Chrome Web Store, localhost, deploysentinel.com, _.deploysentinel.com,
+development (localhost), staging (test environment), production (Chrome Web
+Store), Desenvolvimento local, staging via builds automatizados, produção via
+Chrome Web Store, Development - localhost, Production - Chrome Web Store
+Extension, Ambiente browser extension para Chrome e navegadores compatíveis,
+Desenvolvimento local, Produção via publicação na Chrome Web Store, Ambiente
+browser, qualquer DOM compatível, dev, staging, production, URLs dependem do
+ambiente de CI/CD, development (localhost:PORT), Local development, Test
+environment, Development (http://localhost:3000), Staging
+(https://staging.replayapp.com), Production (https://app.replayapp.com),
 Desenvolvimento, Staging, Produção, Ambientes típicos: desenvolvimento, staging
-e produção, Desenvolvimento local, Produção via publicação na Chrome Web Store,
-dev - http://dev.history.local, staging - http://staging.history.local, prod -
-https://history.prod.company.com, dev, staging, production, dev
-(dev.example.com), staging (staging.example.com), prod (example.com),
-Development (localhost), Staging (testes internos), Production (Chrome Web
-Store), Development - localhost, Staging - URL interna, Production - Chrome Web
-Store, Staging</environments> <deployment_method>Static hosting, CI/CD
+e produção, Ambiente browser com suporte a chrome.storage.local, dev, staging,
+prod com URLs específicas não detalhadas, dev (dev.example.com), staging
+(staging.example.com), prod (example.com), dev, staging, production - URLs
+variam conforme extensão instalada, Development, Staging, Production, Dev,
+Staging, Prod - execução em browser controlado, Staging - ambiente de testes
+interno, Production - Chrome Web Store, dev - http://localhost:3000, staging -
+https://staging.example.com, prod - https://app.example.com, Dev, Staging, Prod,
+URLs dependem do sistema maior, dev, staging, prod (não detalhados), Test,
+Staging (testes internos), Development, Staging, Production - URLs dependem do
+ambiente da extensão, Desenvolvimento local e produção em browser extension,
+Staging, Produção, Development, Staging, Production (extensão Chrome), dev,
+staging, production com URLs específicas não detalhadas, URLs dependem do
+ambiente de deploy, Development - http://localhost:3000, Production -
+https://app.example.com</environments> <deployment_method>Static hosting, CI/CD
 pipelines, Docker, Kubernetes, Chrome Web Store, Firefox Add-ons Marketplace,
-Empacotamento como extensão zip para browsers, Chrome Web Store Extension,
-Publicação via Chrome Web Store, Chrome Extension package, possivelmente CI/CD
-para publicação automática, CI/CD pipeline, Chrome Web Store deployment, CI/CD
-via GitHub Actions, Publicação como extensão Chrome/Firefox, Web Extension,
-Static Hosting, Browser extension injection, Distribuição via Chrome Web Store
-como extensão, Chrome Extension via Web Store, Chrome Extension Packaging and
-Publishing, CI/CD pipeline via GitHub Actions, Distribuído via npm como
-biblioteca JavaScript, WebExtension packaging, CI/CD pipeline com deploy
-automatizado, Local Node.js server, Build via Webpack, Deploy manual ou CI/CD
-externo, Extensão Chrome carregada localmente via Playwright, Docker containers
-orquestrados via Kubernetes, Deploy via pipeline CI/CD, possivelmente Docker ou
-Vercel/Netlify, Deploy via containers Docker ou servidores Node.js, Extensão
-Chrome empacotada, Deploy via CI/CD pipeline para ambiente web, Docker
-containerizado para front-end, Deploy via CI/CD pipeline automatizado,
-Publicação via Chrome Web Store, builds automatizados via CI, Chrome Extension
-package, Docker e Kubernetes presumidos, Chrome Extension Store, Build com npm
-scripts</deployment_method> <environment_variables>MANIFEST_VERSION para
-controle de versão do manifest, CHROME_EXTENSION_ID, DEPLOYSENTINEL_API_KEY, Não
-aplicável, Nenhuma explícita, API_KEYS (externos), Nenhum variável sensível
-exposta neste módulo, Nenhuma variável de ambiente explícita no código, Nenhuma
-variável sensível exposta no código, Nenhum explícito no código, BABEL_ENV,
-NODE_ENV, ASSET_PATH, PORT, BABEL_ENV=development, NODE_ENV=development,
+Publicação via lojas de extensões (Chrome Web Store, Firefox Add-ons), Chrome
+Web Store Extension, Publicação via Chrome Web Store, Extensão Chrome empacotada
+e distribuída via Web Store, CI/CD pipeline, Chrome Web Store deployment, CI/CD
+via GitHub Actions, Publicação como extensão Chrome/Firefox, Extensão Chrome
+empacotada e publicada, Browser extension injection, Distribuição via Chrome Web
+Store como extensão, Chrome Extension via Web Store, CI/CD pipeline via GitHub
+Actions, Distribuído via npm como biblioteca JavaScript, WebExtension packaging,
+Docker para containerização, GitHub Actions para CI/CD, CI/CD pipeline com
+deploy automatizado, Local Node.js server, Manual via build Webpack e upload
+para Chrome Web Store, Extensão Chrome carregada localmente via Playwright,
+Docker containers orquestrados via Kubernetes, Deploy via pipeline CI/CD,
+possivelmente Docker ou Vercel/Netlify, Deploy via containers Docker ou
+servidores Node.js, Distribuído como parte de extensão ou aplicação web, Docker
+com orquestração Kubernetes presumida, Deploy via CI/CD pipeline para ambiente
+web, Docker containerizado para front-end, Deploy via CI/CD pipeline
+automatizado, Chrome Extension Store, Distribuição via Chrome Web Store, Deploy
+via CI/CD em servidores cloud com Docker, CI/CD pipeline automatizado, Extensão
+Chrome via Chrome Web Store, Deploy via pipelines CI/CD para ambientes web,
+Docker containers para ambiente de execução, Build automatizado com npm scripts,
+Docker para backend, Browser Extension para frontend, Docker e Kubernetes
+presumidos para sistema maior, Docker presumido, Docker container dentro do
+ReplayEngine, Local environment for tests, Chrome Extension packaging, Chrome
+Extension Packaging, Deploy via CI/CD em servidores web estáticos ou containers,
+Distribuição via browser extension packaging, Chrome Web Store (extensão
+Chrome), Possível uso de CI/CD para build e deploy automatizado, Publicação como
+extensão Chrome via Chrome Web Store, Publicação via Chrome Web Store e
+instalação manual para testes, Extensão Chrome (packaged), Docker e CI/CD via
+GitHub Actions, Docker e CI/CD via GitHub Actions presumidos, Deploy via
+pipeline CI/CD com Docker e Kubernetes, Deploy via Vercel ou Netlify para
+frontend React, Docker com CI/CD automatizado</deployment_method>
+<environment_variables>MANIFEST_VERSION para controle de build entre Manifest V2
+e V3, CHROME_EXTENSION_ID, DEPLOYSENTINEL_API_KEY, Configurações internas via
+chrome.storage.local, sem variáveis externas, Nenhuma explícita, API_KEYS
+(externos), Nenhum variável sensível exposta neste módulo, Nenhuma variável
+sensível exposta neste componente, Nenhuma variável de ambiente explícita no
+código, Nenhuma variável sensível exposta no código, Nenhuma variável de
+ambiente sensível exposta no código, NODE_ENV, CYPRESS_BASE_URL, API_URL,
+BABEL_ENV, ASSET_PATH, PORT, BABEL_ENV=development, NODE_ENV=development,
 ASSET_PATH=/, PORT (definido em ./env), MANIFEST_VERSION, npm_package_version,
 .env.local, .env.development.local, .env.test.local, .env.production.local,
-Nenhum variável de ambiente explícita, REACT_APP_API_URL, REACT_APP_ENVIRONMENT,
-REACT_APP_ANALYTICS_KEY, Variáveis para API endpoints e chaves, não expostas no
-código, --bg-dark, Variáveis para configuração do storage e endpoints externos,
-Nenhuma variável sensível configurada, HISTORY_BACKEND_URL, JWT_SECRET,
---text-primary, --primary, --error, --success-bg, DATABASE_URL, API_KEYS,
-CHROME_EXTENSION_ID, API_KEYS (externos ao handler), REPLAY_API_URL, NODE_ENV,
-Configurações de replay via chrome.storage.sync (ex: maxRetries,
-logLevel)</environment_variables> <infrastructure_constraints>Limitações das
-APIs de extensão dos navegadores, Necessidade de builds separados para Chrome e
-Firefox, Limitação a Manifest Version 2, Permissões restritas pelo navegador,
-Limitação ao ambiente do navegador Chrome e suas APIs, Limitação ao ambiente de
-browser, restrições de APIs Chrome Extensions, Execução limitada ao ambiente do
-navegador Chrome, Limitações do ambiente de extensões Chrome, como storage
-quotas e permissões, Limitações do ambiente de extensão de navegador, restrições
-de API e armazenamento local, Limitações do ambiente de extensão de navegador,
-Dependência de APIs específicas do navegador, Limitação a ambientes que suportem
-shadow DOM, Limitações do armazenamento local do navegador e políticas de
-extensão, Limitações do ambiente de extensão Chrome e compatibilidade com
-browsers, Limitado ao ambiente de navegador Chrome e APIs de extensão,
-Necessidade de container DOM &apos;#app-container&apos; disponível no host,
-Dependência de ambiente DOM e suporte a querySelectorAll, Limitações das APIs
-suportadas por cada navegador, Necessita Node.js ambiente local, porta
-disponível para servidor, Limitação de tamanho do bundle para extensão Chrome,
-Compatibilidade com múltiplas versões do navegador, Necessidade de ambiente com
-Chromium instalado, Limitação de memória para containers frontend, Requisitos de
-alta disponibilidade para replay, Frontend leve, dependente de backend para
-persistência, Dependência de armazenamento persistente confiável para gravações,
-Limitações do chrome.storage.local em tamanho e performance, Limitação de
-armazenamento em disco para histórico local, Necessidade de alta disponibilidade
-para backend, Dependência de ambiente browser para execução, Limitações de
-largura de banda para assets estáticos, Compatibilidade com navegadores modernos
-e fallback para antigos, Limitação de memória em pods Kubernetes a 512MB,
-Limitações da API Chrome e permissões de extensão, Limitações do ambiente de
-extensão Chrome, sandboxing e permissões restritas, Limitações do ambiente de
-extensão Chrome, Restrição a APIs permitidas pelo Manifest V3, Suporte a
-múltiplas sessões simultâneas e baixa latência, Limitações do ambiente Chrome
-Extension Manifest V3, sandboxing e permissões</infrastructure_constraints>
-</deployment_context> </system_architecture>
+Nenhum variável de ambiente explícita, REPLAY_API_URL, NODE_ENV, AUTH_TOKEN,
+Variáveis para API endpoints e chaves, não expostas no código, --bg-dark,
+Variáveis para configuração do storage e endpoints externos, Nenhuma variável de
+ambiente específica, Configurações para conexão com banco e API keys (não
+expostas), --text-primary, --primary, --error, --success-bg, DATABASE_URL,
+JWT_SECRET, API_KEYS, Variáveis de configuração via manifest.json e background
+script, REPLAY_API_URL, NODE_ENV, CHROME_EXTENSION_ID, Nenhuma variável
+sensível, Configurações de timeout e retries via variáveis de ambiente,
+LOG_LEVEL, MAX_RETRIES, API_KEYS (não usados diretamente neste executor),
+OAUTH_CLIENT_ID, REPLAY_API_URL, Variáveis para configuração de endpoints e
+autenticação, Não especificado, Nenhuma variável específica para EventBus,
+NODE_ENV=test, API_KEYS (externos, não usados diretamente no componente),
+Variáveis para API keys e configurações não expostas no código, Não aplicável
+para CSS, Não aplicável, Configurações via configManager (ex: retryDelay,
+maxRetries, cacheMode), Nenhuma variável de ambiente explícita, Nenhuma variável
+sensível exposta no código de teste, Configurações de UI via useExecutionConfig
+(ex: thumbnailMaxPx), Variáveis para configuração de API e armazenamento não
+expostas, Variáveis para API endpoints e configurações gerais, Variáveis CSS
+customizadas para cores e temas (ex: --bg-primary, --text-primary), Nenhuma
+variável de ambiente necessária para o hook, LOG_STORAGE_PATH,
+MAX_STORAGE_QUOTA, Nenhuma variável sensível usada diretamente no componente,
+Não aplicável diretamente no hook</environment_variables>
+<infrastructure_constraints>Limitações das APIs de extensão dos navegadores,
+Necessidade de builds separados para Chrome e Firefox, Limitações impostas pelas
+políticas das lojas de extensões, Compatibilidade com múltiplas versões de
+browsers, Limitação a Manifest Version 2, Permissões restritas pelo navegador,
+Limitação ao ambiente do navegador Chrome e suas APIs, Limitações do ambiente de
+extensão Chrome e APIs disponíveis, Execução limitada ao ambiente do navegador
+Chrome, Limitações do ambiente de extensões Chrome, como storage quotas e
+permissões, Limitações do ambiente de extensão de navegador, restrições de API e
+armazenamento local, Limitações do ambiente de extensão Chrome para acesso a
+APIs e armazenamento, Dependência de APIs específicas do navegador, Limitação a
+ambientes que suportem shadow DOM, Limitações do armazenamento local do
+navegador e políticas de extensão, Limitações do ambiente de extensão Chrome e
+compatibilidade com browsers, Limitação ao ambiente de execução do navegador
+Chrome, Dependência da API de extensões do Chrome, Necessidade de container DOM
+&apos;#app-container&apos; disponível no host, Dependência de ambiente DOM e
+suporte a querySelectorAll, Limitações das APIs suportadas por cada navegador,
+Limitação de recursos para execução paralela de testes, Necessita Node.js
+ambiente local, porta disponível para servidor, Limitação a ambiente de
+navegador Chrome, Build deve gerar arquivos estáticos compatíveis, Necessidade
+de ambiente com Chromium instalado, Limitação de memória para containers
+frontend em 512MB, Frontend leve, dependente de backend para persistência,
+Dependência de armazenamento persistente confiável para gravações, Limite de 5MB
+para armazenamento local do Chrome, Limitações de armazenamento e throughput
+para histórico de gravações, Dependência de ambiente browser para execução,
+Limitações de largura de banda para assets estáticos, Compatibilidade com
+navegadores modernos e fallback para antigos, Limitação de memória em pods
+Kubernetes a 512MB, Limitações do ambiente de extensões Chrome (sandbox,
+permissões), Limitação de conexões simultâneas para backend de replay,
+Limitações da API Chrome Extensions e Manifest V3, Limitações do armazenamento
+chrome.storage.sync (quota e latência), Execução limitada ao contexto do browser
+e permissões de script, Execução em ambiente com acesso ao DOM do browser,
+Limitações da API Chrome para comunicação entre background e content scripts,
+Limitação de memória para background script, Execução assíncrona obrigatória
+para não travar UI, Limitação de memória para múltiplas sessões simultâneas,
+Necessidade de baixa latência e alta disponibilidade, Necessidade de
+armazenamento para imagens base64 e logs, Execução em ambiente Node.js com
+memória limitada, Tests must run in Node.js environment simulating browser APIs,
+Limitações do ambiente de extensão Chrome para armazenamento e execução,
+Limitações do ambiente de extensão Chrome, armazenamento local e permissões,
+Compatibilidade com navegadores modernos e suporte a CSS3, Limite de
+armazenamento do chrome.storage.local (~5MB a 6MB), Limitações da API Chrome
+Extension (permissões, CSP, sandboxing), Limitações da API Chrome e permissões
+declaradas no manifesto, Limitações da API Chrome e permissões de extensão,
+Limitações inerentes ao ambiente de extensão Chrome e permissões, Limitações do
+ambiente de extensão Chrome, armazenamento local limitado, Limitação de memória
+para renderização de imagens base64 em larga escala, Dependência de
+armazenamento local e performance do cliente, Limitações de memória e CPU para
+containers frontend, Execução exclusivamente no navegador, sem backend, Limite
+de armazenamento local, necessidade de escalabilidade, Requisitos mínimos de
+memória e CPU para execução React, Execução em browser, dependência de
+window.location</infrastructure_constraints> </deployment_context>
+</system_architecture>
 
 <project_files> <relevant_files> <directory path="."> <file>
-<path>src/pages/Common/hooks.ts</path> <name>hooks.ts</name> <summary>Este
-arquivo contém hooks React customizados que gerenciam preferências e estados
-relacionados à biblioteca de testes, posição da barra de interface, estado de
-gravação de ações e configurações de timing. O código centraliza a persistência
-e sincronização desses estados com localStorage e chrome.storage, garantindo
-consistência entre sessões e atualizações em tempo real. Destaca-se a fixação da
-biblioteca Cypress como padrão, a recuperação e atualização da posição da barra,
-o acompanhamento do estado de gravação com escuta de mudanças externas, e a
-gestão configurável de parâmetros de timing, todos voltados para melhorar a
-experiência do usuário e a integridade dos dados no contexto de uma aplicação de
-automação de testes ou gravação de ações.</summary> </file> <file>
-<path>src/pages/Popup/Popup.tsx</path> <name>Popup.tsx</name> <summary>Este
-arquivo React implementa a interface principal de um popup para uma extensão de
-navegador focada na gravação e geração de scripts de teste automatizados,
-especialmente para Cypress. Ele gerencia o estado da gravação de testes,
-histórico de gravações e visualização detalhada, permitindo ao usuário iniciar,
-finalizar e revisar gravações, além de visualizar o código gerado ou as ações
-capturadas. A aplicação integra-se com APIs do navegador para manipulação de
-abas e frames, além de utilizar hooks customizados para persistência e
-preferências, promovendo uma experiência fluida e contextualizada para criação
-de testes automatizados a partir das interações do usuário no
-navegador.</summary> </file> <file> <path>src/pages/types/index.ts</path>
-<name>index.ts</name> <summary>Este arquivo define um conjunto estruturado de
-enums e classes TypeScript que modelam ações de interação do usuário e eventos
-relacionados à automação de testes, especialmente para scripts do tipo Cypress.
-Ele encapsula diferentes tipos de ações como cliques, inputs, navegação,
-redimensionamento e captura de tela, representando cada uma com propriedades
-específicas para capturar detalhes contextuais e temporais. O código foca em
-representar o comportamento funcional das ações de UI, permitindo a criação,
-validação e manipulação de eventos de teste automatizados, facilitando a
-integração com sistemas de gravação e reprodução de testes. Além disso, inclui
-utilitários para validar tipos de ações suportadas, promovendo consistência e
-segurança na manipulação dos dados. A estrutura modular e tipada garante clareza
-e robustez para uso em pipelines de testes automatizados e análise de interações
-complexas em aplicações web.</summary> </file> <file>
-<path>src/pages/Popup/components/RecordingDetail.tsx</path>
-<name>RecordingDetail.tsx</name> <summary>O componente RecordingDetail é uma
-interface React que exibe detalhes de uma gravação de teste automatizado,
-permitindo ao usuário visualizar ações capturadas e o código Cypress gerado para
-reprodução. Ele gerencia estados internos para alternar entre visualização de
-ações e código, controla o processo de replay da gravação com diferentes modos
-de cache, e oferece funcionalidades para copiar o código para a área de
-transferência e baixar o arquivo de teste. O componente integra-se com hooks
-personalizados para controle do replay, utiliza ícones para melhorar a
-usabilidade e apresenta feedback visual sobre o status do replay, garantindo uma
-experiência interativa e eficiente para desenvolvedores que trabalham com testes
-automatizados baseados em gravações de interação.</summary> </file> <file>
-<path>src/pages/Popup/components/RecordingHistory.tsx</path>
-<name>RecordingHistory.tsx</name> <summary>O componente RecordingHistory é uma
-interface React que gerencia e exibe um histórico de gravações de sessões,
-permitindo busca, ordenação, seleção múltipla, exclusão, exportação e importação
-de dados. Ele mantém estados internos para controle de carregamento, seleção e
-notificações, aplicando filtros e ordenações eficientes via useMemo, além de
-interagir com um serviço externo RecordingService para persistência e
-manipulação dos dados. A interface é responsiva e acessível, com feedback visual
-e controle de ações críticas, garantindo uma experiência fluida e segura para o
-usuário final.</summary> </file> <file>
-<path>src/pages/storage/recording-service.ts</path>
-<name>recording-service.ts</name> <summary>O código implementa um serviço de
-gerenciamento de gravações de ações de usuário, abstraindo a complexidade do
-armazenamento e fornecendo uma API simples para criação, listagem, busca,
-exportação e importação dessas gravações. Ele gera identificadores únicos
-baseados em hostname e timestamp, valida dados de entrada, gera código Cypress
-para testes automatizados e mantém compatibilidade com versões anteriores. O
-serviço também oferece funcionalidades avançadas como busca por hostname e
-intervalo de datas, além de suportar importação e exportação em lote com
-tratamento robusto de erros e logs detalhados, garantindo integridade e
-consistência dos dados armazenados.</summary> </file> <file>
 <path>src/pages/storage/recording-store.ts</path>
 <name>recording-store.ts</name> <summary>O código implementa um singleton
-chamado RecordingStore para gerenciar o histórico de gravações utilizando a API
-chrome.storage.local. Ele oferece funcionalidades para salvar, listar, obter,
-remover e limpar gravações, além de realizar migrações de dados antigos para
-novos formatos, garantindo a integridade e limite máximo de entradas
-configurável. O comportamento inclui debounce para otimizar operações de
-escrita, aplicação de estratégias de poda de dados e tratamento robusto de
-erros, assegurando persistência eficiente e consistente do histórico de
-gravações em ambiente de extensão Chrome.</summary> </file> <file>
-<path>src/pages/types/recording.ts</path> <name>recording.ts</name>
-<summary>Este arquivo define interfaces TypeScript para um sistema de histórico
-de gravações focado em capturar, armazenar e gerenciar sessões de gravação de
-ações de usuário em URLs específicas. O componente principal é a interface
-RecordingEntry, que estrutura os dados de cada gravação, incluindo
-identificadores únicos, URLs originais, timestamps de início e fim, ações
-registradas e código gerado para testes automatizados com Cypress. Além disso,
-há configurações para controle do histórico, como limite máximo de entradas e
-estratégias de poda, e uma interface para backend que abstrai operações
-assíncronas de persistência, listagem, recuperação e remoção de gravações. O
-design modular e tipado assegura integridade dos dados e facilita a integração
-com sistemas de automação de testes e análise comportamental, garantindo
-rastreabilidade e manutenção eficiente do histórico de gravações.</summary>
-</file> <file> <path>src/hooks/use-replay.ts</path> <name>use-replay.ts</name>
-<summary>O código implementa um React hook customizado chamado useReplay, que
-gerencia o ciclo de vida de replays de gravações dentro de uma extensão Chrome.
-Ele coordena a criação e remoção de abas, comunicação assíncrona com o
-background orchestrator via mensagens, e mantém estados internos para controlar
-o status do replay, erros e identificação da aba ativa. O hook oferece funções
-para iniciar, parar, pausar e retomar replays, garantindo sincronização do
-estado local com eventos externos, como fechamento de abas, e tratamento robusto
-de erros, habilitando uma experiência de replay confiável e integrada ao sistema
-maior de gravação e reprodução de sessões.</summary> </file> <file>
-<path>src/modules/replay/index.ts</path> <name>index.ts</name> <summary>Este
-módulo centraliza as funcionalidades relacionadas ao replay de gravações,
-exportando o handler principal responsável por controlar a lógica de replay e
-tipos associados para garantir consistência tipográfica. Seu comportamento
-principal é atuar como ponto único de acesso para funcionalidades de replay,
-facilitando a integração e manutenção do sistema. A arquitetura modular permite
-que o replay-runner seja injetado separadamente, otimizando a carga e execução
-do código, além de garantir que o módulo mantenha foco exclusivo na exportação e
-organização das funcionalidades de replay.</summary> </file> <file>
-<path>src/modules/replay/replay-handler.ts</path> <name>replay-handler.ts</name>
-<summary>O código implementa um gerenciador singleton chamado ReplayHandler,
-responsável por coordenar a execução de replays de gravações de ações do usuário
-em abas do navegador Chrome. Ele gerencia a criação de abas, injeção de scripts
-para execução das ações gravadas, monitoramento do estado do replay e
-comunicação assíncrona entre o popup e o runner. O ReplayHandler mantém o estado
-interno dos replays ativos, atualiza o status conforme o progresso e trata
-erros, garantindo uma experiência controlada e sincronizada para a reprodução
-automatizada de interações, essencial para testes automatizados e validação de
-fluxos de usuário em aplicações web.</summary> </file> <file>
-<path>src/modules/replay/replay-runner.ts</path> <name>replay-runner.ts</name>
-<summary>O código ReplayRunner é um módulo JavaScript/TypeScript projetado para
-executar sequências de ações gravadas em uma nova aba do navegador, simulando
-interações do usuário como cliques, digitação e navegação. Ele gerencia o estado
-do replay, realiza tentativas com retries e delays configuráveis, limpa cache
-quando necessário e comunica seu progresso e resultados ao background script via
-mensagens do Chrome Runtime. O módulo assegura robustez com tratamento de erros,
-logging detalhado e sincronização de estado, habilitando automação confiável de
-testes ou reproduções de sessões de usuário em ambientes web.</summary> </file>
-<file> <path>src/types/replay.ts</path> <name>replay.ts</name> <summary>O código
-define um sistema tipado em TypeScript para gerenciar o replay de gravações de
-ações do usuário em um ambiente web, incluindo modos de replay, estados,
-mensagens e resultados. Ele estrutura mensagens para iniciar, monitorar,
-executar e finalizar replays, permitindo controle detalhado do fluxo e
-tratamento de erros. Essa arquitetura modular facilita a integração com
-componentes externos, garantindo rastreabilidade e controle preciso do processo
-de replay, essencial para automação de testes e análise
-comportamental.</summary> </file> <file>
-<path>src/pages/Background/replay-controller.ts</path>
-<name>replay-controller.ts</name> <summary>O ReplayController é um componente
-central para gerenciar a execução de replays de gravações de ações do usuário em
-abas do navegador, garantindo continuidade mesmo diante de mudanças de URL ou
-fechamento de abas. Ele mantém o estado dos replays ativos, registra logs
-detalhados com níveis variados de severidade, e coordena a injeção e comunicação
-com scripts de execução (runner) para realizar as ações gravadas. Além disso,
-oferece mecanismos robustos para inicialização, recuperação de estado, controle
-de fluxo, tratamento de erros e comunicação assíncrona com outras partes do
-sistema, habilitando monitoramento em tempo real e controle granular dos
-processos de replay.</summary> </file> </directory> </relevant_files>
-</project_files> </context> </onboarding_summary> </context_reference>
+chamado RecordingStore para gerenciar o histórico de gravações utilizando
+chrome.storage.local, garantindo persistência e controle eficiente dos dados.
+Ele oferece funcionalidades para salvar, listar, obter, remover e limpar
+gravações, além de realizar migrações de dados legados e gerenciar logs de
+execução associados. O comportamento inclui debounce para otimização de escrita,
+estratégias de poda para limitar o tamanho do histórico, agrupamento de
+execuções em sessões e tratamento de erros, assegurando integridade e
+performance no armazenamento local do navegador.</summary> </file> <file>
+<path>src/pages/types/recording.ts</path> <name>recording.ts</name> <summary>O
+código define interfaces TypeScript para um sistema de histórico de gravações de
+sessões de usuário, focado em registrar, armazenar e recuperar dados detalhados
+sobre gravações de interações web. Ele modela entradas de gravação com metadados
+como URLs, timestamps, ações capturadas e logs de execução, além de uma
+configuração para gerenciar o armazenamento dessas gravações com políticas de
+remoção. A interface backend especifica operações assíncronas para salvar,
+listar, obter, remover e limpar gravações, garantindo um controle estruturado e
+escalável do histórico, essencial para funcionalidades de replay e análise
+comportamental em aplicações de teste automatizado.</summary> </file> <file>
+<path>src/pages/Popup/components/LayoutWrapper.css</path>
+<name>LayoutWrapper.css</name> <summary>Este arquivo CSS define o layout
+principal e o tema visual para uma aplicação web com foco em uma interface dark
+mode unificada. Ele estrutura o container principal com dimensões fixas de
+800x600 pixels, organizando o conteúdo em colunas flexíveis e aplicando estilos
+específicos para o header, botões e áreas de conteúdo. O código também
+implementa uma scrollbar customizada para melhorar a experiência do usuário,
+além de ajustar o padding e alinhamento para diferentes views, como home,
+history e detail. O uso de variáveis CSS para cores, espaçamentos e transições
+garante consistência visual e facilita a manutenção do tema escuro em toda a
+aplicação.</summary> </file> <file>
+<path>src/pages/Popup/components/recording-detail.css</path>
+<name>recording-detail.css</name> <summary>O código CSS apresentado define o
+estilo para o componente RecordingDetail, que oferece uma visualização detalhada
+de gravações com tema dark, focando em alta qualidade visual e usabilidade. Ele
+estrutura o layout em flexbox, organiza cabeçalhos, metadados, áreas de
+conteúdo, abas de navegação, barras de ferramentas e botões com estados
+interativos, além de suportar responsividade para dispositivos móveis. O
+componente também inclui animações suaves, barras de progresso customizadas e
+tratamento visual para estados de erro e carregamento, garantindo uma
+experiência consistente e acessível para usuários que precisam analisar e
+interagir com gravações de forma eficiente e visualmente agradável.</summary>
+</file> <file> <path>src/replay/types/session.ts</path> <name>session.ts</name>
+<summary>O código define interfaces e enums para gerenciar sessões de replay de
+ações de usuário em um sistema, permitindo o controle detalhado do estado da
+sessão, progresso, resultados e opções de execução. Ele suporta múltiplos status
+de replay, registro de logs de execução com screenshots codificados em base64, e
+configurações para cache e tentativas de repetição. A estrutura facilita o
+monitoramento, controle e análise do comportamento das sessões de replay,
+garantindo rastreabilidade e robustez na execução automatizada de ações, com
+foco em integração e extensibilidade dentro de um sistema maior de análise e
+reprodução de interações.</summary> </file> <file>
+<path>src/pages/Popup/components/ExecutionHistory.tsx</path>
+<name>ExecutionHistory.tsx</name> <summary>O componente ExecutionHistory é uma
+interface React que exibe um histórico virtualizado de logs de execução,
+incluindo miniaturas de screenshots associadas a cada ação registrada. Ele
+integra-se a um armazenamento local (recordingStore) para carregar e atualizar
+dinamicamente os logs conforme mudanças no armazenamento do Chrome, permitindo
+navegação eficiente por grandes volumes de dados via scroll virtual. O
+componente também oferece visualização ampliada das screenshots em um lightbox,
+além de interpretar e apresentar descrições contextuais das ações executadas,
+como cliques, inputs e navegações, garantindo uma experiência detalhada e
+responsiva para análise de execuções automatizadas ou replays.</summary> </file>
+<file> <path>src/pages/Popup/components/execution-history.css</path>
+<name>execution-history.css</name> <summary>O código CSS apresentado define o
+estilo visual do componente ExecutionHistory, que exibe um histórico de
+execuções com logs detalhados, thumbnails de screenshots e suporte a temas claro
+e escuro. Ele implementa comportamentos responsivos para diferentes tamanhos de
+tela, efeitos visuais de hover para melhor usabilidade e uma lightbox para
+visualização ampliada das imagens. A estrutura estilística garante uma
+experiência consistente, acessível e visualmente organizada, facilitando a
+navegação e análise dos registros de execução em aplicações web.</summary>
+</file> <file> <path>src/pages/Popup/components/ExecutionDetail.tsx</path>
+<name>ExecutionDetail.tsx</name> <summary>O componente React ExecutionDetail
+apresenta uma interface para visualização detalhada de logs de execução de ações
+automatizadas, exibindo informações como tipo de ação, timestamp formatado e
+miniaturas de screenshots associadas. Utiliza virtual scrolling para otimizar a
+renderização de grandes volumes de dados, garantindo performance e
+responsividade. Além disso, oferece interatividade para abrir imagens em
+lightbox ou nova aba, e trata erros específicos relacionados à captura de
+screenshots, proporcionando uma experiência de análise eficiente e visualmente
+clara para usuários técnicos que monitoram execuções automatizadas.</summary>
+</file> <file>
+<path>src/pages/Popup/components/ExecutionHistoryNavigator.tsx</path>
+<name>ExecutionHistoryNavigator.tsx</name> <summary>O componente
+ExecutionHistoryNavigator é uma interface React que gerencia e exibe o histórico
+de execuções de gravações, permitindo ao usuário navegar entre a lista de
+execuções e os detalhes de uma execução selecionada. Ele realiza operações
+assíncronas para carregar, deletar e atualizar execuções, transformando dados
+brutos em formatos compatíveis para visualização, além de gerenciar estados de
+erro e carregamento para garantir uma experiência fluida e informativa. A
+integração com hooks customizados e stores de armazenamento possibilita uma
+navegação eficiente e controle preciso do fluxo de dados, suportando
+funcionalidades críticas de auditoria e análise de comportamento em sistemas de
+gravação e replay de sessões.</summary> </file> <file>
+<path>src/pages/Popup/components/ExecutionTable.tsx</path>
+<name>ExecutionTable.tsx</name> <summary>O componente ExecutionTable é uma
+tabela interativa em React que exibe uma lista paginada de execuções de
+processos, ordenadas pela data de término, com informações detalhadas como
+status, data da execução, duração, número de passos e URL associada. Ele permite
+a interação do usuário para visualizar detalhes de uma execução específica ao
+clicar na linha, além de possibilitar a exclusão condicional de execuções com
+confirmação, garantindo controle e gerenciamento eficiente das execuções. O
+componente utiliza memoização para otimizar a ordenação das execuções e formata
+datas e durações para uma apresentação clara e amigável, facilitando o
+monitoramento e análise do histórico de execuções em sistemas que demandam
+rastreamento e auditoria de processos.</summary> </file> <file>
+<path>src/pages/Popup/components/execution-detail.css</path>
+<name>execution-detail.css</name> <summary>O código CSS apresentado define o
+estilo visual e comportamental de um componente de interface para exibição de
+detalhes de execução, focando em uma experiência de usuário clara e responsiva.
+Ele organiza a estrutura em flexbox para garantir alinhamento vertical e
+horizontal, aplica cores escuras para um tema moderno e confortável, e inclui
+interações visuais como hover com transições suaves para destacar elementos
+ativos. Além disso, o código contempla responsividade para dispositivos móveis,
+personalização de scrollbar para melhor usabilidade e tratamento visual de
+estados de erro, garantindo uma interface consistente e acessível em múltiplos
+contextos de uso, especialmente em ambientes de monitoramento ou logs de
+execução de processos técnicos.</summary> </file> <file>
+<path>src/pages/Popup/components/execution-history-navigator.css</path>
+<name>execution-history-navigator.css</name> <summary>O código CSS apresentado
+define o estilo visual e o comportamento da interface do componente Execution
+History Navigator, que é responsável por exibir um histórico de execuções em uma
+aplicação web. Ele organiza a interface em três áreas principais: um cabeçalho
+de navegação com botão de retorno e título, uma lista de execuções e uma área de
+detalhes da execução selecionada. O código também contempla estados de erro e
+carregamento, garantindo feedback visual adequado ao usuário. Além disso, possui
+responsividade para dispositivos móveis, mantendo usabilidade e consistência
+visual. As propriedades CSS aplicam flexbox para layout flexível, cores escuras
+para tema moderno, transições suaves para interações e estilos específicos para
+botões, textos e ícones, assegurando uma experiência de navegação fluida e
+intuitiva dentro do contexto de monitoramento e análise de execuções de
+processos ou tarefas.</summary> </file> <file>
+<path>src/pages/Popup/components/execution-table.css</path>
+<name>execution-table.css</name> <summary>Este código CSS define o estilo para
+uma tabela de execução interativa, focando em usabilidade, responsividade e
+feedback visual para o usuário. Ele implementa uma estrutura visual clara com
+cabeçalhos fixos, linhas destacadas ao passar o mouse, e indicações visuais para
+erros, além de garantir boa experiência em dispositivos móveis por meio de
+ajustes responsivos. A personalização da scrollbar e botões de ação com efeitos
+de hover complementam a interface, promovendo uma navegação fluida e intuitiva
+em ambientes de monitoramento ou dashboards técnicos.</summary> </file> <file>
+<path>src/pages/Popup/hooks/useExecutionNav.ts</path>
+<name>useExecutionNav.ts</name> <summary>Este arquivo implementa um hook React
+customizado chamado useExecutionNav, que gerencia o estado de navegação entre
+execuções identificadas por IDs únicos. Ele mantém o ID da execução selecionada
+e o estado de carregamento, sincronizando o ID selecionado com o hash da URL
+para permitir navegação direta e persistente. O hook oferece funções para
+navegar para uma execução específica, voltar para o estado inicial e controlar o
+estado de loading, garantindo uma experiência de navegação fluida e integrada
+com a URL do navegador, facilitando o rastreamento e a manipulação do estado de
+execução em aplicações web complexas que demandam controle preciso de contexto e
+estado de interface.</summary> </file> <file>
+<path>src/pages/types/execution.ts</path> <name>execution.ts</name> <summary>O
+código define interfaces e classes para gerenciar logs de execução de processos
+automatizados, registrando passos detalhados com timestamps, ações, seletores,
+valores, capturas de tela e erros. Ele estrutura metadados da execução,
+incluindo identificação, tempo de início e fim, contagem de passos, presença de
+erros, URL e título, permitindo rastreamento preciso e análise de falhas. Além
+disso, implementa erros customizados para tratamento específico de execuções não
+encontradas e limites de armazenamento, garantindo robustez e controle no fluxo
+de armazenamento e recuperação dos dados.</summary> </file> </directory>
+</relevant_files> </project_files> </context> </onboarding_summary>
+</context_reference>
 
 <output_format> Executar diretamente no Claude Code: 1. Criar/modificar arquivos
 necessários 2. Implementar código production-ready </output_format>

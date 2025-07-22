@@ -1,0 +1,357 @@
+/**
+ * Styles for ExecutionHistory component
+ */
+
+.execution-history-container {
+  padding: 16px;
+  background: var(--bg-primary, #1a1a1a);
+  border-radius: 8px;
+  margin-top: 16px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.execution-history-container h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.execution-history-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted, #666);
+}
+
+.execution-history-empty p {
+  margin: 8px 0;
+}
+
+.execution-logs-list {
+  background: var(--bg-secondary, #2d2d2d);
+  border: 1px solid var(--border-color, #3d3d3d);
+  border-radius: 6px;
+  position: relative;
+  padding: 8px;
+}
+
+.execution-log-item {
+  display: grid;
+  grid-template-columns: 40px 120px 1fr;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color, #3d3d3d);
+  border-radius: 8px;
+  background-color: var(--bg-tertiary, #252525);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  gap: 20px;
+  min-height: 100px;
+}
+
+.execution-log-item:hover {
+  background-color: var(--hover-bg, #363636);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: var(--primary-color, #4a9eff);
+}
+
+.execution-log-item:last-child {
+  margin-bottom: 0;
+}
+
+.log-index {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted, #666);
+  min-width: 40px;
+  text-align: center;
+}
+
+.log-thumbnail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 80px;
+}
+
+.screenshot-error {
+  font-size: 10px;
+  color: #6c757d;
+  text-align: center;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #f8f9fa;
+}
+
+.log-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-timestamp {
+  font-size: 12px;
+  color: #6c757d;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.log-action {
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.log-type {
+  font-size: 11px;
+  color: #0066cc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  background: #e7f1ff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.log-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.log-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Lightbox styles */
+.screenshot-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  cursor: pointer;
+}
+
+.lightbox-content {
+  max-width: 90%;
+  max-height: 90%;
+  position: relative;
+  cursor: default;
+}
+
+.lightbox-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 36px;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.lightbox-close:hover {
+  opacity: 0.8;
+}
+
+.lightbox-info {
+  position: absolute;
+  bottom: -40px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+  font-size: 13px;
+}
+
+.lightbox-info p {
+  margin: 4px 0;
+}
+
+/* Dark theme support */
+body.dark-theme .execution-history-container {
+  background: #2a2a2a;
+}
+
+body.dark-theme .execution-history-container h3 {
+  color: #e0e0e0;
+}
+
+body.dark-theme .execution-logs-list {
+  background: #1a1a1a;
+  border-color: #444;
+}
+
+body.dark-theme .execution-log-item {
+  border-bottom-color: #333;
+}
+
+body.dark-theme .execution-log-item:hover {
+  background-color: #2a2a2a;
+}
+
+body.dark-theme .log-index {
+  color: #666;
+}
+
+body.dark-theme .log-thumbnail {
+  border-color: #444;
+  background: #2a2a2a;
+}
+
+body.dark-theme .screenshot-error {
+  color: #666;
+}
+
+body.dark-theme .log-timestamp {
+  color: #999;
+}
+
+body.dark-theme .log-action {
+  color: #e0e0e0;
+}
+
+body.dark-theme .log-type {
+  color: #666;
+}
+
+body.dark-theme .execution-history-empty {
+  color: #999;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .execution-history-container {
+    padding: 12px;
+  }
+
+  .execution-history-container h3 {
+    font-size: 16px;
+  }
+
+  .execution-log-item {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .log-thumbnail {
+    width: 60px;
+    height: 45px;
+  }
+
+  .log-action {
+    font-size: 13px;
+  }
+
+  .log-type {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+
+  .log-icon {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .execution-logs-list {
+    height: 300px !important;
+  }
+
+  .log-index {
+    min-width: 32px;
+    font-size: 10px;
+    padding: 2px 4px;
+  }
+
+  .log-thumbnail {
+    width: 50px;
+    height: 38px;
+  }
+
+  .log-details {
+    gap: 2px;
+  }
+
+  .log-action {
+    font-size: 12px;
+  }
+
+  .log-timestamp {
+    font-size: 10px;
+  }
+}
+
+/* Better scrollbar */
+.execution-logs-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.execution-logs-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.execution-logs-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.execution-logs-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Dark theme scrollbar */
+body.dark-theme .execution-logs-list::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
+body.dark-theme .execution-logs-list::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+body.dark-theme .execution-logs-list::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}

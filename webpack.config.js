@@ -78,7 +78,17 @@ var options = {
         loader: 'html-loader',
         exclude: /node_modules/,
       },
-      { test: /\.(ts|tsx)$/, loader: 'ts-loader', exclude: /node_modules/ },
+      {
+        test: /\.(ts|tsx)$/,
+        loader: 'ts-loader',
+        exclude: [/node_modules/, /\.test\.(ts|tsx)$/],
+        options: {
+          transpileOnly: true,
+          compilerOptions: {
+            skipLibCheck: true,
+          },
+        },
+      },
       {
         test: /\.(js|jsx)$/,
         use: [

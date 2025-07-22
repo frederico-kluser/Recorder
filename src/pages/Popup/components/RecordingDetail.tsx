@@ -28,6 +28,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const CopyToClipboardFixed = CopyToClipboard as any;
 import ActionList from '../../Content/ActionList';
+import { ExecutionHistoryNavigator } from './ExecutionHistoryNavigator';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
 const SyntaxHighlighterFixed = SyntaxHighlighter as any;
@@ -52,7 +53,9 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
   recording,
   onBack,
 }) => {
-  const [viewMode, setViewMode] = useState<'actions' | 'code'>('code');
+  const [viewMode, setViewMode] = useState<'actions' | 'code' | 'execution'>(
+    'code'
+  );
   const [copied, setCopied] = useState(false);
   const [cacheMode, setCacheMode] = useState<CacheMode>(CacheMode.KEEP_CACHE);
   const [state, actions] = useReplay();
@@ -231,6 +234,15 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
               <FontAwesomeIcon icon={faCode} />
               Código
             </button>
+            <button
+              className={`recording-detail-tab ${
+                viewMode === 'execution' ? 'active' : ''
+              }`}
+              onClick={() => setViewMode('execution')}
+            >
+              <FontAwesomeIcon icon={faCalendarAlt} />
+              Execução
+            </button>
           </div>
 
           {viewMode === 'code' && (
@@ -369,7 +381,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
             <div className="recording-detail-actions-view">
               <ActionList actions={recording.actions} />
             </div>
-          ) : (
+          ) : viewMode === 'code' ? (
             <div className="recording-detail-code-view">
               <div className="recording-detail-code-header">
                 <span className="recording-detail-code-title">
@@ -392,6 +404,10 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
                   {getCypressCode}
                 </SyntaxHighlighterFixed>
               </div>
+            </div>
+          ) : (
+            <div className="recording-detail-execution-view">
+              <ExecutionHistoryNavigator recordingId={recording.id} />
             </div>
           )}
         </div>

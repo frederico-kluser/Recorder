@@ -3,6 +3,8 @@
  */
 
 import { Action } from '../../../pages/types/index';
+import { ExecutionLog } from '../../types/session';
+// Screenshot service removed - screenshots are captured in background script only
 
 export interface ExecutorOptions {
   maxRetries?: number;
@@ -10,6 +12,9 @@ export interface ExecutorOptions {
 }
 
 export abstract class ActionExecutor {
+  protected executionLogs: ExecutionLog[] = [];
+  protected tabId?: number;
+
   /**
    * Executa uma ação no contexto da página
    */
@@ -69,5 +74,42 @@ export abstract class ActionExecutor {
    */
   protected delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Captura screenshot após execução da ação
+   * NOTE: Screenshots are now captured in the background script only
+   * This method is kept for backward compatibility but does nothing
+   */
+  protected async captureAfter(action: Action): Promise<void> {
+    // Screenshots are captured in the background script after action execution
+    // This prevents "Could not establish connection" errors
+    const executionLog: ExecutionLog = {
+      ts: Date.now(),
+      action,
+      screenshot: '', // Screenshot will be added by background script
+    };
+    this.executionLogs.push(executionLog);
+  }
+
+  /**
+   * Set the tab ID for screenshot capture
+   */
+  setTabId(tabId: number): void {
+    this.tabId = tabId;
+  }
+
+  /**
+   * Get execution logs
+   */
+  getExecutionLogs(): ExecutionLog[] {
+    return this.executionLogs;
+  }
+
+  /**
+   * Clear execution logs
+   */
+  clearExecutionLogs(): void {
+    this.executionLogs = [];
   }
 }

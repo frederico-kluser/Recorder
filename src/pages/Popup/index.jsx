@@ -17,6 +17,11 @@ import HistoryDarkStyle from './components/history-dark.css';
 import LayoutWrapperStyle from './components/LayoutWrapper.css';
 import RecordingHistoryStyle from './components/recording-history.css';
 import RecordingDetailStyle from './components/recording-detail.css';
+import ExecutionDetailStyle from './components/execution-detail.css';
+import ExecutionHistoryStyle from './components/execution-history.css';
+import ExecutionThumbnailStyle from './components/execution-thumbnail.css';
+import ExecutionTableStyle from './components/execution-table.css';
+import ExecutionHistoryNavigatorStyle from './components/execution-history-navigator.css';
 
 render(
   <>
@@ -34,6 +39,11 @@ render(
       {LayoutWrapperStyle}
       {RecordingHistoryStyle}
       {RecordingDetailStyle}
+      {ExecutionDetailStyle}
+      {ExecutionHistoryStyle}
+      {ExecutionThumbnailStyle}
+      {ExecutionTableStyle}
+      {ExecutionHistoryNavigatorStyle}
     </style>
     <Popup />
   </>,

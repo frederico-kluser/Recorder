@@ -24,6 +24,9 @@ export class ResizeExecutor extends ActionExecutor {
 
       // Aguardar o redimensionamento
       await this.delay(500);
+
+      // Capture screenshot after resize
+      await this.captureAfter(action);
     } catch (error) {
       throw new Error(`Failed to resize window: ${error}`);
     }

@@ -24,6 +24,9 @@ export class ScrollExecutor extends ActionExecutor {
 
       // Aguardar o scroll terminar
       await this.delay(500);
+
+      // Capture screenshot after scroll
+      await this.captureAfter(action);
     } catch (error) {
       throw new Error(`Failed to scroll: ${error}`);
     }

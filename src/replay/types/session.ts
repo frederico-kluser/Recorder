@@ -14,6 +14,7 @@ export enum ReplayStatus {
 
 export interface ReplaySession {
   id: string;
+  recordingId?: string;
   actions: Action[];
   startedAt: number;
   status: ReplayStatus;
@@ -22,6 +23,7 @@ export interface ReplaySession {
   error?: string;
   completedAt?: number;
   pausedAt?: number;
+  executionLogs: ExecutionLog[];
 }
 
 export interface ReplayProgress {
@@ -53,4 +55,11 @@ export interface ReplayOptions {
   maxRetries?: number;
   retryDelay?: number;
   chunkSize?: number;
+}
+
+export interface ExecutionLog {
+  ts: number; // timestamp
+  action: Action;
+  screenshot: string; // base64 encoded image or error message
+  thumbStatus?: 'ok' | 'error' | 'loading'; // status do thumbnail
 }

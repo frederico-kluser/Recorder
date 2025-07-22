@@ -85,6 +85,10 @@ export class ClickExecutor extends ActionExecutor {
           console.log(
             `[ClickExecutor] Successfully clicked on element using selector: ${selector}`
           );
+
+          // Capture screenshot after successful click
+          await this.captureAfter(action);
+
           return;
         } catch (error) {
           retries--;

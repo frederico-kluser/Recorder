@@ -1,2 +1,38 @@
-{"success":true,"path":".ondokai/incremental-relevant-files.json","removed":true,"timestamp":1751649191535,"context":"finalization","version":"1.0.0","environment":"development"}
-{"success":true,"path":".ondokai/incremental-relevant-files.json","removed":true,"timestamp":1751861307251,"context":"finalization","version":"1.0.0","environment":"development"}
+[
+  {
+    "success": true,
+    "path": ".ondokai/incremental-relevant-files.json",
+    "removed": true,
+    "timestamp": 1751649191535,
+    "context": "finalization",
+    "version": "1.0.0",
+    "environment": "development"
+  },
+  {
+    "success": true,
+    "path": ".ondokai/incremental-relevant-files.json",
+    "removed": true,
+    "timestamp": 1751861307251,
+    "context": "finalization",
+    "version": "1.0.0",
+    "environment": "development"
+  },
+  {
+    "success": true,
+    "path": ".ondokai/incremental-relevant-files.json",
+    "removed": true,
+    "timestamp": 1753166645312,
+    "context": "finalization",
+    "version": "1.0.0",
+    "environment": "production"
+  },
+  {
+    "success": true,
+    "path": ".ondokai/incremental-relevant-files.json",
+    "removed": true,
+    "timestamp": 1753171085604,
+    "context": "finalization",
+    "version": "1.0.0",
+    "environment": "production"
+  }
+]

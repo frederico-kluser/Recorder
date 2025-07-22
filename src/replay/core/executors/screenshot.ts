@@ -10,33 +10,16 @@ export class ScreenshotExecutor extends ActionExecutor {
     action: ScreenshotAction,
     options?: ExecutorOptions
   ): Promise<void> {
-    try {
-      // Enviar mensagem para o background script capturar screenshot
-      await this.sendMessageToBackground({
-        type: 'CAPTURE_SCREENSHOT',
-        timestamp: action.timestamp,
-      });
+    // Screenshot actions are handled entirely by the background script
+    // This executor just logs the action for compatibility
+    console.log(
+      `[ScreenshotExecutor] Screenshot action at timestamp: ${action.timestamp}`
+    );
 
-      console.log(
-        `[ScreenshotExecutor] Screenshot captured at timestamp: ${action.timestamp}`
-      );
+    // Small delay to simulate action execution
+    await this.delay(300);
 
-      // Pequeno delay
-      await this.delay(300);
-    } catch (error) {
-      throw new Error(`Failed to capture screenshot: ${error}`);
-    }
-  }
-
-  private sendMessageToBackground(message: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage(message, (response) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          resolve(response);
-        }
-      });
-    });
+    // Log the action (screenshot will be captured by background script)
+    await this.captureAfter(action);
   }
 }
