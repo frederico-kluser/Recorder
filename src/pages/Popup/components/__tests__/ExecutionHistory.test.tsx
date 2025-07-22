@@ -5,10 +5,13 @@
 import React from 'react';
 // @ts-ignore
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+// @ts-ignore
+import { renderHook } from '@testing-library/react-hooks';
+import { ExecutionLog } from '../../../../replay/types/session';
 import '@testing-library/jest-dom';
 import { ExecutionHistory, useExecutionLogs } from '../ExecutionHistory';
 import { recordingStore } from '../../../storage/recording-store';
-import { ActionType } from '../../../types/action';
+import { ActionType } from '../../../types';
 
 // Mock the recording store
 jest.mock('../../../storage/recording-store', () => ({
@@ -36,9 +39,39 @@ global.chrome = {
   },
 } as any;
 
+// Define mock data at module level to be accessible in all describe blocks
+const mockRecordingId = 'test-recording-123';
+const mockExecutionLogs = [
+  {
+    ts: 1234567890000,
+    action: {
+      type: ActionType.Click,
+      timestamp: 1234567890000,
+      selectors: { generalSelector: 'button.submit' },
+      tagName: 'BUTTON' as any,
+      inputType: undefined,
+      value: undefined,
+      clickX: 100,
+      clickY: 200,
+    },
+    screenshot: 'data:image/png;base64,screenshot1',
+  },
+  {
+    ts: 1234567891000,
+    action: {
+      type: ActionType.Input,
+      timestamp: 1234567891000,
+      selectors: { generalSelector: 'input[name="email"]' },
+      tagName: 'INPUT' as any,
+      inputType: 'email',
+      value: 'test@example.com',
+    },
+    screenshot: 'data:image/png;base64,screenshot2',
+  },
+];
+
 describe('ExecutionHistory', () => {
-  const mockRecordingId = 'test-recording-123';
-  const mockExecutionLogs = [
+  const mockExecutionLogsLocal = [
     {
       ts: 1234567890000,
       action: {
@@ -274,7 +307,7 @@ describe('ExecutionHistory', () => {
         {
           ts: Date.now(),
           action: {
-            type: ActionType.Scroll,
+            type: ActionType.Wheel,
             x: 0,
             y: 500,
             timestamp: Date.now(),
@@ -336,14 +369,22 @@ describe('ExecutionHistory', () => {
 });
 
 describe('useExecutionLogs hook', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (recordingStore.get as jest.Mock).mockResolvedValue({
+      id: mockRecordingId,
+      executionLogs: mockExecutionLogs,
+    });
+  });
+
   it('should load execution logs on mount', async () => {
     const { result } = renderHook(() => useExecutionLogs(mockRecordingId));
 
-    expect(result.current.loading).toBe(true);
+    // Initially should be empty
+    expect((result as any).current).toEqual([]);
 
     await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-      expect(result.current.logs).toEqual(mockExecutionLogs);
+      expect((result as any).current).toEqual(mockExecutionLogs);
     });
   });
 
@@ -351,7 +392,7 @@ describe('useExecutionLogs hook', () => {
     const { result } = renderHook(() => useExecutionLogs(mockRecordingId));
 
     await waitFor(() => {
-      expect(result.current.logs).toEqual(mockExecutionLogs);
+      expect((result as any).current).toEqual(mockExecutionLogs);
     });
 
     // Simulate storage change
@@ -359,17 +400,23 @@ describe('useExecutionLogs hook', () => {
       ...mockExecutionLogs,
       { ts: Date.now(), action: {} as any, screenshot: '' },
     ];
+
+    // Update the mock to return new logs
+    (recordingStore.get as jest.Mock).mockResolvedValue({
+      id: mockRecordingId,
+      executionLogs: newLogs,
+    });
+
+    // Get the storage change callback that was registered
     const changeCallback = mockStorageListener.mock.calls[0][0];
     changeCallback({
       recordingHistory: {
-        newValue: {
-          [mockRecordingId]: { executionLogs: newLogs },
-        },
+        newValue: {},
       },
     });
 
     await waitFor(() => {
-      expect(result.current.logs).toEqual(newLogs);
+      expect((result as any).current).toEqual(newLogs);
     });
   });
 

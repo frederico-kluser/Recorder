@@ -1,4 +1,5 @@
 // Jest setup file
+import '@testing-library/jest-dom';
 
 // Mock performance object for Node.js environment
 if (typeof performance === 'undefined') {
