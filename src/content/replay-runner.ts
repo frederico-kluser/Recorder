@@ -15,12 +15,25 @@ interface ExecuteActionMessage {
   };
 }
 
+interface PingMessage {
+  type: 'PING';
+}
+
 // Factory para criar executors
 const executorFactory = new ActionExecutorFactory();
 
 // Listener para mensagens do background
 chrome.runtime.onMessage.addListener(
-  (message: ExecuteActionMessage, sender, sendResponse) => {
+  (message: ExecuteActionMessage | PingMessage, sender, sendResponse) => {
+    console.log('[ReplayRunner] Mensagem recebida:', message.type);
+
+    // Responder ao PING para verificar se o script está pronto
+    if (message.type === 'PING') {
+      console.log('[ReplayRunner] Respondendo PONG');
+      sendResponse({ type: 'PONG', ready: true });
+      return true;
+    }
+
     if (message.type !== 'EXECUTE_ACTION') {
       return;
     }
@@ -59,6 +72,8 @@ chrome.runtime.onMessage.addListener(
 
 // Notificar que o runner está pronto
 console.log('[ReplayRunner] Runner inicializado e pronto para executar ações');
+console.log('[ReplayRunner] URL atual:', window.location.href);
+console.log('[ReplayRunner] Estado do documento:', document.readyState);
 
 // Expor globalmente para debugging
 (window as any).__replayRunner = {

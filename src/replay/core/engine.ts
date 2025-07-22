@@ -275,43 +275,162 @@ export class ReplayEngine {
     action: Action,
     options: ReplayOptions
   ): Promise<void> {
+    console.log(
+      `[ReplayEngine] executeAction iniciado - Tipo: ${action.type}, TabId: ${tabId}`
+    );
+
     // Tratar ação de resize diretamente no background
     if (action.type === ActionType.Resize) {
+      console.log(
+        '[ReplayEngine] Executando resize action diretamente no background'
+      );
       return this.executeResizeAction(action as any);
     }
 
     // Tratar ação de load diretamente no background
     if (action.type === ActionType.Load) {
+      console.log(
+        '[ReplayEngine] Executando load action diretamente no background'
+      );
       return this.executeLoadAction(tabId, action as any);
     }
 
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject(new Error(`Action timeout: ${action.type}`));
-      }, this.config?.actionTimeout || 30000);
+    // Verificar se a tab existe e está ativa
+    try {
+      const tab = await chrome.tabs.get(tabId);
+      console.log(
+        `[ReplayEngine] Estado da tab: ${JSON.stringify({
+          id: tab.id,
+          status: tab.status,
+          url: tab.url,
+          active: tab.active,
+        })}`
+      );
+    } catch (error) {
+      console.error('[ReplayEngine] Erro ao verificar tab:', error);
+      throw new Error(`Tab ${tabId} não encontrada`);
+    }
 
-      chrome.tabs.sendMessage(
-        tabId,
-        {
-          type: 'EXECUTE_ACTION',
-          action,
-          options: {
-            maxRetries: options.maxRetries || this.config?.maxRetries || 3,
-            autoScroll:
-              options.autoScroll !== false && this.config?.autoScroll !== false,
-          },
-        },
-        (response) => {
-          clearTimeout(timeout);
+    return new Promise(async (resolve, reject) => {
+      // Tentar enviar a mensagem com retry se o content script não estiver pronto
+      let lastError: Error | null = null;
+      const maxConnectionRetries = 3;
 
-          if (chrome.runtime.lastError) {
-            reject(chrome.runtime.lastError);
-          } else if (response?.error) {
-            reject(new Error(response.error));
-          } else {
-            resolve();
+      for (let retry = 1; retry <= maxConnectionRetries; retry++) {
+        console.log(
+          `[ReplayEngine] Tentativa ${retry}/${maxConnectionRetries} de enviar ação ${action.type}`
+        );
+
+        try {
+          const result = await new Promise<void>(
+            (innerResolve, innerReject) => {
+              const timeout = setTimeout(() => {
+                console.error(
+                  `[ReplayEngine] Timeout ao executar ação: ${action.type}`
+                );
+                innerReject(new Error(`Action timeout: ${action.type}`));
+              }, this.config?.actionTimeout || 30000);
+
+              console.log(
+                `[ReplayEngine] Enviando mensagem para content script - Ação: ${action.type}`
+              );
+              console.log(
+                `[ReplayEngine] Detalhes da ação:`,
+                JSON.stringify(action, null, 2)
+              );
+
+              chrome.tabs.sendMessage(
+                tabId,
+                {
+                  type: 'EXECUTE_ACTION',
+                  action,
+                  options: {
+                    maxRetries:
+                      options.maxRetries || this.config?.maxRetries || 3,
+                    autoScroll:
+                      options.autoScroll !== false &&
+                      this.config?.autoScroll !== false,
+                  },
+                },
+                (response) => {
+                  clearTimeout(timeout);
+
+                  if (chrome.runtime.lastError) {
+                    const errorMessage =
+                      chrome.runtime.lastError.message || 'Unknown error';
+                    console.error(
+                      '[ReplayEngine] chrome.runtime.lastError:',
+                      errorMessage
+                    );
+
+                    if (
+                      errorMessage.includes('Could not establish connection')
+                    ) {
+                      console.error(
+                        '[ReplayEngine] Content script não está pronto, tentando reinjetar...'
+                      );
+                      innerReject(new Error('CONNECTION_ERROR'));
+                    } else {
+                      innerReject(chrome.runtime.lastError);
+                    }
+                  } else if (response?.error) {
+                    console.error(
+                      '[ReplayEngine] Erro na resposta do content script:',
+                      response.error
+                    );
+                    innerReject(new Error(response.error));
+                  } else {
+                    console.log(
+                      '[ReplayEngine] Ação executada com sucesso pelo content script:',
+                      action.type
+                    );
+                    console.log('[ReplayEngine] Resposta:', response);
+                    innerResolve();
+                  }
+                }
+              );
+            }
+          );
+
+          // Se chegou aqui, sucesso!
+          resolve();
+          return;
+        } catch (error: any) {
+          lastError = error;
+
+          if (
+            error.message === 'CONNECTION_ERROR' &&
+            retry < maxConnectionRetries
+          ) {
+            console.log(
+              '[ReplayEngine] Tentando reinjetar o content script...'
+            );
+            try {
+              await this.injectReplayRunner(tabId);
+              console.log(
+                '[ReplayEngine] Content script reinjetado, tentando novamente...'
+              );
+              await this.delay(500); // Pequeno delay após reinjeção
+            } catch (injectError) {
+              console.error(
+                '[ReplayEngine] Erro ao reinjetar script:',
+                injectError
+              );
+            }
+          } else if (error.message !== 'CONNECTION_ERROR') {
+            // Se não for erro de conexão, falhar imediatamente
+            reject(error);
+            return;
           }
         }
+      }
+
+      // Se chegou aqui, todas as tentativas falharam
+      console.error(
+        '[ReplayEngine] Todas as tentativas de executar a ação falharam'
+      );
+      reject(
+        lastError || new Error('Failed to execute action after all retries')
       );
     });
   }
@@ -369,20 +488,108 @@ export class ReplayEngine {
   }
 
   /**
+   * Verifica se o content script está pronto
+   */
+  private async verifyContentScriptReady(
+    tabId: number,
+    maxAttempts = 10
+  ): Promise<boolean> {
+    console.log(
+      `[ReplayEngine] Verificando se content script está pronto na tab ${tabId}...`
+    );
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        console.log(
+          `[ReplayEngine] Tentativa ${attempt}/${maxAttempts} de verificar content script`
+        );
+
+        const response = await new Promise<any>((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            resolve(null);
+          }, 1000);
+
+          chrome.tabs.sendMessage(tabId, { type: 'PING' }, (response) => {
+            clearTimeout(timeout);
+            if (chrome.runtime.lastError) {
+              console.log(
+                `[ReplayEngine] Tentativa ${attempt} falhou:`,
+                chrome.runtime.lastError.message
+              );
+              resolve(null);
+            } else {
+              resolve(response);
+            }
+          });
+        });
+
+        if (response && response.type === 'PONG') {
+          console.log('[ReplayEngine] Content script está pronto!');
+          return true;
+        }
+      } catch (error) {
+        console.log(`[ReplayEngine] Erro na tentativa ${attempt}:`, error);
+      }
+
+      if (attempt < maxAttempts) {
+        console.log(
+          '[ReplayEngine] Aguardando 500ms antes da próxima tentativa...'
+        );
+        await this.delay(500);
+      }
+    }
+
+    console.error(
+      '[ReplayEngine] Content script não respondeu após todas as tentativas'
+    );
+    return false;
+  }
+
+  /**
    * Injeta o script runner na aba
    */
   private async injectReplayRunner(tabId: number): Promise<void> {
+    console.log(
+      `[ReplayEngine] Iniciando injeção do replayRunner.bundle.js na tab ${tabId}`
+    );
+
     return new Promise((resolve, reject) => {
       chrome.scripting.executeScript(
         {
           target: { tabId },
           files: ['replayRunner.bundle.js'],
         },
-        () => {
+        (results) => {
           if (chrome.runtime.lastError) {
+            console.error(
+              '[ReplayEngine] Erro ao injetar script:',
+              chrome.runtime.lastError.message
+            );
+            console.error(
+              '[ReplayEngine] Possíveis causas: CSP restritiva, página não carregada, permissões insuficientes'
+            );
             reject(chrome.runtime.lastError);
           } else {
-            resolve();
+            console.log('[ReplayEngine] Script injetado com sucesso');
+            console.log('[ReplayEngine] Resultado da injeção:', results);
+
+            // Verificar se o script está pronto
+            console.log(
+              '[ReplayEngine] Verificando se o script está pronto...'
+            );
+            this.verifyContentScriptReady(tabId)
+              .then((isReady) => {
+                if (isReady) {
+                  console.log('[ReplayEngine] Script confirmado como pronto');
+                  resolve();
+                } else {
+                  console.error(
+                    '[ReplayEngine] Script não respondeu após injeção'
+                  );
+                  reject(new Error('Content script não está respondendo'));
+                }
+              })
+              .catch(reject);
           }
         }
       );
@@ -546,30 +753,61 @@ export class ReplayEngine {
    */
   private async executeLoadAction(tabId: number, action: any): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log(`[ReplayEngine] Navigating to: ${action.url}`);
+      console.log(
+        `[ReplayEngine] executeLoadAction iniciado - URL: ${action.url}`
+      );
 
       // Atualizar a URL da aba
       chrome.tabs.update(tabId, { url: action.url }, (tab) => {
         if (chrome.runtime.lastError) {
+          console.error(
+            '[ReplayEngine] Erro ao navegar:',
+            chrome.runtime.lastError.message
+          );
           reject(chrome.runtime.lastError);
           return;
         }
+
+        console.log(
+          '[ReplayEngine] Navegação iniciada, aguardando carregamento completo...'
+        );
 
         // Aguardar a aba carregar completamente
         const listener = (
           tabIdUpdated: number,
           changeInfo: chrome.tabs.TabChangeInfo
         ) => {
+          console.log(`[ReplayEngine] Tab ${tabIdUpdated} mudou:`, changeInfo);
+
           if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
             chrome.tabs.onUpdated.removeListener(listener);
-            console.log(`[ReplayEngine] Page loaded: ${action.url}`);
+            console.log(
+              `[ReplayEngine] Página carregada completamente: ${action.url}`
+            );
 
             // Aguardar um pouco mais para garantir que os scripts foram injetados
+            console.log(
+              '[ReplayEngine] Aguardando 1000ms antes de re-injetar o script...'
+            );
             setTimeout(() => {
+              console.log(
+                '[ReplayEngine] Re-injetando replay runner após navegação...'
+              );
               // Re-injetar o replay runner após navegação
               this.injectReplayRunner(tabId)
-                .then(() => resolve())
-                .catch(reject);
+                .then(() => {
+                  console.log(
+                    '[ReplayEngine] Script re-injetado com sucesso após navegação'
+                  );
+                  resolve();
+                })
+                .catch((error) => {
+                  console.error(
+                    '[ReplayEngine] Erro ao re-injetar script:',
+                    error
+                  );
+                  reject(error);
+                });
             }, 1000);
           }
         };
@@ -577,10 +815,17 @@ export class ReplayEngine {
         chrome.tabs.onUpdated.addListener(listener);
 
         // Timeout de segurança
+        const timeoutMs = this.config?.tabLoadTimeout || 30000;
+        console.log(
+          `[ReplayEngine] Timeout de segurança definido para ${timeoutMs}ms`
+        );
         setTimeout(() => {
+          console.warn(
+            '[ReplayEngine] Timeout alcançado, removendo listener e continuando...'
+          );
           chrome.tabs.onUpdated.removeListener(listener);
           resolve(); // Resolver mesmo com timeout para continuar o replay
-        }, this.config?.tabLoadTimeout || 30000);
+        }, timeoutMs);
       });
     });
   }
