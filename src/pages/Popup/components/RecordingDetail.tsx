@@ -5,8 +5,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { RecordingEntry } from '../../types/recording';
 import { ScriptType } from '../../types';
-import { useReplay } from '../../../hooks/use-replay';
-import { ReplayMode } from '../../../types/replay';
+import { useReplay } from '../../../replay/api/hooks';
+import { CacheMode } from '../../../replay/types/session';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { genCypressCodeWithTemplate } from '../../builders';
 import {
@@ -25,8 +25,12 @@ import {
   faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+const CopyToClipboardFixed = CopyToClipboard as any;
 import ActionList from '../../Content/ActionList';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+
+const SyntaxHighlighterFixed = SyntaxHighlighter as any;
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { truncateText } from '../../Common/utils/text';
 import {
@@ -50,29 +54,37 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
 }) => {
   const [viewMode, setViewMode] = useState<'actions' | 'code'>('code');
   const [copied, setCopied] = useState(false);
-  const [replayMode, setReplayMode] = useState<ReplayMode>(ReplayMode.KEEP_CACHE);
-  const { replayState, isReplaying, startReplay, stopReplay, error } = useReplay();
+  const [cacheMode, setCacheMode] = useState<CacheMode>(CacheMode.KEEP_CACHE);
+  const [state, actions] = useReplay();
 
   const getCypressCode = useMemo((): string => {
     console.log('🔄 [RecordingDetail] Gerando código para Cypress');
-    
+
     // Se já tem o template novo, usa ele
     if (recording.code.cypressTemplate) {
       return recording.code.cypressTemplate;
     }
-    
+
     // Senão, gera o template novo a partir das ações
     try {
-      return genCypressCodeWithTemplate(recording.actions, {
-        testName: recording.title,
-        url: recording.urlOriginal || recording.firstUrl || recording.url || '/',
-        exportOptions: {
-          viewportWidth: 1366,
-          viewportHeight: 768
-        }
-      }, true);
+      return genCypressCodeWithTemplate(
+        recording.actions,
+        {
+          testName: recording.title,
+          url:
+            recording.urlOriginal || recording.firstUrl || recording.url || '/',
+          exportOptions: {
+            viewportWidth: 1366,
+            viewportHeight: 768,
+          },
+        },
+        true
+      );
     } catch (error) {
-      console.error('❌ Erro ao gerar template novo, usando código antigo:', error);
+      console.error(
+        '❌ Erro ao gerar template novo, usando código antigo:',
+        error
+      );
       return recording.code.cypress;
     }
   }, [recording]);
@@ -97,17 +109,32 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
 
   const handleReplay = useCallback(async () => {
     try {
-      console.log('🎬 [RecordingDetail] Iniciando replay da gravação:', recording.id, 'Modo:', replayMode);
-      await startReplay(recording.id, replayMode);
+      console.log(
+        '🎬 [RecordingDetail] Iniciando replay da gravação:',
+        recording.id,
+        'Modo:',
+        cacheMode
+      );
+      await actions.start(recording.id, cacheMode === CacheMode.CLEAN_CACHE);
     } catch (error) {
       console.error('❌ [RecordingDetail] Erro ao iniciar replay:', error);
     }
-  }, [recording.id, replayMode, startReplay]);
+  }, [recording.id, cacheMode, actions]);
 
   const handleStopReplay = useCallback(() => {
     console.log('⏹️ [RecordingDetail] Parando replay');
-    stopReplay();
-  }, [stopReplay]);
+    actions.stop();
+  }, [actions]);
+
+  const handlePauseReplay = useCallback(() => {
+    console.log('⏸️ [RecordingDetail] Pausando replay');
+    actions.pause();
+  }, [actions]);
+
+  const handleResumeReplay = useCallback(() => {
+    console.log('▶️ [RecordingDetail] Retomando replay');
+    actions.resume();
+  }, [actions]);
 
   const formatDate = (timestamp: number): string => {
     const date = new Date(timestamp);
@@ -164,7 +191,12 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
                 icon={faGlobe}
                 className="recording-detail-meta-icon"
               />
-              <span className="recording-detail-meta-url" title={recording.urlOriginal || recording.firstUrl || recording.url}>
+              <span
+                className="recording-detail-meta-url"
+                title={
+                  recording.urlOriginal || recording.firstUrl || recording.url
+                }
+              >
                 {recording.hostname}
               </span>
             </span>
@@ -205,12 +237,12 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
             <div className="recording-detail-actions">
               <span className="recording-detail-script-type">Cypress</span>
 
-              <CopyToClipboard text={getCypressCode} onCopy={handleCopy}>
+              <CopyToClipboardFixed text={getCypressCode} onCopy={handleCopy}>
                 <button className="recording-btn recording-btn-secondary">
                   <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
                   {copied ? 'Copiado!' : 'Copiar'}
                 </button>
-              </CopyToClipboard>
+              </CopyToClipboardFixed>
 
               <button
                 className="recording-btn recording-btn-primary"
@@ -224,31 +256,56 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
 
           {viewMode === 'actions' && (
             <div className="recording-detail-actions">
-              {isReplaying ? (
-                <button 
-                  className="recording-btn recording-btn-danger"
-                  onClick={handleStopReplay}
-                >
-                  <FontAwesomeIcon icon={faStop} />
-                  Parar Replay
-                </button>
+              {state.status === 'RUNNING' || state.status === 'PAUSED' ? (
+                <>
+                  {state.status === 'PAUSED' ? (
+                    <button
+                      className="recording-btn recording-btn-success"
+                      onClick={handleResumeReplay}
+                      disabled={state.isLoading}
+                    >
+                      <FontAwesomeIcon icon={faPlay} />
+                      Retomar
+                    </button>
+                  ) : (
+                    <button
+                      className="recording-btn recording-btn-warning"
+                      onClick={handlePauseReplay}
+                      disabled={state.isLoading}
+                    >
+                      <FontAwesomeIcon icon={faSpinner} />
+                      Pausar
+                    </button>
+                  )}
+                  <button
+                    className="recording-btn recording-btn-danger"
+                    onClick={handleStopReplay}
+                    disabled={state.isLoading}
+                  >
+                    <FontAwesomeIcon icon={faStop} />
+                    Parar
+                  </button>
+                </>
               ) : (
                 <>
-                  <select 
+                  <select
                     className="recording-select"
-                    value={replayMode}
-                    onChange={(e) => setReplayMode(e.target.value as ReplayMode)}
+                    value={cacheMode}
+                    onChange={(e) => setCacheMode(e.target.value as CacheMode)}
                   >
-                    <option value={ReplayMode.KEEP_CACHE}>Manter Cache</option>
-                    <option value={ReplayMode.CLEAN_CACHE}>Limpar Cache</option>
+                    <option value={CacheMode.KEEP_CACHE}>Manter Cache</option>
+                    <option value={CacheMode.CLEAN_CACHE}>Limpar Cache</option>
                   </select>
-                  <button 
+                  <button
                     className="recording-btn recording-btn-primary"
                     onClick={handleReplay}
-                    disabled={recording.actions.length === 0}
+                    disabled={recording.actions.length === 0 || state.isLoading}
                   >
-                    <FontAwesomeIcon icon={faRedo} />
-                    Reproduzir
+                    <FontAwesomeIcon
+                      icon={state.isLoading ? faSpinner : faRedo}
+                      spin={state.isLoading}
+                    />
+                    {state.isLoading ? 'Iniciando...' : 'Reproduzir'}
                   </button>
                 </>
               )}
@@ -257,43 +314,49 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
         </div>
 
         {/* Replay Status */}
-        {replayState && replayState.status !== 'idle' && (
-          <div className={`recording-detail-replay-status ${
-            replayState.status === 'error' ? 'error' : ''
-          }`}>
+        {state.status !== 'IDLE' && (
+          <div
+            className={`recording-detail-replay-status ${
+              state.status === 'ERROR' ? 'error' : ''
+            }`}
+          >
             <div className="recording-detail-replay-status-content">
-              {replayState.status === 'preparing' && (
+              {state.isLoading && (
                 <>
                   <FontAwesomeIcon icon={faSpinner} spin />
                   <span>Preparando replay...</span>
                 </>
               )}
-              {replayState.status === 'running' && (
+              {state.status === 'RUNNING' && !state.isLoading && (
                 <>
                   <FontAwesomeIcon icon={faPlay} />
-                  <span>
-                    Executando: {replayState.currentStep + 1} de {replayState.totalSteps} ações
-                  </span>
+                  <span>Executando ações...</span>
                   <div className="recording-detail-replay-progress">
-                    <div 
+                    <div
                       className="recording-detail-replay-progress-bar"
-                      style={{ 
-                        width: `${(replayState.currentStep / replayState.totalSteps) * 100}%` 
+                      style={{
+                        width: `${state.progress}%`,
                       }}
                     />
                   </div>
                 </>
               )}
-              {replayState.status === 'completed' && (
+              {state.status === 'PAUSED' && (
+                <>
+                  <FontAwesomeIcon icon={faSpinner} />
+                  <span>Replay pausado ({Math.round(state.progress)}%)</span>
+                </>
+              )}
+              {state.status === 'COMPLETED' && (
                 <>
                   <FontAwesomeIcon icon={faCheck} />
                   <span>Replay concluído com sucesso!</span>
                 </>
               )}
-              {replayState.status === 'error' && (
+              {state.status === 'ERROR' && (
                 <>
                   <FontAwesomeIcon icon={faSpinner} />
-                  <span>Erro: {replayState.error || error || 'Erro desconhecido'}</span>
+                  <span>Erro: {state.error || 'Erro desconhecido'}</span>
                 </>
               )}
             </div>
@@ -314,7 +377,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
                 </span>
               </div>
               <div className="recording-detail-code-content">
-                <SyntaxHighlighter
+                <SyntaxHighlighterFixed
                   language="javascript"
                   style={vscDarkPlus}
                   customStyle={{
@@ -327,7 +390,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
                   data-testid="code-block"
                 >
                   {getCypressCode}
-                </SyntaxHighlighter>
+                </SyntaxHighlighterFixed>
               </div>
             </div>
           )}

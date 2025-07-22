@@ -9,9 +9,9 @@ import {
   executeCleanUp,
 } from '../Common/utils';
 import { recordingStore } from '../storage/recording-store';
-import { replayController } from './replay-controller';
 import { executeMigrationsIfNeeded } from '../storage/migration';
-import { ReplayMessageType } from '../../types/replay';
+import { ReplayEngine } from '../../replay/core/engine';
+import { ReplayMessageType, ReplayCmdMessage } from '../../replay/types/events';
 
 const HOVER_CTX_MENU_ID = 'deploysentinel-menu-id';
 const AWAIT_TEXT_CTX_MENU_ID = 'deploysentinel-menu-await-text-id';
@@ -24,10 +24,9 @@ executeMigrationsIfNeeded().then(() => {
 // Inicializa o store de gravações
 recordingStore.initialize();
 
-// Inicializa o replay controller no background
-replayController.init().then(() => {
-  console.log('✅ [REPLAY-BG] Replay controller inicializado');
-});
+// Inicializa o ReplayEngine
+const replayEngine = ReplayEngine.getInstance();
+console.log('✅ Replay Engine inicializado');
 
 async function recordNavigationEvent(
   url: string,
@@ -126,26 +125,110 @@ chrome.runtime.onMessage.addListener(async function (
     // No futuro, podemos criar uma página dedicada para o histórico
     sendResponse({ success: true });
     return true;
-  } else if (request.type === ReplayMessageType.REPLAY_REQUEST) {
-    // Processa requisição de replay via controller no background
-    console.log('[REPLAY-BG] Recebida requisição de replay:', request);
-    
-    replayController.start(request)
-      .then(tabId => {
-        console.log('[REPLAY-BG] Replay iniciado com sucesso, tabId:', tabId);
-        sendResponse({ success: true, tabId });
-      })
-      .catch(error => {
-        console.error('[REPLAY-BG] Erro ao iniciar replay:', error);
-        sendResponse({ success: false, error: error.message });
-      });
-    
+  } else if (request.type === ReplayMessageType.REPLAY_CMD) {
+    // Processa comandos de replay
+    const cmdMessage = request as ReplayCmdMessage;
+    console.log('[ReplayEngine] Comando recebido:', cmdMessage.cmd);
+
+    switch (cmdMessage.cmd) {
+      case 'start':
+        if (!cmdMessage.recordingId || !cmdMessage.options) {
+          sendResponse({ error: 'Missing recordingId or options' });
+          return;
+        }
+
+        replayEngine
+          .startReplay(cmdMessage.recordingId, cmdMessage.options)
+          .then((session) => {
+            console.log('[ReplayEngine] Replay iniciado:', session.id);
+            sendResponse({ sessionId: session.id });
+          })
+          .catch((error) => {
+            console.error('[ReplayEngine] Erro ao iniciar replay:', error);
+            sendResponse({ error: error.message });
+          });
+        break;
+
+      case 'pause':
+        if (!cmdMessage.sessionId) {
+          sendResponse({ error: 'Missing sessionId' });
+          return;
+        }
+
+        try {
+          replayEngine.pauseReplay(cmdMessage.sessionId);
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+        break;
+
+      case 'resume':
+        if (!cmdMessage.sessionId) {
+          sendResponse({ error: 'Missing sessionId' });
+          return;
+        }
+
+        try {
+          replayEngine.resumeReplay(cmdMessage.sessionId);
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+        break;
+
+      case 'stop':
+        if (!cmdMessage.sessionId) {
+          sendResponse({ error: 'Missing sessionId' });
+          return;
+        }
+
+        replayEngine
+          .stopReplay(cmdMessage.sessionId)
+          .then(() => {
+            sendResponse({ success: true });
+          })
+          .catch((error) => {
+            sendResponse({ error: error.message });
+          });
+        break;
+
+      default:
+        sendResponse({ error: `Unknown command: ${cmdMessage.cmd}` });
+    }
+
     return true; // Indica resposta assíncrona
-  } else if (request.type === ReplayMessageType.REPLAY_STOP) {
-    // Para o replay
-    console.log('[REPLAY-BG] Parando replay para tab:', request.tabId);
-    replayController.stop(request.tabId);
-    sendResponse({ success: true });
+  } else if (request.type === 'RESIZE_WINDOW') {
+    // Redimensiona a janela para ações de resize
+    chrome.windows.getCurrent((window) => {
+      if (window.id) {
+        chrome.windows.update(
+          window.id,
+          {
+            width: request.width,
+            height: request.height,
+          },
+          () => {
+            sendResponse({ success: true });
+          }
+        );
+      }
+    });
+    return true;
+  } else if (request.type === 'CAPTURE_SCREENSHOT') {
+    // Captura screenshot da aba ativa
+    chrome.tabs.captureVisibleTab({ format: 'png' }, (dataUrl) => {
+      if (chrome.runtime.lastError) {
+        sendResponse({ error: chrome.runtime.lastError.message });
+      } else {
+        sendResponse({ success: true, dataUrl });
+      }
+    });
+    return true;
   }
 });
 

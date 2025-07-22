@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+const CopyToClipboardFixed = CopyToClipboard as any;
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSquare,
@@ -93,7 +95,7 @@ function LastStepPanel({
               onChange={(val) => setPreferredLibrary(val)}
               value={displayedScriptType}
             />
-            <CopyToClipboard
+            <CopyToClipboardFixed
               text={genCypressCode(actions, true)}
               onCopy={() => {
                 setCopyCodeConfirm(true);
@@ -113,7 +115,7 @@ function LastStepPanel({
                 />{' '}
                 Copiar Código
               </span>
-            </CopyToClipboard>
+            </CopyToClipboardFixed>
           </div>
           <CodeGen
             actions={actions}

@@ -2,7 +2,11 @@
  * Testes para o TemplateRenderer
  */
 
-import { TemplateRenderer, createTemplateRenderer, RecordingExportContext } from '../TemplateRenderer';
+import {
+  TemplateRenderer,
+  createTemplateRenderer,
+  RecordingExportContext,
+} from '../TemplateRenderer';
 import { ActionType } from '../../../types';
 
 describe('TemplateRenderer', () => {
@@ -23,21 +27,19 @@ describe('TemplateRenderer', () => {
             tagName: 'button' as any,
             timestamp: Date.now(),
             selectors: {},
+            selector: '', // Added required selector property
             value: '',
             isPassword: false,
             inputType: '',
-            hasOnlyText: false
-          }
+            hasOnlyText: false,
+          },
         ],
-        commands: [
-          '\n  cy.get("button").click();\n',
-          '\n  cy.wait(1000);\n'
-        ],
+        commands: ['\n  cy.get("button").click();\n', '\n  cy.wait(1000);\n'],
         showComments: true,
         exportOptions: {
           viewportWidth: 1366,
-          viewportHeight: 768
-        }
+          viewportHeight: 768,
+        },
       };
 
       const result = renderer.render(context);
@@ -53,7 +55,9 @@ describe('TemplateRenderer', () => {
       expect(result).toContain('viewportHeight: size[2]');
       expect(result).toContain('beforeEach(() => {');
       expect(result).toContain("cy.visit('https://example.com')");
-      expect(result).toContain("it('Gravado com Fleury Cypress Recorder', () => {");
+      expect(result).toContain(
+        "it('Gravado com Fleury Cypress Recorder', () => {"
+      );
       expect(result).toContain('cy.get("button").click();');
       expect(result).toContain('cy.wait(1000);');
     });
@@ -64,7 +68,7 @@ describe('TemplateRenderer', () => {
         url: 'javascript:alert("xss")',
         actions: [],
         commands: ['\n  cy.get("body").click();\n'],
-        showComments: false
+        showComments: false,
       };
 
       const result = renderer.render(context);
@@ -78,7 +82,7 @@ describe('TemplateRenderer', () => {
         url: 'https://example.com',
         actions: [],
         commands: ['\n  cy.get("body").click();\n'],
-        showComments: false
+        showComments: false,
       };
 
       const result = renderer.render(context);
@@ -94,8 +98,8 @@ describe('TemplateRenderer', () => {
         showComments: false,
         exportOptions: {
           viewportWidth: 100, // muito pequeno
-          viewportHeight: 768
-        }
+          viewportHeight: 768,
+        },
       };
 
       expect(() => renderer.render(context)).toThrow('Viewport width inválido');
@@ -107,10 +111,12 @@ describe('TemplateRenderer', () => {
         url: 'https://example.com',
         actions: [],
         commands: [],
-        showComments: false
+        showComments: false,
       };
 
-      expect(() => renderer.render(context)).toThrow('Não há ações para exportar');
+      expect(() => renderer.render(context)).toThrow(
+        'Não há ações para exportar'
+      );
     });
 
     it('deve usar valores padrão quando exportOptions não é fornecido', () => {
@@ -119,7 +125,7 @@ describe('TemplateRenderer', () => {
         url: 'https://example.com',
         actions: [],
         commands: ['\n  cy.get("body").click();\n'],
-        showComments: false
+        showComments: false,
       };
 
       const result = renderer.render(context);

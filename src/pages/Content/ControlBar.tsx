@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import throttle from 'lodash.throttle';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
+const CopyToClipboardFixed = CopyToClipboard as any;
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCamera,
@@ -223,6 +225,7 @@ export default function ControlBar({ onExit }: { onExit: () => void }) {
       inputType: undefined,
       value: undefined,
       selectors: hoveredElementSelectors || {},
+      selector: '', // Added required selector property
       timestamp: 0,
       isPassword: false,
       hasOnlyText:
@@ -386,7 +389,7 @@ export default function ControlBar({ onExit }: { onExit: () => void }) {
                       value={displayedScriptType}
                       onChange={setPreferredLibrary}
                     />
-                    <CopyToClipboard
+                    <CopyToClipboardFixed
                       text={genCode(actions, true, displayedScriptType)}
                       onCopy={() => {
                         setCopyCodeConfirm(true);
@@ -406,7 +409,7 @@ export default function ControlBar({ onExit }: { onExit: () => void }) {
                         />{' '}
                         Copy Code
                       </span>
-                    </CopyToClipboard>
+                    </CopyToClipboardFixed>
                   </>
                 )}
               </div>

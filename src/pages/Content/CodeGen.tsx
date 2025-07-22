@@ -1,5 +1,7 @@
 import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+
+const SyntaxHighlighterFixed = SyntaxHighlighter as any;
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import { genCode } from '../builders';
@@ -17,7 +19,7 @@ export default function CodeGen({
   styles?: React.CSSProperties;
 }) {
   return (
-    <SyntaxHighlighter
+    <SyntaxHighlighterFixed
       language="javascript"
       style={vscDarkPlus}
       customStyle={{
@@ -31,6 +33,6 @@ export default function CodeGen({
       data-testid="code-block"
     >
       {genCode(actions, true, library)}
-    </SyntaxHighlighter>
+    </SyntaxHighlighterFixed>
   );
 }

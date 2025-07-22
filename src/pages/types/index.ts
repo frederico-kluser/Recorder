@@ -65,20 +65,23 @@ export class BaseAction {
   hasOnlyText: boolean; // If the element only has text content inside (hint to use text selector)
 }
 
-class KeydownAction extends BaseAction {
+export class KeydownAction extends BaseAction {
   type: ActionType.Keydown;
   key: string;
 }
 
-class InputAction extends BaseAction {
+export class InputAction extends BaseAction {
   type: ActionType.Input;
 }
 
-class ClickAction extends BaseAction {
+export class ClickAction extends BaseAction {
   type: ActionType.Click;
+  x?: number;
+  y?: number;
+  selector: string;
 }
 
-class DragAndDropAction extends BaseAction {
+export class DragAndDropAction extends BaseAction {
   type: ActionType.DragAndDrop;
   sourceX: number;
   sourceY: number;
@@ -86,36 +89,49 @@ class DragAndDropAction extends BaseAction {
   targetY: number;
 }
 
-class HoverAction extends BaseAction {
+export class HoverAction extends BaseAction {
   type: ActionType.Hover;
 }
 
-class LoadAction extends BaseAction {
+export class LoadAction extends BaseAction {
   type: ActionType.Load;
   url: string;
 }
 
-class NavigateAction extends BaseAction {
+export class NavigateAction extends BaseAction {
   type: ActionType.Navigate;
   url: string;
-  source: string;
+  source?: string;
 }
 
-class WheelAction extends BaseAction {
+export class WheelAction extends BaseAction {
   type: ActionType.Wheel;
   deltaX: number;
   deltaY: number;
-  pageXOffset: number;
-  pageYOffset: number;
+  pageXOffset?: number;
+  pageYOffset?: number;
+  selector?: string;
 }
 
-class FullScreenshotAction extends BaseAction {
+export class FullScreenshotAction extends BaseAction {
   type: ActionType.FullScreenshot;
 }
 
-class AwaitTextAction extends BaseAction {
+export class AwaitTextAction extends BaseAction {
   type: ActionType.AwaitText;
   text: string;
+}
+
+export class ScreenshotAction extends BaseAction {
+  type: ActionType.FullScreenshot;
+}
+
+export class ScrollAction extends BaseAction {
+  type: ActionType.Wheel;
+  x: number;
+  y: number;
+  deltaX?: number;
+  deltaY?: number;
 }
 
 export class ResizeAction extends BaseAction {
@@ -135,4 +151,6 @@ export type Action =
   | WheelAction
   | FullScreenshotAction
   | AwaitTextAction
-  | ResizeAction;
+  | ResizeAction
+  | ScreenshotAction
+  | ScrollAction;

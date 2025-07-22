@@ -1,4 +1,12 @@
 {
   "version": 2,
-  "steps": []
+  "steps": [
+    {
+      "id": "062f7477-f74c-4db0-ab45-96b56f62348a",
+      "title": "Validar execução e correção do comando de build para Chrome no package.json",
+      "promptXml": "<task>\n  <title>Validar execução e correção do comando de build para Chrome no package.json</title>\n  <objective>realizar o comando de build pra chrome listado no package.json, e se houver algum erro ou problema corrigir</objective>\n  <context>Executar o comando yarn run build-chrome (ou npm run build-chrome) definido no package.json, utilizando utils/build.js, webpack.config.js e dependências diretas como Webpack, Babel e Node.js; corrigir eventuais erros de build conforme logs detalhados do script.</context>\n  <instruction>Implemente exatamente o que foi solicitado. Não adicione funcionalidades extras.</instruction>\n</task>",
+      "createdAt": "2025-07-21T23:23:55.501Z",
+      "updatedAt": "2025-07-21T23:23:55.501Z"
+    }
+  ]
 }
