@@ -10,6 +10,10 @@ import {
 } from '../types/recording';
 import { Action } from '../types';
 import { ExecutionLog } from '../../replay/types/session';
+import {
+  ExecutionMeta,
+  ExecutionLog as ExecutionLogType,
+} from '../types/execution';
 import { debounce } from 'lodash';
 
 const STORAGE_KEY = 'recordingHistory';
@@ -313,16 +317,16 @@ export class RecordingStore implements IHistoryBackend {
     recordingId: string,
     executionLogs: ExecutionLog[]
   ): Promise<void> {
-    // Update execution logs directly
-    await this.doUpdateExecutionLogs(recordingId, executionLogs);
+    // Adiciona novos logs aos existentes ao invés de substituir
+    await this.addExecutionLogs(recordingId, executionLogs);
   }
 
   /**
-   * Internal method to actually update execution logs
+   * Adiciona novos logs de execução aos existentes
    */
-  private async doUpdateExecutionLogs(
+  private async addExecutionLogs(
     recordingId: string,
-    executionLogs: ExecutionLog[]
+    newExecutionLogs: ExecutionLog[]
   ): Promise<void> {
     try {
       const result = await chrome.storage.local.get(STORAGE_KEY);
@@ -330,8 +334,12 @@ export class RecordingStore implements IHistoryBackend {
         result[STORAGE_KEY] || {};
 
       if (recordings[recordingId]) {
-        // Merge new logs with existing ones
-        recordings[recordingId].executionLogs = executionLogs;
+        // Adiciona novos logs aos existentes
+        const existingLogs = recordings[recordingId].executionLogs || [];
+        recordings[recordingId].executionLogs = [
+          ...existingLogs,
+          ...newExecutionLogs,
+        ];
 
         // Check storage quota and prune if needed
         const storageInfo = await chrome.storage.local.getBytesInUse(
@@ -348,9 +356,12 @@ export class RecordingStore implements IHistoryBackend {
         }
 
         await chrome.storage.local.set({ [STORAGE_KEY]: recordings });
+        console.log(
+          `[RecordingStore] Added ${newExecutionLogs.length} new execution logs to recording ${recordingId}`
+        );
       }
     } catch (error) {
-      console.error('[RecordingStore] Error updating execution logs:', error);
+      console.error('[RecordingStore] Error adding execution logs:', error);
     }
   }
 
@@ -375,6 +386,156 @@ export class RecordingStore implements IHistoryBackend {
         });
       }
     });
+  }
+
+  /**
+   * Lista as execuções de uma gravação como metadados resumidos
+   */
+  async listExecutions(recordingId: string): Promise<ExecutionMeta[]> {
+    try {
+      const recording = await this.get(recordingId);
+      if (
+        !recording ||
+        !recording.executionLogs ||
+        recording.executionLogs.length === 0
+      ) {
+        return [];
+      }
+
+      // Agrupa logs por sessão de execução (baseado em timestamp próximo)
+      const sessions: ExecutionLog[][] = [];
+      let currentSession: ExecutionLog[] = [];
+      let lastTs = 0;
+
+      for (const log of recording.executionLogs) {
+        // Se a diferença entre timestamps é maior que 5 minutos, é uma nova sessão
+        if (lastTs > 0 && log.ts - lastTs > 5 * 60 * 1000) {
+          if (currentSession.length > 0) {
+            sessions.push(currentSession);
+            currentSession = [];
+          }
+        }
+        currentSession.push(log);
+        lastTs = log.ts;
+      }
+
+      if (currentSession.length > 0) {
+        sessions.push(currentSession);
+      }
+
+      // Converte sessões em metadados
+      const executions: ExecutionMeta[] = sessions.map((session, index) => {
+        const startedAt = session[0].ts;
+        const endedAt = session[session.length - 1].ts;
+
+        // Detecta se tem erros verificando os screenshots
+        const hasErrors = session.some(
+          (log) => log.screenshot && log.screenshot.startsWith('error:')
+        );
+
+        return {
+          id: `exec-${index}-${startedAt}`,
+          startedAt,
+          endedAt,
+          stepCount: session.length,
+          hasErrors,
+          url: recording.urlOriginal || recording.url,
+          title: recording.title,
+        };
+      });
+
+      // Ordena por data de término decrescente
+      return executions.sort((a, b) => b.endedAt - a.endedAt);
+    } catch (error) {
+      console.error('[RecordingStore] Error listing executions:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Obtém uma execução específica com todos os detalhes
+   */
+  async getExecution(
+    recordingId: string,
+    executionId: string
+  ): Promise<ExecutionLogType | null> {
+    try {
+      const recording = await this.get(recordingId);
+      if (
+        !recording ||
+        !recording.executionLogs ||
+        recording.executionLogs.length === 0
+      ) {
+        return null;
+      }
+
+      // Extrai o índice do ID da execução
+      const match = executionId.match(/^exec-(\d+)-/);
+      if (!match) {
+        return null;
+      }
+
+      const sessionIndex = parseInt(match[1], 10);
+
+      // Reconstrói as sessões
+      const sessions: ExecutionLog[][] = [];
+      let currentSession: ExecutionLog[] = [];
+      let lastTs = 0;
+
+      for (const log of recording.executionLogs) {
+        if (lastTs > 0 && log.ts - lastTs > 5 * 60 * 1000) {
+          if (currentSession.length > 0) {
+            sessions.push(currentSession);
+            currentSession = [];
+          }
+        }
+        currentSession.push(log);
+        lastTs = log.ts;
+      }
+
+      if (currentSession.length > 0) {
+        sessions.push(currentSession);
+      }
+
+      const session = sessions[sessionIndex];
+      if (!session) {
+        return null;
+      }
+
+      // Converte para o formato ExecutionLogType
+      const startedAt = session[0].ts;
+      const endedAt = session[session.length - 1].ts;
+
+      const hasErrors = session.some(
+        (log) => log.screenshot && log.screenshot.startsWith('error:')
+      );
+
+      return {
+        id: executionId,
+        meta: {
+          id: executionId,
+          startedAt,
+          endedAt,
+          stepCount: session.length,
+          hasErrors,
+          url: recording.urlOriginal || recording.url,
+          title: recording.title,
+        },
+        steps: session.map((log) => ({
+          action: log.action.type || 'unknown',
+          timestamp: log.ts,
+          selector: log.action.selectors?.generalSelector,
+          value: log.action.value,
+          screenshot: log.screenshot,
+          error: log.screenshot?.startsWith('error:')
+            ? log.screenshot
+            : undefined,
+        })),
+      };
+    } catch (error) {
+      console.error('[RecordingStore] Error getting execution:', error);
+      return null;
+    }
   }
 
   /**
@@ -403,6 +564,73 @@ export class RecordingStore implements IHistoryBackend {
       }
     } catch (error) {
       console.error('Erro ao migrar executionLogs:', error);
+    }
+  }
+
+  /**
+   * Deleta uma execução específica
+   */
+  async deleteExecution(
+    recordingId: string,
+    executionId: string
+  ): Promise<void> {
+    try {
+      const result = await chrome.storage.local.get(STORAGE_KEY);
+      const recordings: Record<string, RecordingEntry> =
+        result[STORAGE_KEY] || {};
+
+      const recording = recordings[recordingId];
+      if (!recording || !recording.executionLogs) {
+        return;
+      }
+
+      // Extrai o timestamp do ID da execução
+      const match = executionId.match(/exec-\d+-(\d+)$/);
+      if (!match) {
+        return;
+      }
+
+      const execTimestamp = parseInt(match[1], 10);
+
+      // Filtra os logs removendo a sessão específica
+      const filteredLogs: ExecutionLog[] = [];
+      let skipUntilNextSession = false;
+      let lastTs = 0;
+
+      for (const log of recording.executionLogs) {
+        // Detecta início de uma nova sessão
+        if (lastTs > 0 && log.ts - lastTs > 5 * 60 * 1000) {
+          skipUntilNextSession = false;
+        }
+
+        // Se o log pertence à sessão a ser deletada, pula
+        if (
+          log.ts >= execTimestamp &&
+          log.ts <= execTimestamp + 5 * 60 * 1000
+        ) {
+          skipUntilNextSession = true;
+        }
+
+        if (!skipUntilNextSession) {
+          filteredLogs.push(log);
+        }
+
+        lastTs = log.ts;
+      }
+
+      recording.executionLogs = filteredLogs;
+      await chrome.storage.local.set({ [STORAGE_KEY]: recordings });
+
+      console.log(
+        `Execução ${executionId} deletada da gravação ${recordingId}`
+      );
+    } catch (error) {
+      console.error('[RecordingStore] Error deleting execution:', error);
+      throw new Error(
+        `Falha ao deletar execução: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   }
 }

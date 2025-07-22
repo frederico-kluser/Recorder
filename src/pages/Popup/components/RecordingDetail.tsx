@@ -28,7 +28,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const CopyToClipboardFixed = CopyToClipboard as any;
 import ActionList from '../../Content/ActionList';
-import { ExecutionHistory } from './ExecutionHistory';
+import { ExecutionHistoryNavigator } from './ExecutionHistoryNavigator';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
 const SyntaxHighlighterFixed = SyntaxHighlighter as any;
@@ -407,7 +407,7 @@ export const RecordingDetail: React.FC<RecordingDetailProps> = ({
             </div>
           ) : (
             <div className="recording-detail-execution-view">
-              <ExecutionHistory recordingId={recording.id} />
+              <ExecutionHistoryNavigator recordingId={recording.id} />
             </div>
           )}
         </div>

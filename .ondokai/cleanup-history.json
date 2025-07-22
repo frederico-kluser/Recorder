@@ -25,5 +25,14 @@
     "context": "finalization",
     "version": "1.0.0",
     "environment": "production"
+  },
+  {
+    "success": true,
+    "path": ".ondokai/incremental-relevant-files.json",
+    "removed": true,
+    "timestamp": 1753171085604,
+    "context": "finalization",
+    "version": "1.0.0",
+    "environment": "production"
   }
 ]

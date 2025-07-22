@@ -1,70 +1,19 @@
-/**
- * ExecutionHistory Component
- * Displays a virtualized list of execution logs with screenshot thumbnails
- */
-
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ExecutionLog } from '../../../replay/types/session';
-import { recordingStore } from '../../storage/recording-store';
-import { RecordingEntry } from '../../types/recording';
 import { ActionType } from '../../types';
-import './execution-history.css';
+import { useExecutionConfig } from '../../../config/ui';
+import './execution-detail.css';
 
-interface ExecutionHistoryProps {
-  recordingId?: string;
-  executionLog?: ExecutionLog;
+interface ExecutionDetailProps {
+  executionLogs: ExecutionLog[];
 }
 
-// Hook to access execution logs from RecordingStore
-export function useExecutionLogs(recordingId: string): ExecutionLog[] {
-  const [executionLogs, setExecutionLogs] = useState<ExecutionLog[]>([]);
-
-  useEffect(() => {
-    if (!recordingId) {
-      setExecutionLogs([]);
-      return;
-    }
-
-    const loadExecutionLogs = async () => {
-      try {
-        const recording = await recordingStore.get(recordingId);
-        if (recording?.executionLogs) {
-          setExecutionLogs(recording.executionLogs);
-        }
-      } catch (error) {
-        console.error('Error loading execution logs:', error);
-      }
-    };
-
-    loadExecutionLogs();
-
-    // Listen for storage changes
-    const handleStorageChange = (changes: {
-      [key: string]: chrome.storage.StorageChange;
-    }) => {
-      if (changes.recordingHistory) {
-        loadExecutionLogs();
-      }
-    };
-
-    chrome.storage.onChanged.addListener(handleStorageChange);
-
-    return () => {
-      chrome.storage.onChanged.removeListener(handleStorageChange);
-    };
-  }, [recordingId]);
-
-  return executionLogs;
-}
-
-export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
-  recordingId,
-  executionLog,
+export const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
+  executionLogs,
 }) => {
-  const executionLogsFromStore = useExecutionLogs(recordingId || '');
-  const executionLogs = executionLog ? [executionLog] : executionLogsFromStore;
   const [selectedLog, setSelectedLog] = useState<ExecutionLog | null>(null);
   const [showLightbox, setShowLightbox] = useState(false);
+  const config = useExecutionConfig();
 
   // Virtual scrolling state
   const [visibleRange, setVisibleRange] = useState({ start: 0, end: 20 });
@@ -85,6 +34,14 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
     if (log.screenshot && !log.screenshot.startsWith('error:')) {
       setSelectedLog(log);
       setShowLightbox(true);
+    }
+  };
+
+  const handleThumbnailClick = (e: React.MouseEvent, log: ExecutionLog) => {
+    e.stopPropagation();
+    if (log.screenshot && !log.screenshot.startsWith('error:')) {
+      // Abre a imagem em uma nova aba usando o base64 como URL
+      window.open(log.screenshot, '_blank');
     }
   };
 
@@ -176,16 +133,19 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
 
   if (executionLogs.length === 0) {
     return (
-      <div className="execution-history-empty">
-        <p>No execution logs available yet.</p>
-        <p>Run a replay to see the execution history with screenshots.</p>
+      <div className="execution-detail-empty">
+        <p>Nenhum log de execução disponível.</p>
       </div>
     );
   }
 
   return (
-    <div className="execution-history-container">
-      <h3>Execution History ({executionLogs.length} actions)</h3>
+    <div className="execution-detail-container">
+      <div className="execution-summary">
+        <span className="summary-item">
+          <strong>Total de ações:</strong> {executionLogs.length}
+        </span>
+      </div>
 
       <div
         className="execution-logs-list"
@@ -204,17 +164,26 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
             <div
               key={actualIndex}
               className="execution-log-item"
-              onClick={() => handleLogClick(log)}
               style={{ height: `${itemHeight}px` }}
             >
               <div className="log-index">#{actualIndex + 1}</div>
 
-              <div className="log-thumbnail">
+              <div
+                className="log-thumbnail"
+                onClick={(e) => handleThumbnailClick(e, log)}
+                style={{
+                  cursor: !screenshotStatus.isError ? 'pointer' : 'default',
+                }}
+              >
                 {!screenshotStatus.isError ? (
                   <img
                     src={log.screenshot}
                     alt={`Screenshot ${actualIndex + 1}`}
                     loading="lazy"
+                    style={{
+                      maxWidth: `${config.thumbnailMaxPx}px`,
+                      maxHeight: `${config.thumbnailMaxPx}px`,
+                    }}
                   />
                 ) : (
                   <div className="screenshot-error">
@@ -246,27 +215,6 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
           }}
         />
       </div>
-
-      {/* Lightbox for full screenshot view */}
-      {showLightbox &&
-        selectedLog &&
-        !selectedLog.screenshot.startsWith('error:') && (
-          <div className="screenshot-lightbox" onClick={closeLightbox}>
-            <div
-              className="lightbox-content"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button className="lightbox-close" onClick={closeLightbox}>
-                ×
-              </button>
-              <img src={selectedLog.screenshot} alt="Full screenshot" />
-              <div className="lightbox-info">
-                <p>{formatTimestamp(selectedLog.ts)}</p>
-                <p>{getActionDescription(selectedLog).text}</p>
-              </div>
-            </div>
-          </div>
-        )}
     </div>
   );
 };
