@@ -44,8 +44,39 @@ export const ExecutionDetail: React.FC<ExecutionDetailProps> = ({
   ) => {
     if (e) e.stopPropagation();
     if (log.screenshot && !log.screenshot.startsWith('error:')) {
-      // Abre a imagem em uma nova aba usando o base64 como URL
-      window.open(log.screenshot, '_blank');
+      // Cria um HTML com a imagem para abrir em nova aba
+      const html = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Screenshot</title>
+            <style>
+              body {
+                margin: 0;
+                background: #000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+              }
+              img {
+                max-width: 100%;
+                max-height: 100vh;
+                object-fit: contain;
+              }
+            </style>
+          </head>
+          <body>
+            <img src="${log.screenshot}" alt="Screenshot">
+          </body>
+        </html>
+      `;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const newWindow = window.open(url, '_blank');
+
+      // Limpa a URL após um pequeno delay
+      setTimeout(() => URL.revokeObjectURL(url), 100);
     }
   };
 
