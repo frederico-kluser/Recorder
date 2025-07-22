@@ -11,6 +11,7 @@ import { ResizeExecutor } from './resize';
 import { ScreenshotExecutor } from './screenshot';
 import { ScrollExecutor } from './scroll';
 import { WheelExecutor } from './wheel';
+import { LoadExecutor } from './load';
 
 export class ActionExecutorFactory {
   private executors: Map<ActionType, ActionExecutor> = new Map();
@@ -26,6 +27,7 @@ export class ActionExecutorFactory {
     this.executors.set(ActionType.Resize, new ResizeExecutor());
     this.executors.set(ActionType.FullScreenshot, new ScreenshotExecutor());
     this.executors.set(ActionType.Wheel, new ScrollExecutor());
+    this.executors.set(ActionType.Load, new LoadExecutor());
   }
 
   public getExecutor(action: Action): ActionExecutor | null {

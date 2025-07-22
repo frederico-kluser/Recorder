@@ -280,6 +280,11 @@ export class ReplayEngine {
       return this.executeResizeAction(action as any);
     }
 
+    // Tratar ação de load diretamente no background
+    if (action.type === ActionType.Load) {
+      return this.executeLoadAction(tabId, action as any);
+    }
+
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error(`Action timeout: ${action.type}`));
@@ -532,6 +537,50 @@ export class ReplayEngine {
             }
           }
         );
+      });
+    });
+  }
+
+  /**
+   * Executa ação de load (navegação) diretamente no background
+   */
+  private async executeLoadAction(tabId: number, action: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      console.log(`[ReplayEngine] Navigating to: ${action.url}`);
+
+      // Atualizar a URL da aba
+      chrome.tabs.update(tabId, { url: action.url }, (tab) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+          return;
+        }
+
+        // Aguardar a aba carregar completamente
+        const listener = (
+          tabIdUpdated: number,
+          changeInfo: chrome.tabs.TabChangeInfo
+        ) => {
+          if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
+            chrome.tabs.onUpdated.removeListener(listener);
+            console.log(`[ReplayEngine] Page loaded: ${action.url}`);
+
+            // Aguardar um pouco mais para garantir que os scripts foram injetados
+            setTimeout(() => {
+              // Re-injetar o replay runner após navegação
+              this.injectReplayRunner(tabId)
+                .then(() => resolve())
+                .catch(reject);
+            }, 1000);
+          }
+        };
+
+        chrome.tabs.onUpdated.addListener(listener);
+
+        // Timeout de segurança
+        setTimeout(() => {
+          chrome.tabs.onUpdated.removeListener(listener);
+          resolve(); // Resolver mesmo com timeout para continuar o replay
+        }, this.config?.tabLoadTimeout || 30000);
       });
     });
   }
