@@ -60,7 +60,7 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
 
   // Virtual scrolling state
   const [visibleRange, setVisibleRange] = useState({ start: 0, end: 20 });
-  const itemHeight = 80; // Height of each log item
+  const itemHeight = 100; // Height of each log item
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
@@ -95,29 +95,53 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
     });
   };
 
-  const getActionDescription = (log: ExecutionLog): string => {
+  const getActionDescription = (
+    log: ExecutionLog
+  ): { icon: string; text: string } => {
     const action = log.action;
     switch (action.type) {
       case ActionType.Click:
-        return `Click on ${action.selectors?.generalSelector || 'element'}`;
+        const clickText =
+          action.selectors?.text ||
+          action.selectors?.generalSelector ||
+          'element';
+        return {
+          icon: '👆',
+          text: `Click on "${
+            clickText.length > 50
+              ? clickText.substring(0, 50) + '...'
+              : clickText
+          }"`,
+        };
       case ActionType.Input:
-        return `Type "${action.value || ''}" in ${
-          action.selectors?.generalSelector || 'input'
-        }`;
+        return {
+          icon: '⌨️',
+          text: `Type "${action.value || ''}" in ${
+            action.selectors?.generalSelector || 'input'
+          }`,
+        };
       case ActionType.Navigate:
-        return `Navigate to ${(action as any).url}`;
+        return { icon: '🔗', text: `Navigate to ${(action as any).url}` };
       case ActionType.Load:
-        return `Load ${(action as any).url}`;
+        return { icon: '📄', text: `Load ${(action as any).url}` };
       case ActionType.Resize:
-        return `Resize window to ${(action as any).width}x${
-          (action as any).height
-        }`;
+        return {
+          icon: '📐',
+          text: `Resize window to ${(action as any).width}x${
+            (action as any).height
+          }`,
+        };
       case ActionType.Wheel:
-        return `Scroll ${(action as any).deltaY > 0 ? 'down' : 'up'}`;
+        return {
+          icon: '🖱️',
+          text: `Scroll ${
+            (action as any).deltaY > 0 ? 'down' : 'up'
+          } by ${Math.abs((action as any).deltaY)}px`,
+        };
       case ActionType.FullScreenshot:
-        return 'Take screenshot';
+        return { icon: '📸', text: 'Take screenshot' };
       default:
-        return `${action.type} action`;
+        return { icon: '❓', text: `${action.type} action` };
     }
   };
 
@@ -166,6 +190,7 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
         {visibleLogs.map((log, index) => {
           const actualIndex = visibleRange.start + index;
           const screenshotStatus = getScreenshotStatus(log.screenshot);
+          const actionInfo = getActionDescription(log);
 
           return (
             <div
@@ -191,9 +216,14 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
               </div>
 
               <div className="log-details">
+                <div className="log-header">
+                  <span className="log-icon">{actionInfo.icon}</span>
+                  <div className="log-type">{log.action.type}</div>
+                </div>
+                <div className="log-action" title={actionInfo.text}>
+                  {actionInfo.text}
+                </div>
                 <div className="log-timestamp">{formatTimestamp(log.ts)}</div>
-                <div className="log-action">{getActionDescription(log)}</div>
-                <div className="log-type">{log.action.type}</div>
               </div>
             </div>
           );
@@ -224,7 +254,7 @@ export const ExecutionHistory: React.FC<ExecutionHistoryProps> = ({
               <img src={selectedLog.screenshot} alt="Full screenshot" />
               <div className="lightbox-info">
                 <p>{formatTimestamp(selectedLog.ts)}</p>
-                <p>{getActionDescription(selectedLog)}</p>
+                <p>{getActionDescription(selectedLog).text}</p>
               </div>
             </div>
           </div>

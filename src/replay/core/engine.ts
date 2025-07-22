@@ -71,6 +71,7 @@ export class ReplayEngine {
       // Criar nova sessão
       const session: ReplaySession = {
         id: `replay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        recordingId,
         actions: recording.actions,
         startedAt: Date.now(),
         status: ReplayStatus.IDLE,
@@ -172,6 +173,13 @@ export class ReplayEngine {
 
     session.status = ReplayStatus.COMPLETED;
     session.completedAt = Date.now();
+
+    // Save final execution logs if recording ID is available
+    const recordingId = session.recordingId;
+    if (recordingId && session.executionLogs.length > 0) {
+      console.log('[ReplayEngine] Salvando logs de execução finais...');
+      await this.saveExecutionLogs(sessionId, recordingId);
+    }
 
     // Fechar aba se existir
     if (session.tabId) {
@@ -470,6 +478,25 @@ export class ReplayEngine {
                       }
                     }
 
+                    // Capture screenshot after successful action execution
+                    this.captureActionScreenshot(
+                      tabId,
+                      action,
+                      sessionId,
+                      recordingId
+                    )
+                      .then(() => {
+                        console.log(
+                          `[ReplayEngine] Screenshot capturado para ação: ${action.type}`
+                        );
+                      })
+                      .catch((error) => {
+                        console.error(
+                          `[ReplayEngine] Erro ao capturar screenshot para ação ${action.type}:`,
+                          error
+                        );
+                      });
+
                     innerResolve();
                   }
                 }
@@ -686,19 +713,42 @@ export class ReplayEngine {
    */
   private async clearBrowsingData(): Promise<void> {
     return new Promise((resolve) => {
-      chrome.browsingData.remove(
-        {
-          since: 0,
-        },
-        {
-          cache: true,
-          cookies: true,
-          localStorage: true,
-        },
-        () => {
-          resolve();
-        }
-      );
+      // Verificar se a API browsingData está disponível
+      if (!chrome.browsingData) {
+        console.warn(
+          '[ReplayEngine] browsingData API não disponível, pulando limpeza'
+        );
+        resolve();
+        return;
+      }
+
+      try {
+        chrome.browsingData.remove(
+          {
+            since: 0,
+          },
+          {
+            cache: true,
+            cookies: true,
+            localStorage: true,
+          },
+          () => {
+            if (chrome.runtime.lastError) {
+              console.warn(
+                '[ReplayEngine] Erro ao limpar dados:',
+                chrome.runtime.lastError
+              );
+            }
+            resolve();
+          }
+        );
+      } catch (error) {
+        console.warn(
+          '[ReplayEngine] Erro ao chamar browsingData.remove:',
+          error
+        );
+        resolve();
+      }
     });
   }
 
@@ -972,6 +1022,39 @@ export class ReplayEngine {
     } catch (error) {
       console.error(
         '[ReplayEngine] Error capturing screenshot for background action:',
+        error
+      );
+    }
+  }
+
+  /**
+   * Capture screenshot for actions executed in content script
+   */
+  private async captureActionScreenshot(
+    tabId: number,
+    action: Action,
+    sessionId: string,
+    recordingId?: string
+  ): Promise<void> {
+    try {
+      // Add a small delay to ensure the action's visual effect is rendered
+      await this.delay(200);
+
+      const screenshot = await screenshotService.capture(tabId);
+      const executionLog: ExecutionLog = {
+        ts: Date.now(),
+        action,
+        screenshot,
+      };
+
+      const session = this.sessions.get(sessionId);
+      if (session) {
+        session.executionLogs.push(executionLog);
+        await this.saveExecutionLogs(sessionId, recordingId);
+      }
+    } catch (error) {
+      console.error(
+        '[ReplayEngine] Error capturing screenshot for action:',
         error
       );
     }

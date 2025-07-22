@@ -14,6 +14,7 @@ export enum ReplayStatus {
 
 export interface ReplaySession {
   id: string;
+  recordingId?: string;
   actions: Action[];
   startedAt: number;
   status: ReplayStatus;

@@ -4,7 +4,7 @@
 
 import { Action } from '../../../pages/types/index';
 import { ExecutionLog } from '../../types/session';
-import { screenshotService } from '../services/screenshot-service';
+// Screenshot service removed - screenshots are captured in background script only
 
 export interface ExecutorOptions {
   maxRetries?: number;
@@ -78,33 +78,18 @@ export abstract class ActionExecutor {
 
   /**
    * Captura screenshot após execução da ação
+   * NOTE: Screenshots are now captured in the background script only
+   * This method is kept for backward compatibility but does nothing
    */
   protected async captureAfter(action: Action): Promise<void> {
-    if (!this.tabId) {
-      console.warn('No tabId available for screenshot capture');
-      return;
-    }
-
-    try {
-      const screenshot = await screenshotService.capture(this.tabId);
-      const executionLog: ExecutionLog = {
-        ts: Date.now(),
-        action,
-        screenshot,
-      };
-      this.executionLogs.push(executionLog);
-    } catch (error) {
-      console.error('Failed to capture screenshot:', error);
-      // Still log the action even if screenshot fails
-      const executionLog: ExecutionLog = {
-        ts: Date.now(),
-        action,
-        screenshot: `error:${
-          error instanceof Error ? error.message : String(error)
-        }`,
-      };
-      this.executionLogs.push(executionLog);
-    }
+    // Screenshots are captured in the background script after action execution
+    // This prevents "Could not establish connection" errors
+    const executionLog: ExecutionLog = {
+      ts: Date.now(),
+      action,
+      screenshot: '', // Screenshot will be added by background script
+    };
+    this.executionLogs.push(executionLog);
   }
 
   /**
