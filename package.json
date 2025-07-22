@@ -1,6 +1,6 @@
 {
   "name": "deploysentinel-recorder",
-  "version": "0.7.1",
+  "version": "1.0.0",
   "description": "A browser extension that generates Cypress scripts automatically from your browser interactions.",
   "license": "Apache-2.0",
   "scripts": {
@@ -10,7 +10,10 @@
     "start-ff": "MANIFEST_VERSION=2 node utils/webserver.js",
     "bundle-source": "zip source.zip -r ./* -x ./node_modules/\\* -x .git/\\* -x .vscode/\\* -x \\*.log",
     "test": "jest --coverage",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "version:patch": "npm version patch --no-git-tag-version",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:major": "npm version major --no-git-tag-version"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
