@@ -39,6 +39,9 @@ export class WheelExecutor extends ActionExecutor {
 
       // Aguardar o efeito do wheel
       await this.delay(300);
+
+      // Capture screenshot after wheel action
+      await this.captureAfter(action);
     } catch (error) {
       throw new Error(`Failed to perform wheel action: ${error}`);
     }

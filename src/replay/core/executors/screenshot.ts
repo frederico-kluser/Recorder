@@ -23,6 +23,9 @@ export class ScreenshotExecutor extends ActionExecutor {
 
       // Pequeno delay
       await this.delay(300);
+
+      // Capture screenshot after screenshot action (for execution log)
+      await this.captureAfter(action);
     } catch (error) {
       throw new Error(`Failed to capture screenshot: ${error}`);
     }

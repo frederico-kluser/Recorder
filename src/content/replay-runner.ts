@@ -13,6 +13,7 @@ interface ExecuteActionMessage {
     maxRetries?: number;
     autoScroll?: boolean;
   };
+  tabId?: number;
 }
 
 interface PingMessage {
@@ -44,6 +45,11 @@ chrome.runtime.onMessage.addListener(
     // Obter executor para o tipo de ação
     const executor = executorFactory.getExecutor(action);
 
+    // Set tabId if provided
+    if (message.tabId && executor) {
+      executor.setTabId(message.tabId);
+    }
+
     if (!executor) {
       console.error(
         '[ReplayRunner] Executor não encontrado para:',
@@ -58,11 +64,17 @@ chrome.runtime.onMessage.addListener(
       .execute(action, options)
       .then(() => {
         console.log('[ReplayRunner] Ação executada com sucesso:', action.type);
-        sendResponse({ success: true });
+        // Get execution logs from the executor
+        const executionLogs = executor.getExecutionLogs();
+        executor.clearExecutionLogs(); // Clear after collecting
+        sendResponse({ success: true, executionLogs });
       })
       .catch((error) => {
         console.error('[ReplayRunner] Erro ao executar ação:', error);
-        sendResponse({ error: error.message });
+        // Still get execution logs even on error
+        const executionLogs = executor.getExecutionLogs();
+        executor.clearExecutionLogs();
+        sendResponse({ error: error.message, executionLogs });
       });
 
     // Indica que a resposta será enviada de forma assíncrona

@@ -3,6 +3,8 @@
  */
 
 import { Action } from '../../../pages/types/index';
+import { ExecutionLog } from '../../types/session';
+import { screenshotService } from '../services/screenshot-service';
 
 export interface ExecutorOptions {
   maxRetries?: number;
@@ -10,6 +12,9 @@ export interface ExecutorOptions {
 }
 
 export abstract class ActionExecutor {
+  protected executionLogs: ExecutionLog[] = [];
+  protected tabId?: number;
+
   /**
    * Executa uma ação no contexto da página
    */
@@ -69,5 +74,57 @@ export abstract class ActionExecutor {
    */
   protected delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Captura screenshot após execução da ação
+   */
+  protected async captureAfter(action: Action): Promise<void> {
+    if (!this.tabId) {
+      console.warn('No tabId available for screenshot capture');
+      return;
+    }
+
+    try {
+      const screenshot = await screenshotService.capture(this.tabId);
+      const executionLog: ExecutionLog = {
+        ts: Date.now(),
+        action,
+        screenshot,
+      };
+      this.executionLogs.push(executionLog);
+    } catch (error) {
+      console.error('Failed to capture screenshot:', error);
+      // Still log the action even if screenshot fails
+      const executionLog: ExecutionLog = {
+        ts: Date.now(),
+        action,
+        screenshot: `error:${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      };
+      this.executionLogs.push(executionLog);
+    }
+  }
+
+  /**
+   * Set the tab ID for screenshot capture
+   */
+  setTabId(tabId: number): void {
+    this.tabId = tabId;
+  }
+
+  /**
+   * Get execution logs
+   */
+  getExecutionLogs(): ExecutionLog[] {
+    return this.executionLogs;
+  }
+
+  /**
+   * Clear execution logs
+   */
+  clearExecutionLogs(): void {
+    this.executionLogs = [];
   }
 }

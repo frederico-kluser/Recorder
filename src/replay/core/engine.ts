@@ -22,6 +22,8 @@ import { ActionExecutorFactory } from './executors/factory';
 import { throttle } from 'lodash';
 import { configManager } from '../config';
 import { ReplayConfig } from '../config/default';
+import { screenshotService } from './services/screenshot-service';
+import { ExecutionLog } from '../types/session';
 
 export class ReplayEngine {
   private static instance: ReplayEngine;
@@ -73,9 +75,26 @@ export class ReplayEngine {
         startedAt: Date.now(),
         status: ReplayStatus.IDLE,
         currentActionIndex: 0,
+        executionLogs: [],
       };
 
       this.sessions.set(session.id, session);
+
+      // Aplicar tamanho inicial da janela se houver ação de resize no início
+      const firstResizeAction = recording.actions.find(
+        (action) => action.type === ActionType.Resize
+      );
+      if (
+        firstResizeAction &&
+        'width' in firstResizeAction &&
+        'height' in firstResizeAction
+      ) {
+        console.log(
+          '[ReplayEngine] Aplicando tamanho inicial da janela:',
+          `${firstResizeAction.width}x${firstResizeAction.height}`
+        );
+        await this.executeResizeAction(firstResizeAction as ResizeAction);
+      }
 
       // Criar nova aba
       const tab = await this.createReplayTab(
@@ -95,7 +114,7 @@ export class ReplayEngine {
       this.emitEvent(ReplayEventType.SESSION_STARTED, session.id, { session });
 
       // Executar ações
-      this.executeActions(session.id, options);
+      this.executeActions(session.id, options, recordingId);
 
       console.log('[ReplayEngine] Replay iniciado:', session.id);
       return session;
@@ -201,10 +220,20 @@ export class ReplayEngine {
    */
   private async executeActions(
     sessionId: string,
-    options: ReplayOptions
+    options: ReplayOptions,
+    recordingId?: string
   ): Promise<void> {
     const session = this.sessions.get(sessionId);
     if (!session || !session.tabId) return;
+
+    // Rastrear se já aplicamos o resize inicial
+    let initialResizeApplied = false;
+    const firstResizeAction = session.actions.find(
+      (action) => action.type === ActionType.Resize
+    );
+    if (firstResizeAction) {
+      initialResizeApplied = true;
+    }
 
     try {
       while (
@@ -212,6 +241,19 @@ export class ReplayEngine {
         session.status === ReplayStatus.RUNNING
       ) {
         const action = session.actions[session.currentActionIndex];
+
+        // Pular a primeira ação de resize se já foi aplicada no início
+        if (
+          initialResizeApplied &&
+          action.type === ActionType.Resize &&
+          action === firstResizeAction
+        ) {
+          console.log(
+            '[ReplayEngine] Pulando primeira ação de resize (já aplicada)'
+          );
+          session.currentActionIndex++;
+          continue;
+        }
 
         console.log(
           `[ReplayEngine] Executando ação ${session.currentActionIndex + 1}/${
@@ -221,7 +263,13 @@ export class ReplayEngine {
 
         try {
           // Executar ação via mensagem para o runner
-          await this.executeAction(session.tabId, action, options);
+          await this.executeAction(
+            session.tabId,
+            action,
+            options,
+            sessionId,
+            recordingId
+          );
 
           console.log(
             `[ReplayEngine] Ação executada com sucesso: ${action.type}`
@@ -273,7 +321,9 @@ export class ReplayEngine {
   private async executeAction(
     tabId: number,
     action: Action,
-    options: ReplayOptions
+    options: ReplayOptions,
+    sessionId: string,
+    recordingId?: string
   ): Promise<void> {
     console.log(
       `[ReplayEngine] executeAction iniciado - Tipo: ${action.type}, TabId: ${tabId}`
@@ -284,7 +334,17 @@ export class ReplayEngine {
       console.log(
         '[ReplayEngine] Executando resize action diretamente no background'
       );
-      return this.executeResizeAction(action as any);
+      await this.executeResizeAction(action as any);
+
+      // Capture screenshot after resize
+      await this.captureBackgroundActionScreenshot(
+        tabId,
+        action,
+        sessionId,
+        recordingId
+      );
+
+      return;
     }
 
     // Tratar ação de load diretamente no background
@@ -292,7 +352,17 @@ export class ReplayEngine {
       console.log(
         '[ReplayEngine] Executando load action diretamente no background'
       );
-      return this.executeLoadAction(tabId, action as any);
+      await this.executeLoadAction(tabId, action as any);
+
+      // Capture screenshot after load
+      await this.captureBackgroundActionScreenshot(
+        tabId,
+        action,
+        sessionId,
+        recordingId
+      );
+
+      return;
     }
 
     // Verificar se a tab existe e está ativa
@@ -351,6 +421,7 @@ export class ReplayEngine {
                       options.autoScroll !== false &&
                       this.config?.autoScroll !== false,
                   },
+                  tabId,
                 },
                 (response) => {
                   clearTimeout(timeout);
@@ -385,6 +456,20 @@ export class ReplayEngine {
                       action.type
                     );
                     console.log('[ReplayEngine] Resposta:', response);
+
+                    // Add execution logs to session
+                    if (
+                      response?.executionLogs &&
+                      Array.isArray(response.executionLogs)
+                    ) {
+                      const session = this.sessions.get(sessionId);
+                      if (session) {
+                        session.executionLogs.push(...response.executionLogs);
+                        // Save execution logs to recording store
+                        this.saveExecutionLogs(sessionId, recordingId);
+                      }
+                    }
+
                     innerResolve();
                   }
                 }
@@ -835,5 +920,60 @@ export class ReplayEngine {
    */
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Save execution logs to recording store
+   */
+  private async saveExecutionLogs(
+    sessionId: string,
+    recordingId?: string
+  ): Promise<void> {
+    if (!recordingId) return;
+
+    const session = this.sessions.get(sessionId);
+    if (!session || !session.executionLogs.length) return;
+
+    try {
+      const recording = await recordingStore.get(recordingId);
+      if (recording) {
+        await recordingStore.updateExecutionLogs(
+          recordingId,
+          session.executionLogs
+        );
+      }
+    } catch (error) {
+      console.error('[ReplayEngine] Error saving execution logs:', error);
+    }
+  }
+
+  /**
+   * Capture screenshot for actions executed in background
+   */
+  private async captureBackgroundActionScreenshot(
+    tabId: number,
+    action: Action,
+    sessionId: string,
+    recordingId?: string
+  ): Promise<void> {
+    try {
+      const screenshot = await screenshotService.capture(tabId);
+      const executionLog: ExecutionLog = {
+        ts: Date.now(),
+        action,
+        screenshot,
+      };
+
+      const session = this.sessions.get(sessionId);
+      if (session) {
+        session.executionLogs.push(executionLog);
+        await this.saveExecutionLogs(sessionId, recordingId);
+      }
+    } catch (error) {
+      console.error(
+        '[ReplayEngine] Error capturing screenshot for background action:',
+        error
+      );
+    }
   }
 }

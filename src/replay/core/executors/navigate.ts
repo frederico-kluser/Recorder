@@ -20,6 +20,9 @@ export class NavigateExecutor extends ActionExecutor {
 
       // Aguardar um pouco para a navegação iniciar
       await this.delay(1000);
+
+      // Capture screenshot after navigation
+      await this.captureAfter(action);
     } catch (error) {
       throw new Error(`Failed to navigate to ${url}: ${error}`);
     }
